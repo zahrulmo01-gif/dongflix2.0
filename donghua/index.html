@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer">
   
   <title id="metaTitle">Koleksi Donghua - Dongflix</title>
-  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru kualitas HD gratis di Dongflix.">
+  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru dengan kualitas HD gratis di Dongflix.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="metaCanonical" href="https://dongflix.my.id/donghua/">
 
@@ -16,6 +15,8 @@
   <meta property="og:image" id="ogImage" content="">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HLS Player CDN untuk streaming Dailymotion lewat Cloudflare Worker -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans">
   <div class="max-w-7xl mx-auto space-y-8">
@@ -56,7 +57,7 @@
       <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         <div class="aspect-video w-full bg-black relative">
           
-          <!-- Mode 1: Native HTML5 Video (dfplayer - 100% Bebas Iklan) -->
+          <!-- Mode 1: Native HTML5 Video (dfplayer D-Tube / Dailymotion HLS) -->
           <video 
             id="dfVideoPlayer" 
             controls 
@@ -64,15 +65,14 @@
             class="hidden w-full h-full object-contain bg-black focus:outline-none"
           ></video>
 
-          <!-- Mode 2: Iframe Embed (Sandbox Ketat: Anti-Popup & Anti-Redirect) -->
+          <!-- Mode 2: Iframe Fallback dengan Sandbox Ketat -->
           <iframe 
-  id="videoIframe" 
-  src="" 
-  class="w-full h-full border-0" 
-  allowfullscreen 
-  sandbox="allow-forms allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
-></iframe>
-
+            id="videoIframe" 
+            src="" 
+            class="hidden w-full h-full border-0" 
+            allowfullscreen 
+            sandbox="allow-forms allow-scripts allow-same-origin allow-presentation"
+          ></iframe>
 
           <!-- Placeholder -->
           <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
@@ -80,29 +80,18 @@
           </div>
         </div>
 
-        <!-- Controls: Info, Server Selector, & Quality Selector -->
+        <!-- Controls: Info & Server Selector -->
         <div class="p-4 bg-slate-950/80 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <span class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold block">Sedang Diputar</span>
             <h2 id="currentEpTitle" class="text-sm font-semibold text-white">Belum ada episode dipilih</h2>
           </div>
 
-          <div class="flex items-center gap-2">
-            <!-- Pilihan Server -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer"></div>
-
-            <!-- Dropdown Resolusi (Hanya aktif saat dfplayer berjalan) -->
-            <select 
-              id="qualitySelect" 
-              onchange="changeQuality(this.value)" 
-              class="hidden bg-slate-900 border border-slate-700 text-cyan-400 text-xs px-2.5 py-1.5 rounded-lg focus:outline-none"
-            >
-            </select>
-          </div>
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer"></div>
         </div>
       </div>
 
-      <!-- Layout 2 Kolom: Detail & List Episode -->
+      <!-- Layout Detail & List Episode -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <!-- Info Donghua -->
@@ -185,30 +174,16 @@
   </div>
 
   <script>
-    // ================= SCRIPT ANTI-POPUP & REDIRECT =================
-    // Blokir trigger pembukaan window baru / popunder
+    // Blokir popup liar tab baru
     window.open = function () {
-      console.warn('Pop-up window.open otomatis dicegah.');
       return null;
     };
 
-    // Cegah klik target blank liar di luar kontrol resmi
-    document.addEventListener('click', function (e) {
-      const link = e.target.closest('a');
-      if (link && link.target === '_blank') {
-        const href = link.getAttribute('href') || '';
-        if (!href.startsWith('/') && !href.includes(window.location.hostname)) {
-          e.preventDefault();
-          console.warn('Redirect external tab dicegah:', href);
-        }
-      }
-    }, true);
-
-    // ================= STATE & LOGIKA APLIKASI =================
     let allData = [];
     let currentEpisodes = [];
     let selectedEpIndex = 0;
     let selectedServerIndex = 0;
+    let hlsInstance = null;
 
     async function init() {
       const pathSegments = window.location.pathname.split('/').filter(Boolean);
@@ -350,7 +325,6 @@
         serverBox.innerHTML = '<span class="text-xs text-rose-400">Tidak ada server video</span>';
         document.getElementById('videoIframe').src = '';
         document.getElementById('dfVideoPlayer').src = '';
-        document.getElementById('qualitySelect').classList.add('hidden');
         document.getElementById('playerPlaceholder').classList.remove('hidden');
         document.getElementById('playerMessage').innerText = 'Tidak ada link player aktif pada episode ini.';
         return;
@@ -358,8 +332,8 @@
 
       serverBox.innerHTML = servers.map((srv, sIdx) => `
         <button 
-          onclick="switchServer(${sIdx})"
-          id="srvBtn-${sIdx}"
+          onclick="switchServer(${sIdx})" 
+          id="srvBtn-${sIdx}" 
           class="px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition ${
             sIdx === 0 
               ? 'bg-cyan-500 text-slate-950' 
@@ -392,49 +366,48 @@
       const dfPlayer = document.getElementById('dfVideoPlayer');
       const iframePlayer = document.getElementById('videoIframe');
       const placeholder = document.getElementById('playerPlaceholder');
-      const qualitySelect = document.getElementById('qualitySelect');
 
       placeholder.classList.add('hidden');
 
-      if (srv.name.toLowerCase() === 'dfplayer' || srv.type === 'direct') {
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+      }
+
+      if (srv.type === 'direct') {
+        // D-Tube (MP4 langsung)
         iframePlayer.classList.add('hidden');
         iframePlayer.src = '';
-
-        if (srv.qualities && srv.qualities.length > 0) {
-          qualitySelect.classList.remove('hidden');
-          qualitySelect.innerHTML = srv.qualities.map((q) => `
-            <option value="${q.url}">${q.resolution}</option>
-          `).join('');
-        } else {
-          qualitySelect.classList.add('hidden');
-        }
-
         dfPlayer.classList.remove('hidden');
+
         dfPlayer.src = srv.link;
         dfPlayer.load();
         dfPlayer.play().catch(() => {});
-      } else {
-        qualitySelect.classList.add('hidden');
+      } else if (srv.type === 'hls') {
+        // Dailymotion lewat Cloudflare Worker (.m3u8)
+        iframePlayer.classList.add('hidden');
+        iframePlayer.src = '';
+        dfPlayer.classList.remove('hidden');
 
+        if (Hls.isSupported()) {
+          hlsInstance = new Hls();
+          hlsInstance.loadSource(srv.link);
+          hlsInstance.attachMedia(dfPlayer);
+          hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+            dfPlayer.play().catch(() => {});
+          });
+        } else if (dfPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+          dfPlayer.src = srv.link;
+          dfPlayer.play().catch(() => {});
+        }
+      } else {
+        // Iframe Fallback
         dfPlayer.pause();
         dfPlayer.classList.add('hidden');
         dfPlayer.src = '';
 
         iframePlayer.classList.remove('hidden');
         iframePlayer.src = srv.link;
-      }
-    }
-
-    function changeQuality(newUrl) {
-      const dfPlayer = document.getElementById('dfVideoPlayer');
-      const currentTime = dfPlayer.currentTime;
-      const isPaused = dfPlayer.paused;
-
-      dfPlayer.src = newUrl;
-      dfPlayer.currentTime = currentTime;
-
-      if (!isPaused) {
-        dfPlayer.play().catch(() => {});
       }
     }
 
