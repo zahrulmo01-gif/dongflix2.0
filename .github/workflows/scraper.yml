@@ -25,10 +25,11 @@ jobs:
         with:
           node-version: 20
 
+      # Menggunakan npm install agar tidak gagal saat package-lock.json belum ada
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
-      # 1. Jalankan Scrape List Master Donghua (menggunakan scraper.js)
+      # 1. Jalankan Scrape List Master Donghua
       - name: Run Scraper List Donghua
         if: github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list'
         run: node admin/scraper.js
