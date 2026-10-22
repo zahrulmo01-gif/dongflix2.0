@@ -8,8 +8,8 @@ puppeteer.use(StealthPlugin());
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const BASE_URL = 'https://anichin.moe';
+const SITE_DOMAIN = 'https://dongflix.my.id'; // Domain web kamu
 
-// Helper merapikan URL relatif menjadi domain penuh Anichin
 function resolveUrl(url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -17,12 +17,51 @@ function resolveUrl(url) {
   return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
+// Fungsi generate sitemap XML format standar Google
+function generateSitemapXml(donghuaList) {
+  const today = new Date().toISOString().split('T')[0];
+
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+  // 1. Halaman Utama / Homepage
+  xml += `  <url>\n`;
+  xml += `    <loc>${SITE_DOMAIN}/</loc>\n`;
+  xml += `    <lastmod>${today}</lastmod>\n`;
+  xml += `    <changefreq>daily</changefreq>\n`;
+  xml += `    <priority>1.0</priority>\n`;
+  xml += `  </url>\n`;
+
+  // 2. Halaman Indeks Katalog /donghua/
+  xml += `  <url>\n`;
+  xml += `    <loc>${SITE_DOMAIN}/donghua/</loc>\n`;
+  xml += `    <lastmod>${today}</lastmod>\n`;
+  xml += `    <changefreq>daily</changefreq>\n`;
+  xml += `    <priority>0.9</priority>\n`;
+  xml += `  </url>\n`;
+
+  // 3. Tiap URL Slug Donghua (/donghua/:slug)
+  donghuaList.forEach((item) => {
+    if (item.slug) {
+      xml += `  <url>\n`;
+      xml += `    <loc>${SITE_DOMAIN}/donghua/${encodeURIComponent(item.slug)}</loc>\n`;
+      xml += `    <lastmod>${today}</lastmod>\n`;
+      xml += `    <changefreq>weekly</changefreq>\n`;
+      xml += `    <priority>0.8</priority>\n`;
+      xml += `  </url>\n`;
+    }
+  });
+
+  xml += `</urlset>`;
+  return xml;
+}
+
 async function run() {
   const allDonghua = [];
   let page = 1;
   let hasNext = true;
 
-  console.log('=== Memulai Scraping Anichin (Data Clean & Full URLs) ===');
+  console.log('=== Memulai Scraping Anichin ===');
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -55,7 +94,6 @@ async function run() {
       $('article.bs, .animposx, .listupd article').each((_, el) => {
         const item = $(el);
 
-        // 1. Judul
         const title =
           item.find('.tt h2').text().trim() ||
           item.find('.tt').text().trim() ||
@@ -63,18 +101,15 @@ async function run() {
           item.find('a').attr('title') ||
           '';
 
-        // 2. Link & Slug
         const rawLink = item.find('a').first().attr('href') || '';
         const fullLink = resolveUrl(rawLink);
         
-        // Ambil slug: hilangkan domain dan garis miring depan/belakang
         const slug = fullLink
           .replace(BASE_URL, '')
           .replace(/^\/+|\/+$/g, '')
           .split('/')
-          .pop(); // memastikan hanya nama slug yang diambil jika ada subfolder
+          .pop();
 
-        // 3. Cover Thumbnail
         const img = item.find('img').first();
         const rawCover =
           img.attr('data-src') ||
@@ -83,21 +118,16 @@ async function run() {
           '';
         const cover = resolveUrl(rawCover);
 
-        // 4. Metadata Tipe
         const type = item.find('.type, .typeflag').first().text().trim() || 'Donghua';
 
-        // 5. Episode & Status (Pemisahan Akurat)
-        // Anichin biasanya menaruh badge episode di span.epx atau .bt .epx
         let epText = item.find('.bt .epx, .epx, .animepost .epx').first().text().trim();
         let statusText = item.find('.status, .bt .status').first().text().trim();
 
-        // Jika epx tertulis 'Ongoing' / 'Completed', cari episode di sub-elemen lain
         if (/^(ongoing|completed)$/i.test(epText)) {
           statusText = epText;
           epText = item.find('.sb, .episode, .eps').first().text().trim() || '-';
         }
 
-        // Jika status kosong, cari di badge info
         if (!statusText) {
           statusText = item.find('.status').text().trim() || 'Ongoing';
         }
@@ -121,13 +151,12 @@ async function run() {
       }
 
       allDonghua.push(...items);
-      console.log(`Halaman ${page}: ${items.length} item berhasil diproses.`);
+      console.log(`Halaman ${page}: ${items.length} item berhasil diambil.`);
 
       const nextBtn = $('.pagination .next, .hpage .r, a.next');
       if (nextBtn.length > 0) {
         page++;
       } else {
-        console.log('Semua halaman berhasil discrape.');
         hasNext = false;
       }
     } catch (err) {
@@ -138,16 +167,21 @@ async function run() {
 
   await browser.close();
 
-  // Simpan hasil ke /donghua/donghua.json
-  const outputDir = path.resolve('donghua');
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
-  const outputPath = path.join(outputDir, 'donghua.json');
   if (allDonghua.length > 0) {
-    fs.writeFileSync(outputPath, JSON.stringify(allDonghua, null, 2), 'utf-8');
-    console.log(`SUKSES! Total ${allDonghua.length} item disimpan di ${outputPath}`);
+    // 1. Simpan ke /donghua/donghua.json
+    const outputDir = path.resolve('donghua');
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    const jsonPath = path.join(outputDir, 'donghua.json');
+    fs.writeFileSync(jsonPath, JSON.stringify(allDonghua, null, 2), 'utf-8');
+    console.log(`JSON tersimpan: ${allDonghua.length} item di ${jsonPath}`);
+
+    // 2. Simpan ke /sitemap.xml di root project
+    const sitemapContent = generateSitemapXml(allDonghua);
+    const sitemapPath = path.resolve('sitemap.xml');
+    fs.writeFileSync(sitemapPath, sitemapContent, 'utf-8');
+    console.log(`Sitemap tersimpan di ${sitemapPath}`);
   }
 }
 
