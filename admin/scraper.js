@@ -7,13 +7,22 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const BASE_URL = 'https://anichin.moe';
+
+// Helper merapikan URL relatif menjadi domain penuh Anichin
+function resolveUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('//')) return `https:${url}`;
+  return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
 
 async function run() {
   const allDonghua = [];
   let page = 1;
   let hasNext = true;
 
-  console.log('=== Memulai Scraping Anichin (Stealth Browser) ===');
+  console.log('=== Memulai Scraping Anichin (Data Clean & Full URLs) ===');
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -32,12 +41,12 @@ async function run() {
   );
 
   while (hasNext) {
-    const url = `https://anichin.moe/anime/?page=${page}&status=&type=&order=update`;
+    const targetUrl = `${BASE_URL}/anime/?page=${page}&status=&type=&order=update`;
     console.log(`Membuka halaman ${page}...`);
 
     try {
-      await browserPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await sleep(2000); // Tunggu render script halaman
+      await browserPage.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await sleep(2000);
 
       const content = await browserPage.content();
       const $ = cheerio.load(content);
@@ -45,6 +54,8 @@ async function run() {
 
       $('article.bs, .animposx, .listupd article').each((_, el) => {
         const item = $(el);
+
+        // 1. Judul
         const title =
           item.find('.tt h2').text().trim() ||
           item.find('.tt').text().trim() ||
@@ -52,46 +63,82 @@ async function run() {
           item.find('a').attr('title') ||
           '';
 
-        const link = item.find('a').first().attr('href') || '';
+        // 2. Link & Slug
+        const rawLink = item.find('a').first().attr('href') || '';
+        const fullLink = resolveUrl(rawLink);
+        
+        // Ambil slug: hilangkan domain dan garis miring depan/belakang
+        const slug = fullLink
+          .replace(BASE_URL, '')
+          .replace(/^\/+|\/+$/g, '')
+          .split('/')
+          .pop(); // memastikan hanya nama slug yang diambil jika ada subfolder
+
+        // 3. Cover Thumbnail
         const img = item.find('img').first();
-        const cover =
+        const rawCover =
           img.attr('data-src') ||
           img.attr('data-lazy-src') ||
           img.attr('src') ||
           '';
+        const cover = resolveUrl(rawCover);
 
+        // 4. Metadata Tipe
         const type = item.find('.type, .typeflag').first().text().trim() || 'Donghua';
-        const status = item.find('.status, .bt .epx').first().text().trim() || 'Ongoing';
-        const episode = item.find('.epx').first().text().trim() || '-';
 
-        if (title && link) {
-          items.push({ title, link, cover, type, status, episode });
+        // 5. Episode & Status (Pemisahan Akurat)
+        // Anichin biasanya menaruh badge episode di span.epx atau .bt .epx
+        let epText = item.find('.bt .epx, .epx, .animepost .epx').first().text().trim();
+        let statusText = item.find('.status, .bt .status').first().text().trim();
+
+        // Jika epx tertulis 'Ongoing' / 'Completed', cari episode di sub-elemen lain
+        if (/^(ongoing|completed)$/i.test(epText)) {
+          statusText = epText;
+          epText = item.find('.sb, .episode, .eps').first().text().trim() || '-';
+        }
+
+        // Jika status kosong, cari di badge info
+        if (!statusText) {
+          statusText = item.find('.status').text().trim() || 'Ongoing';
+        }
+
+        if (title && slug) {
+          items.push({
+            title,
+            slug,
+            link: fullLink,
+            cover,
+            type,
+            status: statusText || 'Ongoing',
+            episode: epText || '-'
+          });
         }
       });
 
       if (items.length === 0) {
-        console.log(`Tidak ada item ditemukan di halaman ${page}. Selesai.`);
+        console.log(`Halaman ${page} tidak memiliki item. Scraping selesai.`);
         break;
       }
 
       allDonghua.push(...items);
-      console.log(`Halaman ${page}: Berhasil mengambil ${items.length} item.`);
+      console.log(`Halaman ${page}: ${items.length} item berhasil diproses.`);
 
       const nextBtn = $('.pagination .next, .hpage .r, a.next');
       if (nextBtn.length > 0) {
         page++;
       } else {
-        console.log('Halaman terakhir tercapai.');
+        console.log('Semua halaman berhasil discrape.');
         hasNext = false;
       }
     } catch (err) {
-      console.error(`Gagal di halaman ${page}:`, err.message);
+      console.error(`Gagal scraping di halaman ${page}:`, err.message);
       break;
     }
   }
 
   await browser.close();
 
+  // Simpan hasil ke /donghua/donghua.json
   const outputDir = path.resolve('donghua');
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
@@ -100,7 +147,7 @@ async function run() {
   const outputPath = path.join(outputDir, 'donghua.json');
   if (allDonghua.length > 0) {
     fs.writeFileSync(outputPath, JSON.stringify(allDonghua, null, 2), 'utf-8');
-    console.log(`SUKSES! Total ${allDonghua.length} item disimpan ke ${outputPath}`);
+    console.log(`SUKSES! Total ${allDonghua.length} item disimpan di ${outputPath}`);
   }
 }
 
