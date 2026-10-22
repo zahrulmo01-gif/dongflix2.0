@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Default Meta Tags SEO -->
+  <title id="metaTitle">Koleksi Donghua Lengkap Sub Indo - Dongflix</title>
+  <meta name="description" id="metaDesc" content="Daftar koleksi anime China dan donghua subtitle Indonesia update terbaru dengan kualitas HD gratis di Dongflix.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" id="metaCanonical" href="https://dongflix.my.id/donghua/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="video.tv_show">
+  <meta property="og:title" id="ogTitle" content="Koleksi Donghua - Dongflix">
+  <meta property="og:description" id="ogDesc" content="Nonton donghua subtitle Indonesia lengkap di Dongflix.">
+  <meta property="og:image" id="ogImage" content="">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-10 font-sans">
+  <div class="max-w-7xl mx-auto space-y-8">
+    
+    <!-- Top Navbar -->
+    <header class="flex items-center justify-between pb-6 border-b border-slate-800">
+      <a href="/" class="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
+        Dongflix
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+          Home
+        </a>
+        <a href="/admin/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+          Admin
+        </a>
+      </div>
+    </header>
+
+    <!-- VIEW 1: DETAIL DONGHUA (Aktif jika ada slug di URL) -->
+    <section id="detailView" class="hidden">
+      <div class="mb-4">
+        <a href="/donghua/" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1">
+          ← Kembali ke Semua Donghua
+        </a>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-8 shadow-xl">
+        <div class="w-full md:w-64 shrink-0 aspect-[3/4] bg-slate-800 rounded-xl overflow-hidden relative shadow-md">
+          <img id="detailCover" src="" alt="" class="w-full h-full object-cover">
+          <span id="detailBadge" class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2.5 py-1 rounded"></span>
+        </div>
+
+        <div class="flex-1 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <h1 id="detailTitle" class="text-2xl md:text-3xl font-extrabold text-white leading-tight">Memuat...</h1>
+            
+            <div class="flex flex-wrap gap-2">
+              <span id="detailStatus" class="text-xs px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium"></span>
+              <span id="detailEp" class="text-xs px-3 py-1 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium"></span>
+            </div>
+
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Tonton streaming episode terbaru dengan terjemahan bahasa Indonesia, kualitas video jernih dan server cepat langsung dari sumber rujukan.
+            </p>
+          </div>
+
+          <div>
+            <a id="detailWatchBtn" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition shadow-lg shadow-cyan-600/30 active:scale-95">
+              <span>Nonton Sekarang di Anichin</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: KATALOG / LIST DONGHUA (Aktif jika buka /donghua/) -->
+    <section id="listView" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-white tracking-tight">Katalog Donghua</h1>
+          <p class="text-xs text-slate-400 mt-1">Jelajahi semua serial animasi China yang tersedia.</p>
+        </div>
+
+        <!-- Filter & Search -->
+        <div class="flex flex-wrap items-center gap-2">
+          <input 
+            id="searchInput" 
+            oninput="handleSearch()" 
+            type="text" 
+            placeholder="Cari judul..." 
+            class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 w-full sm:w-64"
+          >
+          <select 
+            id="statusFilter" 
+            onchange="handleFilterStatus()" 
+            class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+          >
+            <option value="ALL">Semua Status</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-500" id="totalCounter">Memuat koleksi...</div>
+
+      <!-- Grid Cards -->
+      <div id="catalogGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <!-- Render dinamis kartu donghua -->
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let allData = [];
+
+    async function init() {
+      // Ambil path URL untuk cek apakah membuka slug atau root /donghua/
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      const isSlugView = pathSegments.length >= 2 && pathSegments[0] === 'donghua';
+      const targetSlug = isSlugView ? pathSegments[1] : null;
+
+      try {
+        const res = await fetch('/donghua/donghua.json?nocache=' + Date.now());
+        if (!res.ok) throw new Error('Database json belum tersedia');
+        allData = await res.json();
+
+        if (targetSlug) {
+          showDetail(targetSlug);
+        } else {
+          showCatalog(allData);
+        }
+      } catch (err) {
+        document.getElementById('catalogGrid').innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">
+            Gagal memuat /donghua/donghua.json. Pastikan file sudah terisi via admin panel.
+          </div>
+        `;
+      }
+    }
+
+    // Tampilkan View Detail Donghua
+    function showDetail(slug) {
+      const item = allData.find(d => d.slug === slug);
+      const detailView = document.getElementById('detailView');
+      const listView = document.getElementById('listView');
+
+      if (!item) {
+        detailView.classList.remove('hidden');
+        listView.classList.add('hidden');
+        document.getElementById('detailTitle').innerText = 'Donghua Tidak Ditemukan';
+        return;
+      }
+
+      detailView.classList.remove('hidden');
+      listView.classList.add('hidden');
+
+      // Isi UI Detail
+      document.getElementById('detailTitle').innerText = item.title;
+      document.getElementById('detailCover').src = item.cover;
+      document.getElementById('detailCover').alt = item.title;
+      document.getElementById('detailBadge').innerText = item.type;
+      document.getElementById('detailStatus').innerText = item.status;
+      document.getElementById('detailEp').innerText = item.episode;
+      document.getElementById('detailWatchBtn').href = item.link;
+
+      // Update Tag SEO Browser
+      const pageTitle = `Nonton ${item.title} Sub Indo - Dongflix`;
+      const pageDesc = `Streaming donghua ${item.title} ${item.episode} subtitle Indonesia kualitas HD gratis.`;
+      
+      document.title = pageTitle;
+      document.getElementById('metaTitle').innerText = pageTitle;
+      document.getElementById('metaDesc').content = pageDesc;
+      document.getElementById('metaCanonical').href = `https://dongflix.my.id/donghua/${item.slug}`;
+      document.getElementById('ogTitle').content = pageTitle;
+      document.getElementById('ogDesc').content = pageDesc;
+      document.getElementById('ogImage').content = item.cover;
+    }
+
+    // Tampilkan View Katalog
+    function showCatalog(items) {
+      document.getElementById('detailView').classList.add('hidden');
+      document.getElementById('listView').classList.remove('hidden');
+      document.getElementById('totalCounter').innerText = `Menampilkan ${items.length} dari total ${allData.length} donghua`;
+
+      const grid = document.getElementById('catalogGrid');
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-500">Tidak ada donghua yang sesuai filter.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <a href="/donghua/${item.slug}" class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col hover:border-slate-700 transition">
+          <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
+            <img 
+              src="${item.cover || 'https://via.placeholder.com/300x400?text=No+Cover'}" 
+              alt="${item.title}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+              loading="lazy"
+            >
+            <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2 py-0.5 rounded">
+              ${item.type}
+            </span>
+            <span class="absolute bottom-2 right-2 bg-blue-600/90 backdrop-blur-md text-[10px] text-white font-medium px-1.5 py-0.5 rounded">
+              ${item.episode}
+            </span>
+          </div>
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-cyan-400 transition" title="${item.title}">
+              ${item.title}
+            </h3>
+            <span class="text-[11px] text-emerald-400 font-medium mt-2">
+              ${item.status}
+            </span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function handleSearch() {
+      applyFilters();
+    }
+
+    function handleFilterStatus() {
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+
+      const filtered = allData.filter(item => {
+        const matchesQuery = item.title.toLowerCase().includes(q);
+        const matchesStatus = status === 'ALL' || item.status.toLowerCase() === status.toLowerCase();
+        return matchesQuery && matchesStatus;
+      });
+
+      showCatalog(filtered);
+    }
+
+    init();
+  </script>
+</body>
+</html>
