@@ -62,9 +62,17 @@ async function extractOkRuDirectVideo(okRuEmbedUrl) {
 
     const parsed = JSON.parse(rawJson);
     const flashVars = parsed.flashvars || {};
-    const metadata = JSON.parse(flashVars.metadata || '{}');
-    const videos = metadata.videos || [];
 
+    let metadata = flashVars.metadata || {};
+    if (typeof metadata === 'string') {
+      try {
+        metadata = JSON.parse(metadata);
+      } catch (_) {
+        metadata = {};
+      }
+    }
+
+    const videos = metadata.videos || [];
     if (videos.length === 0) return null;
 
     const labelMap = {
@@ -127,6 +135,7 @@ async function scrapeEpisodeServers(browser, ep) {
     const content = await page.content();
     const $$ = cheerio.load(content);
 
+    // 1. Dropdown Mirror Option
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       const name = o.text().trim();
@@ -140,6 +149,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
+    // 2. Tab Link/Button Mirror
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       const name = el.text().trim();
@@ -152,6 +162,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
+    // 3. Iframe Aktif Bawaan
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
@@ -160,6 +171,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     }
 
+    // 4. Bangun dfplayer jika ditemukan server OK.ru
     const okRuServer = servers.find((s) => s.name.toLowerCase().includes('ok') || s.link.includes('ok.ru'));
     if (okRuServer && okRuServer.link) {
       const qualities = await extractOkRuDirectVideo(okRuServer.link);
@@ -276,6 +288,7 @@ async function run() {
 
   const $ = cheerio.load(mainHtml);
 
+  // Ambil teks dari badge 'Episode Baru'
   let latestEpisodeFound = '';
   $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
     const txt = $(el).text().trim();
@@ -331,6 +344,7 @@ async function run() {
     return;
   }
 
+  // Scrape secara paralel
   const allDetailedEpisodes = [];
   for (let i = 0; i < episodeQueue.length; i += CONCURRENCY) {
     const chunk = episodeQueue.slice(i, i + CONCURRENCY);
@@ -342,6 +356,7 @@ async function run() {
 
   await browser.close();
 
+  // Simpan hasil ke JSON episode
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -349,6 +364,7 @@ async function run() {
   fs.writeFileSync(outFile, JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
   console.log(`SUKSES! File tersimpan di: ${outFile}`);
 
+  // Simpan update latest-episode ke donghua.json
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
 }
 
