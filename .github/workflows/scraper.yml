@@ -13,19 +13,25 @@ on:
         description: 'Slug Donghua (khusus jika memilih aksi episode)'
         required: false
 
+# Berikan izin tulis ke isi repositori
+permissions:
+  contents: write
+
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Menggunakan npm install agar tidak gagal saat package-lock.json belum ada
+      # Install dependensi
       - name: Install Dependencies
         run: npm install
 
