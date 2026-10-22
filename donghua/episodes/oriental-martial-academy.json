@@ -6,80 +6,54 @@
     "date": "October 22, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=IAirNjTvMq0&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=IAirNjTvMq0&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=X1wD03Ej9x8&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=qE86N6jv7-E&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=vPk6CWp37hU&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=-8ARf-oTHho&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=xB85vRZ11Mg&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxbqbss6.m3u8%3Fsec%3D3Q17_W7QErECHvuCUEj49cIQTf3GzsBtzQ1WxwRc6bBir_pLAKX96Izuo2yJM-eR885KKXLaVzk3_glG9vxCHg%26dmTs%3D413132%26dmV1st%3D7573FE901FC8D6B10477FCE093AAC250"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16237016648370",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/16237016648370"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k2Szp7cWpoBWSgM0lWm",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k2Szp7cWpoBWSgM0lWm"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7f1hx2/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7f1hx2/?pub=2li51c"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=10ed01b1-134b-40d1-974e-48a784662892",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=10ed01b1-134b-40d1-974e-48a784662892"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#fcrxyp",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#fcrxyp"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/atZ0nmly9",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/atZ0nmly9"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-55kebe85iffg.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-55kebe85iffg.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/ktoilzm11s5k",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/ktoilzm11s5k"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/92yod4qpmm9h",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://playmogo.com/e/92yod4qpmm9h"
       }
     ]
   },
@@ -90,85 +64,59 @@
     "date": "October 15, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=9X7Opj6qqCE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=9X7Opj6qqCE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=IMkPZv_qrLE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=TZp3nvYsyDA&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=jvhfRMlrP-w&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=YMQj2Oxcls0&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=BmC3yoTyPbE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxbnj4j2.m3u8%3Fsec%3DEZpdEMj1lNS38wLwQEPexrQ2wCgVE_3561YXmxuynZ100SuUJgRoprI_DekUdMxfEJwdb1_Gl-61xIdGaOgV-g%26dmTs%3D200848%26dmV1st%3D6F4ACF7492A021478EE85265927FF28C"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16157734603442",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/16157734603442"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k4vT8Oe5cXffQ4LGE1M",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k4vT8Oe5cXffQ4LGE1M"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7epefi/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7epefi/?pub=2li51c"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=7d30f918-d612-4f49-999c-5aebd1e2ed30",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=7d30f918-d612-4f49-999c-5aebd1e2ed30"
       },
       {
         "name": "Odysee",
-        "link": "https://odysee.com/$/embed/-ANICHIN.CARE--Oriental-Martial-Academy--2026--14-.-1080p-:fb9e9b5e891c872b80a79172430f89041d4552f4",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://odysee.com/$/embed/-ANICHIN.CARE--Oriental-Martial-Academy--2026--14-.-1080p-:fb9e9b5e891c872b80a79172430f89041d4552f4"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#9gu9xm",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#9gu9xm"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/2n2uVjipE",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/2n2uVjipE"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-pc9zclt5x07d.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-pc9zclt5x07d.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/qinwhoieedad",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/qinwhoieedad"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/ydc39ikwtmnv",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://playmogo.com/e/ydc39ikwtmnv"
       }
     ]
   },
@@ -179,80 +127,54 @@
     "date": "October 8, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=3&sig=F9MiyzchlIs&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=3&sig=F9MiyzchlIs&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=2&sig=JnVRCcMag1g&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=1&sig=kfYg_fPDVb8&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=0&sig=KZLab3YjRnc&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=4&sig=xKwm0T5AFWw&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=5&sig=63jt7fA6U_c&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxbjq8l2.m3u8%3Fsec%3D8_kby8RA6X7jkwlAd48CrhzF_kFLrLs1lLqC9YUtarBvQIRhNCzAkoVQSuFudme5koX9CdEWtclvWh4CViOMaA%26dmTs%3D723739%26dmV1st%3DD931156C804B7C7AC71F6C1505994C82"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16078424967858",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/16078424967858"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k1igWvItkOJFLbLfQzQ",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k1igWvItkOJFLbLfQzQ"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7edmos/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7edmos/?pub=2li51c"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=bfef3e93-82f0-4ef8-86be-bd2e4a8e097d",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=bfef3e93-82f0-4ef8-86be-bd2e4a8e097d"
       },
       {
         "name": "Odysee",
-        "link": "https://odysee.com/$/embed/@anichincare:0/-ANICHIN.CARE--Oriental-Martial-Academy--2026--13-.-1080p-:e",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://odysee.com/$/embed/@anichincare:0/-ANICHIN.CARE--Oriental-Martial-Academy--2026--13-.-1080p-:e"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#18rpg6",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#18rpg6"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/3Uzc4L8qC",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/3Uzc4L8qC"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/lgybbh2tuvo7",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/lgybbh2tuvo7"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/yl9i10kql4g7",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://playmogo.com/e/yl9i10kql4g7"
       }
     ]
   },
@@ -263,75 +185,49 @@
     "date": "October 1, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=3&sig=ehJRPZHqC-8&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=3&sig=ehJRPZHqC-8&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=2&sig=6znWlBI4Kno&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=1&sig=Zr8c2XoFYZ0&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=0&sig=hAYWpeUPgIE&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=4&sig=cXZ9SoBxeDk&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=5&sig=usLJVahcgSA&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxbfnmcm.m3u8%3Fsec%3Dg4zjM6BCdfjVYEt9Pkohtd9KoWQVdIPn3fL5NHTd4rTni_o6Mq8Lg8TknGf7EMJp4ivxefeDDryvSVls43o-lw%26dmTs%3D377826%26dmV1st%3D7B733C4257914D75DAD415318093E1AB"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16000229051058",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/16000229051058"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k2r0A8kCGhHCPBKN91I",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k2r0A8kCGhHCPBKN91I"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#6wpfu8",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#6wpfu8"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/B9tKWUu--",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/B9tKWUu--"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/0m89a9jzjwjm",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/0m89a9jzjwjm"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/edqq44p3i3gs",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://playmogo.com/e/edqq44p3i3gs"
       }
     ]
   },
@@ -342,85 +238,59 @@
     "date": "September 24, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=8e0uC1HjjFY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=8e0uC1HjjFY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=nEePay0qTxQ&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=xmPV6kMgPEw&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=d7ywcQF84WY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=m2BHAFvMWPc&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=8xDsyRbEGYs&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxbce34m.m3u8%3Fsec%3DC3qwuQZH4bFXg9iqBWSXOX04Y9DNdipZh9k917E-ZimGko6ujuW6LIdPTPk8yaAP2k-I13B0_cmSbr8EgNqObg%26dmTs%3D939609%26dmV1st%3D62E06D5652BA6910396809E9136FF2FC"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15923803785906",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15923803785906"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k4YmXHYNFzWpQMKq8tw",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k4YmXHYNFzWpQMKq8tw"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7dqkl0/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7dqkl0/?pub=2li51c"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=ba03c85a-903b-4cc6-a71b-dc85c51802fd",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=ba03c85a-903b-4cc6-a71b-dc85c51802fd"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8qjvgy",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#8qjvgy"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6ab4bdc391f4e",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6ab4bdc391f4e"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/S7HXBf25T",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/S7HXBf25T"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-sodsr68mf77b.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-sodsr68mf77b.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/r6js9wcsj5eu",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/r6js9wcsj5eu"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/rvwtmr7bogie",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://playmogo.com/e/rvwtmr7bogie"
       }
     ]
   },
@@ -431,75 +301,49 @@
     "date": "September 17, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=ZLfsiWpDvMQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=ZLfsiWpDvMQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=2&sig=RcL-SpczXbs&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=1&sig=qHxqCFky7gA&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=0&sig=hCl9DRvMgtQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=4&sig=744djCgcKHU&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=5&sig=5sJcV0FfuOE&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxb8tfb2.m3u8%3Fsec%3DB5-5uOD8lmweB2dUwvgrWjppMFq6XIumhLlAOnBgXEaT0FnWOtrVSaGtDN6aePz-z3dQDjKbB_oa9MmKgn3mlA%26dmTs%3D911198%26dmV1st%3D0C6F2874BC9D549A34888842F9E9C182"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15844332800690",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15844332800690"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k6csTo88ttiQfoK0WRw",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k6csTo88ttiQfoK0WRw"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7dfljy/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7dfljy/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#b1u9rg",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#b1u9rg"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6aab7b3c82b7d",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6aab7b3c82b7d"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/duqsm2OIo",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/duqsm2OIo"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-cjjt45aidd6e.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-cjjt45aidd6e.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/sxhlzbv69a9n",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/sxhlzbv69a9n"
       }
     ]
   },
@@ -510,75 +354,49 @@
     "date": "September 10, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=o9Sqk5Q6mtk&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=o9Sqk5Q6mtk&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=lmPJky2HzKo&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=CeyJy7KuU40&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=h-rlpNDmvUI&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=_R6Ak8m24cU&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=pkn4ZVArbFw&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxb6dv36.m3u8%3Fsec%3DsyKQxS6Wi3MJ9kS0r2JDTBffZ8E4lBXGBb6-lnteDAtfMTjuyX3Vw49GWW65qIevBrbbK7UCJzX4g7oA8q7vEw%26dmTs%3D257083%26dmV1st%3D2EAF54DC3C1B3F45B8630C95B9A84E73"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15768276765362",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15768276765362"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k3wVF3qPlHxcLuJJO5Y",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k3wVF3qPlHxcLuJJO5Y"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7d512m/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7d512m/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8q5wua",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#8q5wua"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6aa23c1e16a0e",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6aa23c1e16a0e"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/R7qsJdjfR",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/R7qsJdjfR"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-frdmkn44h20w.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-frdmkn44h20w.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/yblfb3rfvtvt",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/yblfb3rfvtvt"
       }
     ]
   },
@@ -589,80 +407,54 @@
     "date": "September 3, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=9ooofpdPwxU&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=9ooofpdPwxU&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=2&sig=J1h6ST80kfo&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=1&sig=3Q0-JqQsOuE&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=0&sig=uM2A4IpOJmE&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=4&sig=-qzE451YQbo&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=5&sig=wzAPm9GmuBM&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
-          }
-        ]
+        "name": "Dailymotion (Proxy)",
+        "type": "hls",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=https%3A%2F%2Fcdndirector.dailymotion.com%2Fcdn%2Fmanifest%2Fvideo%2Fxb3iey6.m3u8%3Fsec%3DN-YVVyYuNZua_XMSC-_ZK-nUlW-1dXisOcCilcne-dBaem4NyHNVrxSPo6S-8Kb-Tch9f5zgdCj1lT5EyBjePg%26dmTs%3D39249%26dmV1st%3DF16C8704089C66FEE481E329543ED041"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15696563997362",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15696563997362"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k5djMZnpEl5mvIJpyvs",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k5djMZnpEl5mvIJpyvs"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7cub7o/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7cub7o/?pub=2li51c"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=4f4896fa-d920-41c1-a513-cfbc5ab0fbf8",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=4f4896fa-d920-41c1-a513-cfbc5ab0fbf8"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#cki69z",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#cki69z"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a991c3e09e16",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a991c3e09e16"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/uXBh--1Fx",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/uXBh--1Fx"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-esgadoankw7t.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-esgadoankw7t.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/gjy6n96km439",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/gjy6n96km439"
       }
     ]
   },
@@ -673,80 +465,49 @@
     "date": "August 27, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=2wV2fvzad5g&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=2wV2fvzad5g&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=cfRsAyp-uuA&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=6Hq2dEovAcI&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=NP3JKmnyv38&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=Zw2jyf_eVyQ&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=msL9_yfhaNk&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
-          }
-        ]
-      },
-      {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15617906248370",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15617906248370"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k57pY9OHgsjV2CJ8XHo",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k57pY9OHgsjV2CJ8XHo"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7cj9d6/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7cj9d6/?pub=2li51c"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=aa769226-be96-4fc5-af27-3f4c437b2412",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=aa769226-be96-4fc5-af27-3f4c437b2412"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8qifvj",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#8qifvj"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a8fc0d9c0ecd",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a8fc0d9c0ecd"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/KxA0889oh",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/KxA0889oh"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-j45qigzlpeub.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-j45qigzlpeub.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/dsuca8okgkbl",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/dsuca8okgkbl"
       }
     ]
   },
@@ -757,65 +518,34 @@
     "date": "August 20, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=3&sig=IpC7XKbg2KE&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=3&sig=IpC7XKbg2KE&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=2&sig=4RpN0JKAj0c&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=1&sig=2dXTytv4M04&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=0&sig=DFIucgV_QT8&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=4&sig=qX6ViXzXr94&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=5&sig=0R0VtTPTGHc&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
-          }
-        ]
-      },
-      {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15544854907570",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15544854907570"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k1Xt5AKESZV3I4IVocW",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k1Xt5AKESZV3I4IVocW"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7c8fae/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7c8fae/?pub=2li51c"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/xvlcr4zubeu8",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/xvlcr4zubeu8"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-xax2lfxk3htp.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-xax2lfxk3htp.html"
       },
       {
         "name": "Turbo VIPlay",
-        "link": "https://turbovidhls.com/t/6a868a6621d35",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a868a6621d35"
       }
     ]
   },
@@ -826,80 +556,49 @@
     "date": "August 13, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=IHeMBuWQpTM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=IHeMBuWQpTM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=2&sig=XqOMv0Bx4hY&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=1&sig=5Sm7QcXgHDM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=0&sig=R9HUFWheqUo&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=4&sig=44rtlMRxF8I&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=5&sig=mecCdqQiejQ&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
-          }
-        ]
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/kWGB72XQAAhn2XII0fE",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/kWGB72XQAAhn2XII0fE"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15470603406002",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15470603406002"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7bx6oq/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7bx6oq/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#oezzfb",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#oezzfb"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=c71d25f1-6eef-48c3-9bda-91c61138cf92",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=c71d25f1-6eef-48c3-9bda-91c61138cf92"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a7d4e85eac25",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a7d4e85eac25"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/8EWNIaWsR",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://player.abyssplayer.com/8EWNIaWsR"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-q9i5u27czzf7.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-q9i5u27czzf7.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/8ko3hudasovm",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/8ko3hudasovm"
       }
     ]
   },
@@ -910,80 +609,49 @@
     "date": "August 6, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=3&sig=8_8Twt8GAJA&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=3&sig=8_8Twt8GAJA&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=2&sig=nd2Qpmv0DnU&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=1&sig=afknUG1I3cI&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=0&sig=iFrWiy8HTZI&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=4&sig=cpLSXtOJ1PQ&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=5&sig=KzEIVU-cG4k&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
-          }
-        ]
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k1DNibkEul5nJQItwEG",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k1DNibkEul5nJQItwEG"
       },
       {
         "name": "OKru",
-        "link": "https://ok.ru/videoembed/15395855665842",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15395855665842"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7blwjm/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7blwjm/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#z6qlrp",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#z6qlrp"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=66fbb0a3-ba2f-47e3-a102-e20b0b4abe8d",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=66fbb0a3-ba2f-47e3-a102-e20b0b4abe8d"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a74056384d1a",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a74056384d1a"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://play.abyssplayer.com/fAfbDP0tqD",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.abyssplayer.com/fAfbDP0tqD"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-ky171ej9qvg3.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-ky171ej9qvg3.html"
       },
       {
         "name": "Vidhide [ADS]",
-        "link": "https://morencius.com/embed/abd73vxdh7h9",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/abd73vxdh7h9"
       }
     ]
   },
@@ -994,75 +662,44 @@
     "date": "July 30, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=6rBGxrAjxNs&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=6rBGxrAjxNs&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=2&sig=j4ujV5yxxVE&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=1&sig=h1lSlZmctqo&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=0&sig=m3MQ1zXH2e8&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=4&sig=UWak9qkT7PE&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=5&sig=RpfqUH2fBDM&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
-          }
-        ]
-      },
-      {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15320426810034",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15320426810034"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k75G2IEaaZrOp9Ig0dk",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k75G2IEaaZrOp9Ig0dk"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7baad6/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7baad6/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#noiot8",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#noiot8"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://play.abyssplayer.com/YHygkRQnG",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.abyssplayer.com/YHygkRQnG"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/8rmvo2w4h835",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/8rmvo2w4h835"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-uqc25cmli3rv.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-uqc25cmli3rv.html"
       },
       {
         "name": "Turbo VIPlay",
-        "link": "https://turbovidhls.com/t/6a6ad6c533401",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a6ad6c533401"
       }
     ]
   },
@@ -1073,75 +710,44 @@
     "date": "July 23, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=3&sig=qnxm0PUkIFE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=3&sig=qnxm0PUkIFE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=2&sig=UD9T_dfkQhE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=1&sig=Dh96oXJ1Vhg&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=0&sig=Bh7m5rA57cI&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=4&sig=KJssPJFXwd8&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=5&sig=VMCpqplvIAI&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
-          }
-        ]
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k1uUVlYbm6jyGSI29um",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k1uUVlYbm6jyGSI29um"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15243516578482",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15243516578482"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7ay8ro/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7ay8ro/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#qx5iym",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#qx5iym"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a6198e340789",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a6198e340789"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/3Jx3X7AeW",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://abyssplayer.com/3Jx3X7AeW"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-6dkd34bvod1m.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-6dkd34bvod1m.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/evov3cqjj9iq",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/evov3cqjj9iq"
       }
     ]
   },
@@ -1152,85 +758,54 @@
     "date": "July 16, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=3&sig=M_duEuHPfgo&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=3&sig=M_duEuHPfgo&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=2&sig=vUPJTyyjTrI&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=1&sig=3u9uItHCG1g&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=0&sig=RgIGdjsA3K4&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=4&sig=A1qTU5eH1bQ&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=5&sig=M7zClgkIjTY&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
-          }
-        ]
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k1WQ28CcoV7T20HPJSi",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k1WQ28CcoV7T20HPJSi"
       },
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15166446832306",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15166446832306"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7amigw/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7amigw/?pub=2li51c"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=3f199347-9f1d-40b5-9791-fc4198dce23b",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=3f199347-9f1d-40b5-9791-fc4198dce23b"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/i17EaUaDi",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://abyssplayer.com/i17EaUaDi"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#9gklvp",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#9gklvp"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-yyy2m7ccu1z1.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-yyy2m7ccu1z1.html"
       },
       {
         "name": "Doods [ADS]",
-        "link": "https://pixeldrain.com/u/pJuYjkuF?embed",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://pixeldrain.com/u/pJuYjkuF?embed"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/v5avrrumufmf",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/v5avrrumufmf"
       },
       {
         "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a587e43af547",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a587e43af547"
       }
     ]
   },
@@ -1241,80 +816,49 @@
     "date": "July 16, 2026",
     "servers": [
       {
-        "name": "dfplayer",
-        "type": "direct",
-        "link": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=3&sig=m65kx6Kx0t4&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546",
-        "qualities": [
-          {
-            "resolution": "720p",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=3&sig=m65kx6Kx0t4&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          },
-          {
-            "resolution": "480p",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=2&sig=KdCQCtLfXBw&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          },
-          {
-            "resolution": "360p",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=1&sig=SOeEO5nuknY&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          },
-          {
-            "resolution": "240p",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=0&sig=RL5a9UK1p7k&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          },
-          {
-            "resolution": "mobile",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=4&sig=RkNP-mq875w&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          },
-          {
-            "resolution": "full",
-            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=5&sig=N-IGrlz7BBI&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
-          }
-        ]
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://www.dailymotion.com/embed/video/k5ttYDFgrwNGV9HPxLs",
-        "type": "iframe"
+        "name": "Dailymotion [ADS]",
+        "type": "iframe",
+        "link": "https://www.dailymotion.com/embed/video/k5ttYDFgrwNGV9HPxLs"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15165220194994",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://ok.ru/videoembed/15165220194994"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7amaa6/?pub=2li51c",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rumble.com/embed/v7amaa6/?pub=2li51c"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#htvwc1",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://anichin.rpmvid.com/#htvwc1"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=48bb1adb-f5af-4ab6-a706-fc2656a4241b",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://play.d.tube/?v=48bb1adb-f5af-4ab6-a706-fc2656a4241b"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a585b8511cb9",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://turbovidhls.com/t/6a585b8511cb9"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/4CKIqTytN",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://abyssplayer.com/4CKIqTytN"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-w27yh54rl91t.html",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://rubyvidhub.com/embed-w27yh54rl91t.html"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/bl7ckzrndcz1",
-        "type": "iframe"
+        "type": "iframe",
+        "link": "https://morencius.com/embed/bl7ckzrndcz1"
       }
     ]
   }
