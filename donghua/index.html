@@ -66,13 +66,13 @@
 
           <!-- Mode 2: Iframe Embed (Sandbox Ketat: Anti-Popup & Anti-Redirect) -->
           <iframe 
-            id="videoIframe" 
-            src="" 
-            class="hidden w-full h-full border-0" 
-            allowfullscreen 
-            sandbox="allow-forms allow-scripts allow-same-origin allow-presentation"
-            referrerpolicy="no-referrer"
-          ></iframe>
+  id="videoIframe" 
+  src="" 
+  class="w-full h-full border-0" 
+  allowfullscreen 
+  sandbox="allow-forms allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
+></iframe>
+
 
           <!-- Placeholder -->
           <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
