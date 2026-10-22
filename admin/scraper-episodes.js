@@ -7,10 +7,7 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-const CONCURRENCY = 3; // 3 tab bersamaan agar hemat memori runner
-
-// URL Cloudflare Worker aktif milikmu
-const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
+const CONCURRENCY = 3;
 
 function resolveUrl(url) {
   if (!url) return '';
@@ -46,49 +43,15 @@ function extractCleanUrl(rawVal) {
   return processed.startsWith('http') ? processed : '';
 }
 
-// Ekstrak direct link IPFS dari D-Tube
-async function extractDTubeDirect(dTubeUrl) {
-  try {
-    const parsed = new URL(dTubeUrl);
-    const videoId = parsed.searchParams.get('v');
-    if (!videoId) return null;
+function formatServerName(name, link) {
+  const l = link.toLowerCase();
+  const n = name.toLowerCase();
 
-    try {
-      const apiRes = await fetch(`https://avalon.d.tube/content/dtube/${videoId}`, { signal: AbortSignal.timeout(5000) });
-      if (apiRes.ok) {
-        const json = await apiRes.json();
-        const hash = json?.json?.video?.content?.src || json?.json?.video?.content?.video480hash || json?.json?.video?.ipfs;
-        if (hash) {
-          return `https://ipfs.io/ipfs/${hash}`;
-        }
-      }
-    } catch (_) {}
-
-    const res = await fetch(dTubeUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
-      signal: AbortSignal.timeout(5000)
-    });
-    const html = await res.text();
-    const hashMatch = html.match(/(?:Qm[1-9A-HJ-NP-Za-km-z]{44}|bafy[a-z0-9]{55})/);
-    if (hashMatch) {
-      return `https://ipfs.io/ipfs/${hashMatch[0]}`;
-    }
-
-    return null;
-  } catch (_) {
-    return null;
-  }
-}
-
-// Ekstrak ID Dailymotion
-function extractDailymotionId(url) {
-  const nunaMatch = url.match(/[?&]video=([a-zA-Z0-9]+)/);
-  if (nunaMatch) return nunaMatch[1];
-
-  const dmMatch = url.match(/(?:video\/|embed\/video\/|dailymotion\.com\/)([a-zA-Z0-9]+)/);
-  if (dmMatch) return dmMatch[1];
-
-  return null;
+  if (l.includes('ok.ru') || n.includes('ok.ru') || n.includes('okru')) return 'OK.ru';
+  if (l.includes('d.tube') || n.includes('d.tube') || n.includes('dtube')) return 'D-Tube';
+  if (l.includes('dailymotion.com') || n.includes('dailymotion')) return 'Dailymotion';
+  if (l.includes('blogger.com') || l.includes('blogspot') || n.includes('archive')) return 'Archive';
+  return name;
 }
 
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
@@ -105,7 +68,6 @@ async function setupPageConfig(page) {
   );
   await page.setRequestInterception(true);
   page.on('request', (req) => {
-    // Blokir asset berat agar hemat RAM dan bandwidth
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
       req.abort();
     } else {
@@ -115,98 +77,75 @@ async function setupPageConfig(page) {
 }
 
 async function scrapeSingleEpisode(page, ep) {
-  const rawServers = [];
+  const servers = [];
 
   try {
     await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
     const content = await page.content();
     const $$ = cheerio.load(content);
 
+    // 1. Ekstrak dari Select Dropdown
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
       const val = o.attr('value') || '';
+
       if (name && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(val);
-        if (cleanLink && !rawServers.some((s) => s.link === cleanLink)) {
-          rawServers.push({ name, link: cleanLink });
+        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          servers.push({ name: formatServerName(name, cleanLink), link: cleanLink });
         }
       }
     });
 
+    // 2. Ekstrak dari Tombol Tab Mirror
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
       const rawHref = el.attr('href') || el.attr('data-embed') || '';
+
       if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(rawHref);
-        if (cleanLink && !rawServers.some((s) => s.link === cleanLink)) {
-          rawServers.push({ name, link: cleanLink });
+        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          servers.push({ name: formatServerName(name, cleanLink), link: cleanLink });
         }
       }
     });
 
+    // 3. Ekstrak iframe bawaan halaman
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
-      if (cleanIframe && !rawServers.some((s) => s.link === cleanIframe)) {
-        rawServers.unshift({ name: 'Default', link: cleanIframe });
+      if (cleanIframe && !servers.some((s) => s.link === cleanIframe)) {
+        servers.unshift({ name: formatServerName('Default', cleanIframe), link: cleanIframe });
       }
     }
 
-    const finalServers = [];
+    // Urutkan: OK.ru (ke-1) -> D-Tube (ke-2) -> sisanya
+    const okruServers = [];
+    const dtubeServers = [];
+    const otherServers = [];
 
-    // Prioritas 1: D-Tube langsung ke dfplayer
-    const dtubeItem = rawServers.find((s) => s.link.includes('d.tube') || s.name.toLowerCase().includes('d-tube'));
-    if (dtubeItem) {
-      const directUrl = await extractDTubeDirect(dtubeItem.link);
-      if (directUrl) {
-        finalServers.push({
-          name: 'dfplayer (HD)',
-          type: 'direct',
-          link: directUrl
-        });
+    for (const s of servers) {
+      if (s.name === 'OK.ru' || s.link.includes('ok.ru')) {
+        s.name = 'OK.ru';
+        okruServers.push(s);
+      } else if (s.name === 'D-Tube' || s.link.includes('d.tube')) {
+        s.name = 'D-Tube';
+        dtubeServers.push(s);
       } else {
-        finalServers.push({
-          name: 'dfplayer (DTube)',
-          type: 'iframe',
-          link: dtubeItem.link
-        });
+        otherServers.push(s);
       }
     }
 
-    // Prioritas 2: Dailymotion lewat Cloudflare Worker anti-403
-    const dailyItem = rawServers.find(
-      (s) => s.link.includes('dailymotion.com') || s.link.includes('nunadrama') || s.name.toLowerCase().includes('dailymotion')
-    );
-    if (dailyItem) {
-      const dmId = extractDailymotionId(dailyItem.link);
-      if (dmId) {
-        finalServers.push({
-          name: 'Dailymotion (Fast)',
-          type: 'iframe',
-          link: `${DM_WORKER_URL}${dmId}`
-        });
-      }
-    }
-
-    // Server fallback
-    for (const s of rawServers) {
-      if (!s.link.includes('d.tube') && !s.link.includes('dailymotion.com') && !s.link.includes('nunadrama')) {
-        finalServers.push({
-          name: s.name,
-          type: 'iframe',
-          link: s.link
-        });
-      }
-    }
+    const sortedServers = [...okruServers, ...dtubeServers, ...otherServers];
 
     return {
       episode: ep.epNum,
       title: ep.title,
       link: ep.link,
       date: ep.date,
-      servers: finalServers
+      servers: sortedServers
     };
   } catch (err) {
     console.warn(`Gagal parse episode ${ep.epNum}: ${err.message}`);
@@ -313,7 +252,7 @@ async function run() {
 
   console.log(`Total episode yang ditemukan: ${episodeQueue.length}`);
 
-  // Buat Worker Pool Tab Tetap (Reusable Tabs)
+  // Reusable tab worker pool untuk menghemat RAM runner
   const workerTabs = [];
   for (let i = 0; i < CONCURRENCY; i++) {
     const p = await browser.newPage();
@@ -334,10 +273,8 @@ async function run() {
     }
   }
 
-  // Jalankan worker pool secara paralel
   await Promise.all(workerTabs.map((p) => worker(p)));
 
-  // Tutup semua tab dan browser setelah selesai
   for (const p of workerTabs) {
     await p.close().catch(() => {});
   }
