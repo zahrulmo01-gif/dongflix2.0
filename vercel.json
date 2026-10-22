@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/donghua/:slug",
+      "destination": "/donghua/index.html"
+    }
+  ]
+}
