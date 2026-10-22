@@ -7,13 +7,44 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-const CONCURRENCY = 5; // Membuka 5 halaman episode bersamaan
+const CONCURRENCY = 5;
 
 function resolveUrl(url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('//')) return `https:${url}`;
   return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+// Helper ekstrak URL bersih dari value base64, iframe tag, atau link biasa
+function extractCleanUrl(rawVal) {
+  if (!rawVal || rawVal === '0') return '';
+
+  let processed = rawVal.trim();
+
+  // Ekstrak jika format HTML iframe langsung
+  const directIframeMatch = processed.match(/src=["'](.*?)["']/i);
+  if (directIframeMatch && directIframeMatch[1]) {
+    processed = directIframeMatch[1];
+  } else if (!processed.startsWith('http') && processed.length > 20) {
+    // Decode jika berupa base64 string
+    try {
+      const decoded = Buffer.from(processed, 'base64').toString('utf-8');
+      const srcMatch = decoded.match(/src=["'](.*?)["']/i);
+      if (srcMatch && srcMatch[1]) {
+        processed = srcMatch[1];
+      } else if (decoded.startsWith('http') || decoded.startsWith('//')) {
+        processed = decoded;
+      }
+    } catch (_) {}
+  }
+
+  // Normalisasi protocol
+  if (processed.startsWith('//')) {
+    processed = `https:${processed}`;
+  }
+
+  return processed.startsWith('http') ? processed : '';
 }
 
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
@@ -24,7 +55,6 @@ if (!rawSlug) {
 
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
-// Setup tab cepat (blokir CSS, gambar, font, tracker iklan)
 async function createFastPage(browser) {
   const page = await browser.newPage();
   await page.setUserAgent(
@@ -41,7 +71,6 @@ async function createFastPage(browser) {
   return page;
 }
 
-// Scrape satu halaman episode untuk mengambil list server
 async function scrapeEpisodeServers(browser, ep) {
   const page = await createFastPage(browser);
   const servers = [];
@@ -49,40 +78,14 @@ async function scrapeEpisodeServers(browser, ep) {
   try {
     await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 20000 });
     const content = await page.content();
-    const $$ = cheerio.load(content);
-
-    // 1. Dropdown select option player
-    $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
-      const o = $$(opt);
-      const name = o.text().trim();
-      let val = o.attr('value') || '';
-
-      if (name && !name.toLowerCase().includes('pilih server') && val && val !== '0') {
-        if (!val.startsWith('http') && val.length > 25) {
-          try {
-            const decoded = Buffer.from(val, 'base64').toString('utf-8');
-            const srcMatch = decoded.match(/src=["'](.*?)["']/);
-            if (srcMatch && srcMatch[1]) val = srcMatch[1];
-          } catch (_) {}
-        }
-        servers.push({ name, link: val });
+    const $$ = cheerio.load(content);      // 1. Dropdown select option player $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
+      const o = $$(opt); const name = o.text().trim(); const val = o.attr('value') \vert{}\vert{} '';        if (name && !name.toLowerCase().includes('pilih server')) { const cleanLink = extractCleanUrl(val); if (cleanLink && !servers.some((s) => s.link === cleanLink)) { servers.push({ name, link: cleanLink }); } } });      // 2. Tab server / link button $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
+      const el = $$(a); const name = el.text().trim(); const rawHref = el.attr('href') \vert{}\vert{} el.attr('data-embed') \vert{}\vert{} ''; if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) { const cleanLink = extractCleanUrl(rawHref); if (cleanLink && !servers.some((s) => s.link === cleanLink)) { servers.push({ name, link: cleanLink }); } } });      // 3. Iframe aktif bawaan const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
+    if (defaultIframe) {
+      const cleanIframe = extractCleanUrl(defaultIframe);
+      if (cleanIframe && !servers.some((s) => s.link === cleanIframe)) {
+        servers.unshift({ name: 'Default Server', link: cleanIframe });
       }
-    });
-
-    // 2. Tab mirror / button player
-    $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
-      const el = $$(a);
-      const name = el.text().trim();
-      const href = el.attr('href') || el.attr('data-embed') || '';
-      if (name && href && href !== '#' && !servers.some((s) => s.name === name)) {
-        servers.push({ name, link: href });
-      }
-    });
-
-    // 3. Iframe aktif di halaman
-    const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
-    if (defaultIframe && !servers.some((s) => s.link === defaultIframe)) {
-      servers.unshift({ name: 'Default Server', link: defaultIframe });
     }
 
     return {
@@ -106,7 +109,6 @@ async function scrapeEpisodeServers(browser, ep) {
   }
 }
 
-// Update field 'latest-episode' di donghua/donghua.json
 function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) return;
@@ -119,7 +121,7 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
     for (const item of donghuaList) {
       if (item.slug === slug) {
         item['latest-episode'] = latestEpisodeValue;
-        item.episode = latestEpisodeValue; // Sekaligus update field episode utama
+        item.episode = latestEpisodeValue;
         updated = true;
         break;
       }
@@ -127,10 +129,10 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 
     if (updated) {
       fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-      console.log(`Berhasil update "latest-episode": "${latestEpisodeValue}" untuk slug [${slug}] di donghua.json`);
+      console.log(`Update latest-episode: "${latestEpisodeValue}" untuk [${slug}]`);
     }
   } catch (err) {
-    console.error('Gagal memperbarui donghua.json:', err.message);
+    console.error('Gagal update donghua.json:', err.message);
   }
 }
 
@@ -170,7 +172,7 @@ async function run() {
         break;
       }
     } catch (e) {
-      console.log(`URL ${url} gagal diakses: ${e.message}`);
+      console.log(`Gagal akses ${url}: ${e.message}`);
     }
   }
 
@@ -212,11 +214,9 @@ async function run() {
     return;
   }
 
-  // Episode pertama di daftar teratas adalah episode terbaru
   const latestEpisodeFound = episodeQueue[0].epNum || '1';
-
-  // Eksekusi paralel per batch (5 episode sekaligus)
   const allDetailedEpisodes = [];
+
   for (let i = 0; i < episodeQueue.length; i += CONCURRENCY) {
     const chunk = episodeQueue.slice(i, i + CONCURRENCY);
     const chunkPromises = chunk.map((ep) => scrapeEpisodeServers(browser, ep));
@@ -227,15 +227,13 @@ async function run() {
 
   await browser.close();
 
-  // 1. Simpan detail server ke donghua/episodes/{slug}.json
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
   const outFile = path.join(outDir, `${cleanSlug}.json`);
   fs.writeFileSync(outFile, JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
-  console.log(`SUKSES! File episode tersimpan di: ${outFile}`);
+  console.log(`SUKSES! File tersimpan di: ${outFile}`);
 
-  // 2. Simpan nilai episode terbaru ke donghua/donghua.json
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
 }
 
