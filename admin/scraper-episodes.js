@@ -10,7 +10,7 @@ const BASE_URL = 'https://anichin.moe';
 const CONCURRENCY = 5;
 
 // URL Cloudflare Worker aktif milikmu
-const CF_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?url=';
+const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
 function resolveUrl(url) {
   if (!url) return '';
@@ -43,65 +43,53 @@ function extractCleanUrl(rawVal) {
     processed = `https:${processed}`;
   }
 
-  if (processed.includes('nunadrama.sbs') || processed.includes('player.nunadrama')) {
-    const videoIdMatch = processed.match(/[?&]video=([a-zA-Z0-9]+)/);
-    if (videoIdMatch && videoIdMatch[1]) {
-      return `https://www.dailymotion.com/embed/video/${videoIdMatch[1]}`;
-    }
-  }
-
   return processed.startsWith('http') ? processed : '';
 }
 
-// 1. Ekstraksi D-Tube langsung ke gateway IPFS
+// Ekstrak direct link IPFS dari D-Tube
 async function extractDTubeDirect(dTubeUrl) {
   try {
-    const videoId = new URL(dTubeUrl).searchParams.get('v');
+    const parsed = new URL(dTubeUrl);
+    const videoId = parsed.searchParams.get('v');
     if (!videoId) return null;
 
+    // 1. Coba ambil metadata blockchain avalon
+    try {
+      const apiRes = await fetch(`https://avalon.d.tube/content/dtube/${videoId}`);
+      if (apiRes.ok) {
+        const json = await apiRes.json();
+        const hash = json?.json?.video?.content?.src || json?.json?.video?.content?.video480hash || json?.json?.video?.ipfs;
+        if (hash) {
+          return `https://ipfs.io/ipfs/${hash}`;
+        }
+      }
+    } catch (_) {}
+
+    // 2. Fallback baca teks HTML
     const res = await fetch(dTubeUrl, {
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36' }
     });
     const html = await res.text();
-
     const hashMatch = html.match(/(?:Qm[1-9A-HJ-NP-Za-km-z]{44}|bafy[a-z0-9]{55})/);
     if (hashMatch) {
       return `https://ipfs.io/ipfs/${hashMatch[0]}`;
     }
 
-    const mp4Match = html.match(/https?:\/\/[^"']+\.mp4/);
-    if (mp4Match) {
-      return mp4Match[0];
-    }
-
     return null;
   } catch (_) {
     return null;
   }
 }
 
-// 2. Ekstraksi Dailymotion lewat API Metadata resmi
-async function extractDailymotionM3u8(rawUrl) {
-  try {
-    let videoId = null;
-    const nunadramaMatch = rawUrl.match(/[?&]video=([a-zA-Z0-9]+)/);
-    const directMatch = rawUrl.match(/\/video\/([a-zA-Z0-9]+)/);
+// Ekstrak video ID Dailymotion
+function extractDailymotionId(url) {
+  const nunaMatch = url.match(/[?&]video=([a-zA-Z0-9]+)/);
+  if (nunaMatch) return nunaMatch[1];
 
-    if (nunadramaMatch) videoId = nunadramaMatch[1];
-    else if (directMatch) videoId = directMatch[1];
+  const dmMatch = url.match(/(?:video\/|embed\/video\/|dailymotion\.com\/)([a-zA-Z0-9]+)/);
+  if (dmMatch) return dmMatch[1];
 
-    if (!videoId) return null;
-
-    const res = await fetch(`https://www.dailymotion.com/player/metadata/video/${videoId}`, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36' }
-    });
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    return data?.qualities?.auto?.[0]?.url || null;
-  } catch (_) {
-    return null;
-  }
+  return null;
 }
 
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
@@ -137,7 +125,7 @@ async function scrapeEpisodeServers(browser, ep) {
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // Ambil dari Select Dropdown
+    // Ambil opsi Select Dropdown
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
@@ -150,7 +138,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
-    // Ambil dari Tombol Mirror Tab
+    // Ambil link Mirror Tab
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -163,41 +151,60 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
+    // Iframe bawaan halaman
+    const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
+    if (defaultIframe) {
+      const cleanIframe = extractCleanUrl(defaultIframe);
+      if (cleanIframe && !rawServers.some((s) => s.link === cleanIframe)) {
+        rawServers.unshift({ name: 'Default', link: cleanIframe });
+      }
+    }
+
     const finalServers = [];
 
-    // Prioritas 1: D-Tube langsung untuk dfplayer (Native MP4)
+    // 1. Ekstrak D-Tube untuk dfplayer
     const dtubeItem = rawServers.find((s) => s.link.includes('d.tube') || s.name.toLowerCase().includes('d-tube'));
     if (dtubeItem) {
-      const directDTube = await extractDTubeDirect(dtubeItem.link);
-      if (directDTube) {
+      const directUrl = await extractDTubeDirect(dtubeItem.link);
+      if (directUrl) {
         finalServers.push({
-          name: 'dfplayer (D-Tube)',
+          name: 'dfplayer (HD)',
           type: 'direct',
-          link: directDTube
+          link: directUrl
         });
-      }
-    }
-
-    // Prioritas 2: Dailymotion lewat Cloudflare Worker (.m3u8 HLS)
-    const dailyItem = rawServers.find((s) => s.link.includes('dailymotion.com') || s.name.toLowerCase().includes('dailymotion'));
-    if (dailyItem) {
-      const directM3u8 = await extractDailymotionM3u8(dailyItem.link);
-      if (directM3u8) {
+      } else {
         finalServers.push({
-          name: 'Dailymotion (Proxy)',
-          type: 'hls',
-          link: `${CF_WORKER_URL}${encodeURIComponent(directM3u8)}`
+          name: 'dfplayer (DTube)',
+          type: 'iframe',
+          link: dtubeItem.link
         });
       }
     }
 
-    // Server fallback (Iframe standar dengan sandbox)
+    // 2. Ekstrak Dailymotion lewat Cloudflare Worker anti-403
+    const dailyItem = rawServers.find(
+      (s) => s.link.includes('dailymotion.com') || s.link.includes('nunadrama') || s.name.toLowerCase().includes('dailymotion')
+    );
+    if (dailyItem) {
+      const dmId = extractDailymotionId(dailyItem.link);
+      if (dmId) {
+        finalServers.push({
+          name: 'Dailymotion (Fast)',
+          type: 'iframe',
+          link: `${DM_WORKER_URL}${dmId}`
+        });
+      }
+    }
+
+    // 3. Masukkan server fallback lainnya
     for (const s of rawServers) {
-      finalServers.push({
-        name: s.name,
-        type: 'iframe',
-        link: s.link
-      });
+      if (!s.link.includes('d.tube') && !s.link.includes('dailymotion.com') && !s.link.includes('nunadrama')) {
+        finalServers.push({
+          name: s.name,
+          type: 'iframe',
+          link: s.link
+        });
+      }
     }
 
     return {
@@ -234,7 +241,7 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 }
 
 async function run() {
-  console.log(`=== Scrape Episode Turbo: ${cleanSlug} ===`);
+  console.log(`=== Memulai Scrape: ${cleanSlug} ===`);
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -298,7 +305,7 @@ async function run() {
     const chunk = episodeQueue.slice(i, i + CONCURRENCY);
     const results = await Promise.all(chunk.map((ep) => scrapeEpisodeServers(browser, ep)));
     allDetailedEpisodes.push(...results);
-    console.log(`Proses episode: ${allDetailedEpisodes.length}/${episodeQueue.length}`);
+    console.log(`Episode diproses: ${allDetailedEpisodes.length}/${episodeQueue.length}`);
   }
 
   await browser.close();
@@ -308,7 +315,7 @@ async function run() {
 
   fs.writeFileSync(path.join(outDir, `${cleanSlug}.json`), JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
-  console.log(`Selesai! File tersimpan di donghua/episodes/${cleanSlug}.json`);
+  console.log(`Selesai! Berhasil disimpan di donghua/episodes/${cleanSlug}.json`);
 }
 
 run();
