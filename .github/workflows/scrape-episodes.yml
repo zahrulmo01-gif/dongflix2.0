@@ -1,0 +1,39 @@
+name: Scrape Donghua Episodes
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Slug Donghua yang akan discrape'
+        required: true
+        default: 'my-senior-brother-is-too-steady'
+
+jobs:
+  scrape-episodes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Jalankan Scraper Episode
+        env:
+          TARGET_SLUG: ${{ github.event.inputs.slug }}
+        run: node admin/scraper-episodes.js
+
+      - name: Commit Hasil Episode JSON
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add donghua/episodes/
+          git diff --staged --quiet || (git commit -m "chore: update episodes for ${{ github.event.inputs.slug }} [skip ci]" && git push)
