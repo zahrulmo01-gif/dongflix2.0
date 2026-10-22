@@ -6,13 +6,44 @@
     "date": "October 22, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=IAirNjTvMq0&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=IAirNjTvMq0&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=X1wD03Ej9x8&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=qE86N6jv7-E&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=vPk6CWp37hU&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=-8ARf-oTHho&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217793&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=xB85vRZ11Mg&ct=0&urls=95.163.35.7%3B178.237.23.11&clientType=0&zs=43&id=18417966189234"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/16237016648370",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k2Szp7cWpoBWSgM0lWm&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k2Szp7cWpoBWSgM0lWm",
         "type": "iframe"
       },
       {
@@ -59,13 +90,44 @@
     "date": "October 15, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=9X7Opj6qqCE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=9X7Opj6qqCE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=IMkPZv_qrLE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=TZp3nvYsyDA&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=jvhfRMlrP-w&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=YMQj2Oxcls0&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791218810&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=BmC3yoTyPbE&ct=0&urls=185.226.55.43%3B95.163.35.113&clientType=0&zs=43&id=18282026830514&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/16157734603442",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k4vT8Oe5cXffQ4LGE1M&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k4vT8Oe5cXffQ4LGE1M",
         "type": "iframe"
       },
       {
@@ -117,13 +179,44 @@
     "date": "October 8, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=3&sig=F9MiyzchlIs&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=3&sig=F9MiyzchlIs&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=2&sig=JnVRCcMag1g&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=1&sig=kfYg_fPDVb8&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=0&sig=KZLab3YjRnc&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=4&sig=xKwm0T5AFWw&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-14.vkuser.net/?expires=1792791217940&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.141&type=5&sig=63jt7fA6U_c&ct=0&urls=176.112.172.20%3B185.180.203.68&clientType=0&zs=43&id=18146026982066&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/16078424967858",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1igWvItkOJFLbLfQzQ&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k1igWvItkOJFLbLfQzQ",
         "type": "iframe"
       },
       {
@@ -170,13 +263,44 @@
     "date": "October 1, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=3&sig=ehJRPZHqC-8&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=3&sig=ehJRPZHqC-8&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=2&sig=6znWlBI4Kno&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=1&sig=Zr8c2XoFYZ0&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=0&sig=hAYWpeUPgIE&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=4&sig=cXZ9SoBxeDk&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-12.vkuser.net/?expires=1792791217776&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.139&type=5&sig=usLJVahcgSA&ct=0&urls=178.237.29.66%3B185.226.55.47&clientType=0&zs=43&id=18011431635634&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/16000229051058",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k2r0A8kCGhHCPBKN91I&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k2r0A8kCGhHCPBKN91I",
         "type": "iframe"
       },
       {
@@ -218,13 +342,44 @@
     "date": "September 24, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=8e0uC1HjjFY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=8e0uC1HjjFY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=nEePay0qTxQ&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=xmPV6kMgPEw&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=d7ywcQF84WY&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=m2BHAFvMWPc&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791217972&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=8xDsyRbEGYs&ct=0&urls=185.180.203.83%3B95.163.35.16&clientType=0&zs=43&id=17879615867570&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/15923803785906",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k4YmXHYNFzWpQMKq8tw&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k4YmXHYNFzWpQMKq8tw",
         "type": "iframe"
       },
       {
@@ -276,13 +431,44 @@
     "date": "September 17, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=ZLfsiWpDvMQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=ZLfsiWpDvMQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=2&sig=RcL-SpczXbs&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=1&sig=qHxqCFky7gA&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=0&sig=hCl9DRvMgtQ&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=4&sig=744djCgcKHU&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791220412&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=5&sig=5sJcV0FfuOE&ct=0&urls=178.237.29.11%3B176.112.172.15&clientType=0&zs=43&id=17741858343602&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/15844332800690",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k6csTo88ttiQfoK0WRw&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k6csTo88ttiQfoK0WRw",
         "type": "iframe"
       },
       {
@@ -324,13 +510,44 @@
     "date": "September 10, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=o9Sqk5Q6mtk&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=o9Sqk5Q6mtk&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=lmPJky2HzKo&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=CeyJy7KuU40&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=h-rlpNDmvUI&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=_R6Ak8m24cU&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220713&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=pkn4ZVArbFw&ct=0&urls=95.163.35.2%3B176.112.172.16&clientType=0&zs=43&id=17610509060786&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/15768276765362",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k3wVF3qPlHxcLuJJO5Y&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k3wVF3qPlHxcLuJJO5Y",
         "type": "iframe"
       },
       {
@@ -372,13 +589,44 @@
     "date": "September 3, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=9ooofpdPwxU&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=3&sig=9ooofpdPwxU&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=2&sig=J1h6ST80kfo&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=1&sig=3Q0-JqQsOuE&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=0&sig=uM2A4IpOJmE&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=4&sig=-qzE451YQbo&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-2.vkuser.net/?expires=1792791221082&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.129&type=5&sig=wzAPm9GmuBM&ct=0&urls=178.237.29.130%3B95.163.35.126&clientType=0&zs=43&id=17486997031602&scl=5"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/15696563997362",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k5djMZnpEl5mvIJpyvs&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k5djMZnpEl5mvIJpyvs",
         "type": "iframe"
       },
       {
@@ -425,13 +673,44 @@
     "date": "August 27, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=2wV2fvzad5g&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=3&sig=2wV2fvzad5g&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=2&sig=cfRsAyp-uuA&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=1&sig=6Hq2dEovAcI&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=0&sig=NP3JKmnyv38&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=4&sig=Zw2jyf_eVyQ&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-7.vkuser.net/?expires=1792791220356&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.134&type=5&sig=msL9_yfhaNk&ct=0&urls=185.226.55.66%3B176.112.172.93&clientType=0&zs=43&id=17352317668018"
+          }
+        ]
+      },
+      {
         "name": "Okru",
         "link": "https://ok.ru/videoembed/15617906248370",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k57pY9OHgsjV2CJ8XHo&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k57pY9OHgsjV2CJ8XHo",
         "type": "iframe"
       },
       {
@@ -478,13 +757,44 @@
     "date": "August 20, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=3&sig=IpC7XKbg2KE&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=3&sig=IpC7XKbg2KE&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=2&sig=4RpN0JKAj0c&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=1&sig=2dXTytv4M04&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=0&sig=DFIucgV_QT8&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=4&sig=qX6ViXzXr94&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-11.vkuser.net/?expires=1792791220995&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.138&type=5&sig=0R0VtTPTGHc&ct=0&urls=178.237.23.80%3B185.180.203.79&clientType=0&zs=43&id=17225749170866"
+          }
+        ]
+      },
+      {
         "name": "OK.ru",
         "link": "https://ok.ru/videoembed/15544854907570",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1Xt5AKESZV3I4IVocW&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k1Xt5AKESZV3I4IVocW",
         "type": "iframe"
       },
       {
@@ -516,8 +826,39 @@
     "date": "August 13, 2026",
     "servers": [
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=kWGB72XQAAhn2XII0fE&autoplay=1&mute=1",
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=IHeMBuWQpTM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=IHeMBuWQpTM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=2&sig=XqOMv0Bx4hY&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=1&sig=5Sm7QcXgHDM&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=0&sig=R9HUFWheqUo&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=4&sig=44rtlMRxF8I&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791222764&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=5&sig=mecCdqQiejQ&ct=0&urls=185.226.55.54%3B178.237.23.123&clientType=0&zs=43&id=17097682913970"
+          }
+        ]
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/kWGB72XQAAhn2XII0fE",
         "type": "iframe"
       },
       {
@@ -569,8 +910,39 @@
     "date": "August 6, 2026",
     "servers": [
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1DNibkEul5nJQItwEG&autoplay=1&mute=1",
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=3&sig=8_8Twt8GAJA&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=3&sig=8_8Twt8GAJA&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=2&sig=nd2Qpmv0DnU&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=1&sig=afknUG1I3cI&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=0&sig=iFrWiy8HTZI&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=4&sig=cpLSXtOJ1PQ&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-8.vkuser.net/?expires=1792791223303&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.135&type=5&sig=KzEIVU-cG4k&ct=0&urls=176.112.172.30%3B185.226.55.46&clientType=0&zs=43&id=16967765396146"
+          }
+        ]
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k1DNibkEul5nJQItwEG",
         "type": "iframe"
       },
       {
@@ -622,13 +994,44 @@
     "date": "July 30, 2026",
     "servers": [
       {
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=6rBGxrAjxNs&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=3&sig=6rBGxrAjxNs&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=2&sig=j4ujV5yxxVE&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=1&sig=h1lSlZmctqo&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=0&sig=m3MQ1zXH2e8&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=4&sig=UWak9qkT7PE&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-9.vkuser.net/?expires=1792791224169&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.136&type=5&sig=RpfqUH2fBDM&ct=0&urls=185.180.203.91%3B185.226.55.41&clientType=0&zs=43&id=16836015033010"
+          }
+        ]
+      },
+      {
         "name": "OK.ru",
         "link": "https://ok.ru/videoembed/15320426810034",
         "type": "iframe"
       },
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k75G2IEaaZrOp9Ig0dk&autoplay=1&mute=1",
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k75G2IEaaZrOp9Ig0dk",
         "type": "iframe"
       },
       {
@@ -670,8 +1073,39 @@
     "date": "July 23, 2026",
     "servers": [
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1uUVlYbm6jyGSI29um&autoplay=1&mute=1",
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=3&sig=qnxm0PUkIFE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=3&sig=qnxm0PUkIFE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=2&sig=UD9T_dfkQhE&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=1&sig=Dh96oXJ1Vhg&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=0&sig=Bh7m5rA57cI&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=4&sig=KJssPJFXwd8&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-15.vkuser.net/?expires=1792791223220&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.142&type=5&sig=VMCpqplvIAI&ct=0&urls=95.163.35.93%3B185.226.55.43&clientType=0&zs=43&id=16701431614130"
+          }
+        ]
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k1uUVlYbm6jyGSI29um",
         "type": "iframe"
       },
       {
@@ -718,8 +1152,39 @@
     "date": "July 16, 2026",
     "servers": [
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1WQ28CcoV7T20HPJSi&autoplay=1&mute=1",
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=3&sig=M_duEuHPfgo&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=3&sig=M_duEuHPfgo&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=2&sig=vUPJTyyjTrI&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=1&sig=3u9uItHCG1g&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=0&sig=RgIGdjsA3K4&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=4&sig=A1qTU5eH1bQ&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-10.vkuser.net/?expires=1792791222859&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.137&type=5&sig=M7zClgkIjTY&ct=0&urls=185.226.55.68%3B178.237.23.72&clientType=0&zs=43&id=16565489306290"
+          }
+        ]
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k1WQ28CcoV7T20HPJSi",
         "type": "iframe"
       },
       {
@@ -776,8 +1241,39 @@
     "date": "July 16, 2026",
     "servers": [
       {
-        "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k5ttYDFgrwNGV9HPxLs&autoplay=1&mute=1",
+        "name": "dfplayer",
+        "type": "direct",
+        "link": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=3&sig=m65kx6Kx0t4&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546",
+        "qualities": [
+          {
+            "resolution": "720p",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=3&sig=m65kx6Kx0t4&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          },
+          {
+            "resolution": "480p",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=2&sig=KdCQCtLfXBw&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          },
+          {
+            "resolution": "360p",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=1&sig=SOeEO5nuknY&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          },
+          {
+            "resolution": "240p",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=0&sig=RL5a9UK1p7k&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          },
+          {
+            "resolution": "mobile",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=4&sig=RkNP-mq875w&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          },
+          {
+            "resolution": "full",
+            "url": "https://ok6-13.vkuser.net/?expires=1792791225428&srcIp=57.154.5.34&pr=10&srcAg=CHROME&ms=95.142.206.140&type=5&sig=N-IGrlz7BBI&ct=0&urls=95.163.35.21%3B185.226.55.56&clientType=0&zs=43&id=16563442682546"
+          }
+        ]
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://www.dailymotion.com/embed/video/k5ttYDFgrwNGV9HPxLs",
         "type": "iframe"
       },
       {
