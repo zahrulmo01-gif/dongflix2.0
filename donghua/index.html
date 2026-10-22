@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
   
   <title id="metaTitle">Koleksi Donghua - Dongflix</title>
   <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru dengan kualitas HD gratis di Dongflix.">
@@ -43,7 +44,7 @@
       </div>
     </header>
 
-    <!-- ================= VIEW 1: PLAYER & DETAIL (/donghua/:slug) ================= -->
+    <!-- VIEW 1: PLAYER & DETAIL (/donghua/:slug) -->
     <section id="detailView" class="hidden space-y-6">
       <div>
         <a href="/donghua/" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1.5 font-medium">
@@ -51,7 +52,7 @@
         </a>
       </div>
 
-      <!-- Video Player Screen -->
+      <!-- Player Frame -->
       <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         <div class="aspect-video w-full bg-black relative">
           <iframe 
@@ -59,30 +60,29 @@
             src="" 
             class="w-full h-full border-0" 
             allowfullscreen 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            sandbox="allow-forms allow-scripts allow-same-origin allow-presentation"
+            referrerpolicy="no-referrer"
           ></iframe>
           <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
-            <p class="text-sm text-slate-400" id="playerMessage">Pilih episode di bawah untuk mulai memutar video.</p>
+            <p class="text-sm text-slate-400" id="playerMessage">Pilih episode di bawah untuk memutar video.</p>
           </div>
         </div>
 
-        <!-- Controls: Current Playing Info & Server Selector -->
+        <!-- Controls: Info & Server Selector -->
         <div class="p-4 bg-slate-950/80 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <span class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold block">Sedang Diputar</span>
             <h2 id="currentEpTitle" class="text-sm font-semibold text-white">Belum ada episode dipilih</h2>
           </div>
 
-          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer">
-            <!-- Tombol server video muncul di sini -->
-          </div>
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer"></div>
         </div>
       </div>
 
-      <!-- Layout 2 Kolom: Metadata Donghua & List Episode -->
+      <!-- Two Column Layout: Detail & Episode Selector -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Info Donghua (Kiri) -->
+        <!-- Info Donghua -->
         <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-5">
           <div class="flex gap-5">
             <img id="detailCover" src="" class="w-24 sm:w-32 aspect-[3/4] object-cover rounded-xl border border-slate-800 shrink-0">
@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        <!-- Panel Pilihan Episode (Kanan) -->
+        <!-- Episode List Panel -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col h-[520px]">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
             <h3 class="text-sm font-bold text-white flex items-center gap-2">
@@ -121,16 +121,13 @@
             >
           </div>
 
-          <!-- List Tombol Episode -->
-          <div id="episodesList" class="flex-1 overflow-y-auto space-y-2 pr-1">
-            <!-- Item episode dirender di sini -->
-          </div>
+          <div id="episodesList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
         </div>
 
       </div>
     </section>
 
-    <!-- ================= VIEW 2: KATALOG / ARSIP (/donghua/) ================= -->
+    <!-- VIEW 2: KATALOG (/donghua/) -->
     <section id="listView" class="space-y-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -168,7 +165,6 @@
     let allData = [];
     let currentEpisodes = [];
     let selectedEpIndex = 0;
-    let selectedServerIndex = 0;
 
     async function init() {
       const pathSegments = window.location.pathname.split('/').filter(Boolean);
@@ -194,7 +190,6 @@
       }
     }
 
-    // Tampilkan View Detail & Video Player
     async function showDetail(slug) {
       const item = allData.find(d => d.slug === slug);
       const detailView = document.getElementById('detailView');
@@ -210,7 +205,6 @@
       detailView.classList.remove('hidden');
       listView.classList.add('hidden');
 
-      // Tampilkan Meta Informasi
       document.getElementById('detailTitle').innerText = item.title;
       document.getElementById('detailCover').src = item.cover || 'https://via.placeholder.com/300x400';
       document.getElementById('detailStatus').innerText = item.status || 'Ongoing';
@@ -225,19 +219,17 @@
         </span>
       `).join('');
 
-      // Update Tag SEO
       const pageTitle = `Nonton ${item.title} Sub Indo - Dongflix`;
       document.title = pageTitle;
       document.getElementById('metaTitle').innerText = pageTitle;
       document.getElementById('metaCanonical').href = `https://dongflix.my.id/donghua/${item.slug}`;
 
-      // Muat Data File Episode (/donghua/episodes/:slug.json)
       await loadEpisodes(item.slug);
     }
 
     async function loadEpisodes(slug) {
       const listContainer = document.getElementById('episodesList');
-      listContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">Memuat daftar episode...</div>';
+      listContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">Memuat episode...</div>';
 
       try {
         const res = await fetch(`/donghua/episodes/${slug}.json?t=` + Date.now());
@@ -248,14 +240,12 @@
 
         document.getElementById('epTotalCount').innerText = `(${currentEpisodes.length} Ep)`;
         renderEpisodeList(currentEpisodes);
-
-        // Putar otomatis episode terbaru (index 0)
         playEpisode(0);
       } catch (err) {
         document.getElementById('epTotalCount').innerText = '(0 Ep)';
         listContainer.innerHTML = `
           <div class="py-12 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl p-3">
-            Video episode belum discrape untuk judul ini.<br>
+            Video episode belum discrape.<br>
             Buka menu <strong>Admin</strong> untuk scrape episode & server.
           </div>
         `;
@@ -292,28 +282,22 @@
       renderEpisodeList(filtered);
     }
 
-    // Jalankan Pemutaran Video
     function playEpisode(index) {
       selectedEpIndex = index;
-      selectedServerIndex = 0;
       const ep = currentEpisodes[index];
       if (!ep) return;
 
-      // Update Highlight Tombol Episode
       currentEpisodes.forEach((_, i) => {
         const btn = document.getElementById(`epBtn-${i}`);
         if (btn) {
-          if (i === index) {
-            btn.className = 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-cyan-600/20 border-cyan-500 text-cyan-300';
-          } else {
-            btn.className = 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300';
-          }
+          btn.className = (i === index)
+            ? 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-cyan-600/20 border-cyan-500 text-cyan-300'
+            : 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300';
         }
       });
 
       document.getElementById('currentEpTitle').innerText = ep.title;
 
-      // Render Pilihan Server
       const serverBox = document.getElementById('serverContainer');
       const servers = ep.servers || [];
 
@@ -339,37 +323,29 @@
         </button>
       `).join('');
 
-      // Putar server pertama
       switchServer(0);
     }
 
-    // Ganti Server Video (OK.ru, Terabox, Dll)
     function switchServer(serverIndex) {
-      selectedServerIndex = serverIndex;
       const ep = currentEpisodes[selectedEpIndex];
       const srv = ep?.servers?.[serverIndex];
 
       if (!srv || !srv.link) return;
 
-      // Update Tampilan Tombol Server
       ep.servers.forEach((_, idx) => {
         const sBtn = document.getElementById(`srvBtn-${idx}`);
         if (sBtn) {
-          if (idx === serverIndex) {
-            sBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-cyan-500 text-slate-950';
-          } else {
-            sBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800';
-          }
+          sBtn.className = (idx === serverIndex)
+            ? 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-cyan-500 text-slate-950'
+            : 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800';
         }
       });
 
-      // Muat URL Embed ke iframe
       const iframe = document.getElementById('videoIframe');
       document.getElementById('playerPlaceholder').classList.add('hidden');
       iframe.src = srv.link;
     }
 
-    // Logika View Katalog Utama
     function showCatalog(items) {
       document.getElementById('detailView').classList.add('hidden');
       document.getElementById('listView').classList.remove('hidden');
