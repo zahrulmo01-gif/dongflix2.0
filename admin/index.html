@@ -1,107 +1,422 @@
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import * as cheerio from 'cheerio';
-import fs from 'fs';
-import path from 'path';
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dongflix 2.0 - Admin Scraper</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-10 font-sans">
+  <div class="max-w-7xl mx-auto space-y-8">
+    
+    <!-- Top Bar Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+            Dongflix 2.0 Panel
+          </h1>
+          <span class="text-xs bg-slate-900 border border-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono">
+            Zahrulmo01-gif/dongflix2.0
+          </span>
+        </div>
+        <p class="text-slate-400 text-sm mt-1">
+          Scraper otomatis via GitHub Actions &bull; Data tersimpan di <code class="text-cyan-400 bg-slate-900 px-1.5 py-0.5 rounded">/donghua/donghua.json</code>
+        </p>
+      </div>
 
-puppeteer.use(StealthPlugin());
+      <div class="flex items-center gap-3">
+        <a href="/" class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
+          Katalog Utama ↗
+        </a>
+        <button id="btnTrigger" onclick="triggerScrapeAction()" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition active:scale-95 shadow-lg shadow-cyan-600/30">
+          <span id="btnIcon">⚡</span>
+          <span id="btnText">Jalankan Scraper</span>
+        </button>
+      </div>
+    </div>
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    <!-- Panel Setup Token (Cache Browser) -->
+    <div class="bg-slate-900/70 border border-slate-800/80 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold text-slate-200">GitHub Personal Access Token</span>
+          <span id="tokenBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
+            Belum Terpasang
+          </span>
+        </div>
+        <p class="text-xs text-slate-400">
+          Token tersimpan di cache browser. Cukup masukkan sekali.
+        </p>
+      </div>
 
-async function run() {
-  const allDonghua = [];
-  let page = 1;
-  let hasNext = true;
+      <div class="flex items-center gap-2 w-full md:w-auto">
+        <div class="relative flex-1 md:w-80">
+          <input 
+            id="ghTokenInput" 
+            type="password" 
+            placeholder="Tempel token (ghp_...)" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono tracking-wider"
+          >
+          <button 
+            type="button" 
+            onclick="toggleTokenVisibility()" 
+            class="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 text-xs"
+          >
+            👁️
+          </button>
+        </div>
+        <button 
+          onclick="saveToken()" 
+          class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition"
+        >
+          Simpan Token
+        </button>
+      </div>
+    </div>
 
-  console.log('=== Memulai Scraping Anichin (Stealth Browser) ===');
+    <!-- Live Scrape Process Tracker -->
+    <div id="processContainer" class="hidden bg-slate-900/90 border border-slate-800 p-5 rounded-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span id="processIndicator" class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+          </span>
+          <h3 class="text-sm font-bold text-slate-200">Progress Runner GitHub Action</h3>
+        </div>
+        <span id="processBadge" class="text-xs px-2.5 py-1 rounded-full font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+          In Progress
+        </span>
+      </div>
 
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu'
-    ]
-  });
+      <!-- Animated Progress Bar -->
+      <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+        <div id="progressBar" class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+      </div>
 
-  const browserPage = await browser.newPage();
-  await browserPage.setUserAgent(
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-  );
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2">
+        <p id="processStatusText">Menginisialisasi runner...</p>
+        <div class="flex items-center gap-4">
+          <span id="processDuration" class="font-mono text-slate-300">Durasi: 0s</span>
+          <a id="actionLink" href="#" target="_blank" class="text-cyan-400 hover:underline">
+            Buka Log GitHub ↗
+          </a>
+        </div>
+      </div>
+    </div>
 
-  while (hasNext) {
-    const url = `https://anichin.moe/anime/?page=${page}&status=&type=&order=update`;
-    console.log(`Membuka halaman ${page}...`);
+    <!-- Alert Status -->
+    <div id="statusAlert" class="hidden p-4 rounded-xl text-xs md:text-sm border transition-all"></div>
 
-    try {
-      await browserPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await sleep(2000); // Tunggu render script halaman
+    <!-- Metric Dashboard -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Donghua Terdata</div>
+        <div id="totalDonghua" class="text-3xl font-extrabold text-white mt-1">0</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Status Data JSON</div>
+        <div id="fileStatus" class="text-sm font-medium text-emerald-400 mt-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Sinkron & Aktif
+        </div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Cari Judul</div>
+        <input 
+          id="searchInput" 
+          oninput="filterData()" 
+          type="text" 
+          placeholder="Ketik judul donghua..." 
+          class="w-full mt-2 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
+        >
+      </div>
+    </div>
 
-      const content = await browserPage.content();
-      const $ = cheerio.load(content);
-      const items = [];
+    <!-- List Katalog Donghua -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-200">List Donghua Terkini</h2>
+        <span id="filteredCount" class="text-xs text-slate-400"></span>
+      </div>
 
-      $('article.bs, .animposx, .listupd article').each((_, el) => {
-        const item = $(el);
-        const title =
-          item.find('.tt h2').text().trim() ||
-          item.find('.tt').text().trim() ||
-          item.find('h2').first().text().trim() ||
-          item.find('a').attr('title') ||
-          '';
+      <div id="donghuaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </div>
 
-        const link = item.find('a').first().attr('href') || '';
-        const img = item.find('img').first();
-        const cover =
-          img.attr('data-src') ||
-          img.attr('data-lazy-src') ||
-          img.attr('src') ||
-          '';
+  </div>
 
-        const type = item.find('.type, .typeflag').first().text().trim() || 'Donghua';
-        const status = item.find('.status, .bt .epx').first().text().trim() || 'Ongoing';
-        const episode = item.find('.epx').first().text().trim() || '-';
+  <script>
+    const GH_OWNER = 'Zahrulmo01-gif';
+    const GH_REPO = 'dongflix2.0';
+    const WORKFLOW_FILE = 'scrape.yml';
 
-        if (title && link) {
-          items.push({ title, link, cover, type, status, episode });
-        }
-      });
+    let allDonghua = [];
+    let pollingInterval = null;
+    let timerInterval = null;
+    let timerSeconds = 0;
 
-      if (items.length === 0) {
-        console.log(`Tidak ada item ditemukan di halaman ${page}. Selesai.`);
-        break;
-      }
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTokenFromCache();
+      loadDonghuaData();
+      checkLatestWorkflowRun(); // Cek apakah ada workflow yang sedang berjalan sebelumnya
+    });
 
-      allDonghua.push(...items);
-      console.log(`Halaman ${page}: Berhasil mengambil ${items.length} item.`);
+    function loadTokenFromCache() {
+      const savedToken = localStorage.getItem('dongflix_gh_token');
+      const input = document.getElementById('ghTokenInput');
+      const badge = document.getElementById('tokenBadge');
 
-      const nextBtn = $('.pagination .next, .hpage .r, a.next');
-      if (nextBtn.length > 0) {
-        page++;
+      if (savedToken) {
+        input.value = savedToken;
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        badge.innerText = 'Token Tersimpan';
       } else {
-        console.log('Halaman terakhir tercapai.');
-        hasNext = false;
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        badge.innerText = 'Belum Ada Token';
       }
-    } catch (err) {
-      console.error(`Gagal di halaman ${page}:`, err.message);
-      break;
     }
-  }
 
-  await browser.close();
+    function saveToken() {
+      const token = document.getElementById('ghTokenInput').value.trim();
+      if (!token) {
+        showAlert('Silakan masukkan token sebelum menyimpan.', 'rose');
+        return;
+      }
+      localStorage.setItem('dongflix_gh_token', token);
+      loadTokenFromCache();
+      showAlert('Token berhasil disimpan ke cache browser!', 'emerald');
+    }
 
-  const outputDir = path.resolve('donghua');
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
+    function toggleTokenVisibility() {
+      const input = document.getElementById('ghTokenInput');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
 
-  const outputPath = path.join(outputDir, 'donghua.json');
-  if (allDonghua.length > 0) {
-    fs.writeFileSync(outputPath, JSON.stringify(allDonghua, null, 2), 'utf-8');
-    console.log(`SUKSES! Total ${allDonghua.length} item disimpan ke ${outputPath}`);
-  }
-}
+    async function loadDonghuaData() {
+      try {
+        const res = await fetch('/donghua/donghua.json?nocache=' + Date.now());
+        if (!res.ok) throw new Error('Data belum ditemukan');
+        allDonghua = await res.json();
+        
+        document.getElementById('totalDonghua').innerText = allDonghua.length;
+        document.getElementById('filteredCount').innerText = `Menampilkan ${allDonghua.length} item`;
+        renderCards(allDonghua);
+      } catch (err) {
+        document.getElementById('totalDonghua').innerText = '0';
+        document.getElementById('fileStatus').innerHTML = '<span class="text-amber-400">File JSON masih kosong / belum ada</span>';
+        document.getElementById('donghuaGrid').innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl bg-slate-900/30">
+            Belum ada list donghua di /donghua/donghua.json.<br>
+            Klik tombol <strong>"Jalankan Scraper"</strong> di atas untuk mengisi data.
+          </div>
+        `;
+      }
+    }
 
-run();
+    function renderCards(items) {
+      const grid = document.getElementById('donghuaGrid');
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500">Tidak ada judul yang cocok.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <div class="group bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden flex flex-col hover:border-slate-700 transition">
+          <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
+            <img 
+              src="${item.cover || 'https://via.placeholder.com/300x400?text=No+Cover'}" 
+              alt="${item.title}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+              loading="lazy"
+            >
+            <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2 py-0.5 rounded">
+              ${item.type || 'Donghua'}
+            </span>
+            <span class="absolute bottom-2 right-2 bg-blue-600/90 backdrop-blur-md text-[10px] text-white font-medium px-1.5 py-0.5 rounded">
+              ${item.episode || '-'}
+            </span>
+          </div>
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug" title="${item.title}">
+              ${item.title}
+            </h3>
+            <div class="mt-2 flex items-center justify-between text-[11px]">
+              <span class="text-emerald-400 font-medium">${item.status || 'Ongoing'}</span>
+              <a href="${item.link}" target="_blank" rel="noreferrer" class="text-slate-400 hover:text-white transition">
+                Buka ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterData() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allDonghua.filter(d => d.title.toLowerCase().includes(query));
+      document.getElementById('filteredCount').innerText = `Menampilkan ${filtered.length} dari ${allDonghua.length} item`;
+      renderCards(filtered);
+    }
+
+    // Trigger Scraper dan aktifkan Live Monitor
+    async function triggerScrapeAction() {
+      const token = localStorage.getItem('dongflix_gh_token');
+      if (!token) {
+        showAlert('Token belum diisi. Masukkan GitHub PAT Anda terlebih dahulu lalu klik Simpan.', 'rose');
+        return;
+      }
+
+      setBtnLoading(true);
+
+      try {
+        const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          },
+          body: JSON.stringify({ ref: 'main' })
+        });
+
+        if (response.status === 204) {
+          showAlert('Perintah diterima! Memulai monitoring progres scraping...', 'cyan');
+          startTrackingProcess();
+        } else {
+          const err = await response.json();
+          showAlert(`Gagal: ${err.message || 'Periksa token atau akses repo.'}`, 'rose');
+          setBtnLoading(false);
+        }
+      } catch (err) {
+        showAlert('Koneksi gagal: ' + err.message, 'rose');
+        setBtnLoading(false);
+      }
+    }
+
+    // Monitoring Progress Live
+    function startTrackingProcess() {
+      document.getElementById('processContainer').classList.remove('hidden');
+      document.getElementById('progressBar').style.width = '20%';
+      document.getElementById('processStatusText').innerText = 'Mengantre runner di GitHub...';
+
+      timerSeconds = 0;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        document.getElementById('processDuration').innerText = `Durasi: ${timerSeconds}s`;
+      }, 1000);
+
+      // Polling setiap 3 detik ke GitHub Runs API
+      clearInterval(pollingInterval);
+      pollingInterval = setInterval(fetchWorkflowStatus, 3000);
+    }
+
+    async function fetchWorkflowStatus() {
+      const token = localStorage.getItem('dongflix_gh_token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=1`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+
+        if (!res.ok) return;
+        const data = await res.json();
+        const latestRun = data.workflow_runs?.[0];
+
+        if (!latestRun) return;
+
+        const container = document.getElementById('processContainer');
+        const badge = document.getElementById('processBadge');
+        const statusText = document.getElementById('processStatusText');
+        const progressBar = document.getElementById('progressBar');
+        const link = document.getElementById('actionLink');
+
+        container.classList.remove('hidden');
+        link.href = latestRun.html_url;
+
+        if (latestRun.status === 'queued') {
+          badge.className = 'text-xs px-2.5 py-1 rounded-full font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20';
+          badge.innerText = 'Queued';
+          statusText.innerText = 'Menunggu alokasi runner GitHub...';
+          progressBar.style.width = '35%';
+        } else if (latestRun.status === 'in_progress') {
+          badge.className = 'text-xs px-2.5 py-1 rounded-full font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
+          badge.innerText = 'Sedang Berjalan';
+          statusText.innerText = 'Scraper sedang menjelajahi halaman web Anichin...';
+          progressBar.style.width = '75%';
+        } else if (latestRun.status === 'completed') {
+          clearInterval(pollingInterval);
+          clearInterval(timerInterval);
+          setBtnLoading(false);
+
+          if (latestRun.conclusion === 'success') {
+            badge.className = 'text-xs px-2.5 py-1 rounded-full font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+            badge.innerText = 'Selesai (Sukses)';
+            statusText.innerText = 'Scraping selesai! Data telah di-commit ke repositori.';
+            progressBar.style.width = '100%';
+            loadDonghuaData(); // Refresh list otomatis
+          } else {
+            badge.className = 'text-xs px-2.5 py-1 rounded-full font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20';
+            badge.innerText = `Gagal (${latestRun.conclusion})`;
+            statusText.innerText = 'Workflow terhenti karena error. Periksa log tindakan.';
+            progressBar.style.width = '100%';
+          }
+        }
+      } catch (e) {
+        console.error('Polling error:', e);
+      }
+    }
+
+    async function checkLatestWorkflowRun() {
+      const token = localStorage.getItem('dongflix_gh_token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/runs?per_page=1`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json'
+          }
+        });
+        const data = await res.json();
+        const latest = data.workflow_runs?.[0];
+        if (latest && (latest.status === 'in_progress' || latest.status === 'queued')) {
+          setBtnLoading(true);
+          startTrackingProcess();
+        }
+      } catch (_) {}
+    }
+
+    function setBtnLoading(isLoading) {
+      const btn = document.getElementById('btnTrigger');
+      const btnText = document.getElementById('btnText');
+      const btnIcon = document.getElementById('btnIcon');
+
+      btn.disabled = isLoading;
+      if (isLoading) {
+        btnText.innerText = 'Scraping Aktif...';
+        btnIcon.innerHTML = '<span class="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>';
+      } else {
+        btnText.innerText = 'Jalankan Scraper';
+        btnIcon.innerText = '⚡';
+      }
+    }
+
+    function showAlert(msg, color) {
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.className = `p-4 rounded-xl text-xs md:text-sm border bg-${color}-950/40 border-${color}-800/80 text-${color}-300 block`;
+      alertBox.innerHTML = `
+        <div class="flex items-center justify-between gap-3">
+          <span>${msg}</span>
+          <button onclick="document.getElementById('statusAlert').classList.add('hidden')" class="text-slate-400 hover:text-white font-bold">✕</button>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
