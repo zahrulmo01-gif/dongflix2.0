@@ -11,7 +11,6 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-mono-code { font-family: 'Fira Code', monospace; }
-    /* Scrollbar halus untuk terminal logs */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #020617; }
     ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
@@ -21,7 +20,7 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 sm:p-6 md:p-8">
   <div class="max-w-7xl mx-auto space-y-6">
 
-    <!-- Top Navigation Bar -->
+    <!-- Top Navigation -->
     <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
       <div>
         <div class="flex items-center gap-3">
@@ -52,10 +51,9 @@
       </div>
     </header>
 
-    <!-- Toolbar & Global Action Buttons -->
+    <!-- Toolbar Tombol Aksi -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl shadow-sm">
       <div class="flex flex-wrap items-center gap-3">
-        <!-- Tombol Scrape List -->
         <button 
           onclick="openConfirmModal('list')" 
           class="px-4 py-2.5 bg-slate-900 border border-slate-700 hover:border-cyan-500 text-cyan-400 hover:text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 active:scale-95"
@@ -66,7 +64,6 @@
           <span>Scrape List Donghua</span>
         </button>
 
-        <!-- Tombol Scrape Semua Episode (Smart Auto-Check) -->
         <button 
           onclick="openConfirmModal('all-episodes')" 
           class="px-4 py-2.5 bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 hover:brightness-110 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-cyan-950 active:scale-95"
@@ -78,7 +75,6 @@
         </button>
       </div>
 
-      <!-- Live Pipeline Status Badge -->
       <div class="flex items-center gap-3">
         <div id="liveStatusPill" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-400">
           <span class="w-2 h-2 rounded-full bg-slate-600" id="liveStatusDot"></span>
@@ -87,9 +83,8 @@
       </div>
     </div>
 
-    <!-- TERMINAL: REALTIME GITHUB ACTIONS LOGS VIEWER -->
+    <!-- TERMINAL: REALTIME LOGS VIEWER -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-      <!-- Terminal Header -->
       <div class="px-4 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5">
@@ -123,7 +118,6 @@
         </div>
       </div>
 
-      <!-- Terminal Output Box -->
       <div 
         id="terminalOutput" 
         class="h-64 sm:h-72 p-4 bg-slate-950 font-mono-code text-[11px] text-slate-300 overflow-y-auto space-y-1 select-text leading-relaxed border-t border-slate-900"
@@ -131,14 +125,13 @@
         <div class="text-slate-600">[SYSTEM] Terminal diinisialisasi. Menghubungkan ke GitHub API...</div>
       </div>
 
-      <!-- Terminal Footer Bar -->
       <div class="px-4 py-2 bg-slate-950/80 border-t border-slate-900 flex flex-col sm:flex-row sm:items-center justify-between text-[10px] text-slate-500 font-mono gap-1">
         <span id="lastUpdatedLog">Update terakhir: -</span>
         <span class="text-slate-600">Auto-refresh setiap 5 detik saat proses berjalan</span>
       </div>
     </section>
 
-    <!-- TABEL KATALOG & ACTION PER-DONGHUA -->
+    <!-- TABEL KATALOG & TOMBOL PER-JUDUL -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
       <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -179,7 +172,7 @@
 
   </div>
 
-  <!-- MODAL 1: Konfirmasi Tindakan (Pop-up Pengaman Klik) -->
+  <!-- MODAL KONFIRMASI -->
   <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
       <div class="flex items-center gap-3">
@@ -190,7 +183,7 @@
         </div>
         <div>
           <h3 id="modalTitle" class="text-sm font-bold text-white leading-tight">Konfirmasi Tindakan</h3>
-          <p class="text-[11px] text-slate-400 mt-0.5">Validasi trigger workflow</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">Validasi pemicu aksi scraper</p>
         </div>
       </div>
 
@@ -215,7 +208,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: Pengaturan Kunci API GitHub (PAT) -->
+  <!-- MODAL PENGATURAN GITHUB -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
       <div>
@@ -243,7 +236,7 @@
             placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-cyan-500 font-mono"
           >
-          <span class="text-[10px] text-slate-500 mt-1 block">Token disimpan di LocalStorage browser perangkat Anda. Membutuhkan izin lingkup `repo` atau `actions:read`.</span>
+          <span class="text-[10px] text-slate-500 mt-1 block">Token disimpan di LocalStorage. Wajib mencakup izin <code>repo</code> dan <code>workflow</code>.</span>
         </div>
       </div>
 
@@ -273,7 +266,6 @@
     let pollInterval = null;
     let lastRenderedStep = '';
 
-    // Ambil kredensial lokal
     function getRepo() {
       return localStorage.getItem('dongflix_gh_repo') || 'rulsz/dongflix2.0';
     }
@@ -281,7 +273,6 @@
       return localStorage.getItem('dongflix_gh_pat') || '';
     }
 
-    // Inisialisasi
     async function init() {
       await loadCatalog();
       appendTerminal('System', 'Memeriksa status workflow GitHub Actions...');
@@ -289,7 +280,6 @@
       startPolling();
     }
 
-    // Load File Katalog
     async function loadCatalog() {
       try {
         const res = await fetch('/donghua/donghua.json?t=' + Date.now());
@@ -300,7 +290,7 @@
         document.getElementById('catalogTableBody').innerHTML = `
           <tr>
             <td colspan="5" class="py-12 text-center text-rose-400">
-              Gagal membaca <code>donghua/donghua.json</code>. Silakan scrape list donghua terlebih dahulu.
+              Gagal membaca <code>donghua/donghua.json</code>. Silakan jalankan scrape list katalog terlebih dahulu.
             </td>
           </tr>
         `;
@@ -365,7 +355,6 @@
       renderTable(filtered);
     }
 
-    // REALTIME LOGS VIEWER
     function appendTerminal(tag, message, colorClass = 'text-slate-300') {
       const terminal = document.getElementById('terminalOutput');
       const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
@@ -402,24 +391,16 @@
       document.getElementById('terminalOutput').innerHTML = '<div class="text-slate-600">[SYSTEM] Terminal dibersihkan.</div>';
     }
 
-    // Polling Runner Log dari GitHub Actions API
     async function fetchRealtimeLogs(isManualClick = false) {
       const repo = getRepo();
       const pat = getPAT();
-
-      if (!pat) {
-        if (isManualClick) appendTerminal('WARNING', 'PAT belum dikonfigurasi. Hanya menampilkan event publik.');
-      }
 
       const headers = { 'Accept': 'application/vnd.github.v3+json' };
       if (pat) headers['Authorization'] = `token ${pat}`;
 
       try {
-        // Ambil daftar run terbaru dari GitHub
         const res = await fetch(`https://api.github.com/repos/${repo}/actions/runs?per_page=1`, { headers });
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
         const latestRun = data.workflow_runs?.[0];
@@ -435,11 +416,9 @@
 
         document.getElementById('lastUpdatedLog').innerText = `Update terakhir: ${new Date().toLocaleTimeString('id-ID')}`;
 
-        // Cek Status Workflow
         if (latestRun.status === 'in_progress' || latestRun.status === 'queued') {
           updateStatusPill('running', `Berjalan: ${latestRun.name}`);
           
-          // Ambil rincian step/pekerjaan yang sedang aktif
           const jobsRes = await fetch(latestRun.jobs_url, { headers });
           if (jobsRes.ok) {
             const jobsData = await jobsRes.json();
@@ -453,13 +432,12 @@
             }
           }
         } else {
-          // Status Selesai
           if (latestRun.conclusion === 'success') {
             updateStatusPill('success', 'Workflow Sukses');
             if (lastRenderedStep !== 'SUCCESS_DONE') {
               appendTerminal('SUCCESS', `Workflow #${latestRun.run_number} selesai dengan sukses! File katalog/episode telah ter-update di repository.`, 'text-emerald-400');
               lastRenderedStep = 'SUCCESS_DONE';
-              loadCatalog(); // Refresh tabel katalog secara otomatis
+              loadCatalog();
             }
           } else if (latestRun.conclusion === 'failure') {
             updateStatusPill('failed', 'Workflow Gagal');
@@ -473,7 +451,7 @@
         }
       } catch (err) {
         if (isManualClick) {
-          appendTerminal('ERROR', `Gagal mengambil status workflow: ${err.message}`);
+          appendTerminal('ERROR', `Gagal mengambil status: ${err.message}`);
         }
       }
     }
@@ -507,7 +485,6 @@
       }, 5000);
     }
 
-    // Modal Konfirmasi Pop-up
     function openConfirmModal(actionType, slug = null) {
       currentActionType = actionType;
       selectedSlugToScrape = slug;
@@ -519,15 +496,15 @@
 
       if (actionType === 'list') {
         titleEl.innerText = 'Scrape List Donghua?';
-        descEl.innerText = 'GitHub Actions akan membaca katalog Anichin dan memperbarui daftar master donghua.json.';
+        descEl.innerText = 'GitHub Actions akan membaca Anichin dan memperbarui daftar master donghua/donghua.json.';
         confirmBtn.innerText = 'Ya, Scrape List';
       } else if (actionType === 'all-episodes') {
         titleEl.innerText = 'Scrape SEMUA Episode?';
-        descEl.innerText = 'Proses pintar ini akan mengecek rilis terbaru web, hanya scrape episode baru jika berbeda dengan file JSON, dan memindahkan donghua yang baru update ke urutan paling atas.';
+        descEl.innerText = 'Sistem akan mengecek rilis web vs file lokal. Hanya scrape jika web memiliki episode lebih baru dan otomatis memindahkan donghua yang baru update ke baris paling atas.';
         confirmBtn.innerText = 'Ya, Jalankan Semua';
       } else if (actionType === 'single-episode') {
         titleEl.innerText = `Scrape [${slug}]?`;
-        descEl.innerText = `GitHub Actions akan mengambil semua link episode dan server OK.ru / D-Tube / Dailymotion untuk "${slug}".`;
+        descEl.innerText = `GitHub Actions akan mengambil link episode & server OK.ru / D-Tube / Dailymotion untuk "${slug}".`;
         confirmBtn.innerText = 'Ya, Scrape Serial Ini';
       }
 
@@ -555,7 +532,6 @@
       }
     }
 
-    // Pengirim Trigger GitHub API
     async function triggerGitHubDispatch(eventType, clientPayload = {}) {
       const repo = getRepo();
       const pat = getPAT();
@@ -588,14 +564,13 @@
           setTimeout(() => fetchRealtimeLogs(false), 2000);
         } else {
           const err = await res.json().catch(() => ({}));
-          appendTerminal('ERROR', `Gagal dispatch (${res.status}): ${err.message || 'Token tidak memiliki izin write/workflow'}`);
+          appendTerminal('ERROR', `Gagal dispatch (${res.status}): ${err.message || 'Token tidak memiliki izin repo/workflow'}`);
         }
       } catch (err) {
         appendTerminal('ERROR', `Koneksi gagal: ${err.message}`);
       }
     }
 
-    // Modal Konfigurasi GitHub
     function openSettingsModal() {
       document.getElementById('repoInput').value = getRepo();
       document.getElementById('patInput').value = getPAT();
