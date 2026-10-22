@@ -28,10 +28,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # 1. Jalankan Scrape List Master Donghua
+      # 1. Jalankan Scrape List Master Donghua (menggunakan scraper.js)
       - name: Run Scraper List Donghua
         if: github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list'
-        run: node admin/scraper-donghua.js
+        run: node admin/scraper.js
 
       # 2. Jalankan Scrape Single Episode
       - name: Run Scraper Single Episode
@@ -43,7 +43,7 @@ jobs:
         if: github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all'
         run: node admin/scrape-all-smart.js
 
-      # Commit dan Push Hasil
+      # Commit dan Push Hasil Perubahan
       - name: Commit & Push Changes
         run: |
           git config --local user.email "action@github.com"
