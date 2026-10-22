@@ -7,7 +7,7 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-const CONCURRENCY = 5;
+const CONCURRENCY = 3; // 3 tab bersamaan agar hemat memori runner
 
 // URL Cloudflare Worker aktif milikmu
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
@@ -53,9 +53,8 @@ async function extractDTubeDirect(dTubeUrl) {
     const videoId = parsed.searchParams.get('v');
     if (!videoId) return null;
 
-    // 1. Coba ambil metadata blockchain avalon
     try {
-      const apiRes = await fetch(`https://avalon.d.tube/content/dtube/${videoId}`);
+      const apiRes = await fetch(`https://avalon.d.tube/content/dtube/${videoId}`, { signal: AbortSignal.timeout(5000) });
       if (apiRes.ok) {
         const json = await apiRes.json();
         const hash = json?.json?.video?.content?.src || json?.json?.video?.content?.video480hash || json?.json?.video?.ipfs;
@@ -65,9 +64,9 @@ async function extractDTubeDirect(dTubeUrl) {
       }
     } catch (_) {}
 
-    // 2. Fallback baca teks HTML
     const res = await fetch(dTubeUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36' }
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      signal: AbortSignal.timeout(5000)
     });
     const html = await res.text();
     const hashMatch = html.match(/(?:Qm[1-9A-HJ-NP-Za-km-z]{44}|bafy[a-z0-9]{55})/);
@@ -81,7 +80,7 @@ async function extractDTubeDirect(dTubeUrl) {
   }
 }
 
-// Ekstrak video ID Dailymotion
+// Ekstrak ID Dailymotion
 function extractDailymotionId(url) {
   const nunaMatch = url.match(/[?&]video=([a-zA-Z0-9]+)/);
   if (nunaMatch) return nunaMatch[1];
@@ -100,32 +99,29 @@ if (!rawSlug) {
 
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
-async function createFastPage(browser) {
-  const page = await browser.newPage();
+async function setupPageConfig(page) {
   await page.setUserAgent(
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
   );
   await page.setRequestInterception(true);
   page.on('request', (req) => {
+    // Blokir asset berat agar hemat RAM dan bandwidth
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
       req.abort();
     } else {
       req.continue();
     }
   });
-  return page;
 }
 
-async function scrapeEpisodeServers(browser, ep) {
-  const page = await createFastPage(browser);
+async function scrapeSingleEpisode(page, ep) {
   const rawServers = [];
 
   try {
-    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // Ambil opsi Select Dropdown
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
@@ -138,7 +134,6 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
-    // Ambil link Mirror Tab
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -151,7 +146,6 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     });
 
-    // Iframe bawaan halaman
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
@@ -162,7 +156,7 @@ async function scrapeEpisodeServers(browser, ep) {
 
     const finalServers = [];
 
-    // 1. Ekstrak D-Tube untuk dfplayer
+    // Prioritas 1: D-Tube langsung ke dfplayer
     const dtubeItem = rawServers.find((s) => s.link.includes('d.tube') || s.name.toLowerCase().includes('d-tube'));
     if (dtubeItem) {
       const directUrl = await extractDTubeDirect(dtubeItem.link);
@@ -181,7 +175,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     }
 
-    // 2. Ekstrak Dailymotion lewat Cloudflare Worker anti-403
+    // Prioritas 2: Dailymotion lewat Cloudflare Worker anti-403
     const dailyItem = rawServers.find(
       (s) => s.link.includes('dailymotion.com') || s.link.includes('nunadrama') || s.name.toLowerCase().includes('dailymotion')
     );
@@ -196,7 +190,7 @@ async function scrapeEpisodeServers(browser, ep) {
       }
     }
 
-    // 3. Masukkan server fallback lainnya
+    // Server fallback
     for (const s of rawServers) {
       if (!s.link.includes('d.tube') && !s.link.includes('dailymotion.com') && !s.link.includes('nunadrama')) {
         finalServers.push({
@@ -215,9 +209,14 @@ async function scrapeEpisodeServers(browser, ep) {
       servers: finalServers
     };
   } catch (err) {
-    return { episode: ep.epNum, title: ep.title, link: ep.link, date: ep.date, servers: [] };
-  } finally {
-    await page.close();
+    console.warn(`Gagal parse episode ${ep.epNum}: ${err.message}`);
+    return {
+      episode: ep.epNum,
+      title: ep.title,
+      link: ep.link,
+      date: ep.date,
+      servers: []
+    };
   }
 }
 
@@ -245,10 +244,20 @@ async function run() {
 
   const browser = await puppeteer.launch({
     headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process'
+    ]
   });
 
-  const mainPage = await createFastPage(browser);
+  const mainPage = await browser.newPage();
+  await setupPageConfig(mainPage);
+
   const possibleUrls = [
     `${BASE_URL}/${cleanSlug}/`,
     `${BASE_URL}/anime/${cleanSlug}/`
@@ -268,7 +277,9 @@ async function run() {
   }
 
   await mainPage.close();
+
   if (!mainHtml) {
+    console.error('Container list episode tidak ditemukan.');
     await browser.close();
     process.exit(1);
   }
@@ -300,15 +311,37 @@ async function run() {
     latestEpisodeFound = episodeQueue[0].epNum || '1';
   }
 
-  const allDetailedEpisodes = [];
-  for (let i = 0; i < episodeQueue.length; i += CONCURRENCY) {
-    const chunk = episodeQueue.slice(i, i + CONCURRENCY);
-    const results = await Promise.all(chunk.map((ep) => scrapeEpisodeServers(browser, ep)));
-    allDetailedEpisodes.push(...results);
-    console.log(`Episode diproses: ${allDetailedEpisodes.length}/${episodeQueue.length}`);
+  console.log(`Total episode yang ditemukan: ${episodeQueue.length}`);
+
+  // Buat Worker Pool Tab Tetap (Reusable Tabs)
+  const workerTabs = [];
+  for (let i = 0; i < CONCURRENCY; i++) {
+    const p = await browser.newPage();
+    await setupPageConfig(p);
+    workerTabs.push(p);
   }
 
-  await browser.close();
+  const allDetailedEpisodes = new Array(episodeQueue.length);
+  let currentIndex = 0;
+
+  async function worker(page) {
+    while (currentIndex < episodeQueue.length) {
+      const idx = currentIndex++;
+      const ep = episodeQueue[idx];
+      const res = await scrapeSingleEpisode(page, ep);
+      allDetailedEpisodes[idx] = res;
+      console.log(`Episode diproses: ${idx + 1}/${episodeQueue.length} (Ep ${ep.epNum})`);
+    }
+  }
+
+  // Jalankan worker pool secara paralel
+  await Promise.all(workerTabs.map((p) => worker(p)));
+
+  // Tutup semua tab dan browser setelah selesai
+  for (const p of workerTabs) {
+    await p.close().catch(() => {});
+  }
+  await browser.close().catch(() => {});
 
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
