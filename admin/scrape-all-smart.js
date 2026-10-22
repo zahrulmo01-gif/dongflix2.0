@@ -94,6 +94,21 @@ function bumpDonghuaToTop(slug, newEpisodeNum) {
   }
 }
 
+// Fungsi Git: langsung commit dan push per judul yang selesai
+function commitAndPushPerTitle(slug, episode) {
+  try {
+    console.log(`  📤 Langsung menyimpan perubahan untuk [${slug}] ke GitHub...`);
+    execSync('git config --local user.email "action@github.com"');
+    execSync('git config --local user.name "GitHub Action Bot"');
+    execSync(`git add donghua/episodes/${slug}.json donghua/donghua.json`);
+    execSync(`git commit -m "Auto: Update ${slug} Ep ${episode} [skip ci]"`);
+    execSync('git push origin HEAD');
+    console.log(`  ✅ Berhasil dipush ke repositori!`);
+  } catch (err) {
+    console.warn(`  ⚠️ Melewati push git: ${err.message}`);
+  }
+}
+
 async function run() {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) {
@@ -124,7 +139,7 @@ async function run() {
     const item = donghuaList[i];
     const slug = item.slug;
 
-    console.log(`[${i + 1}/${donghuaList.length}] Memeriksa: ${item.title} (${slug})`);
+    console.log(`\n[${i + 1}/${donghuaList.length}] Memeriksa: ${item.title} (${slug})`);
 
     const localEp = getLocalLatestEpisode(slug);
     const webEp = await fetchWebLatestEpisode(page, slug);
@@ -144,10 +159,16 @@ async function run() {
 
     console.log(`  🚀 RILISAN BARU DITEMUKAN! Mulai scrape episode...`);
     try {
+      // Jalankan scraping detail episode
       execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
+
+      // Pindahkan posisinya ke urutan teratas katalog
       bumpDonghuaToTop(slug, webEp);
+
+      // LANGSUNG PUSH KE GITHUB DETIK ITU JUGA
+      commitAndPushPerTitle(slug, webEp);
     } catch (err) {
-      console.error(`  ❌ Gagal scrape ${slug}: ${err.message}`);
+      console.error(`  ❌ Gagal memproses ${slug}: ${err.message}`);
     }
   }
 
