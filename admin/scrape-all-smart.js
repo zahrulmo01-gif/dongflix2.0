@@ -9,14 +9,12 @@ puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
 
-// Ekstraksi angka murni dari string episode (misal "Ep 163" atau "Episode 163.5" -> 163.5)
 function parseEpisodeNumber(epString) {
   if (!epString) return 0;
   const match = String(epString).match(/(\d+(\.\d+)?)/);
   return match ? parseFloat(match[1]) : 0;
 }
 
-// Ambil episode terakhir yang tersimpan di file lokal
 function getLocalLatestEpisode(slug) {
   const filePath = path.resolve(`donghua/episodes/${slug}.json`);
   if (!fs.existsSync(filePath)) return null;
@@ -25,7 +23,6 @@ function getLocalLatestEpisode(slug) {
     const episodes = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     if (!Array.isArray(episodes) || episodes.length === 0) return null;
 
-    // Cari episode dengan nomor tertinggi di file lokal
     let maxEp = 0;
     for (const ep of episodes) {
       const num = parseEpisodeNumber(ep.episode);
@@ -37,7 +34,6 @@ function getLocalLatestEpisode(slug) {
   }
 }
 
-// Cek nomor episode terbaru di web Anichin secara cepat tanpa memuat gambar/CSS
 async function fetchWebLatestEpisode(page, slug) {
   const possibleUrls = [
     `${BASE_URL}/${slug}/`,
@@ -50,7 +46,6 @@ async function fetchWebLatestEpisode(page, slug) {
       const html = await page.content();
       const $ = cheerio.load(html);
 
-      // Cari dari label "Episode Baru"
       let foundEp = '';
       $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
         const txt = $(el).text().trim();
@@ -60,7 +55,6 @@ async function fetchWebLatestEpisode(page, slug) {
         }
       });
 
-      // Jika tidak ada teks "Episode Baru", ambil nomor episode pertama dari list
       if (!foundEp) {
         const firstEp = $('.eplister ul li, .episodelist ul li, ul.clstyle li').first();
         const epNum = firstEp.find('.epl-num, .epx').text().trim() || firstEp.find('a').text().trim();
@@ -75,7 +69,6 @@ async function fetchWebLatestEpisode(page, slug) {
   return null;
 }
 
-// Pindahkan posisi donghua yang baru update ke urutan index 0 (paling atas)
 function bumpDonghuaToTop(slug, newEpisodeNum) {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) return;
@@ -86,20 +79,18 @@ function bumpDonghuaToTop(slug, newEpisodeNum) {
 
     const index = donghuaList.findIndex((item) => item.slug === slug);
     if (index > -1) {
-      // Ambil datanya dan update episodenya
       const [item] = donghuaList.splice(index, 1);
       item['latest-episode'] = String(newEpisodeNum);
       item.episode = `Ep ${newEpisodeNum}`;
       item.updated_at = new Date().toISOString();
 
-      // Masukkan ke posisi paling awal
       donghuaList.unshift(item);
 
       fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-      console.log(`📌 [BUMP] Posisi ${slug} berhasil dipindahkan ke baris teratas katalog.`);
+      console.log(`📌 [BUMP] Posisi ${slug} berhasil dipindahkan ke baris teratas.`);
     }
   } catch (err) {
-    console.error(`Gagal update posisi katalog: ${err.message}`);
+    console.error(`Gagal bump donghua: ${err.message}`);
   }
 }
 
@@ -146,19 +137,14 @@ async function run() {
     console.log(`  - Episode Lokal : ${localEp !== null ? localEp : 'Belum discrape'}`);
     console.log(`  - Episode di Web: ${webEp}`);
 
-    // Kondisi 1: Episode sudah sama persis -> LEWATI
     if (localEp !== null && localEp >= webEp) {
       console.log(`  ⏩ Sudah up-to-date (Ep ${localEp}). Dilewati.`);
       continue;
     }
 
-    // Kondisi 2: Web punya episode lebih baru atau file lokal belum ada sama sekali
     console.log(`  🚀 RILISAN BARU DITEMUKAN! Mulai scrape episode...`);
     try {
-      // Jalankan scraper episode yang sudah dibuat sebelumnya
       execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
-
-      // Pindahkan posisinya ke urutan paling atas di donghua.json
       bumpDonghuaToTop(slug, webEp);
     } catch (err) {
       console.error(`  ❌ Gagal scrape ${slug}: ${err.message}`);
