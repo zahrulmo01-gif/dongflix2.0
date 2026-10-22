@@ -21,10 +21,12 @@ function extractCleanUrl(rawVal) {
 
   let processed = rawVal.trim();
 
+  // 1. Ekstrak dari format tag iframe HTML langsung jika ada
   const directIframeMatch = processed.match(/src=["'](.*?)["']/i);
   if (directIframeMatch && directIframeMatch[1]) {
     processed = directIframeMatch[1];
   } else if (!processed.startsWith('http') && processed.length > 20) {
+    // 2. Decode jika berupa teks Base64
     try {
       const decoded = Buffer.from(processed, 'base64').toString('utf-8');
       const srcMatch = decoded.match(/src=["'](.*?)["']/i);
@@ -38,6 +40,14 @@ function extractCleanUrl(rawVal) {
 
   if (processed.startsWith('//')) {
     processed = `https:${processed}`;
+  }
+
+  // 3. Konversi otomatis wrapper Nunadrama ke embed resmi Dailymotion
+  if (processed.includes('nunadrama.sbs') || processed.includes('player.nunadrama')) {
+    const videoIdMatch = processed.match(/[?&]video=([a-zA-Z0-9]+)/);
+    if (videoIdMatch && videoIdMatch[1]) {
+      return `https://www.dailymotion.com/embed/video/${videoIdMatch[1]}`;
+    }
   }
 
   return processed.startsWith('http') ? processed : '';
@@ -135,43 +145,53 @@ async function scrapeEpisodeServers(browser, ep) {
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // 1. Dropdown Mirror Option
+    // 1. Ekstrak dari Select Dropdown
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
-      const name = o.text().trim();
+      let name = o.text().trim();
       const val = o.attr('value') || '';
 
       if (name && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(val);
         if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          if (cleanLink.includes('dailymotion.com')) {
+            name = 'Dailymotion';
+          }
           servers.push({ name, link: cleanLink, type: 'iframe' });
         }
       }
     });
 
-    // 2. Tab Link/Button Mirror
+    // 2. Ekstrak dari Tab Button Link
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
-      const name = el.text().trim();
+      let name = el.text().trim();
       const rawHref = el.attr('href') || el.attr('data-embed') || '';
       if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(rawHref);
         if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          if (cleanLink.includes('dailymotion.com')) {
+            name = 'Dailymotion';
+          }
           servers.push({ name, link: cleanLink, type: 'iframe' });
         }
       }
     });
 
-    // 3. Iframe Aktif Bawaan
+    // 3. Iframe Default Bawaan
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
       if (cleanIframe && !servers.some((s) => s.link === cleanIframe)) {
-        servers.unshift({ name: 'Default Server', link: cleanIframe, type: 'iframe' });
+        let name = 'Default Server';
+        if (cleanIframe.includes('dailymotion.com')) {
+          name = 'Dailymotion';
+        }
+        servers.unshift({ name, link: cleanIframe, type: 'iframe' });
       }
     }
 
-    // 4. Bangun dfplayer jika ditemukan server OK.ru
+    // 4. Buat dfplayer dari OK.ru jika tersedia
     const okRuServer = servers.find((s) => s.name.toLowerCase().includes('ok') || s.link.includes('ok.ru'));
     if (okRuServer && okRuServer.link) {
       const qualities = await extractOkRuDirectVideo(okRuServer.link);
@@ -344,7 +364,7 @@ async function run() {
     return;
   }
 
-  // Scrape secara paralel
+  // Scrape paralel per 5 episode
   const allDetailedEpisodes = [];
   for (let i = 0; i < episodeQueue.length; i += CONCURRENCY) {
     const chunk = episodeQueue.slice(i, i + CONCURRENCY);
@@ -356,7 +376,7 @@ async function run() {
 
   await browser.close();
 
-  // Simpan hasil ke JSON episode
+  // Simpan hasil ke file JSON episode
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -364,7 +384,7 @@ async function run() {
   fs.writeFileSync(outFile, JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
   console.log(`SUKSES! File tersimpan di: ${outFile}`);
 
-  // Simpan update latest-episode ke donghua.json
+  // Simpan episode terbaru ke file master donghua.json
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
 }
 
