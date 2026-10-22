@@ -9,6 +9,7 @@ puppeteer.use(StealthPlugin());
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const BASE_URL = 'https://anichin.moe';
 const SITE_DOMAIN = 'https://dongflix.my.id';
+const CONCURRENCY = 5; // Memproses 5 halaman sekaligus secara paralel
 
 function resolveUrl(url) {
   if (!url) return '';
@@ -33,12 +34,22 @@ function generateSitemapXml(donghuaList) {
   return xml;
 }
 
-async function run() {
-  const allDonghua = [];
-  let page = 1;
-  let hasNext = true;
+// Setup tab cepat (blokir CSS, gambar, font, audio/video)
+async function setupFastPage(browser) {
+  const page = await browser.newPage();
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+  return page;
+}
 
-  console.log('=== Memulai Scraping Anichin (List + Detail) ===');
+async function run() {
+  console.log('=== Scraper Turbo Dimulai ===');
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -46,182 +57,130 @@ async function run() {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu'
+      '--disable-gpu',
+      '--no-zygote',
+      '--single-process'
     ]
   });
 
-  const browserPage = await browser.newPage();
-  await browserPage.setUserAgent(
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-  );
+  const mainPage = await setupFastPage(browser);
+  const queue = [];
+  let pageNum = 1;
+  let hasNext = true;
 
-  // Batasi pemuatan gambar saat buka halaman detail agar proses lebih cepat
-  await browserPage.setRequestInterception(true);
-  browserPage.on('request', (req) => {
-    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
-      req.abort();
-    } else {
-      req.continue();
-    }
-  });
-
+  // 1. Ekstrak Semua Daftar Cepat
+  console.log('Mengambil daftar halaman katalog...');
   while (hasNext) {
-    const listUrl = `${BASE_URL}/anime/?page=${page}&status=&type=&order=update`;
-    console.log(`Mengambil daftar halaman: ${page}...`);
-
+    const listUrl = `${BASE_URL}/anime/?page=${pageNum}&status=&type=&order=update`;
     try {
-      await browserPage.goto(listUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
-      await sleep(1500);
+      await mainPage.goto(listUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+      const html = await mainPage.content();
+      const $ = cheerio.load(html);
 
-      const content = await browserPage.content();
-      const $ = cheerio.load(content);
-      const listItems = [];
-
+      const items = [];
       $('article.bs, .animposx, .listupd article').each((_, el) => {
         const item = $(el);
-
-        const title =
-          item.find('.tt h2').text().trim() ||
-          item.find('.tt').text().trim() ||
-          item.find('h2').first().text().trim() ||
-          item.find('a').attr('title') ||
-          '';
-
+        const title = item.find('.tt h2, .tt, h2').first().text().trim() || item.find('a').attr('title') || '';
         const rawLink = item.find('a').first().attr('href') || '';
         const fullLink = resolveUrl(rawLink);
-
-        const slug = fullLink
-          .replace(BASE_URL, '')
-          .replace(/^\/+|\/+$/g, '')
-          .split('/')
-          .pop();
-
-        const img = item.find('img').first();
-        const rawCover =
-          img.attr('data-src') ||
-          img.attr('data-lazy-src') ||
-          img.attr('src') ||
-          '';
+        const slug = fullLink.replace(BASE_URL, '').replace(/^\/+|\/+$/g, '').split('/').pop();
+        const rawCover = item.find('img').first().attr('data-src') || item.find('img').first().attr('src') || '';
         const cover = resolveUrl(rawCover);
-
         const type = item.find('.type, .typeflag').first().text().trim() || 'Donghua';
         const status = item.find('.status, .bt .epx').first().text().trim() || 'Ongoing';
 
-        if (title && slug) {
-          listItems.push({ title, slug, link: fullLink, cover, type, status });
-        }
+        if (title && slug) items.push({ title, slug, link: fullLink, cover, type, status });
       });
 
-      if (listItems.length === 0) {
-        console.log(`Tidak ada item di halaman ${page}. Berhenti.`);
-        break;
-      }
-
-      console.log(`Ditemukan ${listItems.length} item di halaman ${page}. Mengambil data detail...`);
-
-      // Buka tiap link anime untuk ekstrak Sinopsis, Kategori, Tanggal Rilis, dan Episode detail
-      for (const item of listItems) {
-        try {
-          console.log(`-> Scrape detail: ${item.slug}`);
-          await browserPage.goto(item.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
-          await sleep(600);
-
-          const detailHtml = await browserPage.content();
-          const $$ = cheerio.load(detailHtml);
-
-          // 1. Ekstrak Sinopsis (mengambil teks paragraf di bawah container sinopsis)
-          let synopsis = $$('.synopsis, .entry-content, .desc, .mindesc')
-            .find('p')
-            .map((_, p) => $$(p).text().trim())
-            .get()
-            .filter((t) => t.length > 0)
-            .join('\n\n');
-
-          if (!synopsis) {
-            synopsis = $$('.synopsis, .entry-content, .desc').text().trim() || '-';
-          }
-
-          // 2. Ekstrak Kategori / Genre
-          const genres = [];
-          $$('.genxed a, .genre-info a, a[href*="/genres/"]').each((_, g) => {
-            const gText = $$(g).text().trim();
-            if (gText && !genres.includes(gText)) genres.push(gText);
-          });
-
-          // 3. Ekstrak Info dari Metadata Spesifikasi (.spe atau .info-content)
-          let released = '-';
-          let totalEpisode = '-';
-
-          $$('.spe span, .info-content span').each((_, span) => {
-            const rowText = $$(span).text();
-            if (/Released|Rilis|Tayang/i.test(rowText)) {
-              released = rowText.replace(/Released|Rilis|Tayang|:/gi, '').trim();
-            }
-            if (/Episodes|Episode/i.test(rowText)) {
-              totalEpisode = rowText.replace(/Episodes|Episode|:/gi, '').trim();
-            }
-          });
-
-          // Fallback episode jika tidak ada di metadata spesifikasi
-          if (totalEpisode === '-' || totalEpisode === '') {
-            const lastEp = $$('.eplister ul li .epl-num').first().text().trim();
-            totalEpisode = lastEp || item.status;
-          }
-
-          allDonghua.push({
-            title: item.title,
-            slug: item.slug,
-            link: item.link,
-            cover: item.cover,
-            type: item.type,
-            status: item.status,
-            episode: totalEpisode,
-            released: released,
-            genres: genres.length > 0 ? genres : ['3D Animation'],
-            synopsis: synopsis
-          });
-        } catch (detailErr) {
-          console.error(`Gagal scrape detail ${item.slug}:`, detailErr.message);
-          // Simpan dengan fallback data
-          allDonghua.push({
-            ...item,
-            episode: '-',
-            released: '-',
-            genres: ['Donghua'],
-            synopsis: '-'
-          });
-        }
-      }
+      if (items.length === 0) break;
+      queue.push(...items);
+      console.log(`Page ${pageNum} OK (${items.length} item)`);
 
       const nextBtn = $('.pagination .next, .hpage .r, a.next');
       if (nextBtn.length > 0) {
-        page++;
+        pageNum++;
       } else {
         hasNext = false;
       }
-    } catch (err) {
-      console.error(`Gagal di halaman ${page}:`, err.message);
+    } catch (e) {
+      console.error(`Page ${pageNum} error:`, e.message);
       break;
     }
   }
 
+  await mainPage.close();
+  console.log(`Total terkumpul: ${queue.length} item. Memulai scraping paralel detail...`);
+
+  // 2. Scraping Detail Paralel (5 item sekaligus)
+  const detailedResults = [];
+  for (let i = 0; i < queue.length; i += CONCURRENCY) {
+    const chunk = queue.slice(i, i + CONCURRENCY);
+
+    const chunkPromises = chunk.map(async (item) => {
+      const page = await setupFastPage(browser);
+      try {
+        await page.goto(item.link, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        const html = await page.content();
+        const $$ = cheerio.load(html);
+
+        let synopsis = $$('.synopsis, .entry-content, .desc')
+          .find('p')
+          .map((_, p) => $$(p).text().trim())
+          .get()
+          .filter((t) => t.length > 0)
+          .join('\n\n');
+
+        if (!synopsis) synopsis = $$('.synopsis, .entry-content, .desc').text().trim() || '-';
+
+        const genres = [];
+        $$('.genxed a, .genre-info a, a[href*="/genres/"]').each((_, g) => {
+          const gText = $$(g).text().trim();
+          if (gText && !genres.includes(gText)) genres.push(gText);
+        });
+
+        let released = '-';
+        let totalEpisode = '-';
+        $$('.spe span, .info-content span').each((_, span) => {
+          const rowText = $$(span).text();
+          if (/Released|Rilis|Tayang/i.test(rowText)) released = rowText.replace(/Released|Rilis|Tayang|:/gi, '').trim();
+          if (/Episodes|Episode/i.test(rowText)) totalEpisode = rowText.replace(/Episodes|Episode|:/gi, '').trim();
+        });
+
+        if (totalEpisode === '-' || !totalEpisode) {
+          totalEpisode = $$('.eplister ul li .epl-num').first().text().trim() || item.status;
+        }
+
+        return {
+          ...item,
+          episode: totalEpisode,
+          released,
+          genres: genres.length > 0 ? genres : ['Donghua'],
+          synopsis
+        };
+      } catch {
+        return { ...item, episode: '-', released: '-', genres: ['Donghua'], synopsis: '-' };
+      } finally {
+        await page.close();
+      }
+    });
+
+    const chunkResults = await Promise.all(chunkPromises);
+    detailedResults.push(...chunkResults);
+    console.log(`Proses detail: ${detailedResults.length}/${queue.length}`);
+  }
+
   await browser.close();
 
-  if (allDonghua.length > 0) {
-    const outputDir = path.resolve('donghua');
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
+  // 3. Simpan Hasil
+  const outputDir = path.resolve('donghua');
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-    const jsonPath = path.join(outputDir, 'donghua.json');
-    fs.writeFileSync(jsonPath, JSON.stringify(allDonghua, null, 2), 'utf-8');
-    console.log(`Sukses: ${allDonghua.length} item lengkap disimpan di ${jsonPath}`);
+  const jsonPath = path.join(outputDir, 'donghua.json');
+  fs.writeFileSync(jsonPath, JSON.stringify(detailedResults, null, 2), 'utf-8');
+  console.log(`Selesai! ${detailedResults.length} item berhasil disimpan.`);
 
-    const sitemapContent = generateSitemapXml(allDonghua);
-    fs.writeFileSync(path.resolve('sitemap.xml'), sitemapContent, 'utf-8');
-    console.log('Sitemap.xml berhasil diperbarui.');
-  }
+  const sitemapContent = generateSitemapXml(detailedResults);
+  fs.writeFileSync(path.resolve('sitemap.xml'), sitemapContent, 'utf-8');
 }
 
 run();
