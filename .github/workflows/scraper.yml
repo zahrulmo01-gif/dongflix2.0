@@ -13,7 +13,7 @@ on:
         description: 'Slug Donghua (khusus jika memilih aksi episode)'
         required: false
 
-# Berikan izin tulis ke isi repositori
+# Wajib izin tulis agar git push di runner tidak ditolak (403)
 permissions:
   contents: write
 
@@ -31,11 +31,10 @@ jobs:
         with:
           node-version: 20
 
-      # Install dependensi
       - name: Install Dependencies
         run: npm install
 
-      # 1. Jalankan Scrape List Master Donghua
+      # 1. Jalankan Scrape List Katalog Master
       - name: Run Scraper List Donghua
         if: github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list'
         run: node admin/scraper.js
@@ -45,15 +44,15 @@ jobs:
         if: github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode'
         run: node admin/scraper-episodes.js ${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}
 
-      # 3. Jalankan Smart Scrape All (Cek Web vs JSON + Auto Bump)
+      # 3. Jalankan Smart Scrape All (Push otomatis langsung berjalan per-judul)
       - name: Run Smart Scrape All Episodes
         if: github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all'
         run: node admin/scrape-all-smart.js
 
-      # Commit dan Push Hasil Perubahan
-      - name: Commit & Push Changes
+      # Push cadangan untuk action list / single-episode atau sisa file yang belum ter-push
+      - name: Final Commit & Push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
           git add donghua/donghua.json donghua/episodes/*.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update database katalog/episode [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update remaining changes [skip ci]" && git push)
