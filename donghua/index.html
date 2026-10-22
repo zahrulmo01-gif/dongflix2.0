@@ -1,61 +1,83 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title id="metaTitle">Koleksi Donghua - Dongflix</title>
-  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru gratis di Dongflix.">
+  <title id="metaTitle">Koleksi Donghua Sub Indo - Dongflix</title>
+  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru dengan server cepat tanpa iklan mengganggu di Dongflix.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="metaCanonical" href="https://dongflix.my.id/donghua/">
 
   <meta property="og:type" content="video.tv_show">
-  <meta property="og:title" id="ogTitle" content="Koleksi Donghua - Dongflix">
-  <meta property="og:description" id="ogDesc" content="Nonton streaming donghua subtitle Indonesia terlengkap di Dongflix.">
+  <meta property="og:title" id="ogTitle" content="Koleksi Donghua Sub Indo - Dongflix">
+  <meta property="og:description" id="ogDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru di Dongflix.">
   <meta property="og:image" id="ogImage" content="">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans">
-  <div class="max-w-7xl mx-auto space-y-8">
-    
-    <!-- Navbar -->
-    <header class="flex items-center justify-between pb-5 border-b border-slate-800">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a href="/" class="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
-          Dongflix
+        <a href="/" class="text-2xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 bg-clip-text text-transparent flex items-center gap-2">
+          <span>Dongflix</span>
         </a>
-        <span class="text-[10px] bg-slate-900 border border-slate-800 text-cyan-400 px-2 py-0.5 rounded font-mono">
+        <span class="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 px-2.5 py-0.5 rounded-full font-mono">
           Streaming
         </span>
       </div>
 
-      <div class="flex items-center gap-3">
-        <a href="/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+      <nav class="flex items-center gap-2">
+        <a href="/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
           Beranda
         </a>
-        <a href="/donghua/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+        <a href="/donghua/" class="text-xs font-semibold text-cyan-400 px-3.5 py-2 rounded-xl bg-cyan-950/40 border border-cyan-800/60 transition">
           Katalog
         </a>
-        <a href="/admin/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+        <a href="/admin/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
           Admin
         </a>
-      </div>
-    </header>
+      </nav>
+    </div>
+  </header>
 
-    <!-- VIEW 1: PLAYER & DETAIL (/donghua/:slug) -->
-    <section id="detailView" class="hidden space-y-6">
-      <div>
-        <a href="/donghua/" class="text-xs text-cyan-400 hover:underline inline-flex items-center gap-1.5 font-medium">
-          ← Kembali ke Semua Koleksi
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 space-y-8">
+
+    <!-- VIEW 1: DETAIL & VIDEO PLAYER (/donghua/:slug) -->
+    <section id="detailView" class="hidden space-y-6 animate-in fade-in duration-200">
+      
+      <!-- Breadcrumb Nav -->
+      <div class="flex items-center gap-2 text-xs">
+        <a href="/donghua/" class="text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5 font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Semua Koleksi
         </a>
+        <span class="text-slate-700">/</span>
+        <span id="breadcrumbTitle" class="text-slate-300 font-semibold truncate max-w-xs sm:max-w-md">...</span>
       </div>
 
-      <!-- Player Frame -->
-      <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-        <div class="aspect-video w-full bg-black relative">
+      <!-- Video Player Frame Box -->
+      <div class="bg-slate-900 border border-slate-800/90 rounded-2xl overflow-hidden shadow-2xl">
+        <div class="aspect-video w-full bg-black relative flex items-center justify-center">
           
-          <!-- Iframe Player Universal -->
+          <!-- Iframe Universal Player -->
           <iframe 
             id="videoIframe" 
             src="" 
@@ -64,91 +86,108 @@
             allow="autoplay; fullscreen; picture-in-picture"
           ></iframe>
 
-          <!-- Placeholder -->
-          <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 p-6 text-center">
-            <p class="text-sm text-slate-400" id="playerMessage">Pilih episode di bawah untuk memutar video.</p>
+          <!-- Placeholder Sebelum Video Diputar -->
+          <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 p-6 text-center space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <p class="text-xs sm:text-sm font-medium text-slate-300" id="playerMessage">Pilih episode pada panel untuk memutar.</p>
           </div>
         </div>
 
-        <!-- Controls: Info & Server Selector -->
-        <div class="p-4 bg-slate-950/80 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold block">Sedang Diputar</span>
-            <h2 id="currentEpTitle" class="text-sm font-semibold text-white">Belum ada episode dipilih</h2>
+        <!-- Controls: Info Sedang Diputar & Selector Server -->
+        <div class="p-4 bg-slate-950/90 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="min-w-0">
+            <span class="text-[10px] uppercase tracking-wider text-cyan-400 font-bold block font-mono">Sedang Diputar</span>
+            <h2 id="currentEpTitle" class="text-xs sm:text-sm font-bold text-white truncate mt-0.5">Memuat episode...</h2>
           </div>
 
           <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer"></div>
         </div>
       </div>
 
-      <!-- Layout Detail & List Episode -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Layout 2 Kolom: Detail Info & List Episode -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        <!-- Info Donghua -->
-        <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 space-y-5">
-          <div class="flex gap-5">
-            <img id="detailCover" src="" class="w-24 sm:w-32 aspect-[3/4] object-cover rounded-xl border border-slate-800 shrink-0">
-            <div class="space-y-2">
-              <h1 id="detailTitle" class="text-xl sm:text-2xl font-bold text-white leading-tight"></h1>
-              <div class="flex flex-wrap gap-2 text-xs">
-                <span id="detailStatus" class="px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"></span>
-                <span id="detailEpBadge" class="px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20"></span>
-                <span id="detailReleased" class="px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700"></span>
+        <!-- Kolom Kiri: Metadata Donghua & Sinopsis -->
+        <div class="lg:col-span-2 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 sm:p-6 space-y-6">
+          <div class="flex flex-col sm:flex-row gap-5">
+            <img 
+              id="detailCover" 
+              src="" 
+              alt="Cover" 
+              class="w-28 sm:w-36 aspect-[3/4] object-cover rounded-xl border border-slate-800 shadow-lg shrink-0 mx-auto sm:mx-0"
+            >
+            <div class="space-y-3 text-center sm:text-left flex-1">
+              <h1 id="detailTitle" class="text-xl sm:text-2xl font-extrabold text-white leading-tight"></h1>
+              
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs">
+                <span id="detailStatus" class="px-2.5 py-0.5 rounded-md font-semibold border"></span>
+                <span id="detailEpBadge" class="px-2.5 py-0.5 rounded-md font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"></span>
+                <span id="detailReleased" class="px-2.5 py-0.5 rounded-md font-medium bg-slate-800 text-slate-300 border border-slate-700"></span>
               </div>
-              <div id="detailGenres" class="flex flex-wrap gap-1.5 pt-1"></div>
+
+              <div id="detailGenres" class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-1"></div>
             </div>
           </div>
 
-          <hr class="border-slate-800">
-
-          <div>
+          <div class="pt-2 border-t border-slate-800/80">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Sinopsis</h3>
-            <p id="detailSynopsis" class="text-sm text-slate-300 leading-relaxed whitespace-pre-line"></p>
+            <p id="detailSynopsis" class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line text-justify"></p>
           </div>
         </div>
 
-        <!-- Panel Episode -->
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col h-[520px]">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
-            <h3 class="text-sm font-bold text-white flex items-center gap-2">
-              <span>Daftar Episode</span>
-              <span id="epTotalCount" class="text-xs text-cyan-400 font-normal"></span>
-            </h3>
+        <!-- Kolom Kanan: Panel Daftar Episode -->
+        <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-3 gap-2">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-white">Daftar Episode</h3>
+              <span id="epTotalCount" class="text-[11px] text-cyan-400 font-mono"></span>
+            </div>
+            
             <input 
               id="searchEpInput" 
               oninput="filterEpisodeList()" 
               type="text" 
               placeholder="Cari ep..." 
-              class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white w-24 focus:outline-none focus:border-cyan-500"
+              class="w-24 sm:w-28 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
             >
           </div>
 
-          <div id="episodesList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+          <div id="episodesList" class="flex-1 overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
       </div>
+
     </section>
 
-    <!-- VIEW 2: KATALOG (/donghua/) -->
+    <!-- VIEW 2: KATALOG / GRID LIST (/donghua/) -->
     <section id="listView" class="space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      <!-- Filter Bar & Search -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl">
         <div>
-          <h1 class="text-2xl font-bold text-white tracking-tight">Semua Donghua</h1>
-          <p class="text-xs text-slate-400 mt-1">Daftar arsip serial animasi China subtitle Indonesia lengkap.</p>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Katalog Donghua</h1>
+          <p class="text-xs text-slate-400 mt-0.5">Koleksi serial animasi 3D China subtitle Indonesia terlengkap.</p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <input 
-            id="searchInput" 
-            oninput="applyFilters()" 
-            type="text" 
-            placeholder="Cari judul..." 
-            class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white flex-1 sm:w-64 focus:outline-none focus:border-cyan-500"
-          >
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <div class="relative flex-1 sm:w-64">
+            <input 
+              id="searchInput" 
+              oninput="applyFilters()" 
+              type="text" 
+              placeholder="Cari judul donghua..." 
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
+            >
+          </div>
+
           <select 
             id="statusFilter" 
             onchange="applyFilters()" 
-            class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+            class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
           >
             <option value="ALL">Semua Status</option>
             <option value="Ongoing">Ongoing</option>
@@ -157,14 +196,25 @@
         </div>
       </div>
 
-      <div class="text-xs text-slate-500" id="totalCounter">Memuat koleksi...</div>
-      <div id="catalogGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+      <!-- Counter Tampilan -->
+      <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+        <span id="totalCounter">Memuat koleksi...</span>
+      </div>
+
+      <!-- Grid Katalog Card -->
+      <div id="catalogGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4"></div>
+
     </section>
 
-  </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 px-4 py-6 text-center text-xs text-slate-500">
+    <p>&copy; 2026 Dongflix. Nonton Donghua Subtitle Indonesia Gratis.</p>
+  </footer>
 
   <script>
-    // Blokir popup liar tab baru
+    // Cegah popup liar tab baru
     window.open = function () {
       return null;
     };
@@ -213,16 +263,24 @@
       detailView.classList.remove('hidden');
       listView.classList.add('hidden');
 
+      document.getElementById('breadcrumbTitle').innerText = item.title;
       document.getElementById('detailTitle').innerText = item.title;
       document.getElementById('detailCover').src = item.cover || 'https://via.placeholder.com/300x400';
-      document.getElementById('detailStatus').innerText = item.status || 'Ongoing';
+      
+      const isCompleted = (item.status || '').toLowerCase() === 'completed';
+      const statusBadge = document.getElementById('detailStatus');
+      statusBadge.innerText = item.status || 'Ongoing';
+      statusBadge.className = isCompleted 
+        ? 'px-2.5 py-0.5 rounded-md font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20' 
+        : 'px-2.5 py-0.5 rounded-md font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+
       document.getElementById('detailEpBadge').innerText = item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-');
       document.getElementById('detailReleased').innerText = item.released && item.released !== '-' ? `Rilis: ${item.released}` : 'Rilis: Terbaru';
-      document.getElementById('detailSynopsis').innerText = item.synopsis || 'Sinopsis belum tersedia.';
+      document.getElementById('detailSynopsis').innerText = item.synopsis || 'Sinopsis belum tersedia untuk judul ini.';
 
-      const genres = item.genres && item.genres.length > 0 ? item.genres : ['Donghua', '3D Animation'];
+      const genres = item.genres && item.genres.length > 0 ? item.genres : ['Donghua', 'Action', '3D'];
       document.getElementById('detailGenres').innerHTML = genres.map(g => `
-        <span class="bg-slate-800 text-cyan-300 text-[11px] px-2 py-0.5 rounded border border-slate-700 font-medium">
+        <span class="bg-slate-800/80 text-cyan-300 text-[11px] px-2.5 py-0.5 rounded-md border border-slate-700/80 font-medium">
           ${g}
         </span>
       `).join('');
@@ -237,7 +295,7 @@
 
     async function loadEpisodes(slug) {
       const listContainer = document.getElementById('episodesList');
-      listContainer.innerHTML = '<div class="text-xs text-slate-500 py-6 text-center">Memuat episode...</div>';
+      listContainer.innerHTML = '<div class="text-xs text-slate-500 py-8 text-center">Memuat daftar episode...</div>';
 
       try {
         const res = await fetch(`/donghua/episodes/${slug}.json?t=` + Date.now());
@@ -246,15 +304,15 @@
 
         if (currentEpisodes.length === 0) throw new Error();
 
-        document.getElementById('epTotalCount').innerText = `(${currentEpisodes.length} Ep)`;
+        document.getElementById('epTotalCount').innerText = `(${currentEpisodes.length} Episode)`;
         renderEpisodeList(currentEpisodes);
         playEpisode(0);
       } catch (err) {
-        document.getElementById('epTotalCount').innerText = '(0 Ep)';
+        document.getElementById('epTotalCount').innerText = '(0 Episode)';
         listContainer.innerHTML = `
           <div class="py-12 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl p-3">
-            Video episode belum discrape.<br>
-            Buka menu <strong>Admin</strong> untuk scrape episode & server.
+            Video belum discrape.<br>
+            Buka menu <strong class="text-cyan-400">Admin</strong> untuk mengambil link video.
           </div>
         `;
         document.getElementById('playerMessage').innerText = 'Video belum tersedia untuk judul ini.';
@@ -263,23 +321,26 @@
 
     function renderEpisodeList(epList) {
       const listContainer = document.getElementById('episodesList');
-      listContainer.innerHTML = epList.map((ep, idx) => `
-        <button 
-          onclick="playEpisode(${idx})" 
-          id="epBtn-${idx}"
-          class="w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs ${
-            idx === selectedEpIndex 
-              ? 'bg-cyan-600/20 border-cyan-500 text-cyan-300' 
-              : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
-          }"
-        >
-          <div class="line-clamp-1 font-medium">
-            <span class="font-bold text-white mr-1.5">Ep ${ep.episode}</span>
-            <span class="text-slate-400">${ep.title}</span>
-          </div>
-          <span class="text-[10px] text-slate-500 shrink-0 ml-2 font-mono">${ep.date || ''}</span>
-        </button>
-      `).join('');
+      listContainer.innerHTML = epList.map((ep, idx) => {
+        const isCurrent = idx === selectedEpIndex;
+        return `
+          <button 
+            onclick="playEpisode(${idx})" 
+            id="epBtn-${idx}"
+            class="w-full text-left p-2.5 rounded-xl border transition flex items-center justify-between text-xs ${
+              isCurrent 
+                ? 'bg-cyan-500/10 border-cyan-500/60 text-cyan-300 font-semibold' 
+                : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300'
+            }"
+          >
+            <div class="truncate mr-2">
+              <span class="${isCurrent ? 'text-cyan-400' : 'text-white'} font-bold mr-1.5 font-mono">Ep ${ep.episode}</span>
+              <span class="text-slate-400 font-normal">${ep.title}</span>
+            </div>
+            <span class="text-[10px] text-slate-500 shrink-0 font-mono">${ep.date || ''}</span>
+          </button>
+        `;
+      }).join('');
     }
 
     function filterEpisodeList() {
@@ -300,12 +361,12 @@
         const btn = document.getElementById(`epBtn-${i}`);
         if (btn) {
           btn.className = (i === index)
-            ? 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-cyan-600/20 border-cyan-500 text-cyan-300'
-            : 'w-full text-left p-3 rounded-xl border transition flex items-center justify-between text-xs bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300';
+            ? 'w-full text-left p-2.5 rounded-xl border transition flex items-center justify-between text-xs bg-cyan-500/10 border-cyan-500/60 text-cyan-300 font-semibold'
+            : 'w-full text-left p-2.5 rounded-xl border transition flex items-center justify-between text-xs bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-300';
         }
       });
 
-      document.getElementById('currentEpTitle').innerText = ep.title;
+      document.getElementById('currentEpTitle').innerText = `Episode ${ep.episode} - ${ep.title}`;
 
       const serverBox = document.getElementById('serverContainer');
       const servers = ep.servers || [];
@@ -315,7 +376,7 @@
         document.getElementById('videoIframe').src = '';
         document.getElementById('videoIframe').classList.add('hidden');
         document.getElementById('playerPlaceholder').classList.remove('hidden');
-        document.getElementById('playerMessage').innerText = 'Tidak ada link player aktif pada episode ini.';
+        document.getElementById('playerMessage').innerText = 'Tidak ada link video aktif untuk episode ini.';
         return;
       }
 
@@ -325,7 +386,7 @@
           id="srvBtn-${sIdx}" 
           class="px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition ${
             sIdx === 0 
-              ? 'bg-cyan-500 text-slate-950' 
+              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-950' 
               : 'bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800'
           }"
         >
@@ -347,7 +408,7 @@
         const sBtn = document.getElementById(`srvBtn-${idx}`);
         if (sBtn) {
           sBtn.className = (idx === serverIndex)
-            ? 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-cyan-500 text-slate-950'
+            ? 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-cyan-500 text-slate-950 shadow-md shadow-cyan-950'
             : 'px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800';
         }
       });
@@ -367,36 +428,49 @@
 
       const grid = document.getElementById('catalogGrid');
       if (items.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-500">Tidak ada donghua yang cocok.</div>';
+        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-500">Tidak ada judul donghua yang cocok.</div>';
         return;
       }
 
-      grid.innerHTML = items.map(item => `
-        <a href="/donghua/${item.slug}" class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col hover:border-slate-700 transition">
-          <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
-            <img 
-              src="${item.cover || 'https://via.placeholder.com/300x400'}" 
-              alt="${item.title}" 
-              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
-              loading="lazy"
-            >
-            <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2 py-0.5 rounded">
-              ${item.type || 'Donghua'}
-            </span>
-            <span class="absolute bottom-2 right-2 bg-blue-600/90 backdrop-blur-md text-[10px] text-white font-medium px-1.5 py-0.5 rounded">
-              ${item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-')}
-            </span>
-          </div>
-          <div class="p-3 flex-1 flex flex-col justify-between">
-            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-cyan-400 transition" title="${item.title}">
-              ${item.title}
-            </h3>
-            <span class="text-[11px] text-emerald-400 font-medium mt-2">
-              ${item.status || 'Ongoing'}
-            </span>
-          </div>
-        </a>
-      `).join('');
+      grid.innerHTML = items.map(item => {
+        const isCompleted = (item.status || '').toLowerCase() === 'completed';
+        const epNum = item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-');
+        
+        return `
+          <a href="/donghua/${item.slug}" class="group bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-950/20 transition duration-200">
+            <div class="aspect-[3/4] w-full bg-slate-950 relative overflow-hidden">
+              <img 
+                src="${item.cover || 'https://via.placeholder.com/300x400'}" 
+                alt="${item.title}" 
+                class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+                loading="lazy"
+              >
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+              
+              <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-bold px-2 py-0.5 rounded-md border border-slate-800">
+                ${item.type || 'Donghua'}
+              </span>
+
+              <span class="absolute bottom-2 right-2 bg-cyan-600/90 backdrop-blur-md text-[10px] text-white font-mono font-bold px-1.5 py-0.5 rounded-md shadow">
+                ${epNum}
+              </span>
+            </div>
+
+            <div class="p-3 flex-1 flex flex-col justify-between">
+              <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-cyan-400 transition" title="${item.title}">
+                ${item.title}
+              </h3>
+              
+              <div class="mt-2.5 flex items-center justify-between text-[10px] font-medium">
+                <span class="${isCompleted ? 'text-blue-400' : 'text-emerald-400'}">
+                  ${item.status || 'Ongoing'}
+                </span>
+                <span class="text-slate-500 font-mono">Sub Indo</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
     }
 
     function applyFilters() {
@@ -404,7 +478,7 @@
       const status = document.getElementById('statusFilter').value;
 
       const filtered = allData.filter(item => {
-        const matchesQuery = item.title.toLowerCase().includes(q);
+        const matchesQuery = item.title.toLowerCase().includes(q) || item.slug.toLowerCase().includes(q);
         const matchesStatus = status === 'ALL' || (item.status && item.status.toLowerCase() === status.toLowerCase());
         return matchesQuery && matchesStatus;
       });
