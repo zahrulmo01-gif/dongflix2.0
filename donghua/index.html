@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title id="metaTitle">Koleksi Donghua - Dongflix</title>
-  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru dengan kualitas HD gratis di Dongflix.">
+  <meta name="description" id="metaDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru gratis di Dongflix.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="metaCanonical" href="https://dongflix.my.id/donghua/">
 
@@ -55,15 +55,7 @@
       <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         <div class="aspect-video w-full bg-black relative">
           
-          <!-- Mode 1: Native HTML5 Video Player (dfplayer HD dari D-Tube) -->
-          <video 
-            id="dfVideoPlayer" 
-            controls 
-            playsinline 
-            class="hidden w-full h-full object-contain bg-black focus:outline-none"
-          ></video>
-
-          <!-- Mode 2: Iframe Player (Dailymotion via Worker / Server Fallback) -->
+          <!-- Iframe Player Universal -->
           <iframe 
             id="videoIframe" 
             src="" 
@@ -321,7 +313,7 @@
       if (servers.length === 0) {
         serverBox.innerHTML = '<span class="text-xs text-rose-400">Tidak ada server video</span>';
         document.getElementById('videoIframe').src = '';
-        document.getElementById('dfVideoPlayer').src = '';
+        document.getElementById('videoIframe').classList.add('hidden');
         document.getElementById('playerPlaceholder').classList.remove('hidden');
         document.getElementById('playerMessage').innerText = 'Tidak ada link player aktif pada episode ini.';
         return;
@@ -360,30 +352,12 @@
         }
       });
 
-      const dfPlayer = document.getElementById('dfVideoPlayer');
       const iframePlayer = document.getElementById('videoIframe');
       const placeholder = document.getElementById('playerPlaceholder');
 
       placeholder.classList.add('hidden');
-
-      if (srv.type === 'direct') {
-        // Mode Native dfplayer (File MP4 D-Tube dari IPFS)
-        iframePlayer.classList.add('hidden');
-        iframePlayer.src = '';
-
-        dfPlayer.classList.remove('hidden');
-        dfPlayer.src = srv.link;
-        dfPlayer.load();
-        dfPlayer.play().catch(() => {});
-      } else {
-        // Mode Iframe (Dailymotion via Worker / Server Fallback)
-        dfPlayer.pause();
-        dfPlayer.classList.add('hidden');
-        dfPlayer.src = '';
-
-        iframePlayer.classList.remove('hidden');
-        iframePlayer.src = srv.link;
-      }
+      iframePlayer.classList.remove('hidden');
+      iframePlayer.src = srv.link;
     }
 
     function showCatalog(items) {
