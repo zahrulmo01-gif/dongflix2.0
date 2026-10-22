@@ -6,7 +6,9 @@
     "scrape": "node admin/scraper.js"
   },
   "dependencies": {
-    "axios": "^1.7.0",
-    "cheerio": "^1.0.0-rc.12"
+    "cheerio": "^1.0.0-rc.12",
+    "puppeteer": "^22.6.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
