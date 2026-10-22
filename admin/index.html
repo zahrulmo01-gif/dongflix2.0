@@ -3,109 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Scraper Donghua</title>
+  <title>Dongflix 2.0 - Admin Scraper</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-10 font-sans">
   <div class="max-w-7xl mx-auto space-y-8">
     
-    <!-- Header -->
+    <!-- Top Bar Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
       <div>
-        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
-          Admin Scraper Panel
-        </h1>
+        <div class="flex items-center gap-3">
+          <h1 class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+            Dongflix 2.0 Panel
+          </h1>
+          <span class="text-xs bg-slate-900 border border-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono">
+            zahrulmo01-gif/dongflix2.0
+          </span>
+        </div>
         <p class="text-slate-400 text-sm mt-1">
-          Target data: <code class="text-sky-400 bg-slate-900 px-2 py-0.5 rounded">/donghua/donghua.json</code>
+          Scraper otomatis via GitHub Actions &bull; Data tersimpan di <code class="text-cyan-400 bg-slate-900 px-1.5 py-0.5 rounded">/donghua/donghua.json</code>
         </p>
       </div>
+
       <div class="flex items-center gap-3">
-        <a href="/" class="px-4 py-2 text-sm rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
-          Lihat Web Utama
+        <a href="/" class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
+          Katalog Utama ↗
         </a>
-        <button id="btnTrigger" onclick="triggerScrapeAction()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm font-semibold transition active:scale-95 shadow-lg shadow-blue-600/30">
-          Jalankan Scraper
+        <button id="btnTrigger" onclick="triggerScrapeAction()" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition active:scale-95 shadow-lg shadow-cyan-600/30">
+          <span id="btnIcon">⚡</span>
+          <span id="btnText">Jalankan Scraper</span>
         </button>
       </div>
     </div>
 
-    <!-- Modal / Setting Token (Tersimpan di LocalStorage browser admin) -->
-    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="text-sm">
-        <p class="font-semibold text-slate-200">Konfigurasi GitHub Workflow</p>
-        <p class="text-slate-400 text-xs">Diperlukan untuk memicu tombol action langsung dari web tanpa buka GitHub.</p>
+    <!-- Panel Setup Token (Otomatis & Tersimpan di Cache) -->
+    <div class="bg-slate-900/70 border border-slate-800/80 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold text-slate-200">GitHub Personal Access Token</span>
+          <span id="tokenBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">
+            Belum Terpasang
+          </span>
+        </div>
+        <p class="text-xs text-slate-400">
+          Token disimpan aman di cache browser Anda. Cukup masukkan sekali, halaman refresh tidak akan meminta token lagi.
+        </p>
       </div>
-      <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-        <input id="ghOwner" type="text" placeholder="Owner/Username" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
-        <input id="ghRepo" type="text" placeholder="Nama Repo" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
-        <input id="ghPat" type="password" placeholder="GitHub PAT (token)" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
-        <button onclick="saveConfig()" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium">Simpan</button>
+
+      <div class="flex items-center gap-2 w-full md:w-auto">
+        <div class="relative flex-1 md:w-80">
+          <input 
+            id="ghTokenInput" 
+            type="password" 
+            placeholder="Tempel token (ghp_...)" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono tracking-wider"
+          >
+          <button 
+            type="button" 
+            onclick="toggleTokenVisibility()" 
+            class="absolute right-3 top-2.5 text-slate-500 hover:text-slate-300 text-xs"
+          >
+            👁️
+          </button>
+        </div>
+        <button 
+          onclick="saveToken()" 
+          class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition"
+        >
+          Simpan Token
+        </button>
       </div>
     </div>
 
     <!-- Alert Status -->
-    <div id="statusAlert" class="hidden p-4 rounded-xl text-sm border"></div>
+    <div id="statusAlert" class="hidden p-4 rounded-xl text-xs md:text-sm border transition-all"></div>
 
-    <!-- Metric Stats -->
+    <!-- Metric Dashboard -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Item Tersimpan</div>
-        <div id="totalDonghua" class="text-3xl font-bold text-white mt-1">0</div>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Total Donghua Terdata</div>
+        <div id="totalDonghua" class="text-3xl font-extrabold text-white mt-1">0</div>
       </div>
-      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Status Data Lokal</div>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Status Data JSON</div>
         <div id="fileStatus" class="text-sm font-medium text-emerald-400 mt-3 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Terkoneksi
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Sinkron & Aktif
         </div>
       </div>
-      <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Pencarian Cepat</div>
-        <input id="searchInput" oninput="filterData()" type="text" placeholder="Ketik judul..." class="w-full mt-2 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Cari Judul</div>
+        <input 
+          id="searchInput" 
+          oninput="filterData()" 
+          type="text" 
+          placeholder="Ketik judul donghua..." 
+          class="w-full mt-2 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-500"
+        >
       </div>
     </div>
 
-    <!-- List Donghua Container -->
-    <div>
-      <h2 class="text-xl font-bold text-slate-200 mb-4">Daftar Donghua Saat Ini</h2>
+    <!-- List Katalog Donghua -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-200">List Donghua Terkini</h2>
+        <span id="filteredCount" class="text-xs text-slate-400"></span>
+      </div>
+
       <div id="donghuaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        <!-- Render card dinamis dari donghua.json -->
+        <!-- Kartu donghua akan dirender di sini -->
       </div>
     </div>
 
   </div>
 
   <script>
-    let donghuaData = [];
+    // Repository target tetap
+    const GH_OWNER = 'Zahrulmo01-gif';
+    const GH_REPO = 'dongflix2.0';
+    const WORKFLOW_FILE = 'scrape.yml';
 
-    // Ambil data dari /donghua/donghua.json
-    async function loadData() {
-      try {
-        const res = await fetch('/donghua/donghua.json?t=' + Date.now());
-        if (!res.ok) throw new Error('File belum ditemukan');
-        donghuaData = await res.json();
-        document.getElementById('totalDonghua').innerText = donghuaData.length;
-        renderGrid(donghuaData);
-      } catch (err) {
-        document.getElementById('totalDonghua').innerText = '0';
-        document.getElementById('fileStatus').innerHTML = '<span class="text-rose-400">Belum ada data</span>';
-        document.getElementById('donghuaGrid').innerHTML = '<div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">donghua.json masih kosong. Silakan jalankan scraper.</div>';
+    let allDonghua = [];
+
+    // Inisialisasi data dan token dari cache saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTokenFromCache();
+      loadDonghuaData();
+    });
+
+    // 1. Logika Token & Cache Browser
+    function loadTokenFromCache() {
+      const savedToken = localStorage.getItem('dongflix_gh_token');
+      const input = document.getElementById('ghTokenInput');
+      const badge = document.getElementById('tokenBadge');
+
+      if (savedToken) {
+        input.value = savedToken;
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        badge.innerText = 'Token Tersimpan';
+      } else {
+        badge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30';
+        badge.innerText = 'Belum Ada Token';
       }
     }
 
-    function renderGrid(items) {
+    function saveToken() {
+      const token = document.getElementById('ghTokenInput').value.trim();
+      if (!token) {
+        showAlert('Silakan masukkan token sebelum menyimpan.', 'rose');
+        return;
+      }
+      localStorage.setItem('dongflix_gh_token', token);
+      loadTokenFromCache();
+      showAlert('Token berhasil disimpan ke cache browser! Anda tidak perlu memasukkannya lagi.', 'emerald');
+    }
+
+    function toggleTokenVisibility() {
+      const input = document.getElementById('ghTokenInput');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    // 2. Fetch Data dari /donghua/donghua.json
+    async function loadDonghuaData() {
+      try {
+        const res = await fetch('/donghua/donghua.json?nocache=' + Date.now());
+        if (!res.ok) throw new Error('Data belum ditemukan');
+        allDonghua = await res.json();
+        
+        document.getElementById('totalDonghua').innerText = allDonghua.length;
+        document.getElementById('filteredCount').innerText = `Menampilkan ${allDonghua.length} item`;
+        renderCards(allDonghua);
+      } catch (err) {
+        document.getElementById('totalDonghua').innerText = '0';
+        document.getElementById('fileStatus').innerHTML = '<span class="text-amber-400">File JSON masih kosong / belum ada</span>';
+        document.getElementById('donghuaGrid').innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl bg-slate-900/30">
+            Belum ada list donghua di /donghua/donghua.json.<br>
+            Klik tombol <strong>"Jalankan Scraper"</strong> di atas untuk mengisi data.
+          </div>
+        `;
+      }
+    }
+
+    // 3. Render Card Katalog
+    function renderCards(items) {
       const grid = document.getElementById('donghuaGrid');
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500">Tidak ada judul yang cocok.</div>';
+        return;
+      }
+
       grid.innerHTML = items.map(item => `
-        <div class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+        <div class="group bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden flex flex-col hover:border-slate-700 transition">
           <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
-            <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
-            <span class="absolute top-2 left-2 bg-slate-950/80 text-[10px] text-sky-400 font-semibold px-2 py-0.5 rounded">${item.type}</span>
-            <span class="absolute bottom-2 right-2 bg-blue-600/90 text-[10px] text-white font-medium px-1.5 py-0.5 rounded">${item.episode}</span>
+            <img 
+              src="${item.cover || 'https://via.placeholder.com/300x400?text=No+Cover'}" 
+              alt="${item.title}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+              loading="lazy"
+            >
+            <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2 py-0.5 rounded">
+              ${item.type || 'Donghua'}
+            </span>
+            <span class="absolute bottom-2 right-2 bg-blue-600/90 backdrop-blur-md text-[10px] text-white font-medium px-1.5 py-0.5 rounded">
+              ${item.episode || '-'}
+            </span>
           </div>
           <div class="p-3 flex-1 flex flex-col justify-between">
-            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2" title="${item.title}">${item.title}</h3>
+            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug" title="${item.title}">
+              ${item.title}
+            </h3>
             <div class="mt-2 flex items-center justify-between text-[11px]">
-              <span class="text-emerald-400 font-medium">${item.status}</span>
-              <a href="${item.link}" target="_blank" class="text-slate-400 hover:text-white">Buka ↗</a>
+              <span class="text-emerald-400 font-medium">${item.status || 'Ongoing'}</span>
+              <a href="${item.link}" target="_blank" rel="noreferrer" class="text-slate-400 hover:text-white transition">
+                Buka ↗
+              </a>
             </div>
           </div>
         </div>
@@ -113,66 +224,67 @@
     }
 
     function filterData() {
-      const q = document.getElementById('searchInput').value.toLowerCase();
-      renderGrid(donghuaData.filter(d => d.title.toLowerCase().includes(q)));
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allDonghua.filter(d => d.title.toLowerCase().includes(query));
+      document.getElementById('filteredCount').innerText = `Menampilkan ${filtered.length} dari ${allDonghua.length} item`;
+      renderCards(filtered);
     }
 
-    function saveConfig() {
-      localStorage.setItem('gh_owner', document.getElementById('ghOwner').value);
-      localStorage.setItem('gh_repo', document.getElementById('ghRepo').value);
-      localStorage.setItem('gh_pat', document.getElementById('ghPat').value);
-      showAlert('Konfigurasi GitHub berhasil disimpan di browser.', 'emerald');
-    }
-
+    // 4. Trigger GitHub Actions Langsung ke Zahrulmo01-gif/dongflix2.0
     async function triggerScrapeAction() {
-      const owner = localStorage.getItem('gh_owner');
-      const repo = localStorage.getItem('gh_repo');
-      const pat = localStorage.getItem('gh_pat');
+      const token = localStorage.getItem('dongflix_gh_token');
 
-      if (!owner || !repo || !pat) {
-        return showAlert('Isi dan simpan Konfigurasi GitHub (Owner, Repo, Token) terlebih dahulu.', 'rose');
+      if (!token) {
+        showAlert('Token belum diisi. Masukkan GitHub PAT Anda terlebih dahulu lalu klik Simpan.', 'rose');
+        return;
       }
 
       const btn = document.getElementById('btnTrigger');
+      const btnText = document.getElementById('btnText');
+      const btnIcon = document.getElementById('btnIcon');
+
       btn.disabled = true;
-      btn.innerText = 'Mengirim Permintaan...';
+      btnText.innerText = 'Mengirim Perintah...';
+      btnIcon.innerHTML = '<span class="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>';
 
       try {
-        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/scrape.yml/dispatches`, {
+        const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`;
+
+        const response = await fetch(url, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${pat}`,
-            'Accept': 'application/vnd.github+json'
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
           },
           body: JSON.stringify({ ref: 'main' })
         });
 
-        if (res.ok) {
-          showAlert('Scraper berhasil dipicu di GitHub Action! File donghua.json akan terupdate otomatis dalam beberapa menit.', 'emerald');
+        if (response.status === 204) {
+          showAlert('Berhasil! Workflow scraping sedang berjalan di GitHub Actions repo Zahrulmo01-gif/dongflix2.0. File donghua.json akan diperbarui beberapa saat lagi.', 'emerald');
         } else {
-          const err = await res.json();
-          showAlert('Gagal: ' + (err.message || 'Cek token/nama repo'), 'rose');
+          const err = await response.json();
+          showAlert(`Gagal: ${err.message || 'Pastikan token memiliki hak akses workflow/repo dan nama branch utama adalah main.'}`, 'rose');
         }
       } catch (err) {
-        showAlert('Gagal menghubungi GitHub API: ' + err.message, 'rose');
+        showAlert('Koneksi gagal: ' + err.message, 'rose');
       } finally {
         btn.disabled = false;
-        btn.innerText = 'Jalankan Scraper';
+        btnText.innerText = 'Jalankan Scraper';
+        btnIcon.innerText = '⚡';
       }
     }
 
     function showAlert(msg, color) {
-      const el = document.getElementById('statusAlert');
-      el.className = `p-4 rounded-xl text-sm border bg-${color}-950/40 border-${color}-800 text-${color}-300 block`;
-      el.innerText = msg;
+      const alertBox = document.getElementById('statusAlert');
+      alertBox.className = `p-4 rounded-xl text-xs md:text-sm border bg-${color}-950/40 border-${color}-800/80 text-${color}-300 block`;
+      alertBox.innerHTML = `
+        <div class="flex items-center justify-between gap-3">
+          <span>${msg}</span>
+          <button onclick="document.getElementById('statusAlert').classList.add('hidden')" class="text-slate-400 hover:text-white font-bold">✕</button>
+        </div>
+      `;
     }
-
-    // Load konfigurasi tersimpan
-    document.getElementById('ghOwner').value = localStorage.getItem('gh_owner') || '';
-    document.getElementById('ghRepo').value = localStorage.getItem('gh_repo') || '';
-    document.getElementById('ghPat').value = localStorage.getItem('gh_pat') || '';
-
-    loadData();
   </script>
 </body>
 </html>
