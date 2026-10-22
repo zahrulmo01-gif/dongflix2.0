@@ -3,284 +3,393 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dongflix 2.0 - Admin Scraper</title>
+  <title>Admin Dashboard - Dongflix</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans">
   <div class="max-w-7xl mx-auto space-y-8">
     
-    <!-- Top Bar Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
       <div>
         <div class="flex items-center gap-3">
-          <h1 class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
-            Dongflix 2.0 Panel
-          </h1>
-          <span class="text-xs bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-full font-mono">
-            Zahrulmo01-gif/dongflix2.0
+          <a href="/" class="text-2xl font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
+            Dongflix
+          </a>
+          <span class="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-2 py-0.5 rounded font-mono font-bold">
+            ADMIN PANEL
           </span>
         </div>
-        <p class="text-slate-400 text-sm mt-1">
-          Klik pada salah satu donghua untuk mengelola & scrape episode serta server video.
-        </p>
+        <p class="text-xs text-slate-400 mt-1">Manajemen katalog dan otomatisasi pembaruan episode serial donghua.</p>
       </div>
 
       <div class="flex items-center gap-3">
-        <a href="/" class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition">
-          Katalog Utama ↗
+        <a href="/donghua/" class="text-xs text-slate-400 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 transition">
+          Lihat Web
         </a>
-        <button id="btnTrigger" onclick="triggerScrapeAction()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition active:scale-95 shadow-lg shadow-cyan-600/30">
-          <span id="btnIcon">⚡</span>
-          <span id="btnText">Scrape List Donghua</span>
+        <button 
+          onclick="openSettingsModal()" 
+          class="text-xs text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span>Konfigurasi GitHub</span>
         </button>
       </div>
+    </header>
+
+    <!-- Toolbar & Tombol Aksi Utama -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Tombol 1: Scrape List Donghua -->
+        <button 
+          onclick="openConfirmModal('list')" 
+          class="px-4 py-2.5 bg-slate-900 border border-slate-700 hover:border-cyan-500 text-cyan-400 hover:text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-sm"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Scrape List Donghua</span>
+        </button>
+
+        <!-- Tombol 2: Scrape Semua Episode -->
+        <button 
+          onclick="openConfirmModal('all-episodes')" 
+          class="px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-sm shadow-cyan-950"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Scrape Semua Episode</span>
+        </button>
+      </div>
+
+      <!-- Input Pencarian Donghua -->
+      <div class="w-full lg:w-72">
+        <input 
+          id="searchAdminInput" 
+          oninput="handleSearchDonghua()" 
+          type="text" 
+          placeholder="Cari judul atau slug..." 
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
+        >
+      </div>
     </div>
 
-    <!-- Token Panel -->
-    <div class="bg-slate-900/70 border border-slate-800/80 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-semibold text-slate-200">GitHub Personal Access Token</span>
-          <span id="tokenBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30">Belum Terpasang</span>
-        </div>
-        <p class="text-xs text-slate-400">Token tersimpan di browser Anda.</p>
-      </div>
-      <div class="flex items-center gap-2 w-full md:w-auto">
-        <input id="ghTokenInput" type="password" placeholder="Tempel token (ghp_...)" class="w-full md:w-80 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
-        <button onclick="saveToken()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">Simpan</button>
-      </div>
-    </div>
-
-    <!-- Live Status Tracker -->
-    <div id="processContainer" class="hidden bg-slate-900/90 border border-slate-800 p-5 rounded-2xl space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="relative flex h-3 w-3">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
-          </span>
-          <h3 id="processStatusText" class="text-sm font-bold text-slate-200">Menjalankan Runner GitHub...</h3>
-        </div>
-        <span id="processBadge" class="text-xs px-2.5 py-1 rounded-full font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">In Progress</span>
-      </div>
-      <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
-        <div id="progressBar" class="bg-gradient-to-r from-cyan-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
-      </div>
-    </div>
-
-    <!-- Catalog List Section -->
-    <div class="space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-bold text-slate-200">Katalog Donghua</h2>
-          <p class="text-xs text-slate-400">Klik kartu untuk membuka popup scrape episode</p>
-        </div>
-        <input id="searchInput" oninput="filterData()" type="text" placeholder="Cari judul..." class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white w-full sm:w-64 focus:outline-none focus:border-cyan-500">
+    <!-- Tabel Daftar Judul Katalog -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Daftar Donghua Tersedia</h2>
+        <span id="counterLabel" class="text-xs text-slate-500">Memuat data...</span>
       </div>
 
-      <div id="donghuaGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-950/70 border-b border-slate-800 text-slate-400 font-semibold uppercase text-[11px] tracking-wider">
+              <th class="p-3.5 pl-5">Cover</th>
+              <th class="p-3.5">Judul & Slug</th>
+              <th class="p-3.5">Status</th>
+              <th class="p-3.5">Episode Baru</th>
+              <th class="p-3.5 text-right pr-5">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="catalogTableBody" class="divide-y divide-slate-800/60">
+            <tr>
+              <td colspan="5" class="py-12 text-center text-slate-500">Mengambil data katalog...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>
 
-  <!-- ================= POPUP MODAL EPISODE SCRAPER ================= -->
-  <div id="epModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      
-      <!-- Modal Header -->
-      <div class="p-5 border-b border-slate-800 flex items-start justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <img id="modalCover" src="" class="w-14 h-18 object-cover rounded-lg border border-slate-700">
-          <div>
-            <h3 id="modalTitle" class="text-base font-bold text-white line-clamp-1"></h3>
-            <span id="modalSlug" class="text-xs font-mono text-cyan-400"></span>
-          </div>
+  <!-- MODAL 1: Konfirmasi Aksi Scrape (Pop-up Pengaman) -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
         </div>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
-      </div>
-
-      <!-- Modal Body (List Episode & Server Status) -->
-      <div class="p-5 flex-1 overflow-y-auto space-y-4">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Episode Tersimpan</span>
-          <span id="modalEpCount" class="text-xs text-slate-400">Memeriksa...</span>
-        </div>
-
-        <div id="modalEpList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-          <!-- List episode atau status kosong -->
+        <div>
+          <h3 id="modalTitle" class="text-sm font-bold text-white leading-tight">Konfirmasi Tindakan</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Pemeriksaan keamanan aksi</p>
         </div>
       </div>
 
-      <!-- Modal Footer (Action Trigger) -->
-      <div class="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between">
-        <span class="text-[11px] text-slate-400">Scrape video server & iframe player via GitHub Actions</span>
-        <button id="btnScrapeEp" onclick="triggerEpisodeScraper()" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition active:scale-95 shadow-lg shadow-cyan-600/30 flex items-center gap-2">
-          <span>⚡</span>
-          <span id="btnScrapeEpText">Scrape Semua Episode & Server</span>
+      <p id="modalDesc" class="text-xs text-slate-300 leading-relaxed"></p>
+
+      <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
+        <button 
+          onclick="closeConfirmModal()" 
+          type="button" 
+          class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        >
+          Batal
+        </button>
+        <button 
+          id="btnConfirmAction" 
+          type="button" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition shadow"
+        >
+          Ya, Jalankan
         </button>
       </div>
+    </div>
+  </div>
 
+  <!-- MODAL 2: Pengaturan GitHub PAT -->
+  <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+      <div>
+        <h3 class="text-sm font-bold text-white leading-tight">Konfigurasi GitHub API</h3>
+        <p class="text-[11px] text-slate-400 mt-1">Digunakan untuk memicu GitHub Actions secara otomatis dari browser.</p>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Repositori GitHub</label>
+          <input 
+            id="repoInput" 
+            type="text" 
+            placeholder="username/repository" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-cyan-500"
+          >
+          <span class="text-[10px] text-slate-500 mt-1 block">Contoh: rulsz/dongflix2.0</span>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1">Personal Access Token (PAT)</label>
+          <input 
+            id="patInput" 
+            type="password" 
+            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-cyan-500 font-mono"
+          >
+          <span class="text-[10px] text-slate-500 mt-1 block">Token disimpan aman di LocalStorage browser perangkat ini.</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
+        <button 
+          onclick="closeSettingsModal()" 
+          type="button" 
+          class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        >
+          Tutup
+        </button>
+        <button 
+          onclick="saveSettings()" 
+          type="button" 
+          class="px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition"
+        >
+          Simpan Konfigurasi
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
-    const GH_OWNER = 'Zahrulmo01-gif';
-    const GH_REPO = 'dongflix2.0';
+    let donghuaData = [];
+    let currentActionType = null;
+    let selectedSlugToScrape = null;
 
-    let allDonghua = [];
-    let activeItem = null;
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadToken();
-      loadData();
-    });
-
-    function loadToken() {
-      const t = localStorage.getItem('dongflix_gh_token');
-      if (t) {
-        document.getElementById('ghTokenInput').value = t;
-        document.getElementById('tokenBadge').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-        document.getElementById('tokenBadge').innerText = 'Tersimpan';
-      }
-    }
-
-    function saveToken() {
-      const t = document.getElementById('ghTokenInput').value.trim();
-      if (!t) return alert('Masukkan token!');
-      localStorage.setItem('dongflix_gh_token', t);
-      loadToken();
-      alert('Token disimpan!');
-    }
-
-    async function loadData() {
+    async function loadCatalog() {
       try {
         const res = await fetch('/donghua/donghua.json?t=' + Date.now());
-        allDonghua = await res.json();
-        renderGrid(allDonghua);
-      } catch {
-        document.getElementById('donghuaGrid').innerHTML = '<div class="col-span-full py-16 text-center text-slate-500">Belum ada data.</div>';
+        if (!res.ok) throw new Error();
+        donghuaData = await res.json();
+        renderTable(donghuaData);
+      } catch (err) {
+        document.getElementById('catalogTableBody').innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center text-rose-400">
+              Gagal memuat file <code>donghua/donghua.json</code>. Silakan scrape list donghua terlebih dahulu.
+            </td>
+          </tr>
+        `;
+        document.getElementById('counterLabel').innerText = '0 data';
       }
     }
 
-    function renderGrid(items) {
-      const grid = document.getElementById('donghuaGrid');
-      grid.innerHTML = items.map((item, idx) => `
-        <div onclick="openEpisodeModal(${idx})" class="group cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded-xl overflow-hidden flex flex-col transition hover:scale-[1.02]">
-          <div class="aspect-[3/4] w-full bg-slate-800 relative">
-            <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover" loading="lazy">
-            <span class="absolute top-2 left-2 bg-slate-950/80 text-[10px] text-cyan-400 px-2 py-0.5 rounded">${item.type || 'Donghua'}</span>
-            <span class="absolute bottom-2 right-2 bg-blue-600/90 text-[10px] text-white px-1.5 py-0.5 rounded">${item.episode || '-'}</span>
-          </div>
-          <div class="p-3">
-            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h3>
-            <span class="text-[10px] text-cyan-400 mt-2 block font-mono">Kelola Episode →</span>
-          </div>
-        </div>
+    function renderTable(items) {
+      const tbody = document.getElementById('catalogTableBody');
+      document.getElementById('counterLabel').innerText = `${items.length} dari total ${donghuaData.length} judul`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center text-slate-500">Tidak ada judul yang sesuai.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="p-3.5 pl-5">
+            <img 
+              src="${item.cover || 'https://via.placeholder.com/60x80'}" 
+              alt="${item.title}" 
+              class="w-10 h-14 object-cover rounded-lg border border-slate-800 bg-slate-900"
+              loading="lazy"
+            >
+          </td>
+          <td class="p-3.5">
+            <div class="font-semibold text-white">${item.title}</div>
+            <div class="text-[11px] text-slate-500 font-mono mt-0.5">${item.slug}</div>
+          </td>
+          <td class="p-3.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-medium border ${
+              (item.status || '').toLowerCase() === 'completed'
+                ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+            }">
+              ${item.status || 'Ongoing'}
+            </span>
+          </td>
+          <td class="p-3.5">
+            <span class="text-cyan-400 font-medium">
+              ${item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-')}
+            </span>
+          </td>
+          <td class="p-3.5 text-right pr-5">
+            <button 
+              onclick="openConfirmModal('single-episode', '${item.slug}')" 
+              class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-cyan-500 text-slate-200 hover:text-white transition text-xs font-medium"
+            >
+              Scrape Episode
+            </button>
+          </td>
+        </tr>
       `).join('');
     }
 
-    function filterData() {
-      const q = document.getElementById('searchInput').value.toLowerCase();
-      renderGrid(allDonghua.filter(d => d.title.toLowerCase().includes(q)));
+    function handleSearchDonghua() {
+      const q = document.getElementById('searchAdminInput').value.toLowerCase();
+      const filtered = donghuaData.filter(d => 
+        d.title.toLowerCase().includes(q) || d.slug.toLowerCase().includes(q)
+      );
+      renderTable(filtered);
     }
 
-    // Modal Controller
-    async function openEpisodeModal(index) {
-      activeItem = allDonghua[index];
-      document.getElementById('modalTitle').innerText = activeItem.title;
-      document.getElementById('modalSlug').innerText = activeItem.slug;
-      document.getElementById('modalCover').src = activeItem.cover;
-      document.getElementById('epModal').classList.remove('hidden');
+    // Modal Konfirmasi Pengaman
+    function openConfirmModal(actionType, slug = null) {
+      currentActionType = actionType;
+      selectedSlugToScrape = slug;
 
-      // Muat file episode tersimpan jika ada (/donghua/episodes/{slug}.json)
-      const listEl = document.getElementById('modalEpList');
-      listEl.innerHTML = '<div class="text-xs text-slate-500 py-4 text-center">Memeriksa database episode...</div>';
+      const modal = document.getElementById('confirmModal');
+      const titleEl = document.getElementById('modalTitle');
+      const descEl = document.getElementById('modalDesc');
+      const confirmBtn = document.getElementById('btnConfirmAction');
 
-      try {
-        const res = await fetch(`/donghua/episodes/${activeItem.slug}.json?t=` + Date.now());
-        if (!res.ok) throw new Error();
-        const epData = await res.json();
+      if (actionType === 'list') {
+        titleEl.innerText = 'Scrape List Donghua?';
+        descEl.innerText = 'Tindakan ini akan memicu GitHub Actions untuk mengambil daftar seluruh donghua terbaru dari Anichin dan memperbarui file katalog donghua.json.';
+        confirmBtn.innerText = 'Ya, Scrape List';
+      } else if (actionType === 'all-episodes') {
+        titleEl.innerText = 'Scrape SEMUA Episode?';
+        descEl.innerText = 'PERINGATAN: Aksi ini akan menjalankan scraper episode untuk semua judul donghua secara bergantian. Proses ini memakan waktu cukup lama di GitHub Actions.';
+        confirmBtn.innerText = 'Ya, Jalankan Semua';
+      } else if (actionType === 'single-episode') {
+        titleEl.innerText = `Scrape Episode [${slug}]?`;
+        descEl.innerText = `GitHub Actions akan mengambil daftar link episode dan server video untuk serial "${slug}".`;
+        confirmBtn.innerText = 'Ya, Scrape Episode';
+      }
 
-        document.getElementById('modalEpCount').innerText = `${epData.length} Episode Tersedia`;
-        listEl.innerHTML = epData.map(ep => `
-          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-            <div>
-              <div class="font-bold text-slate-200">${ep.title}</div>
-              <div class="text-[11px] text-slate-400 mt-1">${ep.servers?.length || 0} Server: ${(ep.servers || []).map(s => s.name).join(', ')}</div>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px]">Tersedia</span>
-          </div>
-        `).join('');
-      } catch {
-        document.getElementById('modalEpCount').innerText = '0 Episode';
-        listEl.innerHTML = `
-          <div class="py-8 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
-            Belum ada episode & server yang discrape untuk serial ini.<br>
-            Klik tombol di bawah untuk memulai.
-          </div>
-        `;
+      confirmBtn.onclick = executeConfirmedAction;
+      modal.classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.add('hidden');
+      currentActionType = null;
+      selectedSlugToScrape = null;
+    }
+
+    async function executeConfirmedAction() {
+      const action = currentActionType;
+      const slug = selectedSlugToScrape;
+      closeConfirmModal();
+
+      if (action === 'list') {
+        await triggerGitHubDispatch('scrape-list');
+      } else if (action === 'all-episodes') {
+        await triggerGitHubDispatch('scrape-all-episodes');
+      } else if (action === 'single-episode' && slug) {
+        await triggerGitHubDispatch('scrape-episode', { target_slug: slug });
       }
     }
 
-    function closeModal() {
-      document.getElementById('epModal').classList.add('hidden');
+    // Modal Pengaturan
+    function openSettingsModal() {
+      document.getElementById('repoInput').value = localStorage.getItem('dongflix_gh_repo') || 'rulsz/dongflix2.0';
+      document.getElementById('patInput').value = localStorage.getItem('dongflix_gh_pat') || '';
+      document.getElementById('settingsModal').classList.remove('hidden');
     }
 
-    // Trigger Scrape Episode Spesifik via Workflow Dispatch
-    async function triggerEpisodeScraper() {
-      const token = localStorage.getItem('dongflix_gh_token');
-      if (!token) return alert('Isi token GitHub terlebih dahulu!');
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
 
-      const btn = document.getElementById('btnScrapeEp');
-      const btnText = document.getElementById('btnScrapeEpText');
-      btn.disabled = true;
-      btnText.innerText = 'Mengirim Perintah...';
+    function saveSettings() {
+      const repo = document.getElementById('repoInput').value.trim();
+      const pat = document.getElementById('patInput').value.trim();
+
+      if (!repo || !pat) {
+        alert('Harap isi Repositori dan Personal Access Token.');
+        return;
+      }
+
+      localStorage.setItem('dongflix_gh_repo', repo);
+      localStorage.setItem('dongflix_gh_pat', pat);
+      closeSettingsModal();
+      alert('Pengaturan GitHub berhasil disimpan!');
+    }
+
+    // Pemicu Workflow GitHub Actions
+    async function triggerGitHubDispatch(eventType, clientPayload = {}) {
+      const repo = localStorage.getItem('dongflix_gh_repo') || 'rulsz/dongflix2.0';
+      const pat = localStorage.getItem('dongflix_gh_pat');
+
+      if (!pat) {
+        alert('Personal Access Token (PAT) GitHub belum diatur. Klik "Konfigurasi GitHub" terlebih dahulu.');
+        openSettingsModal();
+        return;
+      }
 
       try {
-        const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/scrape-episodes.yml/dispatches`, {
+        const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/vnd.github+json'
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `token ${pat}`,
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            ref: 'main',
-            inputs: {
-              slug: activeItem.slug
-            }
+            event_type: eventType,
+            client_payload: clientPayload
           })
         });
 
-        if (res.status === 204) {
-          alert(`Scraping episode untuk "${activeItem.title}" telah dijalankan di background GitHub Actions! Silakan cek kembali beberapa saat lagi.`);
-          closeModal();
+        if (res.ok) {
+          alert(`Permintaan "${eventType}" berhasil dikirim ke GitHub Actions! Silakan cek tab Actions di repositori Anda.`);
         } else {
-          const err = await res.json();
-          alert('Gagal: ' + (err.message || 'Cek konfigurasi workflow'));
+          const err = await res.json().catch(() => ({}));
+          alert(`Gagal: ${err.message || 'Token tidak valid atau tidak memiliki izin repo.'}`);
         }
-      } catch (e) {
-        alert('Gagal menghubungi GitHub API: ' + e.message);
-      } finally {
-        btn.disabled = false;
-        btnText.innerText = 'Scrape Semua Episode & Server';
+      } catch (err) {
+        alert(`Terjadi kesalahan jaringan: ${err.message}`);
       }
     }
 
-    // Trigger Scraper Katalog Utama
-    async function triggerScrapeAction() {
-      const token = localStorage.getItem('dongflix_gh_token');
-      if (!token) return alert('Isi token GitHub!');
-      try {
-        await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/scrape.yml/dispatches`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
-          body: JSON.stringify({ ref: 'main' })
-        });
-        alert('Scraper katalog utama berhasil dijalankan!');
-      } catch (err) {
-        alert(err.message);
-      }
-    }
+    loadCatalog();
   </script>
 </body>
 </html>
