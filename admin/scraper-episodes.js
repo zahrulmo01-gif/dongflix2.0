@@ -16,18 +16,15 @@ function resolveUrl(url) {
   return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
-// Helper ekstrak URL bersih dari value base64, iframe tag, atau link biasa
 function extractCleanUrl(rawVal) {
   if (!rawVal || rawVal === '0') return '';
 
   let processed = rawVal.trim();
 
-  // Ekstrak jika format HTML iframe langsung
   const directIframeMatch = processed.match(/src=["'](.*?)["']/i);
   if (directIframeMatch && directIframeMatch[1]) {
     processed = directIframeMatch[1];
   } else if (!processed.startsWith('http') && processed.length > 20) {
-    // Decode jika berupa base64 string
     try {
       const decoded = Buffer.from(processed, 'base64').toString('utf-8');
       const srcMatch = decoded.match(/src=["'](.*?)["']/i);
@@ -39,7 +36,6 @@ function extractCleanUrl(rawVal) {
     } catch (_) {}
   }
 
-  // Normalisasi protocol
   if (processed.startsWith('//')) {
     processed = `https:${processed}`;
   }
@@ -78,9 +74,37 @@ async function scrapeEpisodeServers(browser, ep) {
   try {
     await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 20000 });
     const content = await page.content();
-    const $$ = cheerio.load(content);      // 1. Dropdown select option player $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
-      const o = $$(opt); const name = o.text().trim(); const val = o.attr('value') \vert{}\vert{} '';        if (name && !name.toLowerCase().includes('pilih server')) { const cleanLink = extractCleanUrl(val); if (cleanLink && !servers.some((s) => s.link === cleanLink)) { servers.push({ name, link: cleanLink }); } } });      // 2. Tab server / link button $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
-      const el = $$(a); const name = el.text().trim(); const rawHref = el.attr('href') \vert{}\vert{} el.attr('data-embed') \vert{}\vert{} ''; if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) { const cleanLink = extractCleanUrl(rawHref); if (cleanLink && !servers.some((s) => s.link === cleanLink)) { servers.push({ name, link: cleanLink }); } } });      // 3. Iframe aktif bawaan const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
+    const $$ = cheerio.load(content);
+
+    // Dropdown Server
+    $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
+      const o = $$(opt);
+      const name = o.text().trim();
+      const val = o.attr('value') || '';
+
+      if (name && !name.toLowerCase().includes('pilih server')) {
+        const cleanLink = extractCleanUrl(val);
+        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          servers.push({ name, link: cleanLink });
+        }
+      }
+    });
+
+    // Button / List Server
+    $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
+      const el = $$(a);
+      const name = el.text().trim();
+      const rawHref = el.attr('href') || el.attr('data-embed') || '';
+      if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) {
+        const cleanLink = extractCleanUrl(rawHref);
+        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
+          servers.push({ name, link: cleanLink });
+        }
+      }
+    });
+
+    // Iframe Default
+    const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
       if (cleanIframe && !servers.some((s) => s.link === cleanIframe)) {
@@ -111,7 +135,10 @@ async function scrapeEpisodeServers(browser, ep) {
 
 function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   const masterPath = path.resolve('donghua/donghua.json');
-  if (!fs.existsSync(masterPath)) return;
+  if (!fs.existsSync(masterPath)) {
+    console.error('File donghua/donghua.json tidak ditemukan.');
+    return;
+  }
 
   try {
     const rawData = fs.readFileSync(masterPath, 'utf-8');
@@ -120,8 +147,8 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
     let updated = false;
     for (const item of donghuaList) {
       if (item.slug === slug) {
-        item['latest-episode'] = latestEpisodeValue;
-        item.episode = latestEpisodeValue;
+        item['latest-episode'] = String(latestEpisodeValue);
+        item.episode = `Ep ${latestEpisodeValue}`;
         updated = true;
         break;
       }
@@ -129,7 +156,9 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 
     if (updated) {
       fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-      console.log(`Update latest-episode: "${latestEpisodeValue}" untuk [${slug}]`);
+      console.log(`Berhasil update "latest-episode": "${latestEpisodeValue}" untuk slug [${slug}] di donghua.json`);
+    } else {
+      console.log(`Slug [${slug}] tidak ditemukan dalam donghua.json`);
     }
   } catch (err) {
     console.error('Gagal update donghua.json:', err.message);
@@ -185,8 +214,35 @@ async function run() {
   }
 
   const $ = cheerio.load(mainHtml);
-  const episodeQueue = [];
 
+  // === 1. Deteksi Episode Baru langsung dari Badge / Box Merah ===
+  let latestEpisodeFound = '';
+
+  // Menelusuri elemen tombol merah/oranye 'Episode Baru'
+  $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
+    const txt = $(el).text().trim();
+    if (txt.includes('Episode Baru')) {
+      const match = txt.match(/Episode\s*Baru[\s\S]*?(?:Episode\s*)?(\d+[\w.-]*)/i);
+      if (match && match[1]) {
+        latestEpisodeFound = match[1].trim();
+      }
+    }
+  });
+
+  // Alternatif penelusuran jika teks bertumpuk di child tag span/h4
+  if (!latestEpisodeFound) {
+    $('h4, span, div').each((_, el) => {
+      const txt = $(el).text().trim();
+      if (/^Episode Baru$/i.test(txt)) {
+        const nextText = $(el).next().text().trim() || $(el).parent().text().trim();
+        const numMatch = nextText.match(/(\d+[\w.-]*)/);
+        if (numMatch && numMatch[1]) latestEpisodeFound = numMatch[1];
+      }
+    });
+  }
+
+  // === 2. Kumpulkan Daftar Episode untuk Di-scrape ===
+  const episodeQueue = [];
   $('.eplister ul li, .episodelist ul li, ul.clstyle li').each((_, el) => {
     const item = $(el);
     const rawLink = item.find('a').attr('href') || '';
@@ -207,14 +263,20 @@ async function run() {
     }
   });
 
-  console.log(`Total episode terkumpul: ${episodeQueue.length}`);
+  // Fallback jika banner 'Episode Baru' tidak ada di halaman
+  if (!latestEpisodeFound && episodeQueue.length > 0) {
+    latestEpisodeFound = episodeQueue[0].epNum || '1';
+  }
+
+  console.log(`Episode Baru terdeteksi: "${latestEpisodeFound}"`);
+  console.log(`Total episode yang akan di-scrape: ${episodeQueue.length}`);
 
   if (episodeQueue.length === 0) {
     await browser.close();
     return;
   }
 
-  const latestEpisodeFound = episodeQueue[0].epNum || '1';
+  // === 3. Eksekusi Scrape Server Paralel ===
   const allDetailedEpisodes = [];
 
   for (let i = 0; i < episodeQueue.length; i += CONCURRENCY) {
@@ -227,6 +289,7 @@ async function run() {
 
   await browser.close();
 
+  // Simpan detail episode ke /donghua/episodes/{slug}.json
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -234,6 +297,7 @@ async function run() {
   fs.writeFileSync(outFile, JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
   console.log(`SUKSES! File tersimpan di: ${outFile}`);
 
+  // Simpan angka episode dari box "Episode Baru" ke donghua.json
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
 }
 
