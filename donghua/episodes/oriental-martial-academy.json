@@ -7,39 +7,48 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16237016648370"
+        "link": "https://ok.ru/videoembed/16237016648370",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k2Szp7cWpoBWSgM0lWm&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k2Szp7cWpoBWSgM0lWm&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7f1hx2/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7f1hx2/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=10ed01b1-134b-40d1-974e-48a784662892"
+        "link": "https://play.d.tube/?v=10ed01b1-134b-40d1-974e-48a784662892",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#fcrxyp"
+        "link": "https://anichin.rpmvid.com/#fcrxyp",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/atZ0nmly9"
+        "link": "https://player.abyssplayer.com/atZ0nmly9",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-55kebe85iffg.html"
+        "link": "https://rubyvidhub.com/embed-55kebe85iffg.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/ktoilzm11s5k"
+        "link": "https://morencius.com/embed/ktoilzm11s5k",
+        "type": "iframe"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/92yod4qpmm9h"
+        "link": "https://playmogo.com/e/92yod4qpmm9h",
+        "type": "iframe"
       }
     ]
   },
@@ -51,43 +60,53 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16157734603442"
+        "link": "https://ok.ru/videoembed/16157734603442",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k4vT8Oe5cXffQ4LGE1M&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k4vT8Oe5cXffQ4LGE1M&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7epefi/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7epefi/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=7d30f918-d612-4f49-999c-5aebd1e2ed30"
+        "link": "https://play.d.tube/?v=7d30f918-d612-4f49-999c-5aebd1e2ed30",
+        "type": "iframe"
       },
       {
         "name": "Odysee",
-        "link": "https://odysee.com/$/embed/-ANICHIN.CARE--Oriental-Martial-Academy--2026--14-.-1080p-:fb9e9b5e891c872b80a79172430f89041d4552f4"
+        "link": "https://odysee.com/$/embed/-ANICHIN.CARE--Oriental-Martial-Academy--2026--14-.-1080p-:fb9e9b5e891c872b80a79172430f89041d4552f4",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#9gu9xm"
+        "link": "https://anichin.rpmvid.com/#9gu9xm",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/2n2uVjipE"
+        "link": "https://player.abyssplayer.com/2n2uVjipE",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-pc9zclt5x07d.html"
+        "link": "https://rubyvidhub.com/embed-pc9zclt5x07d.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/qinwhoieedad"
+        "link": "https://morencius.com/embed/qinwhoieedad",
+        "type": "iframe"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/ydc39ikwtmnv"
+        "link": "https://playmogo.com/e/ydc39ikwtmnv",
+        "type": "iframe"
       }
     ]
   },
@@ -99,39 +118,48 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16078424967858"
+        "link": "https://ok.ru/videoembed/16078424967858",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1igWvItkOJFLbLfQzQ&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k1igWvItkOJFLbLfQzQ&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7edmos/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7edmos/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=bfef3e93-82f0-4ef8-86be-bd2e4a8e097d"
+        "link": "https://play.d.tube/?v=bfef3e93-82f0-4ef8-86be-bd2e4a8e097d",
+        "type": "iframe"
       },
       {
         "name": "Odysee",
-        "link": "https://odysee.com/$/embed/@anichincare:0/-ANICHIN.CARE--Oriental-Martial-Academy--2026--13-.-1080p-:e"
+        "link": "https://odysee.com/$/embed/@anichincare:0/-ANICHIN.CARE--Oriental-Martial-Academy--2026--13-.-1080p-:e",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#18rpg6"
+        "link": "https://anichin.rpmvid.com/#18rpg6",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/3Uzc4L8qC"
+        "link": "https://player.abyssplayer.com/3Uzc4L8qC",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/lgybbh2tuvo7"
+        "link": "https://morencius.com/embed/lgybbh2tuvo7",
+        "type": "iframe"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/yl9i10kql4g7"
+        "link": "https://playmogo.com/e/yl9i10kql4g7",
+        "type": "iframe"
       }
     ]
   },
@@ -143,35 +171,43 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/16000229051058"
+        "link": "https://ok.ru/videoembed/16000229051058",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k2r0A8kCGhHCPBKN91I&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k2r0A8kCGhHCPBKN91I&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#6wpfu8"
+        "link": "https://anichin.rpmvid.com/#6wpfu8",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa"
+        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/B9tKWUu--"
+        "link": "https://player.abyssplayer.com/B9tKWUu--",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/0m89a9jzjwjm"
+        "link": "https://morencius.com/embed/0m89a9jzjwjm",
+        "type": "iframe"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/edqq44p3i3gs"
+        "link": "https://playmogo.com/e/edqq44p3i3gs",
+        "type": "iframe"
       }
     ]
   },
@@ -183,43 +219,53 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15923803785906"
+        "link": "https://ok.ru/videoembed/15923803785906",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k4YmXHYNFzWpQMKq8tw&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k4YmXHYNFzWpQMKq8tw&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7dqkl0/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7dqkl0/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=ba03c85a-903b-4cc6-a71b-dc85c51802fd"
+        "link": "https://play.d.tube/?v=ba03c85a-903b-4cc6-a71b-dc85c51802fd",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8qjvgy"
+        "link": "https://anichin.rpmvid.com/#8qjvgy",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6ab4bdc391f4e"
+        "link": "https://turbovidhls.com/t/6ab4bdc391f4e",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/S7HXBf25T"
+        "link": "https://player.abyssplayer.com/S7HXBf25T",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-sodsr68mf77b.html"
+        "link": "https://rubyvidhub.com/embed-sodsr68mf77b.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/r6js9wcsj5eu"
+        "link": "https://morencius.com/embed/r6js9wcsj5eu",
+        "type": "iframe"
       },
       {
         "name": "Doodstream",
-        "link": "https://playmogo.com/e/rvwtmr7bogie"
+        "link": "https://playmogo.com/e/rvwtmr7bogie",
+        "type": "iframe"
       }
     ]
   },
@@ -231,35 +277,43 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15844332800690"
+        "link": "https://ok.ru/videoembed/15844332800690",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k6csTo88ttiQfoK0WRw&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k6csTo88ttiQfoK0WRw&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7dfljy/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7dfljy/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#b1u9rg"
+        "link": "https://anichin.rpmvid.com/#b1u9rg",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6aab7b3c82b7d"
+        "link": "https://turbovidhls.com/t/6aab7b3c82b7d",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/duqsm2OIo"
+        "link": "https://player.abyssplayer.com/duqsm2OIo",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-cjjt45aidd6e.html"
+        "link": "https://rubyvidhub.com/embed-cjjt45aidd6e.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/sxhlzbv69a9n"
+        "link": "https://morencius.com/embed/sxhlzbv69a9n",
+        "type": "iframe"
       }
     ]
   },
@@ -271,35 +325,43 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15768276765362"
+        "link": "https://ok.ru/videoembed/15768276765362",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k3wVF3qPlHxcLuJJO5Y&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k3wVF3qPlHxcLuJJO5Y&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7d512m/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7d512m/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8q5wua"
+        "link": "https://anichin.rpmvid.com/#8q5wua",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6aa23c1e16a0e"
+        "link": "https://turbovidhls.com/t/6aa23c1e16a0e",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/R7qsJdjfR"
+        "link": "https://player.abyssplayer.com/R7qsJdjfR",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-frdmkn44h20w.html"
+        "link": "https://rubyvidhub.com/embed-frdmkn44h20w.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/yblfb3rfvtvt"
+        "link": "https://morencius.com/embed/yblfb3rfvtvt",
+        "type": "iframe"
       }
     ]
   },
@@ -311,39 +373,48 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15696563997362"
+        "link": "https://ok.ru/videoembed/15696563997362",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k5djMZnpEl5mvIJpyvs&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k5djMZnpEl5mvIJpyvs&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7cub7o/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7cub7o/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=4f4896fa-d920-41c1-a513-cfbc5ab0fbf8"
+        "link": "https://play.d.tube/?v=4f4896fa-d920-41c1-a513-cfbc5ab0fbf8",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#cki69z"
+        "link": "https://anichin.rpmvid.com/#cki69z",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a991c3e09e16"
+        "link": "https://turbovidhls.com/t/6a991c3e09e16",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/uXBh--1Fx"
+        "link": "https://player.abyssplayer.com/uXBh--1Fx",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-esgadoankw7t.html"
+        "link": "https://rubyvidhub.com/embed-esgadoankw7t.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/gjy6n96km439"
+        "link": "https://morencius.com/embed/gjy6n96km439",
+        "type": "iframe"
       }
     ]
   },
@@ -355,39 +426,48 @@
     "servers": [
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15617906248370"
+        "link": "https://ok.ru/videoembed/15617906248370",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k57pY9OHgsjV2CJ8XHo&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k57pY9OHgsjV2CJ8XHo&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7cj9d6/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7cj9d6/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=aa769226-be96-4fc5-af27-3f4c437b2412"
+        "link": "https://play.d.tube/?v=aa769226-be96-4fc5-af27-3f4c437b2412",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#8qifvj"
+        "link": "https://anichin.rpmvid.com/#8qifvj",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a8fc0d9c0ecd"
+        "link": "https://turbovidhls.com/t/6a8fc0d9c0ecd",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/KxA0889oh"
+        "link": "https://player.abyssplayer.com/KxA0889oh",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-j45qigzlpeub.html"
+        "link": "https://rubyvidhub.com/embed-j45qigzlpeub.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/dsuca8okgkbl"
+        "link": "https://morencius.com/embed/dsuca8okgkbl",
+        "type": "iframe"
       }
     ]
   },
@@ -399,27 +479,33 @@
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15544854907570"
+        "link": "https://ok.ru/videoembed/15544854907570",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1Xt5AKESZV3I4IVocW&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k1Xt5AKESZV3I4IVocW&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7c8fae/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7c8fae/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/xvlcr4zubeu8"
+        "link": "https://morencius.com/embed/xvlcr4zubeu8",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-xax2lfxk3htp.html"
+        "link": "https://rubyvidhub.com/embed-xax2lfxk3htp.html",
+        "type": "iframe"
       },
       {
         "name": "Turbo VIPlay",
-        "link": "https://turbovidhls.com/t/6a868a6621d35"
+        "link": "https://turbovidhls.com/t/6a868a6621d35",
+        "type": "iframe"
       }
     ]
   },
@@ -431,39 +517,48 @@
     "servers": [
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=kWGB72XQAAhn2XII0fE&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=kWGB72XQAAhn2XII0fE&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15470603406002"
+        "link": "https://ok.ru/videoembed/15470603406002",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7bx6oq/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7bx6oq/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#oezzfb"
+        "link": "https://anichin.rpmvid.com/#oezzfb",
+        "type": "iframe"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=c71d25f1-6eef-48c3-9bda-91c61138cf92"
+        "link": "https://play.d.tube/?v=c71d25f1-6eef-48c3-9bda-91c61138cf92",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a7d4e85eac25"
+        "link": "https://turbovidhls.com/t/6a7d4e85eac25",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/8EWNIaWsR"
+        "link": "https://player.abyssplayer.com/8EWNIaWsR",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-q9i5u27czzf7.html"
+        "link": "https://rubyvidhub.com/embed-q9i5u27czzf7.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/8ko3hudasovm"
+        "link": "https://morencius.com/embed/8ko3hudasovm",
+        "type": "iframe"
       }
     ]
   },
@@ -475,39 +570,48 @@
     "servers": [
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1DNibkEul5nJQItwEG&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k1DNibkEul5nJQItwEG&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "OKru",
-        "link": "https://ok.ru/videoembed/15395855665842"
+        "link": "https://ok.ru/videoembed/15395855665842",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7blwjm/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7blwjm/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#z6qlrp"
+        "link": "https://anichin.rpmvid.com/#z6qlrp",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=66fbb0a3-ba2f-47e3-a102-e20b0b4abe8d"
+        "link": "https://play.d.tube/?v=66fbb0a3-ba2f-47e3-a102-e20b0b4abe8d",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a74056384d1a"
+        "link": "https://turbovidhls.com/t/6a74056384d1a",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://play.abyssplayer.com/fAfbDP0tqD"
+        "link": "https://play.abyssplayer.com/fAfbDP0tqD",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-ky171ej9qvg3.html"
+        "link": "https://rubyvidhub.com/embed-ky171ej9qvg3.html",
+        "type": "iframe"
       },
       {
         "name": "Vidhide [ADS]",
-        "link": "https://morencius.com/embed/abd73vxdh7h9"
+        "link": "https://morencius.com/embed/abd73vxdh7h9",
+        "type": "iframe"
       }
     ]
   },
@@ -519,35 +623,43 @@
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15320426810034"
+        "link": "https://ok.ru/videoembed/15320426810034",
+        "type": "iframe"
       },
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k75G2IEaaZrOp9Ig0dk&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k75G2IEaaZrOp9Ig0dk&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7baad6/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7baad6/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#noiot8"
+        "link": "https://anichin.rpmvid.com/#noiot8",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://play.abyssplayer.com/YHygkRQnG"
+        "link": "https://play.abyssplayer.com/YHygkRQnG",
+        "type": "iframe"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/8rmvo2w4h835"
+        "link": "https://morencius.com/embed/8rmvo2w4h835",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-uqc25cmli3rv.html"
+        "link": "https://rubyvidhub.com/embed-uqc25cmli3rv.html",
+        "type": "iframe"
       },
       {
         "name": "Turbo VIPlay",
-        "link": "https://turbovidhls.com/t/6a6ad6c533401"
+        "link": "https://turbovidhls.com/t/6a6ad6c533401",
+        "type": "iframe"
       }
     ]
   },
@@ -559,35 +671,43 @@
     "servers": [
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1uUVlYbm6jyGSI29um&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k1uUVlYbm6jyGSI29um&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15243516578482"
+        "link": "https://ok.ru/videoembed/15243516578482",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7ay8ro/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7ay8ro/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#qx5iym"
+        "link": "https://anichin.rpmvid.com/#qx5iym",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a6198e340789"
+        "link": "https://turbovidhls.com/t/6a6198e340789",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/3Jx3X7AeW"
+        "link": "https://abyssplayer.com/3Jx3X7AeW",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-6dkd34bvod1m.html"
+        "link": "https://rubyvidhub.com/embed-6dkd34bvod1m.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/evov3cqjj9iq"
+        "link": "https://morencius.com/embed/evov3cqjj9iq",
+        "type": "iframe"
       }
     ]
   },
@@ -599,43 +719,53 @@
     "servers": [
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k1WQ28CcoV7T20HPJSi&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k1WQ28CcoV7T20HPJSi&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15166446832306"
+        "link": "https://ok.ru/videoembed/15166446832306",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7amigw/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7amigw/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=3f199347-9f1d-40b5-9791-fc4198dce23b"
+        "link": "https://play.d.tube/?v=3f199347-9f1d-40b5-9791-fc4198dce23b",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/i17EaUaDi"
+        "link": "https://abyssplayer.com/i17EaUaDi",
+        "type": "iframe"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#9gklvp"
+        "link": "https://anichin.rpmvid.com/#9gklvp",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-yyy2m7ccu1z1.html"
+        "link": "https://rubyvidhub.com/embed-yyy2m7ccu1z1.html",
+        "type": "iframe"
       },
       {
         "name": "Doods [ADS]",
-        "link": "https://pixeldrain.com/u/pJuYjkuF?embed"
+        "link": "https://pixeldrain.com/u/pJuYjkuF?embed",
+        "type": "iframe"
       },
       {
         "name": "Vidhide",
-        "link": "https://morencius.com/embed/v5avrrumufmf"
+        "link": "https://morencius.com/embed/v5avrrumufmf",
+        "type": "iframe"
       },
       {
         "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a587e43af547"
+        "link": "https://turbovidhls.com/t/6a587e43af547",
+        "type": "iframe"
       }
     ]
   },
@@ -647,39 +777,48 @@
     "servers": [
       {
         "name": "Dailymotion [ADS]",
-        "link": "https://player.nunadrama.sbs/index.php?video=k5ttYDFgrwNGV9HPxLs&autoplay=1&mute=1"
+        "link": "https://player.nunadrama.sbs/index.php?video=k5ttYDFgrwNGV9HPxLs&autoplay=1&mute=1",
+        "type": "iframe"
       },
       {
         "name": "Okru",
-        "link": "https://ok.ru/videoembed/15165220194994"
+        "link": "https://ok.ru/videoembed/15165220194994",
+        "type": "iframe"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7amaa6/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7amaa6/?pub=2li51c",
+        "type": "iframe"
       },
       {
         "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#htvwc1"
+        "link": "https://anichin.rpmvid.com/#htvwc1",
+        "type": "iframe"
       },
       {
         "name": "DTube",
-        "link": "https://play.d.tube/?v=48bb1adb-f5af-4ab6-a706-fc2656a4241b"
+        "link": "https://play.d.tube/?v=48bb1adb-f5af-4ab6-a706-fc2656a4241b",
+        "type": "iframe"
       },
       {
         "name": "New Player",
-        "link": "https://turbovidhls.com/t/6a585b8511cb9"
+        "link": "https://turbovidhls.com/t/6a585b8511cb9",
+        "type": "iframe"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/4CKIqTytN"
+        "link": "https://abyssplayer.com/4CKIqTytN",
+        "type": "iframe"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-w27yh54rl91t.html"
+        "link": "https://rubyvidhub.com/embed-w27yh54rl91t.html",
+        "type": "iframe"
       },
       {
         "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/bl7ckzrndcz1"
+        "link": "https://morencius.com/embed/bl7ckzrndcz1",
+        "type": "iframe"
       }
     ]
   }
