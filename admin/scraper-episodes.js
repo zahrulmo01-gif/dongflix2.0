@@ -9,7 +9,13 @@ puppeteer.use(StealthPlugin());
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const BASE_URL = 'https://anichin.moe';
 
-// Ambil slug dari input workflow / argumen CLI
+function resolveUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('//')) return `https:${url}`;
+  return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
 
 if (!rawSlug) {
@@ -17,7 +23,6 @@ if (!rawSlug) {
   process.exit(1);
 }
 
-// Bersihkan slug dari slash berlebih
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
 async function run() {
@@ -38,27 +43,33 @@ async function run() {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
   );
 
-  // Coba URL alternatif jika tanpa prefix gagal
+  // Blokir media agar scraping cepat
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
   const possibleUrls = [
     `${BASE_URL}/${cleanSlug}/`,
     `${BASE_URL}/anime/${cleanSlug}/`
   ];
 
   let mainHtml = null;
-  let activeUrl = '';
 
   for (const url of possibleUrls) {
     try {
       console.log(`Mencoba membuka: ${url}`);
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
-      await sleep(2000);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await sleep(1500);
       const html = await page.content();
       const $ = cheerio.load(html);
 
-      // Cek apakah ada container list episode di halaman ini
       if ($('.eplister, .episodelist, .bxcl ul, ul.clstyle').length > 0) {
         mainHtml = html;
-        activeUrl = url;
         console.log(`Berhasil menemukan daftar episode di: ${url}`);
         break;
       }
@@ -68,7 +79,7 @@ async function run() {
   }
 
   if (!mainHtml) {
-    console.error('Tidak dapat menemukan container episode di semua URL percobaan.');
+    console.error('Tidak dapat menemukan container episode.');
     await browser.close();
     process.exit(1);
   }
@@ -76,10 +87,11 @@ async function run() {
   const $ = cheerio.load(mainHtml);
   const episodeLinks = [];
 
-  // Ambil semua item dari daftar episode
   $('.eplister ul li, .episodelist ul li, ul.clstyle li').each((_, el) => {
     const item = $(el);
-    const link = item.find('a').attr('href');
+    const rawLink = item.find('a').attr('href') || '';
+    const fullLink = resolveUrl(rawLink);
+
     const epNum =
       item.find('.epl-num').text().trim() ||
       item.find('.epx').text().trim() ||
@@ -90,24 +102,23 @@ async function run() {
       item.find('a').text().trim();
     const date = item.find('.epl-date, .date').text().trim() || '-';
 
-    if (link) {
-      episodeLinks.push({ epNum, title, link, date });
+    if (fullLink && fullLink.startsWith('http')) {
+      episodeLinks.push({ epNum, title, link: fullLink, date });
     }
   });
 
-  console.log(`Total episode ditemukan: ${episodeLinks.length}`);
+  console.log(`Total episode valid ditemukan: ${episodeLinks.length}`);
 
   if (episodeLinks.length === 0) {
-    console.log('Array episode kosong, proses dihentikan.');
+    console.log('Tidak ada link episode valid.');
     await browser.close();
     return;
   }
 
   const detailedEpisodes = [];
 
-  // Scrape tiap episode untuk mengambil server video
   for (const ep of episodeLinks) {
-    console.log(`-> Mengambil player: Ep ${ep.epNum}`);
+    console.log(`-> Mengambil player: Ep ${ep.epNum} (${ep.link})`);
     try {
       await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
       await sleep(1500);
@@ -116,14 +127,13 @@ async function run() {
       const $$ = cheerio.load(epContent);
       const servers = [];
 
-      // 1. Ambil dari dropdown / select server (seperti di tangkapan layar)
+      // Ekstrak dropdown option player
       $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
         const o = $$(opt);
         const name = o.text().trim();
         let val = o.attr('value') || '';
 
         if (name && !name.toLowerCase().includes('pilih server') && val && val !== '0') {
-          // Decode jika base64
           if (!val.startsWith('http') && val.length > 25) {
             try {
               const decoded = Buffer.from(val, 'base64').toString('utf-8');
@@ -135,7 +145,7 @@ async function run() {
         }
       });
 
-      // 2. Ambil dari tombol / list server (.mirror a, .mobius a)
+      // Ekstrak tab link player
       $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
         const el = $$(a);
         const name = el.text().trim();
@@ -145,7 +155,7 @@ async function run() {
         }
       });
 
-      // 3. Ambil iframe player default yang sedang aktif di halaman
+      // Iframe player aktif default
       const currentIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
       if (currentIframe && !servers.some(s => s.link === currentIframe)) {
         servers.unshift({ name: 'Default Server', link: currentIframe });
@@ -165,7 +175,6 @@ async function run() {
 
   await browser.close();
 
-  // Simpan hasil ke folder donghua/episodes/
   const outDir = path.resolve('donghua/episodes');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
@@ -173,8 +182,6 @@ async function run() {
   if (detailedEpisodes.length > 0) {
     fs.writeFileSync(outFile, JSON.stringify(detailedEpisodes, null, 2), 'utf-8');
     console.log(`SUKSES! ${detailedEpisodes.length} episode tersimpan di ${outFile}`);
-  } else {
-    console.log('Tidak ada data episode yang tersimpan.');
   }
 }
 
