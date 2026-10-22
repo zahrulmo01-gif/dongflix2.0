@@ -56,7 +56,7 @@
       <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         <div class="aspect-video w-full bg-black relative">
           
-          <!-- Mode 1: Native HTML5 Video (dfplayer) -->
+          <!-- Mode 1: Native HTML5 Video (dfplayer - 100% Bebas Iklan) -->
           <video 
             id="dfVideoPlayer" 
             controls 
@@ -64,7 +64,7 @@
             class="hidden w-full h-full object-contain bg-black focus:outline-none"
           ></video>
 
-          <!-- Mode 2: Iframe Embed (Server Pihak Ketiga) -->
+          <!-- Mode 2: Iframe Embed (Sandbox Ketat: Anti-Popup & Anti-Redirect) -->
           <iframe 
             id="videoIframe" 
             src="" 
@@ -91,7 +91,7 @@
             <!-- Pilihan Server -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="serverContainer"></div>
 
-            <!-- Dropdown Resolusi (Aktif saat dfplayer berjalan) -->
+            <!-- Dropdown Resolusi (Hanya aktif saat dfplayer berjalan) -->
             <select 
               id="qualitySelect" 
               onchange="changeQuality(this.value)" 
@@ -185,6 +185,26 @@
   </div>
 
   <script>
+    // ================= SCRIPT ANTI-POPUP & REDIRECT =================
+    // Blokir trigger pembukaan window baru / popunder
+    window.open = function () {
+      console.warn('Pop-up window.open otomatis dicegah.');
+      return null;
+    };
+
+    // Cegah klik target blank liar di luar kontrol resmi
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a');
+      if (link && link.target === '_blank') {
+        const href = link.getAttribute('href') || '';
+        if (!href.startsWith('/') && !href.includes(window.location.hostname)) {
+          e.preventDefault();
+          console.warn('Redirect external tab dicegah:', href);
+        }
+      }
+    }, true);
+
+    // ================= STATE & LOGIKA APLIKASI =================
     let allData = [];
     let currentEpisodes = [];
     let selectedEpIndex = 0;
