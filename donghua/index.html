@@ -15,8 +15,6 @@
   <meta property="og:image" id="ogImage" content="">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- HLS Player CDN untuk streaming Dailymotion lewat Cloudflare Worker -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8 font-sans">
   <div class="max-w-7xl mx-auto space-y-8">
@@ -57,7 +55,7 @@
       <div id="playerSection" class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
         <div class="aspect-video w-full bg-black relative">
           
-          <!-- Mode 1: Native HTML5 Video (dfplayer D-Tube / Dailymotion HLS) -->
+          <!-- Mode 1: Native HTML5 Video Player (dfplayer HD dari D-Tube) -->
           <video 
             id="dfVideoPlayer" 
             controls 
@@ -65,13 +63,13 @@
             class="hidden w-full h-full object-contain bg-black focus:outline-none"
           ></video>
 
-          <!-- Mode 2: Iframe Fallback dengan Sandbox Ketat -->
+          <!-- Mode 2: Iframe Player (Dailymotion via Worker / Server Fallback) -->
           <iframe 
             id="videoIframe" 
             src="" 
             class="hidden w-full h-full border-0" 
             allowfullscreen 
-            sandbox="allow-forms allow-scripts allow-same-origin allow-presentation"
+            allow="autoplay; fullscreen; picture-in-picture"
           ></iframe>
 
           <!-- Placeholder -->
@@ -183,7 +181,6 @@
     let currentEpisodes = [];
     let selectedEpIndex = 0;
     let selectedServerIndex = 0;
-    let hlsInstance = null;
 
     async function init() {
       const pathSegments = window.location.pathname.split('/').filter(Boolean);
@@ -369,39 +366,17 @@
 
       placeholder.classList.add('hidden');
 
-      if (hlsInstance) {
-        hlsInstance.destroy();
-        hlsInstance = null;
-      }
-
       if (srv.type === 'direct') {
-        // D-Tube (MP4 langsung)
+        // Mode Native dfplayer (File MP4 D-Tube dari IPFS)
         iframePlayer.classList.add('hidden');
         iframePlayer.src = '';
-        dfPlayer.classList.remove('hidden');
 
+        dfPlayer.classList.remove('hidden');
         dfPlayer.src = srv.link;
         dfPlayer.load();
         dfPlayer.play().catch(() => {});
-      } else if (srv.type === 'hls') {
-        // Dailymotion lewat Cloudflare Worker (.m3u8)
-        iframePlayer.classList.add('hidden');
-        iframePlayer.src = '';
-        dfPlayer.classList.remove('hidden');
-
-        if (Hls.isSupported()) {
-          hlsInstance = new Hls();
-          hlsInstance.loadSource(srv.link);
-          hlsInstance.attachMedia(dfPlayer);
-          hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-            dfPlayer.play().catch(() => {});
-          });
-        } else if (dfPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-          dfPlayer.src = srv.link;
-          dfPlayer.play().catch(() => {});
-        }
       } else {
-        // Iframe Fallback
+        // Mode Iframe (Dailymotion via Worker / Server Fallback)
         dfPlayer.pause();
         dfPlayer.classList.add('hidden');
         dfPlayer.src = '';
