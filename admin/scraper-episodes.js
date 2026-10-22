@@ -9,6 +9,9 @@ puppeteer.use(StealthPlugin());
 const BASE_URL = 'https://anichin.moe';
 const CONCURRENCY = 3;
 
+// Worker anti-403 Dailymotion
+const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
+
 function resolveUrl(url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -43,15 +46,14 @@ function extractCleanUrl(rawVal) {
   return processed.startsWith('http') ? processed : '';
 }
 
-function formatServerName(name, link) {
-  const l = link.toLowerCase();
-  const n = name.toLowerCase();
+function extractDailymotionId(url) {
+  const nunaMatch = url.match(/[?&]video=([a-zA-Z0-9]+)/);
+  if (nunaMatch) return nunaMatch[1];
 
-  if (l.includes('ok.ru') || n.includes('ok.ru') || n.includes('okru')) return 'OK.ru';
-  if (l.includes('d.tube') || n.includes('d.tube') || n.includes('dtube')) return 'D-Tube';
-  if (l.includes('dailymotion.com') || n.includes('dailymotion')) return 'Dailymotion';
-  if (l.includes('blogger.com') || l.includes('blogspot') || n.includes('archive')) return 'Archive';
-  return name;
+  const dmMatch = url.match(/(?:video\/|embed\/video\/|dailymotion\.com\/)([a-zA-Z0-9]+)/);
+  if (dmMatch) return dmMatch[1];
+
+  return null;
 }
 
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
@@ -77,7 +79,7 @@ async function setupPageConfig(page) {
 }
 
 async function scrapeSingleEpisode(page, ep) {
-  const servers = [];
+  const rawServers = [];
 
   try {
     await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
@@ -92,13 +94,13 @@ async function scrapeSingleEpisode(page, ep) {
 
       if (name && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(val);
-        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
-          servers.push({ name: formatServerName(name, cleanLink), link: cleanLink });
+        if (cleanLink && !rawServers.some((s) => s.link === cleanLink)) {
+          rawServers.push({ name, link: cleanLink });
         }
       }
     });
 
-    // 2. Ekstrak dari Tombol Tab Mirror
+    // 2. Ekstrak dari Tombol Mirror Tab
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -106,39 +108,49 @@ async function scrapeSingleEpisode(page, ep) {
 
       if (name && rawHref && rawHref !== '#' && !name.toLowerCase().includes('pilih server')) {
         const cleanLink = extractCleanUrl(rawHref);
-        if (cleanLink && !servers.some((s) => s.link === cleanLink)) {
-          servers.push({ name: formatServerName(name, cleanLink), link: cleanLink });
+        if (cleanLink && !rawServers.some((s) => s.link === cleanLink)) {
+          rawServers.push({ name, link: cleanLink });
         }
       }
     });
 
-    // 3. Ekstrak iframe bawaan halaman
+    // 3. Iframe Bawaan Halaman
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
-      if (cleanIframe && !servers.some((s) => s.link === cleanIframe)) {
-        servers.unshift({ name: formatServerName('Default', cleanIframe), link: cleanIframe });
+      if (cleanIframe && !rawServers.some((s) => s.link === cleanIframe)) {
+        rawServers.unshift({ name: 'Default', link: cleanIframe });
       }
     }
 
-    // Urutkan: OK.ru (ke-1) -> D-Tube (ke-2) -> sisanya
+    // Kelompokkan Server: OK.ru -> D-Tube -> Dailymotion (via Worker) -> Lainnya
     const okruServers = [];
     const dtubeServers = [];
+    const dailyServers = [];
     const otherServers = [];
 
-    for (const s of servers) {
-      if (s.name === 'OK.ru' || s.link.includes('ok.ru')) {
-        s.name = 'OK.ru';
-        okruServers.push(s);
-      } else if (s.name === 'D-Tube' || s.link.includes('d.tube')) {
-        s.name = 'D-Tube';
-        dtubeServers.push(s);
+    for (const s of rawServers) {
+      const l = s.link.toLowerCase();
+      const n = s.name.toLowerCase();
+
+      if (l.includes('ok.ru') || n.includes('ok.ru') || n.includes('okru')) {
+        okruServers.push({ name: 'OK.ru', link: s.link });
+      } else if (l.includes('d.tube') || n.includes('d.tube') || n.includes('dtube')) {
+        dtubeServers.push({ name: 'D-Tube', link: s.link });
+      } else if (l.includes('dailymotion.com') || l.includes('nunadrama') || n.includes('dailymotion')) {
+        const dmId = extractDailymotionId(s.link);
+        if (dmId && !dailyServers.some((d) => d.link.includes(dmId))) {
+          dailyServers.push({
+            name: 'Dailymotion',
+            link: `${DM_WORKER_URL}${dmId}`
+          });
+        }
       } else {
         otherServers.push(s);
       }
     }
 
-    const sortedServers = [...okruServers, ...dtubeServers, ...otherServers];
+    const sortedServers = [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
 
     return {
       episode: ep.epNum,
