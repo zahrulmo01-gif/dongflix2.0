@@ -3,45 +3,117 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Katalog Donghua</title>
+  <title>Dongflix - Nonton Streaming Donghua Subtitle Indonesia</title>
+  <meta name="description" content="Streaming dan update donghua subtitle Indonesia terlengkap dan tercepat gratis.">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-10 font-sans">
   <div class="max-w-7xl mx-auto space-y-8">
-    <div class="flex items-center justify-between border-b border-slate-800 pb-5">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight text-white">Update Donghua</h1>
-        <p class="text-xs text-slate-400 mt-1">Koleksi donghua terbaru</p>
+    
+    <!-- Navbar -->
+    <header class="flex items-center justify-between pb-6 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
+          Dongflix
+        </h1>
+        <span class="text-[10px] bg-slate-900 border border-slate-800 text-cyan-400 px-2 py-0.5 rounded font-mono">
+          Sub Indo
+        </span>
       </div>
-      <a href="/admin/" class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-400 hover:text-white">Admin Panel</a>
+
+      <div class="flex items-center gap-3">
+        <a href="/donghua/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+          Semua Donghua
+        </a>
+        <a href="/admin/" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 transition">
+          Admin Panel
+        </a>
+      </div>
+    </header>
+
+    <!-- Search & Info Bar -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold text-white">Update Terbaru</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Pilih serial untuk melihat detail episode dan sinopsis</p>
+      </div>
+      <input 
+        id="homeSearch" 
+        oninput="searchDonghua()" 
+        type="text" 
+        placeholder="Cari donghua..." 
+        class="w-full sm:w-72 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+      >
     </div>
 
+    <!-- Catalog Grid -->
     <div id="catalogGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      <!-- Diisi otomatis dari donghua/donghua.json -->
+      <!-- Item dirender via JS -->
     </div>
+
   </div>
 
   <script>
-    fetch('/donghua/donghua.json')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('catalogGrid').innerHTML = data.map(item => `
-          <div class="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-            <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
-              <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
-              <span class="absolute top-2 left-2 bg-slate-950/80 text-[10px] text-sky-400 font-semibold px-2 py-0.5 rounded">${item.type}</span>
-              <span class="absolute bottom-2 right-2 bg-blue-600/90 text-[10px] text-white font-medium px-1.5 py-0.5 rounded">${item.episode}</span>
-            </div>
-            <div class="p-3 flex-1 flex flex-col justify-between">
-              <h3 class="text-xs font-semibold text-slate-200 line-clamp-2">${item.title}</h3>
-              <a href="${item.link}" target="_blank" class="mt-2 text-[11px] text-blue-400 hover:underline">Tonton Sekarang ↗</a>
+    let listData = [];
+
+    async function loadCatalog() {
+      try {
+        const res = await fetch('/donghua/donghua.json?t=' + Date.now());
+        if (!res.ok) throw new Error();
+        listData = await res.json();
+        renderItems(listData);
+      } catch {
+        document.getElementById('catalogGrid').innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">
+            Belum ada data donghua. Buka menu Admin untuk memulai scrape.
+          </div>
+        `;
+      }
+    }
+
+    function renderItems(items) {
+      const grid = document.getElementById('catalogGrid');
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-500">Judul tidak ditemukan.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <a href="/donghua/${item.slug}" class="group bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden flex flex-col hover:border-slate-700 transition">
+          <div class="aspect-[3/4] w-full bg-slate-800 relative overflow-hidden">
+            <img 
+              src="${item.cover || 'https://via.placeholder.com/300x400?text=No+Cover'}" 
+              alt="${item.title}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+              loading="lazy"
+            >
+            <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-semibold px-2 py-0.5 rounded">
+              ${item.type || 'Donghua'}
+            </span>
+            <span class="absolute bottom-2 right-2 bg-blue-600/90 backdrop-blur-md text-[10px] text-white font-medium px-1.5 py-0.5 rounded">
+              ${item.episode || '-'}
+            </span>
+          </div>
+
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-cyan-400 transition" title="${item.title}">
+              ${item.title}
+            </h3>
+            <div class="mt-2 flex items-center justify-between text-[11px]">
+              <span class="text-emerald-400 font-medium">${item.status || 'Ongoing'}</span>
+              <span class="text-slate-500">${item.released || ''}</span>
             </div>
           </div>
-        `).join('');
-      })
-      .catch(() => {
-        document.getElementById('catalogGrid').innerHTML = '<div class="col-span-full py-16 text-center text-slate-500">Belum ada daftar donghua.</div>';
-      });
+        </a>
+      `).join('');
+    }
+
+    function searchDonghua() {
+      const q = document.getElementById('homeSearch').value.toLowerCase();
+      renderItems(listData.filter(d => d.title.toLowerCase().includes(q)));
+    }
+
+    loadCatalog();
   </script>
 </body>
 </html>
