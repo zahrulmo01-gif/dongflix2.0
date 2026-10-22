@@ -9,7 +9,7 @@ puppeteer.use(StealthPlugin());
 const BASE_URL = 'https://anichin.moe';
 const CONCURRENCY = 3;
 
-// Worker anti-403 Dailymotion
+// URL Cloudflare Worker anti-403 Dailymotion milikmu
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
 function resolveUrl(url) {
@@ -86,7 +86,7 @@ async function scrapeSingleEpisode(page, ep) {
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // 1. Ekstrak dari Select Dropdown
+    // 1. Ekstrak Select Dropdown
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
@@ -100,7 +100,7 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 2. Ekstrak dari Tombol Mirror Tab
+    // 2. Ekstrak Mirror Tab
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -114,7 +114,7 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 3. Iframe Bawaan Halaman
+    // 3. Ekstrak Iframe Bawaan
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
@@ -123,7 +123,7 @@ async function scrapeSingleEpisode(page, ep) {
       }
     }
 
-    // Kelompokkan Server: OK.ru -> D-Tube -> Dailymotion (via Worker) -> Lainnya
+    // Kelompokkan dan urutkan: OK.ru -> D-Tube -> Dailymotion -> Lainnya
     const okruServers = [];
     const dtubeServers = [];
     const dailyServers = [];
@@ -150,14 +150,12 @@ async function scrapeSingleEpisode(page, ep) {
       }
     }
 
-    const sortedServers = [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
-
     return {
       episode: ep.epNum,
       title: ep.title,
       link: ep.link,
       date: ep.date,
-      servers: sortedServers
+      servers: [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers]
     };
   } catch (err) {
     console.warn(`Gagal parse episode ${ep.epNum}: ${err.message}`);
@@ -191,7 +189,7 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 }
 
 async function run() {
-  console.log(`=== Memulai Scrape: ${cleanSlug} ===`);
+  console.log(`=== Memulai Scrape Episode: ${cleanSlug} ===`);
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -264,7 +262,7 @@ async function run() {
 
   console.log(`Total episode yang ditemukan: ${episodeQueue.length}`);
 
-  // Reusable tab worker pool untuk menghemat RAM runner
+  // Reusable tab worker pool
   const workerTabs = [];
   for (let i = 0; i < CONCURRENCY; i++) {
     const p = await browser.newPage();
