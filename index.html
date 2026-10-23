@@ -6,9 +6,9 @@
   <meta name="referrer" content="no-referrer">
   <title>Dongflix - Streaming Donghua Sub Indo</title>
   
-  <!-- Favicon / Ikon Web -->
-  <link rel="icon" type="image/png" href="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png">
-  <link rel="apple-touch-icon" href="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png">
+  <!-- Favicon / Ikon Web (Lokal/Internal Repository) -->
+  <link rel="icon" type="image/png" href="image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="image/IMG_6395.png">
 
   <!-- Google Fonts untuk styling font khusus tulisan flix -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -258,35 +258,151 @@
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* SLIDER */
+    /* SLIDER (Penyempurnaan Sinematik & Estetik) */
     .hero-slider-wrapper { 
-      position: relative; width: 100%; height: 460px; overflow: hidden; background: #000; 
-      transform: translateZ(0); contain: paint;
+      position: relative; 
+      width: 100%; 
+      height: 520px; 
+      overflow: hidden; 
+      background: #000; 
+      transform: translateZ(0); 
+      contain: paint;
     }
-    .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease-in-out; display: flex; align-items: flex-end; }
+    .hero-slide { 
+      position: absolute; 
+      inset: 0; 
+      opacity: 0; 
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+      display: flex; 
+      align-items: flex-end; 
+    }
     .hero-slide.active { opacity: 1; z-index: 1; }
-    .hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .hero-blur-layer {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 60%; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      mask-image: linear-gradient(to top, black 20%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to top, black 20%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
-      z-index: 1; pointer-events: none;
+    .hero-bg-img { 
+      position: absolute; 
+      inset: 0; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      filter: brightness(0.95);
+      transform: scale(1.02);
+      transition: transform 6s ease-out;
     }
+    .hero-slide.active .hero-bg-img {
+      transform: scale(1);
+    }
+    
+    /* Gradasi Halus Sinematik Multi-Layer */
     .hero-overlay { 
-      position: absolute; inset: 0; 
-      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.96) 24%, rgba(0, 0, 0, 0.7) 48%, rgba(0, 0, 0, 0.25) 70%, transparent 90%); 
-      z-index: 2; pointer-events: none; 
+      position: absolute; 
+      inset: 0; 
+      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.92) 28%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.15) 80%, transparent 100%),
+                  radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.45) 90%); 
+      z-index: 2; 
+      pointer-events: none; 
     }
-    .hero-content { position: relative; z-index: 3; padding: 20px 18px 42px; max-width: 760px; margin: 0 auto; width: 100%; }
-    .badge-tag { display: inline-block; background: var(--color-primary); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
-    .hero-title { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; }
-    .hero-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
-    .badge-status-green { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); border: 1px solid var(--border-color); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
-    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); padding: 10px 24px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; }
+
+    .hero-content { 
+      position: relative; 
+      z-index: 3; 
+      padding: 24px 20px 48px; 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      width: 100%; 
+    }
+    .badge-tag { 
+      display: inline-block; 
+      background: rgba(2, 132, 199, 0.85); 
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--text-main); 
+      font-size: 10px; 
+      font-weight: 800; 
+      padding: 4px 12px; 
+      border-radius: 9999px; 
+      letter-spacing: 0.5px;
+      text-transform: uppercase; 
+      margin-bottom: 10px; 
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .hero-title { 
+      font-size: 27px; 
+      font-weight: 900; 
+      line-height: 1.15; 
+      color: var(--text-main); 
+      margin-bottom: 10px; 
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+      max-width: 800px;
+    }
+    .hero-meta { 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      font-size: 12.5px; 
+      color: var(--text-sub); 
+      font-weight: 600; 
+      margin-bottom: 16px; 
+    }
+    .rating-star {
+      color: var(--color-star);
+      font-weight: 800;
+    }
+    .badge-status-green { 
+      background: rgba(56, 189, 248, 0.15); 
+      color: var(--color-accent); 
+      border: 1px solid var(--border-color); 
+      font-size: 10px; 
+      font-weight: 800; 
+      padding: 2px 8px; 
+      border-radius: 4px; 
+      text-transform: uppercase; 
+    }
+    .btn-watch { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); 
+      color: var(--text-main); 
+      padding: 11px 26px; 
+      border-radius: 14px; 
+      font-weight: 800; 
+      font-size: 14px; 
+      cursor: pointer; 
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-watch:active {
+      transform: scale(0.97);
+    }
     .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
-    .slider-dots { position: absolute; bottom: 16px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; gap: 6px; }
-    .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
-    .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
+    
+    .slider-dots { 
+      position: absolute; 
+      bottom: 18px; 
+      left: 0; 
+      right: 0; 
+      z-index: 10; 
+      display: flex; 
+      justify-content: center; 
+      gap: 6px; 
+    }
+    .dot { 
+      width: 7px; 
+      height: 7px; 
+      background: rgba(255, 255, 255, 0.35); 
+      border-radius: 50%; 
+      cursor: pointer; 
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+    .dot.active { 
+      width: 26px; 
+      background: var(--color-accent); 
+      border-radius: 9999px; 
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
 
     /* CONTENT SECTIONS */
     .section-block { margin-top: 40px; }
@@ -512,7 +628,9 @@
     .floating-circle-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
     @media (min-width: 768px) {
-      .hero-slider-wrapper { height: 500px; }
+      .hero-slider-wrapper { height: 560px; }
+      .hero-content { padding: 32px 40px 60px; }
+      .hero-title { font-size: 36px; }
       .grid-3 { grid-template-columns: repeat(6, 1fr); column-gap: 16px; row-gap: 28px; }
       .continue-card-item { flex: 0 0 240px; min-width: 240px; max-width: 240px; gap: 10px; }
       .continue-thumb-box { height: 136px; }
@@ -531,7 +649,7 @@
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <a href="/" class="brand-title-capsule">
-          <img src="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png" alt="Logo" class="brand-logo-icon">
+          <img src="image/IMG_6395.png" alt="Logo" class="brand-logo-icon">
           <span>Dong<span class="brand-accent">flix</span></span>
         </a>
       </div>
@@ -860,7 +978,6 @@
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         slide.innerHTML = `
           <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
-          <div class="hero-blur-layer"></div>
           <div class="hero-overlay"></div>
           <div class="hero-content">
             <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
