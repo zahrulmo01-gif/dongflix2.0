@@ -68,32 +68,29 @@ function gitPushCheckpoint(commitMsg) {
       console.log('🚀 Checkpoint tersimpan dan di-push ke GitHub!');
     }
   } catch (err) {
-    console.warn(`⚠️ Gagal simpan checkpoint: ${err.message}`);
+    console.warn(`⚠️ Gagal checkpoint: ${err.message}`);
     try { execSync('git rebase --abort', { stdio: 'ignore' }); } catch (_) {}
   }
 }
 
-// Mengambil detail lengkap donghua/movie langsung dari halaman detail Anichin
+// Ambil detail lengkap jika judul belum pernah ada di database
 async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackSlug = '') {
   try {
     await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const html = await page.content();
     const $ = cheerio.load(html);
 
-    // 1. Ekstrak Genre
     const genres = [];
     $('.genxed a, .genre-info a, .info-content .spe span:contains("Genre") a').each((_, el) => {
       const g = $(el).text().trim();
       if (g && !genres.includes(g)) genres.push(g);
     });
 
-    // 2. Ekstrak Sinopsis
     let synopsis = $('.entry-content p, .synp .entry-content, .desc p').first().text().trim();
     if (!synopsis) {
       synopsis = $('.entry-content, .desc').first().text().trim();
     }
 
-    // 3. Ekstrak Spesifikasi (Status, Rilis, Tipe, Episode)
     let released = 'Tanggal -';
     let status = 'Ongoing';
     let detectedType = 'Donghua';
@@ -103,12 +100,10 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       const txt = $(el).text().trim();
       const lower = txt.toLowerCase();
 
-      // Tanggal Rilis
       if (lower.includes('tanggal rilis') || lower.includes('released')) {
         released = txt.replace(/tanggal rilis\s*:\s*/i, '').replace(/released\s*:\s*/i, '').trim();
       }
 
-      // Status
       if (lower.includes('status')) {
         if (lower.includes('completed') || lower.includes('tamat')) {
           status = 'Completed';
@@ -117,27 +112,22 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
         }
       }
 
-      // Tipe (Donghua vs Movie)
       if (lower.includes('tipe') || lower.includes('type')) {
         if (lower.includes('movie')) {
           detectedType = 'Movie';
         }
       }
 
-      // Total Episode
       if (lower.includes('episode')) {
         const epFound = parseEpisodeNumber(txt);
         if (epFound > 0) totalEp = epFound;
       }
     });
 
-    // Fallback kata Movie dari judul / slug
-    const combinedCheck = `${fallbackTitle} ${fallbackSlug}`.toLowerCase();
-    if (combinedCheck.includes('movie')) {
+    if (`${fallbackTitle} ${fallbackSlug}`.toLowerCase().includes('movie')) {
       detectedType = 'Movie';
     }
 
-    // Ekstrak cover resolusi tinggi jika tersedia
     let coverHigh = $('.thumb img, .bigcontent img').attr('src') || $('.thumb img, .bigcontent img').attr('data-src') || '';
     if (coverHigh.startsWith('//')) coverHigh = `https:${coverHigh}`;
 
@@ -150,7 +140,7 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       totalEp,
       cover: coverHigh
     };
-  } catch (err) {
+  } catch (_) {
     const isMovieFallback = `${fallbackTitle} ${fallbackSlug}`.toLowerCase().includes('movie');
     return {
       genres: ["Action", "Adventure", "Fantasy", "Martial Arts", "Cultivation"],
@@ -201,7 +191,7 @@ async function main() {
 
   try {
     // ==========================================
-    // MODE KHUSUS: UPDATE SEMUA DETAIL DONGHUA
+    // 1. MODE UPDATE SEMUA DETAIL SPESIFIKASI
     // ==========================================
     if (isUpdateAllDetails) {
       console.log(`Memulai proses update detail untuk ${masterList.length} judul...`);
@@ -209,10 +199,9 @@ async function main() {
       for (let i = 0; i < masterList.length; i++) {
         const item = masterList[i];
         item.title = sanitizeTitle(item.title);
-
         const detailUrl = item.link || `${BASE_URL}/${item.slug}/`;
-        console.log(`[${i + 1}/${masterList.length}] Scraping detail: ${item.title} (${item.slug})...`);
 
+        console.log(`[${i + 1}/${masterList.length}] Scraping detail: ${item.title}...`);
         const detail = await fetchDonghuaDetail(page, detailUrl, item.title, item.slug);
 
         item.type = detail.type;
@@ -222,7 +211,6 @@ async function main() {
         if (detail.synopsis) item.synopsis = detail.synopsis;
         if (detail.cover && !item.cover) item.cover = detail.cover;
 
-        // Update episode jika dari halaman terbaca lebih tinggi
         if (detail.totalEp > 0) {
           const currentNum = parseEpisodeNumber(item['latest-episode']);
           if (detail.totalEp >= currentNum) {
@@ -230,71 +218,83 @@ async function main() {
             item.episode = `Ep ${detail.totalEp}`;
           }
         }
-
         item.updated_at = new Date().toISOString();
 
-        // Simpan file lokal berkala
         fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
 
-        // Checkpoint Git setiap 10 judul
         if ((i + 1) % 10 === 0) {
           gitPushCheckpoint(`Auto: Batch updated details (${i + 1}/${masterList.length})`);
         }
-
-        // Delay sopan agar tidak terblokir
         await new Promise(r => setTimeout(r, 1200));
       }
 
       gitPushCheckpoint(`Auto: Finished updating all donghua details`);
-      console.log('✅ Selesai memperbarui semua detail donghua!');
+      console.log('✅ Selesai memperbarui semua detail!');
       return;
     }
 
     // ==========================================
-    // MODE DEFAULT / SYNC-ORDER / NEW-ONLY
+    // 2. MODE SYNC-ORDER / NEW-ONLY (ARSIP ANIME)
     // ==========================================
-    const targetUrl = `${BASE_URL}/donghua/`;
-    console.log(`Membaca katalog dari: ${targetUrl}`);
-
-    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
-    const html = await page.content();
-    const $ = cheerio.load(html);
-
+    // Scrape 2 halaman pertama dari arsip update untuk mendapatkan list terupdate yang akurat
+    const pagesToScrape = isSyncOrder ? [1, 2] : [1];
     const scrapedCards = [];
-    const items = $('.listupd article, .animepost, .bsx, .animpost');
 
-    items.each((_, el) => {
-      const card = $(el);
-      const linkEl = card.find('a').first();
-      const rawLink = resolveUrl(linkEl.attr('href') || '');
-      const slug = extractSlug(rawLink);
+    for (const pageNum of pagesToScrape) {
+      const targetUrl = pageNum === 1
+        ? `${BASE_URL}/anime/?status=&type=&order=update`
+        : `${BASE_URL}/anime/?page=${pageNum}&status=&type=&order=update`;
 
-      if (!slug || slug === 'donghua' || slug === 'anime') return;
+      console.log(`Membaca katalog dari halaman ${pageNum}: ${targetUrl}`);
 
-      const rawTitle = linkEl.attr('title') || 
-                       card.find('.tt h2, .entry-title, .title').first().text() || 
-                       card.find('.tt').first().text() || '';
+      await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
+      const html = await page.content();
+      const $ = cheerio.load(html);
 
-      const title = sanitizeTitle(rawTitle);
+      const items = $('.listupd article, .animepost, .bsx, .animpost');
 
-      let cover = card.find('img').attr('src') || card.find('img').attr('data-src') || '';
-      if (cover.startsWith('//')) cover = `https:${cover}`;
+      items.each((_, el) => {
+        const card = $(el);
+        const linkEl = card.find('a').first();
+        const rawLink = resolveUrl(linkEl.attr('href') || '');
+        const slug = extractSlug(rawLink);
 
-      const epRaw = card.find('.epx, .bt .ep, .sb').first().text().trim();
-      const epNum = parseEpisodeNumber(epRaw);
+        if (!slug || slug === 'anime' || slug === 'donghua') return;
 
-      scrapedCards.push({
-        slug,
-        title,
-        link: rawLink,
-        cover,
-        epRaw: epNum > 0 ? String(epNum) : '1'
+        const rawTitle = linkEl.attr('title') || 
+                         card.find('.tt h2, .entry-title, .title').first().text() || 
+                         card.find('.tt').first().text() || '';
+
+        const title = sanitizeTitle(rawTitle);
+
+        let cover = card.find('img').attr('src') || card.find('img').attr('data-src') || '';
+        if (cover.startsWith('//')) cover = `https:${cover}`;
+
+        const epRaw = card.find('.epx, .bt .ep, .sb').first().text().trim();
+        const epNum = parseEpisodeNumber(epRaw);
+
+        // Cek tipe dari badge kartu jika tersedia
+        const typeBadge = card.find('.typez').text().trim().toLowerCase();
+        const isMovie = typeBadge.includes('movie') || `${title} ${slug}`.toLowerCase().includes('movie');
+
+        scrapedCards.push({
+          slug,
+          title,
+          link: rawLink,
+          cover,
+          type: isMovie ? 'Movie' : 'Donghua',
+          epRaw: epNum > 0 ? String(epNum) : '1'
+        });
       });
-    });
 
-    console.log(`Ditemukan ${scrapedCards.length} judul pada halaman pertama.`);
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
+    console.log(`Total judul yang didapat dari halaman arsip: ${scrapedCards.length}`);
+
     let updatedCount = 0;
 
+    // Iterasi terbalik agar entri halaman 1 urutan nomor 1 tetap menempati urutan index 0 (teratas)
     for (let i = scrapedCards.length - 1; i >= 0; i--) {
       const card = scrapedCards[i];
       const existingIdx = masterList.findIndex(d => d.slug === card.slug);
@@ -302,13 +302,11 @@ async function main() {
       if (existingIdx > -1) {
         if (isNewOnly) continue;
 
+        // Pindahkan judul yang ada ke posisi paling atas
         const [item] = masterList.splice(existingIdx, 1);
         item.title = sanitizeTitle(item.title) || card.title;
         if (card.cover && !item.cover) item.cover = card.cover;
-
-        if (`${item.title} ${item.slug}`.toLowerCase().includes('movie')) {
-          item.type = 'Movie';
-        }
+        if (card.type === 'Movie') item.type = 'Movie';
 
         const safeEp = card.epRaw !== '1' ? card.epRaw : (item['latest-episode'] || '1');
         item['latest-episode'] = safeEp;
@@ -318,7 +316,8 @@ async function main() {
         masterList.unshift(item);
         updatedCount++;
       } else {
-        console.log(`✨ Menambahkan judul baru: ${card.title} (${card.slug})`);
+        // Judul baru: ambil detail lengkapnya
+        console.log(`✨ Menemukan judul baru di arsip: ${card.title} (${card.slug})`);
         const detail = await fetchDonghuaDetail(page, card.link, card.title, card.slug);
         const finalEp = detail.totalEp > 0 ? String(detail.totalEp) : card.epRaw;
 
@@ -326,8 +325,8 @@ async function main() {
           title: card.title,
           slug: card.slug,
           link: card.link,
-          cover: card.cover,
-          type: detail.type,
+          cover: card.cover || detail.cover,
+          type: detail.type || card.type,
           status: detail.status,
           episode: `Ep ${finalEp}`,
           released: detail.released,
@@ -343,11 +342,11 @@ async function main() {
     }
 
     fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
-    console.log(`✅ Berhasil memproses ${updatedCount} judul ke dalam donghua.json.`);
-    gitPushCheckpoint(`Auto: Update Catalog (${isSyncOrder ? 'Sync Order' : 'New Only'})`);
+    console.log(`✅ Berhasil menyinkronkan ${updatedCount} judul ke urutan teratas.`);
+    gitPushCheckpoint(`Auto: Update Catalog Order (${isSyncOrder ? 'Sync Order' : 'New Only'})`);
 
   } catch (error) {
-    console.error('Terjadi error saat scraping:', error);
+    console.error('Terjadi error saat proses scraping:', error);
   } finally {
     await browser.close().catch(() => {});
   }
