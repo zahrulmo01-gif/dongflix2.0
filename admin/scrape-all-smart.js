@@ -10,7 +10,7 @@ function cleanText(text) {
 }
 
 function parseEpisodeNumber(epString) {
-  if (!epString) return 0;
+  if (!epString || epString === 'null') return 0;
   const match = String(epString).match(/(\d+(\.\d+)?)/);
   return match ? parseFloat(match[1]) : 0;
 }
@@ -22,16 +22,26 @@ function gitCommitAndPush(slug, epNum) {
     execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
     execSync(`git add donghua/donghua.json donghua/episodes/${slug}.json`, { stdio: 'ignore' });
     
-    const status = execSync('git status --porcelain').toString();
+    const status = execSync('git status --porcelain').toString().trim();
     if (status) {
       execSync(`git commit -m "Auto Update: ${slug} (Ep ${epNum}) [skip ci]"`, { stdio: 'inherit' });
-      execSync('git push', { stdio: 'inherit' });
+      
+      try {
+        execSync('git pull --rebase origin main', { stdio: 'inherit' });
+      } catch (_) {
+        execSync('git pull --rebase', { stdio: 'inherit' });
+      }
+
+      execSync('git push origin main', { stdio: 'inherit' });
       console.log(`  🚀 Berhasil push ke GitHub untuk ${slug}!`);
     } else {
       console.log(`  ℹ️ Tidak ada perubahan file untuk di-push.`);
     }
   } catch (err) {
     console.warn(`  ⚠️ Gagal git push otomatis: ${err.message}`);
+    try {
+      execSync('git rebase --abort', { stdio: 'ignore' });
+    } catch (_) {}
   }
 }
 
@@ -123,8 +133,8 @@ async function main() {
       try {
         const epData = JSON.parse(fs.readFileSync(epFilePath, 'utf-8'));
         if (Array.isArray(epData) && epData.length > 0) {
-          const numbers = epData.map(e => parseEpisodeNumber(e.episode));
-          localHighestEp = Math.max(...numbers, 0);
+          const numbers = epData.map(e => parseEpisodeNumber(e.episode)).filter(n => n > 0);
+          localHighestEp = numbers.length > 0 ? Math.max(...numbers) : 0;
         }
       } catch (_) {}
     }
@@ -133,7 +143,7 @@ async function main() {
     const webHighestEp = parseEpisodeNumber(webLatestEpRaw);
 
     console.log(`  - Episode Lokal : ${localHighestEp > 0 ? localHighestEp : 'Belum discrape'}`);
-    console.log(`  - Episode di Web: ${webHighestEp > 0 ? webHighestEp : (webLatestEpRaw || 'Tidak ditemukan')}`);
+    console.log(`  - Episode di Web: ${webHighestEp > 0 ? webHighestEp : (webLatestEpRaw || 'Tidak terdeteksi')}`);
 
     if (webHighestEp > localHighestEp || localHighestEp === 0) {
       console.log(`  🚀 RILISAN BARU DITEMUKAN! Memulai delta scrape...`);
@@ -141,18 +151,50 @@ async function main() {
       try {
         execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
 
-        const currentMaster = JSON.parse(fs.readFileSync(masterPath, 'utf-8'));
-        const targetIndex = currentMaster.findIndex(d => d.slug === slug);
-        if (targetIndex > -1) {
-          const [updatedItem] = currentMaster.splice(targetIndex, 1);
-          updatedItem['latest-episode'] = String(webHighestEp || webLatestEpRaw);
-          updatedItem.episode = `Ep ${webHighestEp || webLatestEpRaw}`;
-          updatedItem.updated_at = new Date().toISOString();
-          currentMaster.unshift(updatedItem);
-          fs.writeFileSync(masterPath, JSON.stringify(currentMaster, null, 2), 'utf-8');
+        let finalEpNum = webHighestEp || parseEpisodeNumber(webLatestEpRaw);
+        
+        if (fs.existsSync(epFilePath)) {
+          try {
+            const savedEps = JSON.parse(fs.readFileSync(epFilePath, 'utf-8'));
+            if (Array.isArray(savedEps) && savedEps.length > 0) {
+              const nums = savedEps.map(e => parseEpisodeNumber(e.episode)).filter(n => n > 0);
+              if (nums.length > 0) {
+                finalEpNum = Math.max(...nums);
+              }
+            }
+          } catch (_) {}
         }
 
-        gitCommitAndPush(slug, webHighestEp || webLatestEpRaw);
+        const currentMaster = JSON.parse(fs.readFileSync(masterPath, 'utf-8'));
+        const targetIndex = currentMaster.findIndex(d => d.slug === slug);
+
+        if (targetIndex > -1) {
+          const [updatedItem] = currentMaster.splice(targetIndex, 1);
+          
+          let safeEp = null;
+
+          if (finalEpNum && finalEpNum > 0) {
+            safeEp = String(finalEpNum);
+          } else if (updatedItem['latest-episode'] && updatedItem['latest-episode'] !== 'null') {
+            safeEp = String(updatedItem['latest-episode']);
+          } else if (updatedItem.episode && updatedItem.episode !== 'null') {
+            const parsedFromEp = parseEpisodeNumber(updatedItem.episode);
+            safeEp = parsedFromEp > 0 ? String(parsedFromEp) : String(updatedItem.episode).replace(/[^0-9.]/g, '');
+          }
+
+          if (!safeEp) {
+            safeEp = '1';
+          }
+
+          updatedItem['latest-episode'] = safeEp;
+          updatedItem.episode = `Ep ${safeEp}`;
+          updatedItem.updated_at = new Date().toISOString();
+
+          currentMaster.unshift(updatedItem);
+          fs.writeFileSync(masterPath, JSON.stringify(currentMaster, null, 2), 'utf-8');
+
+          gitCommitAndPush(slug, safeEp);
+        }
 
       } catch (err) {
         console.error(`  ❌ Gagal memproses ${slug}: ${err.message}`);
