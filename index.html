@@ -1,151 +1,326 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dongflix - Streaming Donghua Subtitle Indonesia</title>
-  <meta name="description" content="Nonton streaming donghua subtitle Indonesia update terbaru dengan server cepat tanpa iklan mengganggu di Dongflix.">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://dongflix.my.id/">
-
-  <!-- Meta Header agar Gambar Eksternal Tidak Diblokir (Bypass Hotlink) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="referrer" content="no-referrer">
+  <title>Dongflix - Streaming Donghua Sub Indo</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    :root {
+      --bg-main: #000000;
+      --bg-card: #0a0a0a;
+      --bg-skeleton: #121212;
+      --bg-header-scrolled: rgba(10, 10, 10, 0.96);
+      --bg-search-input: #121212;
+      --color-primary: #0284c7;
+      --color-primary-hover: #0369a1;
+      --color-accent: #38bdf8;
+      --color-star: #f59e0b;
+      --text-main: #ffffff;
+      --text-sub: #d1d5db;
+      --text-muted: #9ca3af;
+      --border-color: rgba(255, 255, 255, 0.12);
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    
+    body { 
+      background-color: var(--bg-main); 
+      color: var(--text-main); 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      padding-bottom: 40px; 
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+
+    .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
+
+    @keyframes skeletonPulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+      100% { opacity: 0.4; }
+    }
+    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
+    .skeleton-hero { width: 100%; height: 500px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px 20px; }
+    .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
+    .skeleton-text.title { height: 24px; width: 70%; margin-bottom: 12px; }
+    .skeleton-text.sub { height: 12px; width: 40%; margin-bottom: 16px; }
+    .skeleton-btn { height: 38px; width: 110px; border-radius: 10px; }
+
+    .card-skeleton { width: 100%; }
+    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border-color); }
+    .card-skeleton-title { height: 13px; width: 85%; margin-bottom: 4px; }
+    .card-skeleton-sub { height: 11px; width: 50%; }
+
+    .no-image-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #121212;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px dashed var(--border-color);
+      z-index: 1;
+      box-sizing: border-box;
+    }
+
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 10px 12px; pointer-events: none; transition: padding 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+    .header-content { max-width: 100%; width: 100%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; height: 52px; padding: 0 8px; border-radius: 26px; pointer-events: auto; background: transparent; border: 1px solid transparent; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+    header.scrolled { padding: 10px 20px; }
+    header.scrolled .header-content { max-width: 880px; padding: 0 16px; background: var(--bg-header-scrolled); border: 1px solid var(--border-color); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9); }
+    
+    .header-normal-group { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .header-left-group { display: flex; align-items: center; gap: 12px; }
+    .header-right-group { display: flex; align-items: center; gap: 8px; }
+
+    .icon-circle-btn { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); text-decoration: none; }
+    .icon-circle-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+    .brand-title { font-size: 22px; font-weight: 900; color: var(--color-accent); letter-spacing: 0.5px; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4); text-decoration: none; }
+
+    .menu-dropdown { display: none; position: absolute; top: 60px; right: 16px; background: #0d0d0d; border: 1px solid var(--border-color); border-radius: 12px; padding: 8px; min-width: 200px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 101; }
+    .menu-dropdown.active { display: block; }
+    .menu-dropdown a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; color: var(--text-main); text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+    .menu-dropdown a svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .menu-dropdown a:hover { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-main); z-index: 999; padding: 16px; overflow-y: auto; }
+    .modal-overlay.active { display: block; }
+
+    .search-modal-header { display: flex; align-items: center; gap: 12px; max-width: 800px; margin: 0 auto 16px auto; }
+    .search-input-box { flex: 1; position: relative; display: flex; align-items: center; }
+    .search-input-box svg { position: absolute; left: 14px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
+    .search-input-field { width: 100%; height: 46px; background: var(--bg-search-input); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 16px 0 42px; color: var(--text-main); font-size: 15px; outline: none; }
+    .modal-close-btn { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
+    .modal-close-btn svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .search-info-bar { max-width: 800px; margin: 0 auto 16px auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+    .search-badge-source { background: rgba(14, 165, 233, 0.2); color: var(--color-accent); border: 1px solid var(--border-color); padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 12px; }
+    .search-results-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .search-item-card { display: flex; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; cursor: pointer; text-decoration: none; }
+    
+    .search-item-thumb { 
+      width: 75px; 
+      height: 100px; 
+      border-radius: 10px; 
+      flex-shrink: 0; 
+      background: var(--bg-card); 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .search-item-info { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+    .search-item-title { font-size: 15px; font-weight: 700; color: var(--text-main); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .search-item-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+    .search-item-ep { font-size: 12px; font-weight: 700; color: var(--color-accent); margin-top: 6px; }
+
+    .dialog-header { display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto 20px auto; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .dialog-title { font-size: 20px; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; gap: 8px; }
+    .load-more-btn { display: block; width: 100%; max-width: 800px; margin: 24px auto 0 auto; padding: 14px; background: var(--bg-card); color: var(--color-accent); border: 1px solid var(--border-color); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; }
+
+    .hero-slider-wrapper { position: relative; width: 100%; height: 500px; overflow: hidden; background: #000; will-change: transform; transform: translateZ(0); }
+    .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s ease-in-out; display: flex; align-items: flex-end; }
+    .hero-slide.active { opacity: 1; z-index: 1; }
+    .hero-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-main) 15%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0.2) 100%); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; padding: 20px 20px 45px 20px; max-width: 600px; }
+    .badge-tag { display: inline-block; background: var(--color-primary); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
+    .hero-title { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hero-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+    .rating-star { color: var(--color-star); font-weight: 800; display: flex; align-items: center; gap: 4px; }
+    .badge-status-green { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); border: 1px solid var(--border-color); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
+    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
+    .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .slider-dots { position: absolute; bottom: 16px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+    .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
+
+    .section-block { margin-top: 24px; }
+    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+
+    .scroll-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; will-change: transform; transform: translateZ(0); }
+    .scroll-row::-webkit-scrollbar { display: none; }
+    .card-continue { flex: 0 0 calc((100% - 24px) / 3); min-width: calc((100% - 24px) / 3); cursor: pointer; text-decoration: none; display: block; }
+    
+    .card-continue-img-wrapper, .card-grid-img-wrapper { 
+      position: relative; width: 100%; height: 180px; 
+      border-radius: 14px; overflow: hidden; background: var(--bg-card); 
+      border: 1px solid var(--border-color); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    .card-continue img, .card-grid img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .badge-ep { 
+      position: absolute; top: 8px; left: 8px; 
+      background: rgba(2, 132, 199, 0.9);
+      color: var(--text-main); font-size: 9px; font-weight: 800; 
+      padding: 3px 7px; border-radius: 6px; z-index: 2; text-transform: uppercase; 
+    }
+
+    .card-bottom-info {
+      position: absolute; bottom: 8px; left: 8px; right: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 2; pointer-events: none; gap: 4px;
+    }
+
+    .badge-bottom { 
+      background: rgba(15, 23, 42, 0.95); color: var(--color-accent); 
+      border: 1px solid rgba(56, 189, 248, 0.3); 
+      font-size: 9px; font-weight: 700; padding: 2.5px 6px; border-radius: 6px; 
+      white-space: nowrap;
+    }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card-grid { cursor: pointer; text-decoration: none; display: block; }
+    .card-title { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .see-all-btn { color: var(--color-accent); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; background: none; }
+
+    footer { margin-top: 50px; padding: 24px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
+    footer a { color: var(--color-accent); text-decoration: none; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+<body>
 
-  <!-- TOP NAVBAR -->
-  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <a href="/" class="text-2xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 bg-clip-text text-transparent flex items-center gap-2">
-          <span>Dongflix</span>
-        </a>
-        <span class="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 px-2.5 py-0.5 rounded-full font-mono">
-          Streaming
-        </span>
+  <header id="mainHeader">
+    <div class="header-content">
+      <div class="header-normal-group">
+        <div class="header-left-group">
+          <a href="/" class="brand-title">Dongflix</a>
+        </div>
+        <div class="header-right-group">
+          <button class="icon-circle-btn" onclick="openSearchModal()">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+          <button class="icon-circle-btn" onclick="toggleMenu()">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
       </div>
 
-      <nav class="flex items-center gap-2">
-        <a href="/" class="text-xs font-semibold text-cyan-400 px-3.5 py-2 rounded-xl bg-cyan-950/40 border border-cyan-800/60 transition">
-          Beranda
+      <div class="menu-dropdown" id="menuDropdown">
+        <a href="/">
+          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda
         </a>
-        <a href="/donghua/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
-          Katalog
+        <a href="/donghua/">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg> Katalog Donghua
         </a>
-        <a href="/admin/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
-          Admin
+        <a href="javascript:void(0)" onclick="openLatestDialog()">
+          <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg> Donghua Terbaru
         </a>
-      </nav>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 space-y-8">
-    <section class="space-y-6">
-      
-      <!-- Filter Bar & Search -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl">
-        <div>
-          <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Katalog Donghua Terbaru</h1>
-          <p class="text-xs text-slate-400 mt-0.5">Koleksi serial animasi China subtitle Indonesia terlengkap dan terupdate.</p>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-          <div class="relative flex-1 sm:w-64">
-            <input 
-              id="searchInput" 
-              type="text" 
-              placeholder="Cari judul donghua..." 
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
-            >
-          </div>
-
-          <select 
-            id="statusFilter" 
-            class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
-          >
-            <option value="ALL">Semua Status</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
-          </select>
-        </div>
+  <div class="modal-overlay" id="searchModalOverlay">
+    <div class="search-modal-header">
+      <div class="search-input-box">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua..." onkeyup="handleSearchInput(event)">
       </div>
+      <button class="modal-close-btn" onclick="closeSearchModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
 
-      <!-- Counter Tampilan -->
-      <div class="flex items-center justify-between text-xs text-slate-400 px-1">
-        <span id="totalCountInfo">Memuat koleksi...</span>
+    <div class="search-info-bar">
+      <span>Mencari di:</span>
+      <span class="search-badge-source">Dongflix</span>
+    </div>
+
+    <div class="search-results-list" id="searchResultsList">
+      <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul donghua yang ingin dicari...</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="latestModalOverlay">
+    <div class="dialog-header">
+      <h2 class="dialog-title">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
+        Semua Donghua Terbaru
+      </h2>
+      <button class="modal-close-btn" onclick="closeLatestDialog()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    
+    <div class="container" style="padding: 0;">
+      <div class="grid-3" id="latestModalGrid"></div>
+      <button class="load-more-btn" id="loadMoreDialogBtn" onclick="loadMoreDialogData()">Muat Lainnya</button>
+    </div>
+  </div>
+
+  <div class="hero-slider-wrapper" id="heroSlider">
+    <div class="skeleton skeleton-hero">
+      <div style="width: 100%;">
+        <div class="skeleton skeleton-text title"></div>
+        <div class="skeleton skeleton-text sub"></div>
+        <div class="skeleton skeleton-btn"></div>
       </div>
+    </div>
+  </div>
 
-      <!-- Skeleton Loading -->
-      <div id="loadingGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4">
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-        <div class="bg-slate-900/60 rounded-2xl aspect-[3/4] animate-pulse border border-slate-800"></div>
-      </div>
-
-      <!-- Grid Katalog Card -->
-      <div id="donghuaGrid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4"></div>
-
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">
-        Judul donghua tidak ditemukan.
-      </div>
-
-      <!-- Tombol Muat Lagi -->
-      <div class="text-center pt-4">
-        <button 
-          id="btnLoadMore" 
-          class="hidden inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-cyan-400 font-semibold text-xs px-6 py-3 rounded-full border border-cyan-800/60 hover:border-cyan-500 transition shadow-lg shadow-cyan-950/20"
-        >
-          <span>Muat Lebih Banyak (+12)</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-      </div>
-
+  <div class="container">
+    <section class="section-block" id="continueSection" style="display: none;">
+      <h2 class="section-title">
+        <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Lanjutkan Menonton
+      </h2>
+      <div class="scroll-row" id="continueRow"></div>
     </section>
-  </main>
 
-  <!-- FOOTER -->
-  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 px-4 py-6 text-center text-xs text-slate-500">
-    <p>&copy; 2026 Dongflix. Ditenagai oleh Real-time GitHub Proxy.</p>
+    <section class="section-block">
+      <div class="section-header-flex">
+        <h2 class="section-title" style="margin-bottom: 0;">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
+          Donghua Terbaru
+        </h2>
+        <button class="see-all-btn" onclick="openLatestDialog()">Lihat Semua</button>
+      </div>
+      <div class="grid-3" id="latestGrid" style="margin-top: 14px;">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <h2 class="section-title">
+        <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Semua Koleksi
+      </h2>
+      <div class="grid-3" id="popularAllGrid">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 <a href="/">Dongflix</a>. Ditenagai oleh Real-time GitHub Proxy.</p>
+    </div>
   </footer>
 
   <script>
-    const ITEMS_PER_PAGE = 12;
-    let allDonghua = [];
-    let filteredDonghua = [];
-    let displayedCount = 0;
-
-    const loadingGrid = document.getElementById('loadingGrid');
-    const donghuaGrid = document.getElementById('donghuaGrid');
-    const emptyState = document.getElementById('emptyState');
-    const btnLoadMore = document.getElementById('btnLoadMore');
-    const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-    const totalCountInfo = document.getElementById('totalCountInfo');
+    let searchTimer = null;
+    let currentSlide = 0;
+    let slideInterval = null;
+    let dialogPage = 1;
+    let donghuaList = [];
 
     function sanitizeTitle(rawTitle) {
       if (!rawTitle) return 'Donghua';
@@ -157,128 +332,309 @@
       return str;
     }
 
-    async function loadData() {
-      try {
-        const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error();
-        allDonghua = await res.json();
-      } catch (err) {
-        try {
-          const localRes = await fetch('/donghua/donghua.json?t=' + Date.now());
-          allDonghua = await localRes.json();
-        } catch (localErr) {
-          allDonghua = [];
-        }
+    function parseStatusText(item) {
+      const rawStatus = (item.status || item.type || '').toString().toLowerCase();
+      if (rawStatus.includes('completed') || rawStatus.includes('tamat') || rawStatus.includes('end')) {
+        return 'COMPLETED';
       }
+      return 'ONGOING';
+    }
 
-      loadingGrid.classList.add('hidden');
-      donghuaGrid.classList.remove('hidden');
+    function parseEpisodeText(item) {
+      if (!item) return 'Ep 1';
+      const epVal = item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || 'Ep 1');
+      return epVal;
+    }
 
-      if (!allDonghua || allDonghua.length === 0) {
-        emptyState.classList.remove('hidden');
-        totalCountInfo.textContent = '0 donghua';
+    function getImageUrl(item) {
+      return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
+    }
+
+    function handleMissingImage(imgElement) {
+      if (!imgElement) return;
+      const wrapper = imgElement.parentElement;
+      if (!wrapper) return;
+      imgElement.style.display = 'none';
+      if (!wrapper.querySelector('.no-image-box')) {
+        const noImg = document.createElement('div');
+        noImg.className = 'no-image-box';
+        noImg.innerText = 'No Image';
+        wrapper.insertBefore(noImg, wrapper.firstChild);
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('mainHeader');
+      if (window.scrollY > 15) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    }, { passive: true });
+
+    function toggleMenu() { document.getElementById('menuDropdown').classList.toggle('active'); }
+    function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('searchInputModal').focus(); }
+    function closeSearchModal() { document.getElementById('searchModalOverlay').classList.remove('active'); }
+
+    function openLatestDialog() {
+      document.getElementById('menuDropdown').classList.remove('active');
+      document.getElementById('latestModalOverlay').classList.add('active');
+      dialogPage = 1;
+      loadMoreDialogData();
+    }
+
+    function closeLatestDialog() { document.getElementById('latestModalOverlay').classList.remove('active'); }
+
+    function loadMoreDialogData() {
+      const btn = document.getElementById('loadMoreDialogBtn');
+      const grid = document.getElementById('latestModalGrid');
+      
+      const pageSize = 12;
+      const startIndex = (dialogPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      
+      const pagedData = donghuaList.slice(startIndex, endIndex);
+
+      if (dialogPage === 1) grid.innerHTML = '';
+
+      if (pagedData.length > 0) {
+        pagedData.forEach(item => {
+          grid.appendChild(createGridCard(item));
+        });
+        dialogPage++;
+        
+        if (endIndex >= donghuaList.length) {
+          btn.innerText = 'Semua data telah ditampilkan';
+        } else {
+          btn.innerText = 'Muat Lainnya';
+        }
+      } else {
+        if (dialogPage === 1) grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: span 3; text-align:center;">Data tidak tersedia.</p>';
+        btn.innerText = 'Tidak ada data lagi';
+      }
+    }
+
+    function handleSearchInput(event) {
+      const query = event.target.value.trim().toLowerCase();
+      const resultsList = document.getElementById('searchResultsList');
+
+      clearTimeout(searchTimer);
+      if (query === '') {
+        resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul donghua yang ingin dicari...</p>';
         return;
       }
 
-      filteredDonghua = [...allDonghua];
-      renderNextBatch();
+      resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Mencari donghua...</p>';
+
+      searchTimer = setTimeout(() => {
+        const searchItems = donghuaList.filter(item => {
+          const titleStr = (item.title || item.name || '').toLowerCase();
+          const slugStr = (item.slug || '').toLowerCase();
+          return titleStr.includes(query) || slugStr.includes(query);
+        });
+
+        resultsList.innerHTML = '';
+        if (searchItems && searchItems.length > 0) {
+          searchItems.forEach(item => {
+            const card = document.createElement('a');
+            card.className = 'search-item-card';
+            card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+
+            const posterUrl = getImageUrl(item);
+            const titleText = sanitizeTitle(item.title);
+
+            card.innerHTML = `
+              <div class="search-item-thumb">
+                <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+              </div>
+              <div class="search-item-info">
+                <div>
+                  <div class="search-item-title">${titleText}</div>
+                  <div class="search-item-desc">Status: ${item.status || 'Ongoing'}</div>
+                </div>
+                <div class="search-item-ep">${parseEpisodeText(item)}</div>
+              </div>
+            `;
+            resultsList.appendChild(card);
+          });
+        } else {
+          resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Donghua tidak ditemukan.</p>';
+        }
+      }, 200);
     }
 
-    function createCard(item) {
-      const displayTitle = sanitizeTitle(item.title || item.name);
-      const isCompleted = (item.status || '').toLowerCase() === 'completed';
-      const epDisplay = item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-');
-      const posterImage = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
-      const slug = item.slug || '';
+    function renderHeroSlider(items) {
+      const slider = document.getElementById('heroSlider');
+      if (!slider) return;
+      slider.innerHTML = '';
 
+      const sliderItems = items.slice(0, 5);
+      sliderItems.forEach((item, index) => {
+        const slide = document.createElement('div');
+        slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+        
+        const epText = parseEpisodeText(item);
+        const statusText = parseStatusText(item);
+        const posterUrl = getImageUrl(item);
+        const titleText = sanitizeTitle(item.title);
+
+        slide.innerHTML = `
+          <img class="hero-bg-img" src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="badge-tag">DONGHUA</span>
+            <h1 class="hero-title">${titleText}</h1>
+            <div class="hero-meta">
+              <span class="rating-star">★ 9.0</span>
+              <span>•</span>
+              <span class="badge-status-green">${statusText}</span>
+              <span>•</span>
+              <span>${epText}</span>
+            </div>
+            <a href="/donghua/${encodeURIComponent(item.slug)}" class="btn-watch">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              Tonton
+            </a>
+          </div>
+        `;
+        slider.appendChild(slide);
+      });
+
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'slider-dots';
+      dotsContainer.id = 'sliderDots';
+
+      sliderItems.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+        dot.onclick = () => setSlide(index);
+        dotsContainer.appendChild(dot);
+      });
+
+      slider.appendChild(dotsContainer);
+      startSliderAutoPlay(sliderItems.length);
+    }
+
+    function setSlide(index) {
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.dot');
+      if (slides.length === 0) return;
+
+      slides[currentSlide].classList.remove('active');
+      if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+
+      currentSlide = index;
+
+      slides[currentSlide].classList.add('active');
+      if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+    }
+
+    function startSliderAutoPlay(total) {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(() => {
+        let next = (currentSlide + 1) % total;
+        setSlide(next);
+      }, 4000);
+    }
+
+    function createGridCard(item) {
       const card = document.createElement('a');
-      // Direct ke /donghua/:slug
-      card.href = `/donghua/${slug}`;
-      card.className = 'group bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-950/20 transition duration-200';
+      card.className = 'card-grid';
+      card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+
+      const episodeText = parseEpisodeText(item);
+      const statusText = parseStatusText(item);
+      const titleText = sanitizeTitle(item.title);
+      const posterUrl = getImageUrl(item);
 
       card.innerHTML = `
-        <div class="aspect-[3/4] w-full bg-slate-950 relative overflow-hidden">
-          <img 
-            src="${posterImage}" 
-            alt="${displayTitle}" 
-            loading="lazy" 
-            referrerpolicy="no-referrer"
-            class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-            onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=No+Cover';"
-          >
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
-          
-          <span class="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md text-[10px] text-cyan-400 font-bold px-2 py-0.5 rounded-md border border-slate-800">
-            ${item.type || 'Donghua'}
-          </span>
-
-          <span class="absolute bottom-2 right-2 bg-cyan-600/90 backdrop-blur-md text-[10px] text-white font-mono font-bold px-1.5 py-0.5 rounded-md shadow">
-            ${epDisplay}
-          </span>
-        </div>
-
-        <div class="p-3 flex-1 flex flex-col justify-between">
-          <h3 class="text-xs font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-cyan-400 transition" title="${displayTitle}">
-            ${displayTitle}
-          </h3>
-          
-          <div class="mt-2.5 flex items-center justify-between text-[10px] font-medium">
-            <span class="${isCompleted ? 'text-blue-400' : 'text-emerald-400'}">
-              ${item.status || 'Ongoing'}
-            </span>
-            <span class="text-slate-500 font-mono">Sub Indo</span>
+        <div class="card-grid-img-wrapper">
+          <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+          <span class="badge-ep">${statusText}</span>
+          <div class="card-bottom-info">
+            <span class="badge-bottom">${episodeText}</span>
           </div>
         </div>
+        <div class="card-title">${titleText}</div>
       `;
+
       return card;
     }
 
-    function renderNextBatch() {
-      const nextBatch = filteredDonghua.slice(displayedCount, displayedCount + ITEMS_PER_PAGE);
-      
-      nextBatch.forEach(item => {
-        donghuaGrid.appendChild(createCard(item));
-      });
-
-      displayedCount += nextBatch.length;
-      totalCountInfo.textContent = `Menampilkan ${displayedCount} dari ${filteredDonghua.length} donghua`;
-
-      if (displayedCount < filteredDonghua.length) {
-        btnLoadMore.classList.remove('hidden');
+    function renderGridItems(list, targetElement) {
+      if (!targetElement) return;
+      targetElement.innerHTML = '';
+      if (Array.isArray(list) && list.length > 0) {
+        list.forEach(item => {
+          if (item && item.title) targetElement.appendChild(createGridCard(item));
+        });
       } else {
-        btnLoadMore.classList.add('hidden');
+        targetElement.innerHTML = '<p style="color: var(--text-muted); font-size: 12px; grid-column: span 3;">Data tidak tersedia.</p>';
       }
     }
 
-    function applyFilters() {
-      const q = searchInput.value.toLowerCase().trim();
-      const status = statusFilter.value;
-      
-      filteredDonghua = allDonghua.filter(item => {
-        const titleMatch = (item.title && item.title.toLowerCase().includes(q)) || 
-                           (item.slug && item.slug.toLowerCase().includes(q));
-        const statusMatch = status === 'ALL' || (item.status && item.status.toLowerCase() === status.toLowerCase());
-        return titleMatch && statusMatch;
-      });
+    async function loadMainData() {
+      const latestGrid = document.getElementById('latestGrid');
+      const popAllGrid = document.getElementById('popularAllGrid');
 
-      donghuaGrid.innerHTML = '';
-      displayedCount = 0;
+      try {
+        // Ambil data melalui API Serverless Proxy (membaca repo private GitHub)
+        const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('API Proxy gagal memuat data');
+        
+        donghuaList = await res.json();
 
-      if (filteredDonghua.length === 0) {
-        emptyState.classList.remove('hidden');
-        btnLoadMore.classList.add('hidden');
-        totalCountInfo.textContent = '0 donghua';
-      } else {
-        emptyState.classList.add('hidden');
-        renderNextBatch();
+        // 1. Render Hero Slider (5 data paling atas/terbaru)
+        renderHeroSlider(donghuaList);
+
+        // 2. Render Donghua Terbaru (12 data awal)
+        renderGridItems(donghuaList.slice(0, 12), latestGrid);
+
+        // 3. Render Semua Koleksi Donghua
+        renderGridItems(donghuaList.slice(12, 36), popAllGrid);
+
+      } catch (e) {
+        console.error("Gagal memuat data via API:", e);
+        if (latestGrid) {
+          latestGrid.innerHTML = `<p style="color: #ef4444; font-size: 12px; grid-column: span 3;">Gagal memuat katalog donghua via API.</p>`;
+        }
       }
     }
 
-    btnLoadMore.addEventListener('click', renderNextBatch);
-    searchInput.addEventListener('input', applyFilters);
-    statusFilter.addEventListener('change', applyFilters);
+    function renderContinueWatching() {
+      const container = document.getElementById('continueSection');
+      const row = document.getElementById('continueRow');
+      if (!container || !row) return;
 
-    loadData();
+      const historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
+      if (!historyList || historyList.length === 0) { 
+        container.style.display = 'none'; 
+        return; 
+      }
+
+      container.style.display = 'block';
+      row.innerHTML = '';
+
+      historyList.forEach((item) => {
+        const card = document.createElement('a');
+        card.className = 'card-continue';
+        card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+        
+        const posterUrl = item.cover || 'https://via.placeholder.com/300x400?text=No+Cover';
+        const displayEp = item.episode || 'Ep 1';
+
+        card.innerHTML = `
+          <div class="card-continue-img-wrapper">
+            <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+            <span class="badge-ep">${displayEp}</span>
+          </div>
+          <div class="card-title">${item.title}</div>
+        `;
+        row.appendChild(card);
+      });
+    }
+
+    window.onload = () => {
+      loadMainData();
+      renderContinueWatching();
+    };
   </script>
 </body>
 </html>
