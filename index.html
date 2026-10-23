@@ -29,7 +29,7 @@
       background-color: var(--bg-main); 
       color: var(--text-main); 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      padding-top: 76px;
+      padding-top: 0;
       padding-bottom: 50px; 
     }
 
@@ -37,11 +37,11 @@
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
     /* ========================================================
-       FLOATING GLASS PILL HEADER
+       FLOATING GLASS PILL HEADER (UKURAN DIPERBESAR & PRESISI)
        ======================================================== */
     .header-bar {
       position: fixed;
-      top: 14px;
+      top: 16px;
       left: 0;
       right: 0;
       z-index: 100;
@@ -65,17 +65,18 @@
       justify-content: center;
     }
 
+    /* TOP LIGHT PIP */
     .top-light-pip {
       position: absolute;
       top: -3px;
       left: 50%;
       transform: translateX(-50%);
-      width: 34px;
-      height: 3px;
+      width: 42px;
+      height: 3.5px;
       background: var(--color-accent);
       border-radius: 9999px;
-      box-shadow: 0 0 10px var(--color-accent), 0 0 18px var(--color-accent);
-      opacity: 0.9;
+      box-shadow: 0 0 12px var(--color-accent), 0 0 20px var(--color-accent);
+      opacity: 0.95;
       pointer-events: none;
     }
 
@@ -83,32 +84,32 @@
       position: relative;
       display: flex;
       align-items: center;
-      background: rgba(18, 18, 20, 0.78);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(15, 15, 18, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 9999px;
-      padding: 4px 12px;
-      height: 42px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      padding: 6px 18px;
+      height: 46px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
       transition: all 0.25s ease;
       cursor: pointer;
     }
 
     .nav-capsule:hover {
-      border-color: rgba(56, 189, 248, 0.35);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.45);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.2);
     }
 
     .brand-title-capsule { 
-      font-size: 16.5px; 
+      font-size: 18.5px; 
       font-weight: 900; 
       color: #ffffff; 
       letter-spacing: -0.4px; 
       text-decoration: none; 
       display: inline-flex; 
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
     .brand-title-capsule .brand-accent { 
@@ -119,14 +120,14 @@
     .tld-badge {
       display: inline-flex;
       align-items: center;
-      background: rgba(56, 189, 248, 0.15);
+      background: rgba(56, 189, 248, 0.16);
       color: var(--color-accent);
       border: 1px solid rgba(56, 189, 248, 0.35);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.4px;
-      padding: 2px 6px;
-      border-radius: 6px;
+      padding: 3px 7px;
+      border-radius: 7px;
       line-height: 1.2;
       text-transform: lowercase;
     }
@@ -134,37 +135,37 @@
     .header-actions-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .action-btn {
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      background: rgba(18, 18, 20, 0.78);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(15, 15, 18, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
       transition: all 0.2s ease;
       flex-shrink: 0;
     }
 
     .action-btn:hover {
-      background: rgba(56, 189, 248, 0.18);
-      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.5);
       color: var(--color-accent);
       transform: translateY(-1px);
     }
 
     .action-btn svg {
-      width: 18px;
-      height: 18px;
+      width: 19px;
+      height: 19px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2.2;
@@ -176,9 +177,9 @@
     .popover-menu {
       display: none;
       position: fixed;
-      top: 66px;
+      top: 72px;
       right: 16px;
-      background: rgba(13, 13, 15, 0.92);
+      background: rgba(13, 13, 15, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-color);
@@ -237,7 +238,7 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       z-index: 999; 
-      padding: 14px 16px; 
+      padding: 16px; 
       overflow-y: auto; 
     }
     .modal-overlay.active { display: block; }
@@ -250,8 +251,8 @@
     .search-modal-header { 
       display: flex; 
       align-items: center; 
-      gap: 12px; 
-      height: 42px;
+      gap: 10px; 
+      height: 46px;
       margin-bottom: 16px; 
     }
 
@@ -260,14 +261,14 @@
       position: relative; 
       display: flex; 
       align-items: center; 
-      height: 42px;
+      height: 46px;
     }
 
     .search-input-box svg { 
       position: absolute; 
-      left: 15px; 
-      width: 17px; 
-      height: 17px; 
+      left: 16px; 
+      width: 18px; 
+      height: 18px; 
       stroke: var(--text-muted); 
       fill: none; 
       stroke-width: 2.2; 
@@ -275,15 +276,15 @@
 
     .search-input-field { 
       width: 100%; 
-      height: 42px; 
-      background: rgba(18, 18, 20, 0.78); 
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12); 
+      height: 46px; 
+      background: rgba(15, 15, 18, 0.82); 
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16); 
       border-radius: 9999px; 
-      padding: 0 16px 0 42px; 
+      padding: 0 18px 0 44px; 
       color: var(--text-main); 
-      font-size: 14px; 
+      font-size: 14.5px; 
       font-family: inherit;
       outline: none; 
       transition: all 0.2s ease;
@@ -296,18 +297,18 @@
 
     .search-input-field:focus { 
       border-color: var(--color-accent); 
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25); 
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25); 
     }
 
     .modal-close-btn { 
-      background: rgba(18, 18, 20, 0.78); 
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12); 
+      background: rgba(15, 15, 18, 0.82); 
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16); 
       color: var(--text-main); 
       cursor: pointer; 
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       display: flex; 
       align-items: center; 
@@ -318,13 +319,13 @@
     }
 
     .modal-close-btn:hover {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: rgba(239, 68, 68, 0.45);
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
       color: #ef4444;
       transform: translateY(-1px);
     }
 
-    .modal-close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+    .modal-close-btn svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
     .search-info-bar { 
       display: flex; 
@@ -384,7 +385,7 @@
     /* SKELETONS */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
-    .skeleton-hero { width: 100%; height: 500px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px; }
+    .skeleton-hero { width: 100%; height: 540px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px; border-radius: 0; }
     .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
     .skeleton-text.title { height: 24px; width: 70%; margin-bottom: 12px; }
     .skeleton-text.sub { height: 12px; width: 40%; margin-bottom: 16px; }
@@ -401,40 +402,71 @@
       letter-spacing: 0.5px; border: 1px dashed var(--border-color); z-index: 1;
     }
 
-    /* HERO SLIDER */
-    .hero-slider-wrapper { position: relative; width: 100%; height: 480px; overflow: hidden; background: #000; border-radius: 16px; margin-top: 10px; }
+    /* ========================================================
+       HERO SLIDER PENUH (EDGE-TO-EDGE KE ATAS & SAMPING)
+       ======================================================== */
+    .hero-slider-wrapper { 
+      position: relative; 
+      width: 100%; 
+      height: 540px; 
+      overflow: hidden; 
+      background: #000; 
+      margin-top: 0;
+      border-radius: 0;
+    }
+
     .hero-slide { 
-      position: absolute; inset: 0; opacity: 0; 
+      position: absolute; 
+      inset: 0; 
+      opacity: 0; 
       transition: opacity 0.5s ease-in-out; 
-      display: flex; align-items: flex-end; 
+      display: flex; 
+      align-items: flex-end; 
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       transform: translateZ(0);
     }
     .hero-slide.active { opacity: 1; z-index: 1; }
     .hero-bg-img { 
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; 
+      position: absolute; 
+      inset: 0; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       transform: translateZ(0);
     }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-main) 15%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0.2) 100%); z-index: 1; }
-    .hero-content { position: relative; z-index: 2; padding: 20px 20px 45px; max-width: 700px; }
+    .hero-overlay { 
+      position: absolute; 
+      inset: 0; 
+      background: linear-gradient(to top, var(--bg-main) 12%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.4) 100%); 
+      z-index: 1; 
+    }
+    .hero-content { 
+      position: relative; 
+      z-index: 2; 
+      padding: 24px 20px 48px; 
+      max-width: 760px; 
+      margin: 0 auto;
+      width: 100%;
+    }
+
     .badge-tag { display: inline-block; background: var(--color-primary); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
     .badge-tag.movie { background: var(--color-movie); color: #000; }
-    .hero-title { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .hero-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+    .hero-title { font-size: 26px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hero-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
     .rating-star { color: var(--color-star); font-weight: 800; display: flex; align-items: center; gap: 4px; }
     .badge-status-green { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); border: 1px solid var(--border-color); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
-    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
+    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); border: none; padding: 11px 26px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
     .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
 
-    .slider-dots { position: absolute; bottom: 16px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; align-items: center; gap: 6px; }
+    .slider-dots { position: absolute; bottom: 18px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; align-items: center; gap: 6px; }
     .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
     .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
 
     /* CONTENT SECTIONS */
-    .section-block { margin-top: 30px; }
+    .section-block { margin-top: 32px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
@@ -499,9 +531,9 @@
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
     @media (min-width: 768px) {
-      .hero-slider-wrapper { height: 560px; }
-      .hero-content { padding: 30px 40px 60px; max-width: 800px; }
-      .hero-title { font-size: 34px; margin-bottom: 12px; }
+      .hero-slider-wrapper { height: 620px; }
+      .hero-content { padding: 30px 40px 60px; max-width: 1100px; }
+      .hero-title { font-size: 36px; margin-bottom: 12px; }
 
       .grid-3 { 
         grid-template-columns: repeat(6, 1fr); 
@@ -525,10 +557,10 @@
       }
       .card-title { font-size: 13px; margin-top: 10px; }
       .section-title { font-size: 21px; }
-      .section-block { margin-top: 36px; }
+      .section-block { margin-top: 40px; }
     }
 
-    footer { margin-top: 50px; padding: 24px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
+    footer { margin-top: 60px; padding: 26px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
     footer a { color: var(--color-accent); text-decoration: none; }
   </style>
 </head>
@@ -536,7 +568,7 @@
 
   <!-- FLOATING GLASS PILL HEADER -->
   <header class="header-bar">
-    <!-- Kapsul Kaca Tengah Dengan Judul Dongflix & .my.id -->
+    <!-- Kapsul Kaca Tengah Dengan Judul Dongflix & .my.id Diperbesar -->
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
@@ -620,18 +652,18 @@
     </div>
   </div>
 
-  <div class="container">
-    <!-- HERO SLIDER -->
-    <div class="hero-slider-wrapper" id="heroSlider">
-      <div class="skeleton skeleton-hero">
-        <div style="width: 100%;">
-          <div class="skeleton skeleton-text title"></div>
-          <div class="skeleton skeleton-text sub"></div>
-          <div class="skeleton skeleton-btn"></div>
-        </div>
+  <!-- HERO SLIDER PENUH (EDGE-TO-EDGE) -->
+  <div class="hero-slider-wrapper" id="heroSlider">
+    <div class="skeleton skeleton-hero">
+      <div style="width: 100%;">
+        <div class="skeleton skeleton-text title"></div>
+        <div class="skeleton skeleton-text sub"></div>
+        <div class="skeleton skeleton-btn"></div>
       </div>
     </div>
+  </div>
 
+  <div class="container">
     <!-- 1. LANJUTKAN MENONTON -->
     <section class="section-block" id="continueSection" style="display: none;">
       <h2 class="section-title">
