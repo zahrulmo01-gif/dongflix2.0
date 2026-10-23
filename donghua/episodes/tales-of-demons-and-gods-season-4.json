@@ -636,5 +636,37 @@
     "link": "https://anichin.moe/tales-of-demons-and-gods-season-4-episode-03-123-subtitle-indonesia/",
     "date": "April 8, 2020",
     "servers": []
+  },
+  {
+    "episode": "01",
+    "title": "Episode 01 - Janji",
+    "link": "https://anichin.moe/tales-of-demons-and-gods-season-4-episode-01-121-subtitle-indonesia/",
+    "date": "April 8, 2020",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/2714826312370"
+      },
+      {
+        "name": "OK.ru",
+        "link": "https://zuperdrive.my.id/embed/?amJvVkJWNFJxRzVEeW52bm1NQWpsZWZxQ2pnMCtYam1CbGxDTHZjRWtxcEdNYXl4cUFzMGFVTWd0N1V1ZjlLT0hkZjByVkpIUnJCS1Q4MXkzK1pXVWc9PTo6soYkBReGqEHzrLSvs%2BkcTg%3D%3D"
+      },
+      {
+        "name": "B-TV",
+        "link": "https://ipfs.adb.my.id/4786369042451968"
+      }
+    ]
+  },
+  {
+    "episode": "07",
+    "title": "Tales of Demons and Gods Season 4 Episode 07 Subtitle Indonesia",
+    "link": "https://anichin.moe/tales-of-demons-and-gods-season-4-episode-07-subtitle-indonesia/",
+    "date": "April 22, 2020",
+    "servers": [
+      {
+        "name": "Clipwatching",
+        "link": "https://clipwatching.com/embed-6vuote5ch2au.html"
+      }
+    ]
   }
 ]
