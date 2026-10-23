@@ -195,7 +195,7 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
-    /* REKOMENDASI DONGHUA (SMART CATEGORY MATCH) */
+    /* REKOMENDASI SERUPA (GAYA POPULER HARI INI - SCROLL ROW) */
     .recommendations-section {
       margin-top: 32px;
       margin-bottom: 32px;
@@ -211,61 +211,95 @@
       align-items: center;
       gap: 8px;
     }
-    .recommendations-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+    .popular-featured-row {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
-    .rec-card {
+    .popular-featured-row::-webkit-scrollbar { display: none; }
+    
+    .popular-featured-card {
+      flex: 0 0 88%;
+      max-width: 380px;
+      height: 185px;
+      display: flex;
+      gap: 14px;
       text-decoration: none !important;
-      display: block;
-      cursor: pointer;
+      background: rgba(22, 22, 26, 0.45);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
-    .rec-thumb-box {
-      position: relative;
-      width: 100%;
-      height: 140px;
-      border-radius: 12px;
+    .featured-thumb-box {
+      width: 115px;
+      min-width: 115px;
+      height: 100%;
+      border-radius: 14px;
       overflow: hidden;
-      background: var(--bg-card);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      background: #111;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
     }
-    .rec-thumb-box img {
+    .featured-thumb-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .rec-badge-ep {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      background: rgba(2, 132, 199, 0.9);
-      color: #fff;
-      font-size: 8.5px;
-      font-weight: 800;
-      padding: 2.5px 7px;
-      border-radius: 9999px;
-      text-transform: uppercase;
+    .featured-info-col {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2px 0;
     }
-    .rec-card-title {
-      margin-top: 6px;
-      font-size: 12px;
-      font-weight: 700;
+    .featured-title {
+      font-size: 14.5px;
+      font-weight: 800;
       color: #ffffff;
-      line-height: 1.3;
+      line-height: 1.25;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+    .featured-synopsis {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      -webkit-line-clamp: 3;
+    }
+    .featured-genres {
+      font-size: 10.5px;
+      color: #64748b;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .featured-pill-btn {
+      align-self: flex-start;
+      background: #1c1c1e;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #d1d5db;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+    }
 
     @media (min-width: 768px) {
-      .recommendations-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 14px;
-      }
-      .rec-thumb-box {
-        height: 165px;
+      .popular-featured-card {
+        max-width: 340px;
       }
     }
 
@@ -408,13 +442,13 @@
       <div class="skeleton" style="height:120px;margin-bottom:20px;"></div>
     </div>
 
-    <!-- REKOMENDASI DONGHUA (BERDASARKAN KATEGORI) -->
+    <!-- REKOMENDASI DONGHUA (GAYA POPULER HARI INI) -->
     <section class="recommendations-section" id="recommendationsSection" style="display:none;">
       <h3 class="recommendations-title">
         <svg style="width:18px;height:18px;stroke:var(--color-accent);fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         Rekomendasi Serupa
       </h3>
-      <div class="recommendations-grid" id="recommendationsGrid"></div>
+      <div class="popular-featured-row" id="recommendationsRow"></div>
     </section>
 
     <!-- COMMENTS SECTION -->
@@ -703,17 +737,15 @@
     }
   }
 
-  /* REKOMENDASI DONGHUA BERDASARKAN KATEGORI */
+  /* RENDER REKOMENDASI SERUPA (GAYA POPULER HARI INI) */
   function renderSmartRecommendations(currentGenres, currentSlug, catalog) {
     const section = document.getElementById('recommendationsSection');
-    const grid = document.getElementById('recommendationsGrid');
-    if (!section || !grid || !Array.isArray(catalog)) return;
+    const row = document.getElementById('recommendationsRow');
+    if (!section || !row || !Array.isArray(catalog)) return;
 
-    // Filter keluar donghua yang sedang diputar
     const others = catalog.filter(item => item.slug !== currentSlug);
     if (others.length === 0) return;
 
-    // Beri skor kecocokan kategori/genre
     const scored = others.map(item => {
       let score = 0;
       const itemGenres = Array.isArray(item.genres) 
@@ -727,7 +759,6 @@
           }
         });
       }
-      // Tambahkan sedikit nilai acak agar rekomendasi bervariasi jika skor sama
       score += Math.random() * 0.5;
       return { item, score };
     });
@@ -737,19 +768,31 @@
 
     if (topRecs.length === 0) return;
 
-    grid.innerHTML = topRecs.map(item => {
+    row.innerHTML = topRecs.map(item => {
       const title = sanitizeTitle(item.title);
       const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
       const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
-      const epText = isMovie ? 'MOVIE' : (item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || 'Ep 1'));
+      const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
+      const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'Completed' : 'Ongoing';
+      const badgeText = isMovie ? 'Movie' : `Ep ${epNum} / ${statusText}`;
+      const synopsis = item.synopsis || item.description || item.desc || `${title} menceritakan petualangan kultivasi dan pertempuran hebat melawan takdir.`;
+      const genresStr = Array.isArray(item.genres) ? item.genres.join(' • ') : 'Action • Adventure • Fantasy';
 
       return `
-        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-card">
-          <div class="rec-thumb-box">
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="popular-featured-card">
+          <div class="featured-thumb-box">
             <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" />
-            <span class="rec-badge-ep">${epText}</span>
           </div>
-          <div class="rec-card-title">${title}</div>
+          <div class="featured-info-col">
+            <div>
+              <h3 class="featured-title">${title}</h3>
+              <p class="featured-synopsis">${synopsis}</p>
+              <div class="featured-genres">${genresStr}</div>
+            </div>
+            <div class="featured-pill-btn">
+              <span>${badgeText}</span>
+            </div>
+          </div>
         </a>
       `;
     }).join('');
@@ -796,7 +839,6 @@
             </div>
           `;
 
-          // Panggil rekomendasi cerdas berdasarkan kategori
           renderSmartRecommendations(genresList, targetSlug, catalog);
         }
       }
