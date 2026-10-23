@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Dongflix - Streaming Donghua Sub Indo</title>
+  <title>Dongflix.my.id - Streaming Donghua Sub Indo</title>
 
   <style>
     :root {
@@ -37,7 +37,7 @@
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
     /* ========================================================
-       FLOATING GLASS PILL HEADER DENGAN JUDUL DI DALAM KAPSUL
+       FLOATING GLASS PILL HEADER
        ======================================================== */
     .header-bar {
       position: fixed;
@@ -65,13 +65,12 @@
       justify-content: center;
     }
 
-    /* TOP LIGHT PIP DENGAN GLOW */
     .top-light-pip {
       position: absolute;
       top: -3px;
       left: 50%;
       transform: translateX(-50%);
-      width: 32px;
+      width: 34px;
       height: 3px;
       background: var(--color-accent);
       border-radius: 9999px;
@@ -89,7 +88,7 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 9999px;
-      padding: 4px 14px;
+      padding: 4px 12px;
       height: 42px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
       transition: all 0.25s ease;
@@ -97,26 +96,39 @@
     }
 
     .nav-capsule:hover {
-      border-color: rgba(56, 189, 248, 0.3);
+      border-color: rgba(56, 189, 248, 0.35);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.15);
     }
 
-    /* JUDUL DI DALAM KAPSUL */
     .brand-title-capsule { 
-      font-size: 17px; 
+      font-size: 16.5px; 
       font-weight: 900; 
       color: #ffffff; 
       letter-spacing: -0.4px; 
       text-decoration: none; 
       display: inline-flex; 
       align-items: center;
-      gap: 1.5px;
-      padding: 0 4px;
+      gap: 6px;
     }
 
     .brand-title-capsule .brand-accent { 
       color: var(--color-accent); 
       text-shadow: 0 0 14px rgba(56, 189, 248, 0.5); 
+    }
+
+    .tld-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--color-accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      line-height: 1.2;
+      text-transform: lowercase;
     }
 
     .header-actions-group {
@@ -140,6 +152,7 @@
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .action-btn:hover {
@@ -213,28 +226,157 @@
       color: var(--color-accent);
     }
 
-    /* SEARCH MODAL */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: var(--bg-main); z-index: 999; padding: 16px; overflow-y: auto; }
+    /* ========================================================
+       MODAL PENCARIAN (SEJAJAR DENGAN HEADER BAR)
+       ======================================================== */
+    .modal-overlay { 
+      display: none; 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.88); 
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 999; 
+      padding: 14px 16px; 
+      overflow-y: auto; 
+    }
     .modal-overlay.active { display: block; }
-    .search-modal-header { display: flex; align-items: center; gap: 12px; max-width: 800px; margin: 0 auto 16px; }
-    .search-input-box { flex: 1; position: relative; display: flex; align-items: center; }
-    .search-input-box svg { position: absolute; left: 14px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
-    .search-input-field { width: 100%; height: 46px; background: var(--bg-search-input); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 16px 0 42px; color: var(--text-main); font-size: 15px; outline: none; }
-    .modal-close-btn { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
-    .modal-close-btn svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
-    .search-info-bar { max-width: 800px; margin: 0 auto 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
-    .search-badge-source { background: rgba(14, 165, 233, 0.2); color: var(--color-accent); border: 1px solid var(--border-color); padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 12px; }
-    .search-results-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-    .search-item-card { display: flex; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; cursor: pointer; text-decoration: none; }
-    .search-item-thumb { width: 75px; height: 100px; border-radius: 10px; flex-shrink: 0; background: var(--bg-card); position: relative; overflow: hidden; }
+    .search-modal-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .search-modal-header { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      height: 42px;
+      margin-bottom: 16px; 
+    }
+
+    .search-input-box { 
+      flex: 1; 
+      position: relative; 
+      display: flex; 
+      align-items: center; 
+      height: 42px;
+    }
+
+    .search-input-box svg { 
+      position: absolute; 
+      left: 15px; 
+      width: 17px; 
+      height: 17px; 
+      stroke: var(--text-muted); 
+      fill: none; 
+      stroke-width: 2.2; 
+    }
+
+    .search-input-field { 
+      width: 100%; 
+      height: 42px; 
+      background: rgba(18, 18, 20, 0.78); 
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12); 
+      border-radius: 9999px; 
+      padding: 0 16px 0 42px; 
+      color: var(--text-main); 
+      font-size: 14px; 
+      font-family: inherit;
+      outline: none; 
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .search-input-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input-field:focus { 
+      border-color: var(--color-accent); 
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25); 
+    }
+
+    .modal-close-btn { 
+      background: rgba(18, 18, 20, 0.78); 
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12); 
+      color: var(--text-main); 
+      cursor: pointer; 
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      flex-shrink: 0;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #ef4444;
+      transform: translateY(-1px);
+    }
+
+    .modal-close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .search-info-bar { 
+      display: flex; 
+      align-items: center; 
+      gap: 8px; 
+      font-size: 12.5px; 
+      color: var(--text-muted); 
+      margin-bottom: 16px;
+      padding-left: 6px;
+    }
+
+    .search-badge-source { 
+      background: rgba(56, 189, 248, 0.12); 
+      color: var(--color-accent); 
+      border: 1px solid rgba(56, 189, 248, 0.3); 
+      padding: 2.5px 10px; 
+      border-radius: 9999px; 
+      font-weight: 700; 
+      font-size: 11px; 
+    }
+
+    .search-results-list { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+    }
+
+    .search-item-card { 
+      display: flex; 
+      gap: 14px; 
+      background: rgba(18, 18, 20, 0.65); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+      border-radius: 14px; 
+      padding: 10px; 
+      cursor: pointer; 
+      text-decoration: none; 
+      transition: all 0.2s ease;
+    }
+
+    .search-item-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .search-item-thumb { width: 68px; height: 90px; border-radius: 10px; flex-shrink: 0; background: var(--bg-card); position: relative; overflow: hidden; }
     .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
     .search-item-info { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-    .search-item-title { font-size: 15px; font-weight: 700; color: var(--text-main); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .search-item-title { font-size: 14.5px; font-weight: 700; color: var(--text-main); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .search-item-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
-    .search-item-ep { font-size: 12px; font-weight: 700; color: var(--color-accent); margin-top: 6px; }
+    .search-item-ep { font-size: 11.5px; font-weight: 800; color: var(--color-accent); margin-top: 6px; }
 
-    /* DIALOG MODAL */
+    /* DIALOG MODAL POPUP */
     .dialog-header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
     .dialog-title { font-size: 20px; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; gap: 8px; }
     .load-more-btn { display: block; width: 100%; max-width: 600px; margin: 24px auto 0; padding: 14px; background: var(--bg-card); color: var(--color-accent); border: 1px solid var(--border-color); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; }
@@ -394,17 +536,18 @@
 
   <!-- FLOATING GLASS PILL HEADER -->
   <header class="header-bar">
-    <!-- Tengah: Pil Kapsul Berkilau Dengan Judul Dongflix di Dalamnya -->
+    <!-- Kapsul Kaca Tengah Dengan Judul Dongflix & .my.id -->
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <a href="/" class="brand-title-capsule">
-          Dong<span class="brand-accent">flix</span>
+          <span>Dong<span class="brand-accent">flix</span></span>
+          <span class="tld-badge">.my.id</span>
         </a>
       </div>
     </div>
 
-    <!-- Kanan: Tombol Aksi Kaca Bulat -->
+    <!-- Tombol Aksi Kanan (Pencarian & Menu Popover) -->
     <div class="header-actions-group">
       <button class="action-btn" onclick="openSearchModal()" aria-label="Cari Donghua">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -435,29 +578,31 @@
     </a>
   </div>
 
-  <!-- SEARCH MODAL -->
+  <!-- SEARCH MODAL (SEJAJAR DENGAN HEADER BAR) -->
   <div class="modal-overlay" id="searchModalOverlay">
-    <div class="search-modal-header">
-      <div class="search-input-box">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua atau movie..." onkeyup="handleSearchInput(event)">
+    <div class="search-modal-container">
+      <div class="search-modal-header">
+        <div class="search-input-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua atau movie..." onkeyup="handleSearchInput(event)">
+        </div>
+        <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="Tutup Pencarian">
+          <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
       </div>
-      <button class="modal-close-btn" onclick="closeSearchModal()">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
 
-    <div class="search-info-bar">
-      <span>Mencari di:</span>
-      <span class="search-badge-source">Dongflix</span>
-    </div>
+      <div class="search-info-bar">
+        <span>Menampilkan hasil dari:</span>
+        <span class="search-badge-source">Dongflix.my.id</span>
+      </div>
 
-    <div class="search-results-list" id="searchResultsList">
-      <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul yang ingin dicari...</p>
+      <div class="search-results-list" id="searchResultsList">
+        <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul yang ingin dicari...</p>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP DIALOG -->
+  <!-- POPUP DIALOG (LIHAT SEMUA) -->
   <div class="modal-overlay" id="latestModalOverlay">
     <div class="dialog-header">
       <h2 class="dialog-title" id="dialogTitleText">
@@ -561,7 +706,7 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 <a href="/">Dongflix</a>. Ditenagai oleh Real-time GitHub Proxy.</p>
+      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Ditenagai oleh Real-time GitHub Proxy.</p>
     </div>
   </footer>
 
@@ -637,8 +782,14 @@
       }
     });
 
-    function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('searchInputModal').focus(); }
-    function closeSearchModal() { document.getElementById('searchModalOverlay').classList.remove('active'); }
+    function openSearchModal() { 
+      document.getElementById('searchModalOverlay').classList.add('active'); 
+      document.getElementById('searchInputModal').focus(); 
+    }
+    
+    function closeSearchModal() { 
+      document.getElementById('searchModalOverlay').classList.remove('active'); 
+    }
 
     function openLatestDialog(type = 'donghua') {
       document.getElementById('popoverMenu').classList.remove('active');
