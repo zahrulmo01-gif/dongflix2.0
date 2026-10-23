@@ -83,7 +83,7 @@
             Manajemen Katalog Donghua
           </h2>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Pilih tindakan: hanya menambahkan judul baru yang belum ada, menyelaraskan urutan list katalog, atau membersihkan data rusak.
+            Pilih tindakan: menambah judul baru, menyelaraskan urutan list katalog, membersihkan data rusak, atau scrape ulang seluruh detail spesifikasi.
           </p>
         </div>
         <div class="space-y-2 pt-2">
@@ -101,11 +101,21 @@
               Perbaiki Urutan List
             </button>
           </div>
+
+          <!-- Tombol Clean JSON -->
           <button onclick="triggerWorkflow('clean-json')" class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700/80 text-emerald-400 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Bersihkan JSON (Fix Null & Duplikat)
+          </button>
+
+          <!-- Tombol Update Semua Detail -->
+          <button onclick="triggerWorkflow('update-all-details')" class="w-full px-4 py-2 bg-indigo-900/40 hover:bg-indigo-900/70 border border-indigo-700/50 text-indigo-300 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Update Semua Detail (Tipe Movie, Sinopsis, Genre)
           </button>
         </div>
       </section>
@@ -261,6 +271,7 @@
       logTerminal('[Terminal dibersihkan]');
     }
 
+    // Ambil data melalui Serverless API Proxy
     async function loadDonghuaList() {
       const container = document.getElementById('donghuaListContainer');
       const countLabel = document.getElementById('donghuaCount');
@@ -272,7 +283,7 @@
         allDonghuaData = await res.json();
         countLabel.textContent = `${allDonghuaData.length} Donghua terdaftar`;
         renderDonghuaItems(allDonghuaData);
-        logTerminal(`[Katalog] Berhasil mengambil ${allDonghuaData.length} donghua dari GitHub Proxy.`, 'success');
+        logTerminal(`[Katalog] Berhasil mengambil ${allDonghuaData.length} judul dari GitHub Proxy.`, 'success');
       } catch (err) {
         container.innerHTML = `<div class="p-4 text-center text-xs text-rose-400">Gagal mengambil katalog: ${err.message}</div>`;
         logTerminal(`[Katalog Error] ${err.message}`, 'error');
@@ -289,15 +300,19 @@
       container.innerHTML = items.map((item, index) => {
         const titleClean = sanitizeTitle(item.title);
         const epDisplay = parseSafeEpisode(item);
+        const isMovie = (item.type || '').toLowerCase() === 'movie' || `${titleClean} ${item.slug}`.toLowerCase().includes('movie');
 
         return `
           <div class="p-3 hover:bg-slate-900/50 flex items-center justify-between gap-3 transition">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-xs font-mono text-slate-600 w-6 text-right">${index + 1}</span>
               <div class="min-w-0">
-                <div class="text-xs font-semibold text-slate-200 truncate" title="${titleClean}">${titleClean}</div>
-                <div class="text-[11px] font-mono text-slate-500 flex items-center gap-2">
-                  <span>${item.slug}</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-200 truncate" title="${titleClean}">${titleClean}</span>
+                  ${isMovie ? '<span class="text-[9px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded">MOVIE</span>' : ''}
+                </div>
+                <div class="text-[11px] font-mono text-slate-500 flex items-center gap-2 mt-0.5">
+                  <span class="truncate max-w-[150px] sm:max-w-xs">${item.slug}</span>
                   <span>•</span>
                   <span class="text-indigo-400 font-semibold">${epDisplay}</span>
                 </div>
@@ -323,7 +338,7 @@
       renderDonghuaItems(filtered);
     }
 
-    // Trigger repository_dispatch
+    // Trigger repository_dispatch ke file scraper.yml tunggal
     async function triggerWorkflow(eventType, clientPayload = {}) {
       const token = document.getElementById('ghToken').value.trim();
       const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_REPO;
