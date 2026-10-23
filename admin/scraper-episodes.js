@@ -8,13 +8,11 @@ puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
 
-// Menjalankan hingga 5 tab paralel untuk mempercepat proses
-const CONCURRENCY = 5;
+// Turunkan sedikit ke 4 agar runner GitHub Actions tidak kehabisan RAM/CDP socket
+const CONCURRENCY = 4;
 
-// URL Cloudflare Worker anti-403 Dailymotion
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
-// Rotasi User-Agent modern
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -89,7 +87,6 @@ async function setupPageConfig(page) {
   await page.setUserAgent(getRandomUserAgent());
   await page.setRequestInterception(true);
   page.on('request', (req) => {
-    // Memblokir aset berat agar resource CPU & RAM tetap hemat
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
       req.abort();
     } else {
@@ -102,11 +99,10 @@ async function scrapeSingleEpisode(page, ep) {
   const rawServers = [];
 
   try {
-    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
+    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // 1. Ekstrak Select Dropdown Server
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
@@ -120,7 +116,6 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 2. Ekstrak Mirror Tab Server
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -134,7 +129,6 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 3. Ekstrak Default Iframe
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
@@ -177,7 +171,6 @@ async function scrapeSingleEpisode(page, ep) {
       servers: [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers]
     };
   } catch (err) {
-    console.warn(`Gagal parse episode ${ep.epNum}: ${err.message}`);
     return {
       episode: ep.epNum,
       title: ep.title,
@@ -214,7 +207,6 @@ async function run() {
   const targetJsonPath = path.join(outDir, `${cleanSlug}.json`);
   let existingEpisodes = [];
 
-  // Baca data JSON lokal jika sudah pernah ada
   if (fs.existsSync(targetJsonPath)) {
     try {
       existingEpisodes = JSON.parse(fs.readFileSync(targetJsonPath, 'utf-8'));
@@ -224,13 +216,14 @@ async function run() {
     }
   }
 
-  // Petakan nomor episode yang sudah tersimpan di database lokal
   const existingEpNumbers = new Set(
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
+  // protocolTimeout ditingkatkan menjadi 180 detik agar Puppeteer tidak crash saat antrean panjang
   const browser = await puppeteer.launch({
     headless: 'new',
+    protocolTimeout: 180000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -253,7 +246,7 @@ async function run() {
   let mainHtml = null;
   for (const url of possibleUrls) {
     try {
-      await mainPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await mainPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 35000 });
       const html = await mainPage.content();
       const $ = cheerio.load(html);
       if ($('.eplister, .episodelist, .bxcl ul, ul.clstyle').length > 0) {
@@ -298,7 +291,6 @@ async function run() {
     latestEpisodeFound = rawEpisodeList[0].epNum || '1';
   }
 
-  // FILTER DELTA: Hanya simpan link episode yang belum tercatat di file JSON lokal
   const newEpisodesToScrape = rawEpisodeList.filter((ep) => {
     const num = parseEpisodeNumber(ep.epNum);
     return !existingEpNumbers.has(num);
@@ -308,14 +300,12 @@ async function run() {
   console.log(`Episode sudah tersimpan: ${existingEpisodes.length}`);
   console.log(`Episode baru yang akan discrape: ${newEpisodesToScrape.length}`);
 
-  // Jika tidak ada episode baru, langsung selesai tanpa membuka tab browser tambahan
   if (newEpisodesToScrape.length === 0) {
     console.log('Semua episode sudah tersimpan lengkap. Tidak ada antrean baru.');
     await browser.close();
     return;
   }
 
-  // Siapkan worker tabs sesuai batasan concurrency
   const workerTabs = [];
   const actualConcurrency = Math.min(CONCURRENCY, newEpisodesToScrape.length);
   for (let i = 0; i < actualConcurrency; i++) {
@@ -327,13 +317,31 @@ async function run() {
   const newlyScrapedResults = new Array(newEpisodesToScrape.length);
   let currentIndex = 0;
 
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+
+  // Fungsi simpan berkala agar data tidak lenyap jika ada error
+  const saveProgress = () => {
+    const finished = newlyScrapedResults.filter(Boolean);
+    const combined = [...finished, ...existingEpisodes];
+    fs.writeFileSync(targetJsonPath, JSON.stringify(combined, null, 2), 'utf-8');
+  };
+
   async function worker(page) {
     while (currentIndex < newEpisodesToScrape.length) {
       const idx = currentIndex++;
       const ep = newEpisodesToScrape[idx];
-      const res = await scrapeSingleEpisode(page, ep);
-      newlyScrapedResults[idx] = res;
-      console.log(`Episode diproses: ${idx + 1}/${newEpisodesToScrape.length} (Ep ${ep.epNum})`);
+      try {
+        const res = await scrapeSingleEpisode(page, ep);
+        newlyScrapedResults[idx] = res;
+        console.log(`Episode diproses: ${idx + 1}/${newEpisodesToScrape.length} (Ep ${ep.epNum})`);
+        
+        // Simpan setiap kelipatan 25 episode
+        if ((idx + 1) % 25 === 0) {
+          saveProgress();
+        }
+      } catch (err) {
+        console.warn(`Gagal memproses Ep ${ep.epNum}, dilewati.`);
+      }
     }
   }
 
@@ -344,14 +352,10 @@ async function run() {
   }
   await browser.close().catch(() => {});
 
-  // Gabungkan episode baru di posisi atas tanpa membuang episode lama
-  const finalEpisodes = [...newlyScrapedResults, ...existingEpisodes];
-
-  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-
-  fs.writeFileSync(targetJsonPath, JSON.stringify(finalEpisodes, null, 2), 'utf-8');
+  // Simpan hasil akhir lengkap
+  saveProgress();
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
-  console.log(`Selesai! Berhasil menambahkan ${newEpisodesToScrape.length} episode baru ke ${cleanSlug}.json`);
+  console.log(`Selesai! Berhasil memproses antrean episode untuk ${cleanSlug}.json`);
 }
 
 run();
