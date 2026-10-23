@@ -8,13 +8,14 @@ on:
       action_type:
         description: 'Pilih aksi: list, sync-order, episode, all, clean-json, atau update-all-details'
         required: true
-        default: 'all'
+        default: 'sync-order'
       target_slug:
         description: 'Slug Donghua (khusus jika memilih aksi episode)'
         required: false
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   run-scraper:
@@ -23,44 +24,48 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci || npm install
+
+      - name: Install Chrome for Puppeteer
+        run: npx puppeteer browsers install chrome
 
       # 1. Scrape Donghua Baru Saja
       - name: Scrape New Donghua Only
-        if: github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list'
+        if: ${{ github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list' }}
         run: node admin/scraper.js --mode=new-only
 
       # 2. Perbaiki Urutan List Mengikuti Anichin
       - name: Sync Order with Anichin
-        if: github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order'
+        if: ${{ github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
         run: node admin/scraper.js --mode=sync-order
 
       # 3. Update Detail Seluruh Donghua ke donghua.json
       - name: Update All Donghua Details
-        if: github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details'
+        if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
         run: node admin/scraper.js --mode=update-all-details
 
       # 4. Scrape Single Episode
       - name: Run Scraper Single Episode
-        if: github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode'
+        if: ${{ github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode' }}
         run: node admin/scraper-episodes.js ${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}
 
       # 5. Smart Scrape All Episodes
       - name: Run Smart Scrape All Episodes
-        if: github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all'
+        if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all' }}
         run: node admin/scrape-all-smart.js
 
       # 6. Clean JSON Data (Fix Null & Duplikat)
       - name: Clean JSON Data
-        if: github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json'
+        if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
         run: node admin/clean-json.js
 
       # Final Commit & Push Safety
@@ -69,4 +74,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
           git add donghua/donghua.json donghua/episodes/*.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update database katalog [skip ci]" && git pull --rebase origin main && git push origin main)
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto: Update database katalog [skip ci]"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "Tidak ada perubahan data katalog."
+          fi
