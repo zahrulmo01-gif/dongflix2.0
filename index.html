@@ -10,7 +10,7 @@
     :root {
       --bg-main: #000000;
       --bg-card: #0a0a0a;
-      --bg-skeleton: #121212;
+      --bg-skeleton: #141416;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
@@ -20,6 +20,7 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
+      /* iOS Glass Tokens */
       --glass-bg: rgba(20, 20, 24, 0.58);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
@@ -27,7 +28,12 @@
       --glass-blur: blur(16px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      touch-action: manipulation; 
+    }
     
     body { 
       background-color: var(--bg-main); 
@@ -232,6 +238,20 @@
       color: #ffffff; font-size: 9px; font-weight: 800; padding: 2.5px 8px; border-radius: 9999px;
     }
 
+    /* PLACEHOLDER SKELETON SEMUA SECTION */
+    @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
+
+    .skeleton-hero { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 20px 20px 45px; }
+    .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
+    .skeleton-text.title { height: 26px; width: 65%; margin-bottom: 12px; }
+    .skeleton-text.sub { height: 14px; width: 40%; margin-bottom: 16px; }
+    .skeleton-btn { height: 38px; width: 110px; border-radius: 10px; }
+
+    .card-skeleton { width: 100%; }
+    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border-color); }
+    .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
+
     /* SLIDER DENGAN PROGRESSIVE BLUR & MENGGELAP */
     .hero-slider-wrapper { 
       position: relative; width: 100%; height: 460px; overflow: hidden; background: #000; 
@@ -262,17 +282,24 @@
     .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
     .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
 
-    /* CONTENT SECTIONS */
-    .section-block { margin-top: 36px; }
-    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    /* CONTENT SECTIONS DENGAN JARAK LEBIH LEGA */
+    .section-block { margin-top: 40px; }
+    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-    /* LANJUTKAN MENONTON (COVER 16:9 LANDSCAPE SESUAI GAMBAR) */
+    /* ========================================================
+       LANJUTKAN MENONTON (DIBERI JARAK BAWAH DAN JARAK ANTAR ITEM)
+       ======================================================== */
+    .continue-section-wrapper {
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+
     .continue-scroll-row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding-bottom: 12px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       transform: translateZ(0);
@@ -351,7 +378,7 @@
     }
 
     /* CARD GRID DONGHUA & MOVIE */
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 22px; }
     .card-grid { text-decoration: none !important; border: none !important; }
     .card-grid-img-wrapper { 
       position: relative; width: 100%; height: 180px; border-radius: 14px; overflow: hidden; 
@@ -481,12 +508,21 @@
     </div>
   </div>
 
-  <!-- HERO SLIDER -->
-  <div class="hero-slider-wrapper" id="heroSlider"></div>
+  <!-- HERO SLIDER PLACEHOLDER AWAL -->
+  <div class="hero-slider-wrapper" id="heroSlider">
+    <div class="skeleton skeleton-hero">
+      <div style="width: 100%; max-width: 760px; margin: 0 auto;">
+        <div class="skeleton" style="height: 22px; width: 90px; margin-bottom: 12px; border-radius: 4px;"></div>
+        <div class="skeleton skeleton-text title"></div>
+        <div class="skeleton skeleton-text sub"></div>
+        <div class="skeleton skeleton-btn"></div>
+      </div>
+    </div>
+  </div>
 
   <div class="container">
-    <!-- 1. LANJUTKAN MENONTON (DISEMBUNYIKAN SECARA DEFAULT HINGGA ADA DATA) -->
-    <section class="section-block" id="continueSection" style="display: none !important;">
+    <!-- 1. LANJUTKAN MENONTON -->
+    <section class="section-block continue-section-wrapper" id="continueSection" style="display: none !important;">
       <h2 class="section-title">
         <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Lanjutkan Menonton
@@ -494,7 +530,7 @@
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
-    <!-- 2. POPULER HARI INI -->
+    <!-- 2. POPULER HARI INI DENGAN SKELETON PLACEHOLDER -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -502,10 +538,33 @@
           Populer Hari Ini
         </h2>
       </div>
-      <div class="popular-featured-row" id="todayPopularRow"></div>
+      <div class="popular-featured-row" id="todayPopularRow">
+        <div class="popular-featured-card">
+          <div class="featured-thumb-box skeleton"></div>
+          <div class="featured-info-col">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="skeleton" style="height: 18px; width: 80%;"></div>
+              <div class="skeleton" style="height: 12px; width: 95%;"></div>
+              <div class="skeleton" style="height: 12px; width: 65%;"></div>
+            </div>
+            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+          </div>
+        </div>
+        <div class="popular-featured-card">
+          <div class="featured-thumb-box skeleton"></div>
+          <div class="featured-info-col">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="skeleton" style="height: 18px; width: 80%;"></div>
+              <div class="skeleton" style="height: 12px; width: 95%;"></div>
+              <div class="skeleton" style="height: 12px; width: 65%;"></div>
+            </div>
+            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- 3. DONGHUA TERBARU -->
+    <!-- 3. DONGHUA TERBARU DENGAN SKELETON PLACEHOLDER -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -514,10 +573,17 @@
         </h2>
         <a href="/donghua/" class="see-all-btn">Lihat Semua</a>
       </div>
-      <div class="grid-3" id="latestGrid"></div>
+      <div class="grid-3" id="latestGrid">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      </div>
     </section>
 
-    <!-- 4. MOVIE TERBARU -->
+    <!-- 4. MOVIE TERBARU DENGAN SKELETON PLACEHOLDER -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -526,10 +592,14 @@
         </h2>
         <a href="/donghua/?type=movie" class="see-all-btn movie">Lihat Semua</a>
       </div>
-      <div class="grid-3" id="movieGrid"></div>
+      <div class="grid-3" id="movieGrid">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      </div>
     </section>
 
-    <!-- 5. DONGHUA POPULER -->
+    <!-- 5. DONGHUA POPULER DENGAN SKELETON PLACEHOLDER -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -537,7 +607,30 @@
           Donghua Populer
         </h2>
       </div>
-      <div class="popular-vertical-list" id="popularAllGrid"></div>
+      <div class="popular-vertical-list" id="popularAllGrid">
+        <div class="popular-featured-card">
+          <div class="featured-thumb-box skeleton"></div>
+          <div class="featured-info-col">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="skeleton" style="height: 18px; width: 75%;"></div>
+              <div class="skeleton" style="height: 12px; width: 90%;"></div>
+              <div class="skeleton" style="height: 12px; width: 60%;"></div>
+            </div>
+            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+          </div>
+        </div>
+        <div class="popular-featured-card">
+          <div class="featured-thumb-box skeleton"></div>
+          <div class="featured-info-col">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="skeleton" style="height: 18px; width: 75%;"></div>
+              <div class="skeleton" style="height: 12px; width: 90%;"></div>
+              <div class="skeleton" style="height: 12px; width: 60%;"></div>
+            </div>
+            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -726,7 +819,7 @@
       if (dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
 
-    /* RENDER LANJUTKAN MENONTON: HANYA MUNCUL JIKA ADA DATA TONTONAN ASLI */
+    /* RENDER LANJUTKAN MENONTON */
     function renderContinueWatching() {
       const container = document.getElementById('continueSection');
       const row = document.getElementById('continueRow');
@@ -739,14 +832,12 @@
         historyList = [];
       }
 
-      // JIKA KOSONG / BELUM ADA TONTONAN, SEMBUNYIKAN PENUH
       if (!Array.isArray(historyList) || historyList.length === 0) {
         container.style.setProperty('display', 'none', 'important');
         row.innerHTML = '';
         return;
       }
 
-      // JIKA ADA RIWAYAT, TAMPILKAN KONTAINER & RENDER CARD
       container.style.removeProperty('display');
       container.style.display = 'block';
       row.innerHTML = '';
@@ -862,7 +953,6 @@
       } catch (_) {}
     }
 
-    // Refresh riwayat saat halaman dimuat atau kembali dibuka
     window.addEventListener('pageshow', renderContinueWatching);
     window.addEventListener('DOMContentLoaded', () => {
       renderContinueWatching();
