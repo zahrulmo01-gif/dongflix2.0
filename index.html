@@ -30,20 +30,19 @@
       background-color: var(--bg-main); 
       color: var(--text-main); 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      padding-bottom: 40px; 
+      padding-bottom: 50px; 
     }
 
-    .container { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
     @keyframes skeletonPulse {
-      0% { opacity: 0.4; }
+      0%, 100% { opacity: 0.4; }
       50% { opacity: 0.8; }
-      100% { opacity: 0.4; }
     }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
-    .skeleton-hero { width: 100%; height: 500px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px 20px; }
+    .skeleton-hero { width: 100%; height: 500px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px; }
     .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
     .skeleton-text.title { height: 24px; width: 70%; margin-bottom: 12px; }
     .skeleton-text.sub { height: 12px; width: 40%; margin-bottom: 16px; }
@@ -56,50 +55,32 @@
 
     .no-image-box {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #121212;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #94a3b8;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border: 1px dashed var(--border-color);
-      z-index: 1;
-      box-sizing: border-box;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #121212; display: flex; align-items: center; justify-content: center;
+      color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.5px; border: 1px dashed var(--border-color); z-index: 1;
     }
 
-    header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 10px 12px; pointer-events: none; transition: padding 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-    .header-content { max-width: 100%; width: 100%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; height: 52px; padding: 0 8px; border-radius: 26px; pointer-events: auto; background: transparent; border: 1px solid transparent; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+    /* HEADER */
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 10px 12px; pointer-events: none; transition: padding 0.3s ease; }
+    .header-content { max-width: 100%; width: 100%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 52px; padding: 0 8px; border-radius: 26px; pointer-events: auto; background: transparent; transition: all 0.3s ease; }
     header.scrolled { padding: 10px 20px; }
-    header.scrolled .header-content { max-width: 880px; padding: 0 16px; background: var(--bg-header-scrolled); border: 1px solid var(--border-color); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9); }
+    header.scrolled .header-content { max-width: 1100px; padding: 0 20px; background: var(--bg-header-scrolled); border: 1px solid var(--border-color); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9); }
     
     .header-normal-group { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .header-left-group { display: flex; align-items: center; gap: 12px; }
-    .header-right-group { display: flex; align-items: center; gap: 8px; }
+    .header-left-group { display: flex; align-items: center; gap: 20px; }
+    .header-right-group { display: flex; align-items: center; gap: 10px; }
+
+    /* DESKTOP NAV LINKS */
+    .desktop-nav-links { display: none; align-items: center; gap: 18px; margin-left: 10px; }
+    .desktop-nav-links a { color: var(--text-sub); text-decoration: none; font-size: 13.5px; font-weight: 600; transition: color 0.2s; display: flex; align-items: center; gap: 6px; }
+    .desktop-nav-links a:hover { color: var(--color-accent); }
+
+    .brand-title { font-size: 22px; font-weight: 900; color: #ffffff; letter-spacing: -0.3px; text-decoration: none; display: inline-flex; align-items: center; }
+    .brand-title .brand-accent { color: var(--color-accent); text-shadow: 0 0 14px rgba(56, 189, 248, 0.5); }
 
     .icon-circle-btn { background: rgba(255, 255, 255, 0.08); color: var(--text-main); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); text-decoration: none; }
     .icon-circle-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; }
-    
-    /* BRAND TITLE DUA WARNA RAPAT TANPA SPASI */
-    .brand-title { 
-      font-size: 22px; 
-      font-weight: 900; 
-      color: #ffffff; 
-      letter-spacing: -0.3px; 
-      text-decoration: none; 
-      display: inline-flex;
-      align-items: center;
-    }
-    .brand-title .brand-accent { 
-      color: var(--color-accent); 
-      text-shadow: 0 0 14px rgba(56, 189, 248, 0.5); 
-    }
 
     .menu-dropdown { display: none; position: absolute; top: 60px; right: 16px; background: #0d0d0d; border: 1px solid var(--border-color); border-radius: 12px; padding: 8px; min-width: 200px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 101; }
     .menu-dropdown.active { display: block; }
@@ -107,47 +88,39 @@
     .menu-dropdown a svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
     .menu-dropdown a:hover { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-main); z-index: 999; padding: 16px; overflow-y: auto; }
+    /* SEARCH MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: var(--bg-main); z-index: 999; padding: 16px; overflow-y: auto; }
     .modal-overlay.active { display: block; }
-
-    .search-modal-header { display: flex; align-items: center; gap: 12px; max-width: 800px; margin: 0 auto 16px auto; }
+    .search-modal-header { display: flex; align-items: center; gap: 12px; max-width: 800px; margin: 0 auto 16px; }
     .search-input-box { flex: 1; position: relative; display: flex; align-items: center; }
     .search-input-box svg { position: absolute; left: 14px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2; }
     .search-input-field { width: 100%; height: 46px; background: var(--bg-search-input); border: 1px solid var(--border-color); border-radius: 12px; padding: 0 16px 0 42px; color: var(--text-main); font-size: 15px; outline: none; }
     .modal-close-btn { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
     .modal-close-btn svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 
-    .search-info-bar { max-width: 800px; margin: 0 auto 16px auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+    .search-info-bar { max-width: 800px; margin: 0 auto 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
     .search-badge-source { background: rgba(14, 165, 233, 0.2); color: var(--color-accent); border: 1px solid var(--border-color); padding: 3px 10px; border-radius: 12px; font-weight: 700; font-size: 12px; }
     .search-results-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
     .search-item-card { display: flex; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; cursor: pointer; text-decoration: none; }
-    
-    .search-item-thumb { 
-      width: 75px; 
-      height: 100px; 
-      border-radius: 10px; 
-      flex-shrink: 0; 
-      background: var(--bg-card); 
-      position: relative; 
-      overflow: hidden; 
-    }
+    .search-item-thumb { width: 75px; height: 100px; border-radius: 10px; flex-shrink: 0; background: var(--bg-card); position: relative; overflow: hidden; }
     .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    
     .search-item-info { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
     .search-item-title { font-size: 15px; font-weight: 700; color: var(--text-main); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .search-item-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+    .search-item-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
     .search-item-ep { font-size: 12px; font-weight: 700; color: var(--color-accent); margin-top: 6px; }
 
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto 20px auto; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    /* DIALOG MODAL */
+    .dialog-header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
     .dialog-title { font-size: 20px; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; gap: 8px; }
-    .load-more-btn { display: block; width: 100%; max-width: 800px; margin: 24px auto 0 auto; padding: 14px; background: var(--bg-card); color: var(--color-accent); border: 1px solid var(--border-color); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; }
+    .load-more-btn { display: block; width: 100%; max-width: 600px; margin: 24px auto 0; padding: 14px; background: var(--bg-card); color: var(--color-accent); border: 1px solid var(--border-color); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; }
 
-    .hero-slider-wrapper { position: relative; width: 100%; height: 500px; overflow: hidden; background: #000; will-change: transform; transform: translateZ(0); }
-    .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s ease-in-out; display: flex; align-items: flex-end; }
+    /* HERO SLIDER */
+    .hero-slider-wrapper { position: relative; width: 100%; height: 480px; overflow: hidden; background: #000; }
+    .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease-in-out; display: flex; align-items: flex-end; }
     .hero-slide.active { opacity: 1; z-index: 1; }
-    .hero-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-    .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-main) 15%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0.2) 100%); z-index: 1; }
-    .hero-content { position: relative; z-index: 2; padding: 20px 20px 45px 20px; max-width: 600px; }
+    .hero-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-main) 15%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0.2) 100%); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; padding: 20px 20px 45px; max-width: 700px; }
     .badge-tag { display: inline-block; background: var(--color-primary); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
     .badge-tag.movie { background: var(--color-movie); color: #000; }
     .hero-title { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -161,23 +134,22 @@
     .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
     .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
 
-    .section-block { margin-top: 24px; }
+    /* CONTENT SECTIONS */
+    .section-block { margin-top: 26px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-    .scroll-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; will-change: transform; transform: translateZ(0); }
+    .scroll-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
     .scroll-row::-webkit-scrollbar { display: none; }
-    .card-continue { flex: 0 0 calc((100% - 24px) / 3); min-width: calc((100% - 24px) / 3); cursor: pointer; text-decoration: none; display: block; }
-    
+
     .card-continue-img-wrapper, .card-grid-img-wrapper { 
       position: relative; width: 100%; height: 180px; 
       border-radius: 14px; overflow: hidden; background: var(--bg-card); 
       border: 1px solid var(--border-color); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
-      will-change: transform;
-      transform: translateZ(0);
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
-    .card-continue img, .card-grid img { width: 100%; height: 100%; object-fit: cover; }
+    .card-continue img, .card-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
     
     .badge-ep { 
       position: absolute; top: 8px; left: 8px; 
@@ -185,10 +157,7 @@
       color: var(--text-main); font-size: 9px; font-weight: 800; 
       padding: 3px 7px; border-radius: 6px; z-index: 2; text-transform: uppercase; 
     }
-    .badge-ep.movie {
-      background: rgba(245, 158, 11, 0.95);
-      color: #000;
-    }
+    .badge-ep.movie { background: rgba(245, 158, 11, 0.95); color: #000; }
 
     .card-bottom-info {
       position: absolute; bottom: 8px; left: 8px; right: 8px;
@@ -202,16 +171,52 @@
       font-size: 9px; font-weight: 700; padding: 2.5px 6px; border-radius: 6px; 
       white-space: nowrap;
     }
-    .badge-bottom.movie {
-      color: #fbbf24;
-      border-color: rgba(245, 158, 11, 0.35);
-    }
+    .badge-bottom.movie { color: #fbbf24; border-color: rgba(245, 158, 11, 0.35); }
 
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .card-grid { cursor: pointer; text-decoration: none; display: block; }
     .card-title { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .see-all-btn { color: var(--color-accent); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; background: none; }
     .see-all-btn.movie { color: var(--color-movie); }
+
+    /* ========================================================
+       RESPONSIVE RULES: MOBILE DEFAULT vs DESKTOP ENHANCED
+       ======================================================== */
+    /* Mobile Layout Default (< 768px): 3 Kolom */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .card-continue { flex: 0 0 calc((100% - 20px) / 3); min-width: calc((100% - 20px) / 3); cursor: pointer; text-decoration: none; display: block; }
+
+    /* Desktop Layout (≥ 768px): 6 Kolom, Menu horizontal, Hover aktif */
+    @media (min-width: 768px) {
+      .hero-slider-wrapper { height: 560px; }
+      .hero-content { padding: 30px 40px 60px; max-width: 800px; }
+      .hero-title { font-size: 34px; margin-bottom: 12px; }
+      .desktop-nav-links { display: flex; }
+      #menuMobileToggle { display: none; }
+
+      .grid-3 { 
+        grid-template-columns: repeat(6, 1fr); 
+        gap: 16px; 
+      }
+      .card-continue { 
+        flex: 0 0 calc((100% - 75px) / 6); 
+        min-width: calc((100% - 75px) / 6); 
+      }
+      .card-continue-img-wrapper, .card-grid-img-wrapper { 
+        height: 235px; 
+        border-radius: 14px;
+      }
+      .card-grid:hover .card-grid-img-wrapper,
+      .card-continue:hover .card-continue-img-wrapper { 
+        transform: translateY(-5px); 
+        border-color: rgba(56, 189, 248, 0.45); 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.8); 
+      }
+      .card-grid:hover img, .card-continue:hover img { 
+        transform: scale(1.06); 
+      }
+      .card-title { font-size: 13px; margin-top: 10px; }
+      .section-title { font-size: 21px; }
+      .section-block { margin-top: 36px; }
+    }
 
     footer { margin-top: 50px; padding: 24px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
     footer a { color: var(--color-accent); text-decoration: none; }
@@ -225,17 +230,39 @@
         <div class="header-left-group">
           <!-- LOGO DUA WARNA RAPAT TANPA SPASI -->
           <a href="/" class="brand-title">Dong<span class="brand-accent">flix</span></a>
+
+          <!-- DESKTOP DIRECT NAV LINKS -->
+          <nav class="desktop-nav-links">
+            <a href="/">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Beranda
+            </a>
+            <a href="/donghua/">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              Katalog
+            </a>
+            <a href="javascript:void(0)" onclick="openLatestDialog('donghua')">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
+              Donghua Terbaru
+            </a>
+            <a href="javascript:void(0)" onclick="openLatestDialog('movie')">
+              <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+              Movie
+            </a>
+          </nav>
         </div>
+
         <div class="header-right-group">
-          <button class="icon-circle-btn" onclick="openSearchModal()">
+          <button class="icon-circle-btn" onclick="openSearchModal()" title="Cari">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           </button>
-          <button class="icon-circle-btn" onclick="toggleMenu()">
+          <button class="icon-circle-btn" id="menuMobileToggle" onclick="toggleMenu()" title="Menu">
             <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
         </div>
       </div>
 
+      <!-- MOBILE DROPDOWN -->
       <div class="menu-dropdown" id="menuDropdown">
         <a href="/">
           <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Beranda
@@ -253,6 +280,7 @@
     </div>
   </header>
 
+  <!-- SEARCH MODAL -->
   <div class="modal-overlay" id="searchModalOverlay">
     <div class="search-modal-header">
       <div class="search-input-box">
@@ -274,6 +302,7 @@
     </div>
   </div>
 
+  <!-- POPUP DIALOG -->
   <div class="modal-overlay" id="latestModalOverlay">
     <div class="dialog-header">
       <h2 class="dialog-title" id="dialogTitleText">
@@ -291,6 +320,7 @@
     </div>
   </div>
 
+  <!-- HERO SLIDER -->
   <div class="hero-slider-wrapper" id="heroSlider">
     <div class="skeleton skeleton-hero">
       <div style="width: 100%;">
@@ -314,12 +344,12 @@
     <!-- 2. POPULER HARI INI -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title" style="margin-bottom: 0;">
+        <h2 class="section-title">
           <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           Populer Hari Ini
         </h2>
       </div>
-      <div class="grid-3" id="todayPopularGrid" style="margin-top: 14px;">
+      <div class="grid-3" id="todayPopularGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -329,13 +359,13 @@
     <!-- 3. DONGHUA TERBARU -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title" style="margin-bottom: 0;">
+        <h2 class="section-title">
           <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
           Donghua Terbaru
         </h2>
         <button class="see-all-btn" onclick="openLatestDialog('donghua')">Lihat Semua</button>
       </div>
-      <div class="grid-3" id="latestGrid" style="margin-top: 14px;">
+      <div class="grid-3" id="latestGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -345,13 +375,13 @@
     <!-- 4. MOVIE TERBARU -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title" style="margin-bottom: 0;">
+        <h2 class="section-title">
           <svg class="icon-svg" style="color: var(--color-movie);" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
           Movie Terbaru
         </h2>
         <button class="see-all-btn movie" onclick="openLatestDialog('movie')">Lihat Semua</button>
       </div>
-      <div class="grid-3" id="movieGrid" style="margin-top: 14px;">
+      <div class="grid-3" id="movieGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -361,12 +391,12 @@
     <!-- 5. DONGHUA POPULER -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title" style="margin-bottom: 0;">
+        <h2 class="section-title">
           <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           Donghua Populer
         </h2>
       </div>
-      <div class="grid-3" id="popularAllGrid" style="margin-top: 14px;">
+      <div class="grid-3" id="popularAllGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -483,7 +513,9 @@
       const grid = document.getElementById('latestModalGrid');
       
       const currentSource = dialogTargetType === 'movie' ? movieList : donghuaList;
-      const pageSize = 12;
+      // Di desktop muat 18 per page, mobile 12
+      const isDesktop = window.innerWidth >= 768;
+      const pageSize = isDesktop ? 18 : 12;
       const startIndex = (dialogPage - 1) * pageSize;
       const endIndex = startIndex + pageSize;
       
@@ -503,7 +535,7 @@
           btn.innerText = 'Muat Lainnya';
         }
       } else {
-        if (dialogPage === 1) grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: span 3; text-align:center;">Data tidak tersedia.</p>';
+        if (dialogPage === 1) grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align:center;">Data tidak tersedia.</p>';
         btn.innerText = 'Tidak ada data lagi';
       }
     }
@@ -666,7 +698,7 @@
           if (item && item.title) targetElement.appendChild(createGridCard(item));
         });
       } else {
-        targetElement.innerHTML = '<p style="color: var(--text-muted); font-size: 12px; grid-column: span 3;">Data tidak tersedia.</p>';
+        targetElement.innerHTML = '<p style="color: var(--text-muted); font-size: 12px; grid-column: 1 / -1;">Data tidak tersedia.</p>';
       }
     }
 
@@ -682,29 +714,31 @@
         
         masterList = await res.json();
 
-        // Pemisahan Serial Donghua dan Movie
         donghuaList = masterList.filter(item => !isMovieItem(item));
         movieList = masterList.filter(item => isMovieItem(item));
 
-        // 1. Render Hero Slider (5 data teratas)
+        // Render Hero Slider
         renderHeroSlider(masterList);
 
-        // 2. Render Populer Hari Ini (6 data teratas gabungan)
-        renderGridItems(masterList.slice(0, 6), todayPopularGrid);
+        // Jumlah item: desktop menampilkan 6 atau 12, mobile menampilkan 6
+        const isDesktop = window.innerWidth >= 768;
+        const displayLimit = isDesktop ? 12 : 6;
 
-        // 3. Render Donghua Terbaru (6 serial teratas)
-        renderGridItems(donghuaList.slice(0, 6), latestGrid);
+        // 1. Populer Hari Ini
+        renderGridItems(masterList.slice(0, displayLimit), todayPopularGrid);
 
-        // 4. Render Movie Terbaru (6 movie teratas)
-        renderGridItems(movieList.slice(0, 6), movieGrid);
+        // 2. Donghua Terbaru
+        renderGridItems(donghuaList.slice(0, displayLimit), latestGrid);
 
-        // 5. Render Donghua Populer (serial donghua berikutnya)
-        renderGridItems(donghuaList.slice(6, 24), popAllGrid);
+        // 3. Movie Terbaru
+        renderGridItems(movieList.slice(0, displayLimit), movieGrid);
+
+        // 4. Donghua Populer
+        renderGridItems(donghuaList.slice(displayLimit, displayLimit * 2), popAllGrid);
 
       } catch (e) {
         console.error("Gagal memuat data via API:", e);
-        if (latestGrid) latestGrid.innerHTML = `<p style="color: #ef4444; font-size: 12px; grid-column: span 3;">Gagal memuat katalog donghua.</p>`;
-        if (movieGrid) movieGrid.innerHTML = `<p style="color: #ef4444; font-size: 12px; grid-column: span 3;">Gagal memuat movie terbaru.</p>`;
+        if (latestGrid) latestGrid.innerHTML = `<p style="color: #ef4444; font-size: 12px; grid-column: 1 / -1;">Gagal memuat katalog donghua.</p>`;
       }
     }
 
@@ -744,6 +778,14 @@
     window.onload = () => {
       loadMainData();
       renderContinueWatching();
+    };
+
+    // Auto adaptif saat layar desktop di-resize
+    window.onresize = () => {
+      clearTimeout(window.resizeTimer);
+      window.resizeTimer = setTimeout(() => {
+        loadMainData();
+      }, 250);
     };
   </script>
 </body>
