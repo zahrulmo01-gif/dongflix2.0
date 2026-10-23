@@ -11,7 +11,6 @@
       --bg-main: #000000;
       --bg-card: #0a0a0a;
       --bg-skeleton: #121212;
-      --bg-search-input: #121212;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
@@ -20,10 +19,21 @@
       --text-main: #ffffff;
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
-      --border-color: rgba(255, 255, 255, 0.12);
+      --border-color: rgba(255, 255, 255, 0.1);
+      /* iOS Glass Tokens */
+      --glass-bg: rgba(20, 20, 24, 0.58);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-border-top: rgba(255, 255, 255, 0.28);
+      --glass-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      --glass-blur: blur(16px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      touch-action: manipulation; 
+    }
     
     body { 
       background-color: var(--bg-main); 
@@ -31,14 +41,14 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
       padding-top: 0;
       padding-bottom: 50px; 
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
-    /* ========================================================
-       FLOATING GLASS PILL HEADER (UKURAN DIPERBESAR & PRESISI)
-       ======================================================== */
+    /* FLOATING GLASS PILL HEADER */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -52,6 +62,8 @@
       margin: 0 auto;
       padding: 0 16px;
       pointer-events: none;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .header-bar > * {
@@ -65,18 +77,17 @@
       justify-content: center;
     }
 
-    /* TOP LIGHT PIP */
     .top-light-pip {
       position: absolute;
       top: -3px;
       left: 50%;
       transform: translateX(-50%);
-      width: 42px;
+      width: 44px;
       height: 3.5px;
       background: var(--color-accent);
       border-radius: 9999px;
-      box-shadow: 0 0 12px var(--color-accent), 0 0 20px var(--color-accent);
-      opacity: 0.95;
+      box-shadow: 0 0 10px var(--color-accent), 0 0 18px var(--color-accent);
+      opacity: 0.9;
       pointer-events: none;
     }
 
@@ -84,21 +95,23 @@
       position: relative;
       display: flex;
       align-items: center;
-      background: rgba(15, 15, 18, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px;
       padding: 6px 18px;
       height: 46px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
-      transition: all 0.25s ease;
+      box-shadow: var(--glass-shadow);
+      transition: background 0.2s ease, border-color 0.2s ease;
       cursor: pointer;
+      transform: translateZ(0);
     }
 
     .nav-capsule:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.2);
+      background: rgba(26, 26, 32, 0.72);
+      border-color: rgba(56, 189, 248, 0.4);
     }
 
     .brand-title-capsule { 
@@ -114,14 +127,14 @@
 
     .brand-title-capsule .brand-accent { 
       color: var(--color-accent); 
-      text-shadow: 0 0 14px rgba(56, 189, 248, 0.5); 
+      text-shadow: 0 0 14px rgba(56, 189, 248, 0.6); 
     }
 
     .tld-badge {
       display: inline-flex;
       align-items: center;
-      background: rgba(56, 189, 248, 0.16);
-      color: var(--color-accent);
+      background: rgba(56, 189, 248, 0.2);
+      color: #e0f2fe;
       border: 1px solid rgba(56, 189, 248, 0.35);
       font-size: 11px;
       font-weight: 800;
@@ -142,25 +155,26 @@
       width: 46px;
       height: 46px;
       border-radius: 50%;
-      background: rgba(15, 15, 18, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s ease;
+      box-shadow: var(--glass-shadow);
+      transition: background 0.2s ease, border-color 0.2s ease;
       flex-shrink: 0;
+      transform: translateZ(0);
     }
 
     .action-btn:hover {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: rgba(56, 189, 248, 0.5);
+      background: rgba(26, 26, 32, 0.75);
+      border-color: rgba(56, 189, 248, 0.45);
       color: var(--color-accent);
-      transform: translateY(-1px);
     }
 
     .action-btn svg {
@@ -179,15 +193,17 @@
       position: fixed;
       top: 72px;
       right: 16px;
-      background: rgba(13, 13, 15, 0.94);
+      background: rgba(22, 22, 26, 0.78);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 18px;
       padding: 8px;
       min-width: 210px;
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6);
       z-index: 105;
+      transform: translateZ(0);
     }
 
     .popover-menu.active {
@@ -209,9 +225,9 @@
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: background 0.15s ease;
     }
 
     .popover-menu a svg {
@@ -223,23 +239,23 @@
     }
 
     .popover-menu a:hover {
-      background: rgba(56, 189, 248, 0.15);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--color-accent);
     }
 
-    /* ========================================================
-       MODAL PENCARIAN (SEJAJAR DENGAN HEADER BAR)
-       ======================================================== */
+    /* MODAL PENCARIAN */
     .modal-overlay { 
       display: none; 
       position: fixed; 
       inset: 0; 
-      background: rgba(0, 0, 0, 0.88); 
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(0, 0, 0, 0.75); 
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       z-index: 999; 
       padding: 16px; 
       overflow-y: auto; 
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
     .modal-overlay.active { display: block; }
 
@@ -253,7 +269,7 @@
       align-items: center; 
       gap: 10px; 
       height: 46px;
-      margin-bottom: 16px; 
+      margin-bottom: 12px; 
     }
 
     .search-input-box { 
@@ -277,18 +293,20 @@
     .search-input-field { 
       width: 100%; 
       height: 46px; 
-      background: rgba(15, 15, 18, 0.82); 
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16); 
+      background: var(--glass-bg); 
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); 
+      border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px; 
       padding: 0 18px 0 44px; 
       color: var(--text-main); 
       font-size: 14.5px; 
       font-family: inherit;
       outline: none; 
-      transition: all 0.2s ease;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.2s ease;
+      box-shadow: var(--glass-shadow);
+      transform: translateZ(0);
     }
 
     .search-input-field::placeholder {
@@ -297,14 +315,15 @@
 
     .search-input-field:focus { 
       border-color: var(--color-accent); 
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25); 
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.3); 
     }
 
     .modal-close-btn { 
-      background: rgba(15, 15, 18, 0.82); 
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16); 
+      background: var(--glass-bg); 
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); 
+      border-top: 1px solid var(--glass-border-top);
       color: var(--text-main); 
       cursor: pointer; 
       width: 46px;
@@ -313,19 +332,56 @@
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      transition: all 0.2s ease;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      transition: background 0.2s ease;
+      box-shadow: var(--glass-shadow);
       flex-shrink: 0;
+      transform: translateZ(0);
     }
 
     .modal-close-btn:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.45);
       color: #ef4444;
-      transform: translateY(-1px);
     }
 
     .modal-close-btn svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+
+    .search-nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding-left: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .search-nav-pills::-webkit-scrollbar { display: none; }
+
+    .search-pill-btn {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: var(--text-sub);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      box-shadow: var(--glass-shadow);
+      transition: background 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+      transform: translateZ(0);
+    }
+
+    .search-pill-btn:hover, .search-pill-btn.active {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
 
     .search-info-bar { 
       display: flex; 
@@ -333,12 +389,12 @@
       gap: 8px; 
       font-size: 12.5px; 
       color: var(--text-muted); 
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       padding-left: 6px;
     }
 
     .search-badge-source { 
-      background: rgba(56, 189, 248, 0.12); 
+      background: rgba(56, 189, 248, 0.16); 
       color: var(--color-accent); 
       border: 1px solid rgba(56, 189, 248, 0.3); 
       padding: 2.5px 10px; 
@@ -356,43 +412,69 @@
     .search-item-card { 
       display: flex; 
       gap: 14px; 
-      background: rgba(18, 18, 20, 0.65); 
-      border: 1px solid rgba(255, 255, 255, 0.08); 
-      border-radius: 14px; 
+      background: rgba(22, 22, 26, 0.65); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border); 
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 16px; 
       padding: 10px; 
       cursor: pointer; 
       text-decoration: none; 
-      transition: all 0.2s ease;
+      transition: background 0.2s ease;
+      transform: translateZ(0);
     }
 
     .search-item-card:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
       border-color: rgba(56, 189, 248, 0.4);
     }
 
-    .search-item-thumb { width: 68px; height: 90px; border-radius: 10px; flex-shrink: 0; background: var(--bg-card); position: relative; overflow: hidden; }
+    .search-item-thumb { 
+      width: 72px; 
+      height: 98px; 
+      border-radius: 12px; 
+      flex-shrink: 0; 
+      background: var(--bg-card); 
+      position: relative; 
+      overflow: hidden; 
+      transform: translateZ(0);
+    }
     .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .search-item-info { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-    .search-item-title { font-size: 14.5px; font-weight: 700; color: var(--text-main); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .search-item-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
-    .search-item-ep { font-size: 11.5px; font-weight: 800; color: var(--color-accent); margin-top: 6px; }
+    
+    .search-item-thumb .badge-cover-ep {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2.5px 8px;
+      border-radius: 9999px;
+      line-height: 1.2;
+      box-shadow: var(--glass-shadow);
+    }
 
-    /* DIALOG MODAL POPUP */
-    .dialog-header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
-    .dialog-title { font-size: 20px; font-weight: 800; color: var(--color-accent); display: flex; align-items: center; gap: 8px; }
-    .load-more-btn { display: block; width: 100%; max-width: 600px; margin: 24px auto 0; padding: 14px; background: var(--bg-card); color: var(--color-accent); border: 1px solid var(--border-color); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-align: center; }
+    .search-item-info { display: flex; flex-direction: column; justify-content: center; flex: 1; gap: 4px; }
+    .search-item-title { font-size: 14.5px; font-weight: 700; color: var(--text-main); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .search-item-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
     /* SKELETONS */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
-    .skeleton-hero { width: 100%; height: 540px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px; border-radius: 0; }
+    .skeleton-hero { width: 100%; height: 460px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px 20px 45px; border-radius: 0; }
     .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
     .skeleton-text.title { height: 24px; width: 70%; margin-bottom: 12px; }
     .skeleton-text.sub { height: 12px; width: 40%; margin-bottom: 16px; }
     .skeleton-btn { height: 38px; width: 110px; border-radius: 10px; }
     .card-skeleton { width: 100%; }
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: 1px solid var(--border-color); }
-    .card-skeleton-title { height: 13px; width: 85%; margin-bottom: 4px; }
+    .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
     .no-image-box {
       position: absolute;
@@ -402,17 +484,17 @@
       letter-spacing: 0.5px; border: 1px dashed var(--border-color); z-index: 1;
     }
 
-    /* ========================================================
-       HERO SLIDER PENUH (EDGE-TO-EDGE KE ATAS & SAMPING)
-       ======================================================== */
+    /* SLIDER DENGAN PROGRESSIVE BLUR & MENGGELAP PENUH KE BAWAH */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
-      height: 540px; 
+      height: 460px; 
       overflow: hidden; 
       background: #000; 
       margin-top: 0;
       border-radius: 0;
+      transform: translateZ(0);
+      contain: paint;
     }
 
     .hero-slide { 
@@ -422,9 +504,9 @@
       transition: opacity 0.5s ease-in-out; 
       display: flex; 
       align-items: flex-end; 
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
       transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     .hero-slide.active { opacity: 1; z-index: 1; }
     .hero-bg-img { 
@@ -433,20 +515,46 @@
       width: 100%; 
       height: 100%; 
       object-fit: cover; 
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
       transform: translateZ(0);
     }
+
+    /* GRADASI BLUR MEMUDAR TANPA GARIS PATAH */
+    .hero-blur-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      mask-image: linear-gradient(to top, black 20%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to top, black 20%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+      z-index: 1;
+      pointer-events: none;
+      transform: translateZ(0);
+    }
+
+    /* GRADASI GELAP MENYATU DENGAN LATAR BELAKANG HITAM PEKAT */
     .hero-overlay { 
       position: absolute; 
       inset: 0; 
-      background: linear-gradient(to top, var(--bg-main) 12%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.4) 100%); 
-      z-index: 1; 
+      background: linear-gradient(
+        to top, 
+        #000000 0%, 
+        rgba(0, 0, 0, 0.96) 24%, 
+        rgba(0, 0, 0, 0.7) 48%, 
+        rgba(0, 0, 0, 0.25) 70%, 
+        transparent 90%
+      ); 
+      z-index: 2; 
+      transform: translateZ(0);
+      pointer-events: none;
     }
+
     .hero-content { 
       position: relative; 
-      z-index: 2; 
-      padding: 24px 20px 48px; 
+      z-index: 3; 
+      padding: 20px 18px 42px; 
       max-width: 760px; 
       margin: 0 auto;
       width: 100%;
@@ -454,23 +562,23 @@
 
     .badge-tag { display: inline-block; background: var(--color-primary); color: var(--text-main); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px; }
     .badge-tag.movie { background: var(--color-movie); color: #000; }
-    .hero-title { font-size: 26px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hero-title { font-size: 24px; font-weight: 900; line-height: 1.2; color: var(--text-main); margin-bottom: 8px; text-transform: uppercase; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .hero-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 14px; }
     .rating-star { color: var(--color-star); font-weight: 800; display: flex; align-items: center; gap: 4px; }
     .badge-status-green { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); border: 1px solid var(--border-color); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; }
-    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); border: none; padding: 11px 26px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
+    .btn-watch { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); color: var(--text-main); border: none; padding: 10px 24px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4); }
     .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
 
-    .slider-dots { position: absolute; bottom: 18px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; align-items: center; gap: 6px; }
+    .slider-dots { position: absolute; bottom: 16px; left: 0; right: 0; z-index: 10; display: flex; justify-content: center; align-items: center; gap: 6px; }
     .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
     .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
 
     /* CONTENT SECTIONS */
-    .section-block { margin-top: 32px; }
+    .section-block { margin-top: 36px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-    /* 1 BARIS HORIZONTAL SCROLL */
+    /* HORIZONTAL SCROLL */
     .scroll-row { 
       display: flex; 
       gap: 12px; 
@@ -478,6 +586,8 @@
       padding-bottom: 10px; 
       scrollbar-width: none; 
       flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
     .scroll-row::-webkit-scrollbar { display: none; }
 
@@ -485,8 +595,9 @@
       flex: 0 0 calc((100% - 24px) / 3); 
       min-width: calc((100% - 24px) / 3); 
       cursor: pointer; 
-      text-decoration: none; 
+      text-decoration: none !important; 
       display: block; 
+      transform: translateZ(0);
     }
 
     .card-continue-img-wrapper, .card-grid-img-wrapper { 
@@ -494,20 +605,26 @@
       border-radius: 14px; overflow: hidden; background: var(--bg-card); 
       border: 1px solid var(--border-color); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
       transform: translateZ(0);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
-    .card-continue-img-wrapper img, .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .card-continue-img-wrapper img, .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
+    /* BADGE ATAS (ONGOING/STATUS) BERSIH TANPA EFEK GLASS */
     .badge-ep { 
       position: absolute; top: 8px; left: 8px; 
       background: rgba(2, 132, 199, 0.9);
       color: var(--text-main); font-size: 9px; font-weight: 800; 
-      padding: 3px 7px; border-radius: 6px; z-index: 2; text-transform: uppercase; 
+      padding: 3.5px 9px; border-radius: 9999px; z-index: 2; text-transform: uppercase; 
+      border: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transform: translateZ(0);
     }
-    .badge-ep.movie { background: rgba(245, 158, 11, 0.95); color: #000; }
+    .badge-ep.movie { 
+      background: rgba(245, 158, 11, 0.95); 
+      color: #000; 
+    }
 
     .card-bottom-info {
       position: absolute; bottom: 8px; left: 8px; right: 8px;
@@ -515,49 +632,281 @@
       z-index: 2; pointer-events: none; gap: 4px;
     }
 
+    /* BADGE EPISODE BAWAH GLASS EFFECT SEPERTI HEADER */
     .badge-bottom { 
-      background: rgba(15, 23, 42, 0.95); color: var(--color-accent); 
-      border: 1px solid rgba(56, 189, 248, 0.3); 
-      font-size: 9px; font-weight: 700; padding: 2.5px 6px; border-radius: 6px; 
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: #ffffff; 
+      font-size: 9.5px; 
+      font-weight: 800; 
+      padding: 3px 9px; 
+      border-radius: 9999px; 
       white-space: nowrap;
+      box-shadow: var(--glass-shadow);
+      transform: translateZ(0);
     }
-    .badge-bottom.movie { color: #fbbf24; border-color: rgba(245, 158, 11, 0.35); }
+    .badge-bottom.movie { 
+      color: #fde047; 
+      background: rgba(245, 158, 11, 0.22); 
+      border-color: rgba(245, 158, 11, 0.35); 
+    }
 
-    .card-title { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-grid {
+      text-decoration: none !important;
+      border: none !important;
+      outline: none !important;
+      transform: translateZ(0);
+    }
+
+    .card-title { 
+      margin-top: 8px; 
+      font-size: 13.5px; 
+      font-weight: 700; 
+      color: #ffffff; 
+      line-height: 1.35;
+      display: -webkit-box; 
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical; 
+      overflow: hidden; 
+      text-decoration: none !important; 
+      border: none !important;
+      background: none !important;
+    }
+
     .see-all-btn { color: var(--color-accent); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; border: none; background: none; }
     .see-all-btn.movie { color: var(--color-movie); }
 
-    /* RESPONSIVE LAYOUT */
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    /* FEATURED CARD */
+    .popular-featured-row {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
+    }
+    .popular-featured-row::-webkit-scrollbar { display: none; }
+
+    .popular-featured-card {
+      flex: 0 0 88%;
+      max-width: 380px;
+      height: 185px;
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+      text-decoration: none !important;
+      cursor: pointer;
+      scroll-snap-align: start;
+      border: none !important;
+      transform: translateZ(0);
+    }
+
+    .popular-vertical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .popular-vertical-list .popular-featured-card {
+      flex: 1 1 auto;
+      max-width: 100%;
+      height: 185px;
+    }
+
+    .featured-thumb-box {
+      width: 135px;
+      min-width: 135px;
+      height: 185px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      background: #111;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      transform: translateZ(0);
+    }
+
+    .featured-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .featured-info-col {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 2px 0;
+    }
+
+    .featured-text-top {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .featured-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex-shrink: 0;
+      text-decoration: none !important;
+      border: none !important;
+    }
+
+    .featured-synopsis {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .featured-synopsis.clamp-3 {
+      -webkit-line-clamp: 3;
+    }
+
+    .featured-synopsis.clamp-5 {
+      -webkit-line-clamp: 5;
+    }
+
+    .featured-genres {
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.35;
+      font-weight: 500;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .featured-pill-btn {
+      align-self: flex-start;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      background: #1c1c1e;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #d1d5db;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
+      transform: translateZ(0);
+    }
+
+    /* FLOATING BOTTOM ON-TOP */
+    .bottom-floating-controls {
+      position: fixed;
+      bottom: 24px;
+      right: 18px;
+      z-index: 95;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    .floating-circle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--glass-shadow);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) translateZ(0);
+    }
+
+    .floating-circle-btn.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) translateZ(0);
+    }
+
+    .floating-circle-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* GRID DENGAN JARAK BAWAH ANTAR BARIS */
+    .grid-3 { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      column-gap: 10px; 
+      row-gap: 20px;
+    }
 
     @media (min-width: 768px) {
-      .hero-slider-wrapper { height: 620px; }
-      .hero-content { padding: 30px 40px 60px; max-width: 1100px; }
-      .hero-title { font-size: 36px; margin-bottom: 12px; }
+      .hero-slider-wrapper { height: 500px; }
+      .hero-content { padding: 30px 40px 50px; max-width: 1100px; }
+      .hero-title { font-size: 32px; margin-bottom: 12px; }
 
       .grid-3 { 
         grid-template-columns: repeat(6, 1fr); 
-        gap: 16px; 
+        column-gap: 16px; 
+        row-gap: 28px;
       }
       .card-scroll-item { 
         flex: 0 0 calc((100% - 75px) / 6); 
         min-width: calc((100% - 75px) / 6); 
       }
+      .popular-featured-row .popular-featured-card {
+        flex: 0 0 calc((100% - 32px) / 3);
+        max-width: 380px;
+      }
       .card-continue-img-wrapper, .card-grid-img-wrapper { 
         height: 235px; 
       }
-      .card-scroll-item:hover .card-continue-img-wrapper,
-      .card-grid:hover .card-grid-img-wrapper { 
-        transform: translateY(-5px); 
-        border-color: rgba(56, 189, 248, 0.45); 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.8); 
-      }
-      .card-grid:hover img, .card-scroll-item:hover img { 
-        transform: scale(1.06); 
-      }
-      .card-title { font-size: 13px; margin-top: 10px; }
+      .card-title { font-size: 14.5px; margin-top: 10px; }
       .section-title { font-size: 21px; }
-      .section-block { margin-top: 40px; }
+      .section-block { margin-top: 48px; }
+
+      .popular-vertical-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px 28px;
+      }
     }
 
     footer { margin-top: 60px; padding: 26px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
@@ -568,7 +917,6 @@
 
   <!-- FLOATING GLASS PILL HEADER -->
   <header class="header-bar">
-    <!-- Kapsul Kaca Tengah Dengan Judul Dongflix & .my.id Diperbesar -->
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
@@ -579,7 +927,6 @@
       </div>
     </div>
 
-    <!-- Tombol Aksi Kanan (Pencarian & Menu Popover) -->
     <div class="header-actions-group">
       <button class="action-btn" onclick="openSearchModal()" aria-label="Cari Donghua">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -600,17 +947,17 @@
       <span>Katalog Lengkap</span>
       <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
     </a>
-    <a href="javascript:void(0)" onclick="openLatestDialog('donghua')">
+    <a href="/donghua/">
       <span>Donghua Terbaru</span>
       <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
     </a>
-    <a href="javascript:void(0)" onclick="openLatestDialog('movie')">
+    <a href="/donghua/?type=movie">
       <span>Movie Terbaru</span>
       <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
     </a>
   </div>
 
-  <!-- SEARCH MODAL (SEJAJAR DENGAN HEADER BAR) -->
+  <!-- SEARCH MODAL WITH GLASS MENU NAVIGATION -->
   <div class="modal-overlay" id="searchModalOverlay">
     <div class="search-modal-container">
       <div class="search-modal-header">
@@ -621,6 +968,12 @@
         <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="Tutup Pencarian">
           <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
+      </div>
+
+      <div class="search-nav-pills">
+        <button class="search-pill-btn active" id="searchPillAll" onclick="setSearchFilter('all')">Semua</button>
+        <button class="search-pill-btn" id="searchPillSeries" onclick="setSearchFilter('series')">Series</button>
+        <button class="search-pill-btn" id="searchPillMovie" onclick="setSearchFilter('movie')">Movie</button>
       </div>
 
       <div class="search-info-bar">
@@ -634,25 +987,7 @@
     </div>
   </div>
 
-  <!-- POPUP DIALOG (LIHAT SEMUA) -->
-  <div class="modal-overlay" id="latestModalOverlay">
-    <div class="dialog-header">
-      <h2 class="dialog-title" id="dialogTitleText">
-        <svg class="icon-svg" id="dialogTitleIcon" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
-        <span>Semua Donghua Terbaru</span>
-      </h2>
-      <button class="modal-close-btn" onclick="closeLatestDialog()">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    
-    <div class="container" style="padding: 0;">
-      <div class="grid-3" id="latestModalGrid"></div>
-      <button class="load-more-btn" id="loadMoreDialogBtn" onclick="loadMoreDialogData()">Muat Lainnya</button>
-    </div>
-  </div>
-
-  <!-- HERO SLIDER PENUH (EDGE-TO-EDGE) -->
+  <!-- HERO SLIDER PENUH DENGAN DOUBLE OVERLAY -->
   <div class="hero-slider-wrapper" id="heroSlider">
     <div class="skeleton skeleton-hero">
       <div style="width: 100%;">
@@ -673,7 +1008,7 @@
       <div class="scroll-row" id="continueRow"></div>
     </section>
 
-    <!-- 2. POPULER HARI INI -->
+    <!-- 2. POPULER HARI INI (HORIZONTAL SCROLL) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -681,10 +1016,18 @@
           Populer Hari Ini
         </h2>
       </div>
-      <div class="scroll-row" id="todayPopularRow">
-        <div class="card-scroll-item card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-scroll-item card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-scroll-item card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="popular-featured-row" id="todayPopularRow">
+        <div class="popular-featured-card">
+          <div class="featured-thumb-box skeleton"></div>
+          <div class="featured-info-col">
+            <div class="featured-text-top">
+              <div class="skeleton" style="height: 18px; width: 80%;"></div>
+              <div class="skeleton" style="height: 48px; width: 95%;"></div>
+              <div class="skeleton" style="height: 12px; width: 60%;"></div>
+            </div>
+            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -695,12 +1038,12 @@
           <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
           Donghua Terbaru
         </h2>
-        <button class="see-all-btn" onclick="openLatestDialog('donghua')">Lihat Semua</button>
+        <a href="/donghua/" class="see-all-btn">Lihat Semua</a>
       </div>
       <div class="grid-3" id="latestGrid">
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
       </div>
     </section>
 
@@ -711,16 +1054,16 @@
           <svg class="icon-svg" style="color: var(--color-movie);" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
           Movie Terbaru
         </h2>
-        <button class="see-all-btn movie" onclick="openLatestDialog('movie')">Lihat Semua</button>
+        <a href="/donghua/?type=movie" class="see-all-btn movie">Lihat Semua</a>
       </div>
       <div class="grid-3" id="movieGrid">
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
       </div>
     </section>
 
-    <!-- 5. DONGHUA POPULER -->
+    <!-- 5. DONGHUA POPULER (SUSUNAN KE BAWAH, MAKSIMAL 6) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -728,17 +1071,26 @@
           Donghua Populer
         </h2>
       </div>
-      <div class="grid-3" id="popularAllGrid">
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+      <div class="popular-vertical-list" id="popularAllGrid">
+        <div class="popular-featured-card skeleton" style="height: 185px;"></div>
+        <div class="popular-featured-card skeleton" style="height: 185px;"></div>
       </div>
     </section>
   </div>
 
+  <!-- FLOATING ON-TOP -->
+  <aside class="bottom-floating-controls">
+    <button class="floating-circle-btn" id="backToTopBtn" onclick="scrollToTop()" aria-label="Kembali ke atas">
+      <svg viewBox="0 0 24 24">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+  </aside>
+
   <footer>
     <div class="container">
-      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Ditenagai oleh Real-time GitHub Proxy.</p>
+      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Seluruh hak cipta dilindungi.</p>
     </div>
   </footer>
 
@@ -746,8 +1098,7 @@
     let searchTimer = null;
     let currentSlide = 0;
     let slideInterval = null;
-    let dialogPage = 1;
-    let dialogTargetType = 'donghua';
+    let currentSearchType = 'all';
 
     let donghuaList = [];
     let movieList = [];
@@ -823,67 +1174,40 @@
       document.getElementById('searchModalOverlay').classList.remove('active'); 
     }
 
-    function openLatestDialog(type = 'donghua') {
-      document.getElementById('popoverMenu').classList.remove('active');
-      document.getElementById('latestModalOverlay').classList.add('active');
-      
-      dialogTargetType = type;
-      dialogPage = 1;
-
-      const titleSpan = document.querySelector('#dialogTitleText span');
-      const titleIcon = document.getElementById('dialogTitleIcon');
-
-      if (titleSpan) {
-        titleSpan.innerText = type === 'movie' ? 'Semua Movie Terbaru' : 'Semua Donghua Terbaru';
-      }
-
-      if (titleIcon) {
-        if (type === 'movie') {
-          titleIcon.innerHTML = '<rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>';
-          titleIcon.style.color = 'var(--color-movie)';
-        } else {
-          titleIcon.innerHTML = '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/>';
-          titleIcon.style.color = 'var(--color-accent)';
-        }
-      }
-
-      loadMoreDialogData();
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
 
-    function closeLatestDialog() { document.getElementById('latestModalOverlay').classList.remove('active'); }
-
-    function loadMoreDialogData() {
-      const btn = document.getElementById('loadMoreDialogBtn');
-      const grid = document.getElementById('latestModalGrid');
-      
-      const currentSource = dialogTargetType === 'movie' ? movieList : donghuaList;
-      const pageSize = 18;
-      const startIndex = (dialogPage - 1) * pageSize;
-      const endIndex = startIndex + pageSize;
-      
-      const pagedData = currentSource.slice(startIndex, endIndex);
-
-      if (dialogPage === 1) grid.innerHTML = '';
-
-      if (pagedData.length > 0) {
-        pagedData.forEach(item => {
-          grid.appendChild(createGridCard(item));
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const onTopBtn = document.getElementById('backToTopBtn');
+          if (window.scrollY > 300) {
+            onTopBtn.classList.add('show');
+          } else {
+            onTopBtn.classList.remove('show');
+          }
+          ticking = false;
         });
-        dialogPage++;
-        
-        if (endIndex >= currentSource.length) {
-          btn.innerText = 'Semua data telah ditampilkan';
-        } else {
-          btn.innerText = 'Muat Lainnya';
-        }
-      } else {
-        if (dialogPage === 1) grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align:center;">Data tidak tersedia.</p>';
-        btn.innerText = 'Tidak ada data lagi';
+        ticking = true;
       }
+    }, { passive: true });
+
+    function setSearchFilter(type) {
+      currentSearchType = type;
+      document.getElementById('searchPillAll').classList.toggle('active', type === 'all');
+      document.getElementById('searchPillSeries').classList.toggle('active', type === 'series');
+      document.getElementById('searchPillMovie').classList.toggle('active', type === 'movie');
+      handleSearchInput();
     }
 
-    function handleSearchInput(event) {
-      const query = event.target.value.trim().toLowerCase();
+    function handleSearchInput() {
+      const inputEl = document.getElementById('searchInputModal');
+      const query = inputEl ? inputEl.value.trim().toLowerCase() : '';
       const resultsList = document.getElementById('searchResultsList');
 
       clearTimeout(searchTimer);
@@ -898,7 +1222,12 @@
         const searchItems = masterList.filter(item => {
           const titleStr = (item.title || item.name || '').toLowerCase();
           const slugStr = (item.slug || '').toLowerCase();
-          return titleStr.includes(query) || slugStr.includes(query);
+          const matchesQuery = titleStr.includes(query) || slugStr.includes(query);
+          
+          if (!matchesQuery) return false;
+          if (currentSearchType === 'movie') return isMovieItem(item);
+          if (currentSearchType === 'series') return !isMovieItem(item);
+          return true;
         });
 
         resultsList.innerHTML = '';
@@ -911,17 +1240,16 @@
             const posterUrl = getImageUrl(item);
             const titleText = sanitizeTitle(item.title);
             const isMovie = isMovieItem(item);
+            const epText = parseEpisodeText(item);
 
             card.innerHTML = `
               <div class="search-item-thumb">
                 <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+                <span class="badge-cover-ep">${epText}</span>
               </div>
               <div class="search-item-info">
-                <div>
-                  <div class="search-item-title">${titleText}</div>
-                  <div class="search-item-desc">Status: ${item.status || 'Ongoing'} • ${isMovie ? 'Movie' : 'Donghua'}</div>
-                </div>
-                <div class="search-item-ep" style="color: ${isMovie ? 'var(--color-movie)' : 'var(--color-accent)'};">${parseEpisodeText(item)}</div>
+                <div class="search-item-title">${titleText}</div>
+                <div class="search-item-desc">Status: ${parseStatusText(item)} • ${isMovie ? 'Movie' : 'Donghua'}</div>
               </div>
             `;
             resultsList.appendChild(card);
@@ -929,7 +1257,7 @@
         } else {
           resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Tidak ditemukan hasil yang cocok.</p>';
         }
-      }, 200);
+      }, 150);
     }
 
     function renderHeroSlider(items) {
@@ -950,6 +1278,7 @@
 
         slide.innerHTML = `
           <img class="hero-bg-img" src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+          <div class="hero-blur-layer"></div>
           <div class="hero-overlay"></div>
           <div class="hero-content">
             <span class="badge-tag ${isMovie ? 'movie' : ''}">${isMovie ? 'MOVIE' : 'DONGHUA'}</span>
@@ -1007,6 +1336,68 @@
       }, 4000);
     }
 
+    /* KARTU POPULER */
+    function createPopularFeaturedCard(item) {
+      const card = document.createElement('a');
+      card.className = 'popular-featured-card';
+      card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+
+      const titleText = sanitizeTitle(item.title);
+      const posterUrl = getImageUrl(item);
+      const isMovie = isMovieItem(item);
+      
+      const statusText = parseStatusText(item);
+      const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
+      const badgeText = isMovie ? 'Movie' : `Ep ${epNum} / ${statusText === 'COMPLETED' ? 'Completed' : 'Ongoing'}`;
+
+      const synopsisText = item.synopsis || item.description || item.desc || `${titleText} menceritakan petualangan kultivasi tanpa sihir yang penuh pertempuran hebat di benua persilatan spiritual melawan takdir. Menampilkan animasi menawan, aksi bela diri tingkat tinggi, dan persahabatan yang kuat.`;
+
+      let genresFormatted = 'Action • Adventure • Fantasy • Romance';
+      if (Array.isArray(item.genres) && item.genres.length > 0) {
+        genresFormatted = item.genres.join(' • ');
+      }
+
+      card.innerHTML = `
+        <div class="featured-thumb-box">
+          <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+        </div>
+        <div class="featured-info-col">
+          <div class="featured-text-top">
+            <h3 class="featured-title">${titleText}</h3>
+            <p class="featured-synopsis">${synopsisText}</p>
+            <div class="featured-genres">${genresFormatted}</div>
+          </div>
+          <div class="featured-pill-btn">
+            <span>${badgeText}</span>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    /* DETEKSI JUMLAH BARIS JUDUL UNTUK SINOPSIS */
+    function adjustSynopsisLines(container) {
+      requestAnimationFrame(() => {
+        const cards = container.querySelectorAll('.popular-featured-card');
+        cards.forEach(card => {
+          const titleEl = card.querySelector('.featured-title');
+          const synopsisEl = card.querySelector('.featured-synopsis');
+          if (!titleEl || !synopsisEl) return;
+
+          const titleHeight = titleEl.offsetHeight;
+          if (titleHeight <= 26) {
+            synopsisEl.classList.remove('clamp-3');
+            synopsisEl.classList.add('clamp-5');
+          } else {
+            synopsisEl.classList.remove('clamp-5');
+            synopsisEl.classList.add('clamp-3');
+          }
+        });
+      });
+    }
+
+    /* KARTU GRID: HANYA EPISODE BAWAH YANG MEMAKAI GLASS */
     function createGridCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
@@ -1045,13 +1436,13 @@
 
       card.innerHTML = `
         <div class="card-continue-img-wrapper">
-          <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
-          <span class="badge-ep ${isMovie ? 'movie' : ''}">${isMovie ? 'MOVIE' : statusText}</span>
+          <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="handleMissingImage(this)" />
+          <span class="badge-ep">${episodeText}</span>
           <div class="card-bottom-info">
-            <span class="badge-bottom ${isMovie ? 'movie' : ''}">${isMovie ? statusText : episodeText}</span>
+            <span class="badge-bottom">${isMovie ? statusText : episodeText}</span>
           </div>
         </div>
-        <div class="card-title">${titleText}</div>
+        <div class="card-title">${item.title}</div>
       `;
 
       return card;
@@ -1081,6 +1472,19 @@
       }
     }
 
+    function renderPopularFeatured(list, targetElement) {
+      if (!targetElement) return;
+      targetElement.innerHTML = '';
+      if (Array.isArray(list) && list.length > 0) {
+        list.forEach(item => {
+          if (item && item.title) targetElement.appendChild(createPopularFeaturedCard(item));
+        });
+        adjustSynopsisLines(targetElement);
+      } else {
+        targetElement.innerHTML = '<p style="color: var(--text-muted); font-size: 12px;">Data tidak tersedia.</p>';
+      }
+    }
+
     async function loadMainData() {
       const todayPopularRow = document.getElementById('todayPopularRow');
       const latestGrid = document.getElementById('latestGrid');
@@ -1089,7 +1493,7 @@
 
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('API Proxy gagal memuat data');
+        if (!res.ok) throw new Error('Gagal memuat data katalog');
         
         masterList = await res.json();
 
@@ -1098,20 +1502,12 @@
 
         renderHeroSlider(masterList);
 
-        // 1. Populer Hari ini (6 item scroll horizontal)
-        renderScrollItems(masterList.slice(0, 6), todayPopularRow);
-
-        // 2. Donghua Terbaru (12 item grid)
+        renderPopularFeatured(masterList.slice(0, 6), todayPopularRow);
         renderGridItems(donghuaList.slice(0, 12), latestGrid);
-
-        // 3. Movie Terbaru (12 item grid)
         renderGridItems(movieList.slice(0, 12), movieGrid);
-
-        // 4. Donghua Populer (12 item grid)
-        renderGridItems(donghuaList.slice(12, 24), popAllGrid);
+        renderPopularFeatured(donghuaList.slice(6, 12), popAllGrid);
 
       } catch (e) {
-        console.error("Gagal memuat data via API:", e);
         if (latestGrid) latestGrid.innerHTML = `<p style="color: #ef4444; font-size: 12px; grid-column: 1 / -1;">Gagal memuat katalog donghua.</p>`;
       }
     }
@@ -1150,6 +1546,17 @@
         row.appendChild(card);
       });
     }
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const todayPopularRow = document.getElementById('todayPopularRow');
+        const popAllGrid = document.getElementById('popularAllGrid');
+        if (todayPopularRow) adjustSynopsisLines(todayPopularRow);
+        if (popAllGrid) adjustSynopsisLines(popAllGrid);
+      }, 100);
+    });
 
     window.onload = () => {
       loadMainData();
