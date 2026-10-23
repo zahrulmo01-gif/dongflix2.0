@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dongflix Admin - Data Management</title>
+  <title>Dongflix Admin - Pusat Kontrol & Automation</title>
   <meta name="referrer" content="no-referrer">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,64 +20,101 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
 
-  <!-- TOP HEADER -->
+  <!-- HEADER -->
   <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <a href="/" class="text-xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 bg-clip-text text-transparent">
           Dongflix Admin
         </a>
         <span class="text-[10px] font-bold uppercase tracking-wider bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 px-2 py-0.5 rounded-full font-mono">
-          Dashboard
+          Master Control
         </span>
       </div>
 
-      <nav class="flex items-center gap-2">
-        <a href="/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
-          Lihat Web
-        </a>
-        <button onclick="loadAdminData()" class="text-xs font-semibold text-cyan-400 px-3.5 py-2 rounded-xl bg-cyan-950/40 border border-cyan-800/60 hover:bg-cyan-900/40 transition flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh Data
+      <div class="flex items-center gap-2">
+        <button onclick="openTokenModal()" class="text-xs font-semibold text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+          <span id="tokenStatusText">Atur GitHub PAT</span>
         </button>
-      </nav>
+        <a href="/" target="_blank" class="text-xs font-semibold text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          Buka Web
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 space-y-6">
-    
-    <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
-        <span class="text-xs font-medium text-slate-400">Total Judul Terdata</span>
-        <h2 id="statTotal" class="text-2xl font-black text-white mt-1">...</h2>
+
+    <!-- ACTION BUTTONS PANEL -->
+    <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Panel Otomatisasi GitHub Action</h2>
+        <span class="text-[11px] text-slate-500">Jalankan workflow tanpa buka github.com</span>
       </div>
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
-        <span class="text-xs font-medium text-slate-400">Status Ongoing</span>
-        <h2 id="statOngoing" class="text-2xl font-black text-emerald-400 mt-1">...</h2>
-      </div>
-      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
-        <span class="text-xs font-medium text-slate-400">Status Completed</span>
-        <h2 id="statCompleted" class="text-2xl font-black text-blue-400 mt-1">...</h2>
+
+      <div class="flex flex-wrap gap-2.5 pt-1">
+        <button onclick="triggerWorkflow('scrape-all-smart.yml', 'Smart Delta Scrape')" class="flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-sky-600 hover:from-cyan-500 hover:to-sky-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-cyan-950/40 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Jalankan Smart Scrape (All)
+        </button>
+
+        <button onclick="triggerWorkflow('sync-order.yml', 'Sync Catalog Order')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Sync Urutan Katalog
+        </button>
+
+        <button onclick="triggerWorkflow('clean-json.yml', 'Clean JSON Data')" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Bersihkan JSON (Fix Null & Duplikat)
+        </button>
+
+        <button onclick="openSingleScrapeModal()" class="flex items-center gap-2 bg-indigo-600/80 hover:bg-indigo-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-indigo-500/40 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Scrape Single Judul
+        </button>
+
+        <button onclick="loadAdminData()" class="ml-auto flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Reload Tabel
+        </button>
       </div>
     </div>
 
-    <!-- FILTER BAR -->
+    <!-- METRICS -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Total Koleksi</span>
+        <h3 id="statTotal" class="text-2xl font-black text-white mt-1">...</h3>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Ongoing</span>
+        <h3 id="statOngoing" class="text-2xl font-black text-emerald-400 mt-1">...</h3>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Completed</span>
+        <h3 id="statCompleted" class="text-2xl font-black text-blue-400 mt-1">...</h3>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Episode Tertinggi</span>
+        <h3 id="statTopEp" class="text-2xl font-black text-cyan-400 mt-1">...</h3>
+      </div>
+    </div>
+
+    <!-- FILTER & SEARCH BAR -->
     <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="relative w-full sm:w-80">
         <input 
           id="adminSearchInput" 
           type="text" 
-          placeholder="Cari slug atau judul..." 
+          placeholder="Cari slug atau judul donghua..." 
           oninput="applyFilter()"
           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
         >
       </div>
 
-      <div class="flex items-center gap-2 w-full sm:w-auto">
+      <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
         <select 
           id="statusFilter" 
           onchange="applyFilter()" 
@@ -91,7 +128,7 @@
       </div>
     </div>
 
-    <!-- TABLE LIST -->
+    <!-- TABLE -->
     <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs">
@@ -103,7 +140,7 @@
               <th class="p-4 text-center">Status</th>
               <th class="p-4 text-center">Episode</th>
               <th class="p-4">Updated At</th>
-              <th class="p-4 text-right">Aksi</th>
+              <th class="p-4 text-center">Aksi Cepat</th>
             </tr>
           </thead>
           <tbody id="adminTableBody" class="divide-y divide-slate-800/60">
@@ -117,6 +154,64 @@
 
   </main>
 
+  <!-- MODAL: GITHUB TOKEN CONFIG -->
+  <div id="tokenModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono">Konfigurasi GitHub PAT</h3>
+        <button onclick="closeTokenModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Token ini disimpan di <code class="text-cyan-400">localStorage</code> browser Anda untuk menjalankan workflow Actions secara langsung dari tombol dashboard.
+      </p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">GitHub Personal Access Token (repo & workflow permission)</label>
+          <input id="tokenInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Target Repository (Owner/Repo)</label>
+          <input id="repoInput" type="text" value="zahrulmo01-gif/dongflix2.0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="saveTokenConfig()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">Simpan Konfigurasi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SINGLE SCRAPE -->
+  <div id="singleScrapeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono">Scrape Single Donghua</h3>
+        <button onclick="closeSingleScrapeModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <p class="text-xs text-slate-400">Masukkan slug donghua sesuai dengan URL Anichin (contoh: <code class="text-cyan-400">renegade-immortal</code>).</p>
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Target Slug</label>
+        <input id="singleSlugInput" type="text" placeholder="slug-donghua" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="submitSingleScrape()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">Mulai Scrape Judul Ini</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PREVIEW EPISODE JSON -->
+  <div id="episodesModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col p-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div>
+          <h3 id="epModalTitle" class="text-sm font-bold text-white">Daftar Episode</h3>
+          <span id="epModalSlug" class="text-[11px] text-cyan-400 font-mono"></span>
+        </div>
+        <button onclick="closeEpisodesModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div id="epModalBody" class="flex-1 overflow-y-auto space-y-2 py-4"></div>
+    </div>
+  </div>
+
   <footer class="border-t border-slate-800 bg-slate-950 px-4 py-6 text-center text-xs text-slate-500">
     <p>&copy; 2026 Dongflix Admin Panel</p>
   </footer>
@@ -125,6 +220,92 @@
     let rawDonghuaList = [];
     let filteredList = [];
 
+    // LocalStorage GitHub Action Token Helpers
+    function getStoredToken() { return localStorage.getItem('df_gh_token') || ''; }
+    function getStoredRepo() { return localStorage.getItem('df_gh_repo') || 'zahrulmo01-gif/dongflix2.0'; }
+
+    function updateTokenBadge() {
+      const btn = document.getElementById('tokenStatusText');
+      if (getStoredToken()) {
+        btn.innerText = 'GitHub PAT: Terhubung';
+        btn.className = 'text-emerald-400';
+      } else {
+        btn.innerText = 'Atur GitHub PAT';
+        btn.className = 'text-slate-300';
+      }
+    }
+
+    function openTokenModal() {
+      document.getElementById('tokenInput').value = getStoredToken();
+      document.getElementById('repoInput').value = getStoredRepo();
+      document.getElementById('tokenModal').classList.remove('hidden');
+    }
+    function closeTokenModal() { document.getElementById('tokenModal').classList.add('hidden'); }
+
+    function saveTokenConfig() {
+      const t = document.getElementById('tokenInput').value.trim();
+      const r = document.getElementById('repoInput').value.trim();
+      if (!t) { alert('Token tidak boleh kosong!'); return; }
+      localStorage.setItem('df_gh_token', t);
+      localStorage.setItem('df_gh_repo', r);
+      updateTokenBadge();
+      closeTokenModal();
+      alert('Konfigurasi token tersimpan di browser!');
+    }
+
+    // Modal Single Scrape
+    function openSingleScrapeModal(slug = '') {
+      document.getElementById('singleSlugInput').value = slug;
+      document.getElementById('singleScrapeModal').classList.remove('hidden');
+    }
+    function closeSingleScrapeModal() { document.getElementById('singleScrapeModal').classList.add('hidden'); }
+
+    async function submitSingleScrape() {
+      const slug = document.getElementById('singleSlugInput').value.trim();
+      if (!slug) { alert('Slug wajib diisi!'); return; }
+      closeSingleScrapeModal();
+      await triggerWorkflow('scraper.yml', `Scrape ${slug}`, { TARGET_SLUG: slug });
+    }
+
+    // Trigger GitHub Action Workflow via REST API
+    async function triggerWorkflow(workflowFilename, labelName, inputs = {}) {
+      const token = getStoredToken();
+      const repo = getStoredRepo();
+
+      if (!token) {
+        alert('Silakan klik tombol "Atur GitHub PAT" di kanan atas terlebih dahulu untuk memasukkan Token GitHub Anda.');
+        openTokenModal();
+        return;
+      }
+
+      if (!confirm(`Apakah Anda yakin ingin memicu workflow "${labelName}" sekarang?`)) return;
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/${workflowFilename}/dispatches`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ref: 'main',
+            inputs: inputs
+          })
+        });
+
+        if (res.status === 204) {
+          alert(`🚀 Berhasil memicu ${labelName}! Proses sedang berlangsung di tab GitHub Actions.`);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          alert(`Gagal memicu (${res.status}): ${data.message || 'Periksa izin token & nama file workflow'}`);
+        }
+      } catch (err) {
+        alert(`Koneksi error: ${err.message}`);
+      }
+    }
+
+    // Ambil Data via Serverless API Proxy
     async function loadAdminData() {
       const tbody = document.getElementById('adminTableBody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Memuat data dari API Proxy...</td></tr>';
@@ -134,10 +315,17 @@
         if (!res.ok) throw new Error('API Proxy gagal merespons');
         rawDonghuaList = await res.json();
 
-        // Hitung statistik
+        // Metrics
         document.getElementById('statTotal').innerText = rawDonghuaList.length;
         document.getElementById('statOngoing').innerText = rawDonghuaList.filter(d => (d.status || '').toLowerCase() === 'ongoing').length;
         document.getElementById('statCompleted').innerText = rawDonghuaList.filter(d => (d.status || '').toLowerCase() === 'completed').length;
+        
+        let highestEp = 0;
+        rawDonghuaList.forEach(d => {
+          const num = parseFloat(String(d['latest-episode'] || d.episode || '').replace(/[^0-9.]/g, '')) || 0;
+          if (num > highestEp) highestEp = num;
+        });
+        document.getElementById('statTopEp').innerText = `Ep ${highestEp}`;
 
         filteredList = [...rawDonghuaList];
         renderTable();
@@ -151,14 +339,14 @@
       document.getElementById('filteredCountInfo').innerText = `${filteredList.length} dari ${rawDonghuaList.length}`;
 
       if (filteredList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada judul yang sesuai.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada judul yang sesuai pencarian.</td></tr>';
         return;
       }
 
       tbody.innerHTML = filteredList.slice(0, 100).map((item, idx) => {
         const isCompleted = (item.status || '').toLowerCase() === 'completed';
         const coverImg = item.cover || 'https://via.placeholder.com/60x80?text=No+Cover';
-        const epVal = item['latest-episode'] || item.episode || '-';
+        const epVal = item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || '-');
 
         return `
           <tr class="hover:bg-slate-800/40 transition">
@@ -181,15 +369,68 @@
             <td class="p-4 font-mono text-slate-500 text-[11px]">
               ${item.updated_at ? new Date(item.updated_at).toLocaleDateString('id-ID') : '-'}
             </td>
-            <td class="p-4 text-right">
-              <a href="/donghua/${encodeURIComponent(item.slug)}" target="_blank" class="text-cyan-400 hover:text-cyan-300 font-semibold text-[11px] bg-cyan-950/60 border border-cyan-800/60 px-2.5 py-1 rounded-lg transition">
-                Buka
-              </a>
+            <td class="p-4 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="inspectEpisodes('${item.slug}', '${encodeURIComponent(item.title)}')" title="Lihat Episode File" class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-500 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
+                <button onclick="openSingleScrapeModal('${item.slug}')" title="Scrape Ulang Judul Ini" class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-indigo-400 hover:border-indigo-500 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+                <a href="/donghua/${encodeURIComponent(item.slug)}" target="_blank" title="Buka Halaman Streaming" class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+              </div>
             </td>
           </tr>
         `;
       }).join('');
     }
+
+    // Inspeksi Episode JSON
+    async function inspectEpisodes(slug, encodedTitle) {
+      const modal = document.getElementById('episodesModal');
+      const titleEl = document.getElementById('epModalTitle');
+      const slugEl = document.getElementById('epModalSlug');
+      const bodyEl = document.getElementById('epModalBody');
+
+      titleEl.innerText = decodeURIComponent(encodedTitle);
+      slugEl.innerText = `episodes/${slug}.json`;
+      bodyEl.innerHTML = '<div class="text-slate-500 text-center py-8">Memuat data episode via API...</div>';
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/donghua?path=episodes/${encodeURIComponent(slug)}.json`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('File episode belum tersedia di server API');
+        const eps = await res.json();
+
+        if (!Array.isArray(eps) || eps.length === 0) {
+          bodyEl.innerHTML = '<div class="text-slate-500 text-center py-8">Episode kosong.</div>';
+          return;
+        }
+
+        bodyEl.innerHTML = `
+          <div class="text-xs text-slate-400 font-mono mb-2">Total: ${eps.length} episode ditemukan</div>
+          <div class="space-y-1.5">
+            ${eps.map(e => `
+              <div class="bg-slate-950 border border-slate-800 p-2.5 rounded-xl flex items-center justify-between">
+                <div>
+                  <span class="font-mono text-cyan-400 font-bold mr-2">Ep ${e.episode}</span>
+                  <span class="text-slate-300">${e.title}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-slate-500 font-mono">${(e.servers || []).length} Server</span>
+                  <span class="text-[10px] text-slate-500 font-mono">${e.date || ''}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) {
+        bodyEl.innerHTML = `<div class="text-rose-400 text-center py-8">${err.message}</div>`;
+      }
+    }
+    function closeEpisodesModal() { document.getElementById('episodesModal').classList.add('hidden'); }
 
     function applyFilter() {
       const q = document.getElementById('adminSearchInput').value.toLowerCase().trim();
@@ -204,6 +445,7 @@
       renderTable();
     }
 
+    updateTokenBadge();
     loadAdminData();
   </script>
 </body>
