@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
   <title>Katalog Donghua - Dongflix.my.id</title>
+  
+  <!-- Favicon / Ikon Web -->
+  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
 
   <style>
     :root {
@@ -188,13 +192,12 @@
       align-items: center;
     }
 
-    /* ICON PENCARIAN ABU MUDA DENGAN POSISI & Z-INDEX PASTI */
     .search-icon-svg {
       position: absolute;
       left: 18px;
       width: 19px;
       height: 19px;
-      stroke: #9ca3af; /* Abu-abu muda */
+      stroke: #9ca3af;
       fill: none;
       stroke-width: 2.3;
       stroke-linecap: round;
@@ -223,9 +226,7 @@
       z-index: 1;
     }
 
-    .search-field::placeholder {
-      color: #9ca3af;
-    }
+    .search-field::placeholder { color: #9ca3af; }
 
     .search-field:focus {
       border-color: var(--color-accent);
@@ -447,7 +448,7 @@
 
   <div class="container">
     <div class="catalog-top-panel">
-      <!-- PENCARIAN DENGAN ICON ABU MUDA DENGAN KELAS KHUSUS -->
+      <!-- PENCARIAN -->
       <div class="search-box-wrap">
         <svg class="search-icon-svg" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"></circle>
@@ -615,13 +616,11 @@
       const countInfo = document.getElementById('catalogCountInfo');
 
       const filtered = masterList.filter(item => {
-        // 1. Filter Pencarian Teks
         const titleStr = (item.title || item.name || '').toLowerCase();
         const slugStr = (item.slug || '').toLowerCase();
         const matchesQuery = titleStr.includes(query) || slugStr.includes(query);
         if (!matchesQuery) return false;
 
-        // 2. Filter Tipe
         const isMovie = isMovieItem(item);
         const status = parseStatusText(item);
         if (currentTypeFilter === 'movie' && !isMovie) return false;
@@ -629,7 +628,6 @@
         if (currentTypeFilter === 'ongoing' && (status !== 'ONGOING' || isMovie)) return false;
         if (currentTypeFilter === 'completed' && (status !== 'COMPLETED' || isMovie)) return false;
 
-        // 3. Filter Kategori / Genre
         if (currentCategoryFilter) {
           const catLower = currentCategoryFilter.toLowerCase();
           const genres = Array.isArray(item.genres) 
