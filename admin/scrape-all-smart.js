@@ -1,13 +1,13 @@
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import * as cheerio from 'cheerio';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-
-puppeteer.use(StealthPlugin());
+import * as cheerio from 'cheerio';
 
 const BASE_URL = 'https://anichin.moe';
+
+function cleanText(text) {
+  return (text || '').replace(/\s+/g, ' ').trim();
+}
 
 function parseEpisodeNumber(epString) {
   if (!epString) return 0;
@@ -15,165 +15,155 @@ function parseEpisodeNumber(epString) {
   return match ? parseFloat(match[1]) : 0;
 }
 
-function getLocalLatestEpisode(slug) {
-  const filePath = path.resolve(`donghua/episodes/${slug}.json`);
-  if (!fs.existsSync(filePath)) return null;
+function gitCommitAndPush(slug, epNum) {
+  try {
+    console.log(`  💾 Menyimpan & commit perubahan untuk ${slug}...`);
+    execSync('git config --local user.email "action@github.com"', { stdio: 'ignore' });
+    execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
+    execSync(`git add donghua/donghua.json donghua/episodes/${slug}.json`, { stdio: 'ignore' });
+    
+    const status = execSync('git status --porcelain').toString();
+    if (status) {
+      execSync(`git commit -m "Auto Update: ${slug} (Ep ${epNum}) [skip ci]"`, { stdio: 'inherit' });
+      execSync('git push', { stdio: 'inherit' });
+      console.log(`  🚀 Berhasil push ke GitHub untuk ${slug}!`);
+    } else {
+      console.log(`  ℹ️ Tidak ada perubahan file untuk di-push.`);
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Gagal git push otomatis: ${err.message}`);
+  }
+}
+
+async function fetchHtmlWithTimeout(url, timeoutMs = 15000) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const episodes = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    if (!Array.isArray(episodes) || episodes.length === 0) return null;
-
-    let maxEp = 0;
-    for (const ep of episodes) {
-      const num = parseEpisodeNumber(ep.episode);
-      if (num > maxEp) maxEp = num;
-    }
-    return maxEp > 0 ? maxEp : null;
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+      }
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    return await res.text();
   } catch (_) {
+    clearTimeout(timeout);
     return null;
   }
 }
 
-async function fetchWebLatestEpisode(page, slug) {
-  const possibleUrls = [
+async function getWebLatestEpisode(slug) {
+  const urls = [
     `${BASE_URL}/${slug}/`,
     `${BASE_URL}/anime/${slug}/`
   ];
 
-  for (const url of possibleUrls) {
-    try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
-      const html = await page.content();
-      const $ = cheerio.load(html);
+  for (const url of urls) {
+    const html = await fetchHtmlWithTimeout(url);
+    if (!html) continue;
 
-      let foundEp = '';
-      $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
-        const txt = $(el).text().trim();
-        if (txt.includes('Episode Baru')) {
-          const match = txt.match(/Episode\s*Baru[\s\S]*?(?:Episode\s*)?(\d+[\w.-]*)/i);
-          if (match && match[1]) foundEp = match[1].trim();
-        }
-      });
+    const $ = cheerio.load(html);
+    let epFound = '';
 
-      if (!foundEp) {
-        const firstEp = $('.eplister ul li, .episodelist ul li, ul.clstyle li').first();
-        const epNum = firstEp.find('.epl-num, .epx').text().trim() || firstEp.find('a').text().trim();
-        if (epNum) foundEp = epNum;
+    $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
+      const txt = $(el).text().trim();
+      if (txt.includes('Episode Baru')) {
+        const match = txt.match(/Episode\s*Baru[\s\S]*?(?:Episode\s*)?(\d+[\w.-]*)/i);
+        if (match && match[1]) epFound = match[1].trim();
       }
+    });
 
-      if (foundEp) {
-        return parseEpisodeNumber(foundEp);
-      }
-    } catch (_) {}
+    if (!epFound) {
+      const firstEpItem = $('.eplister ul li, .episodelist ul li, ul.clstyle li').first();
+      const num = firstEpItem.find('.epl-num, .epx').text().trim() || firstEpItem.find('a').text().trim();
+      if (num) epFound = num;
+    }
+
+    if (epFound) return epFound;
   }
+
   return null;
 }
 
-function bumpDonghuaToTop(slug, newEpisodeNum) {
-  const masterPath = path.resolve('donghua/donghua.json');
-  if (!fs.existsSync(masterPath)) return;
+async function main() {
+  console.log('=== Memulai Smart Scrape Semua Donghua ===');
 
-  try {
-    const rawData = fs.readFileSync(masterPath, 'utf-8');
-    let donghuaList = JSON.parse(rawData);
-
-    const index = donghuaList.findIndex((item) => item.slug === slug);
-    if (index > -1) {
-      const [item] = donghuaList.splice(index, 1);
-      item['latest-episode'] = String(newEpisodeNum);
-      item.episode = `Ep ${newEpisodeNum}`;
-      item.updated_at = new Date().toISOString();
-
-      donghuaList.unshift(item);
-
-      fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-      console.log(`📌 [BUMP] Posisi ${slug} berhasil dipindahkan ke baris teratas.`);
-    }
-  } catch (err) {
-    console.error(`Gagal bump donghua: ${err.message}`);
-  }
-}
-
-// Fungsi Git: langsung commit dan push per judul yang selesai
-function commitAndPushPerTitle(slug, episode) {
-  try {
-    console.log(`  📤 Langsung menyimpan perubahan untuk [${slug}] ke GitHub...`);
-    execSync('git config --local user.email "action@github.com"');
-    execSync('git config --local user.name "GitHub Action Bot"');
-    execSync(`git add donghua/episodes/${slug}.json donghua/donghua.json`);
-    execSync(`git commit -m "Auto: Update ${slug} Ep ${episode} [skip ci]"`);
-    execSync('git push origin HEAD');
-    console.log(`  ✅ Berhasil dipush ke repositori!`);
-  } catch (err) {
-    console.warn(`  ⚠️ Melewati push git: ${err.message}`);
-  }
-}
-
-async function run() {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) {
     console.error('File donghua/donghua.json tidak ditemukan!');
     process.exit(1);
   }
 
-  const donghuaList = JSON.parse(fs.readFileSync(masterPath, 'utf-8'));
-  console.log(`Total terdaftar di katalog: ${donghuaList.length} donghua\n`);
+  let donghuaList = [];
+  try {
+    donghuaList = JSON.parse(fs.readFileSync(masterPath, 'utf-8'));
+  } catch (e) {
+    console.error('Format donghua.json rusak:', e.message);
+    process.exit(1);
+  }
 
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-  });
+  const episodesDir = path.resolve('donghua/episodes');
+  if (!fs.existsSync(episodesDir)) fs.mkdirSync(episodesDir, { recursive: true });
 
-  const page = await browser.newPage();
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124.0.0.0 Safari/537.36');
-  await page.setRequestInterception(true);
-  page.on('request', (req) => {
-    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
-      req.abort();
-    } else {
-      req.continue();
-    }
-  });
+  const total = donghuaList.length;
+  console.log(`Total judul yang akan diperiksa: ${total}`);
 
-  for (let i = 0; i < donghuaList.length; i++) {
+  for (let i = 0; i < total; i++) {
     const item = donghuaList[i];
     const slug = item.slug;
+    console.log(`\n[${i + 1}/${total}] Memeriksa: ${item.title} (${slug})`);
 
-    console.log(`\n[${i + 1}/${donghuaList.length}] Memeriksa: ${item.title} (${slug})`);
+    const epFilePath = path.join(episodesDir, `${slug}.json`);
+    let localHighestEp = 0;
 
-    const localEp = getLocalLatestEpisode(slug);
-    const webEp = await fetchWebLatestEpisode(page, slug);
-
-    if (!webEp) {
-      console.log(`  ⚠️ Gagal mengambil info web, dilewati.`);
-      continue;
+    if (fs.existsSync(epFilePath)) {
+      try {
+        const epData = JSON.parse(fs.readFileSync(epFilePath, 'utf-8'));
+        if (Array.isArray(epData) && epData.length > 0) {
+          const numbers = epData.map(e => parseEpisodeNumber(e.episode));
+          localHighestEp = Math.max(...numbers, 0);
+        }
+      } catch (_) {}
     }
 
-    console.log(`  - Episode Lokal : ${localEp !== null ? localEp : 'Belum discrape'}`);
-    console.log(`  - Episode di Web: ${webEp}`);
+    const webLatestEpRaw = await getWebLatestEpisode(slug);
+    const webHighestEp = parseEpisodeNumber(webLatestEpRaw);
 
-    if (localEp !== null && localEp >= webEp) {
-      console.log(`  ⏩ Sudah up-to-date (Ep ${localEp}). Dilewati.`);
-      continue;
-    }
+    console.log(`  - Episode Lokal : ${localHighestEp > 0 ? localHighestEp : 'Belum discrape'}`);
+    console.log(`  - Episode di Web: ${webHighestEp > 0 ? webHighestEp : (webLatestEpRaw || 'Tidak ditemukan')}`);
 
-    console.log(`  🚀 RILISAN BARU DITEMUKAN! Mulai scrape episode...`);
-    try {
-      // Jalankan scraping detail episode
-      execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
+    if (webHighestEp > localHighestEp || localHighestEp === 0) {
+      console.log(`  🚀 RILISAN BARU DITEMUKAN! Memulai delta scrape...`);
 
-      // Pindahkan posisinya ke urutan teratas katalog
-      bumpDonghuaToTop(slug, webEp);
+      try {
+        execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
 
-      // LANGSUNG PUSH KE GITHUB DETIK ITU JUGA
-      commitAndPushPerTitle(slug, webEp);
-    } catch (err) {
-      console.error(`  ❌ Gagal memproses ${slug}: ${err.message}`);
+        const currentMaster = JSON.parse(fs.readFileSync(masterPath, 'utf-8'));
+        const targetIndex = currentMaster.findIndex(d => d.slug === slug);
+        if (targetIndex > -1) {
+          const [updatedItem] = currentMaster.splice(targetIndex, 1);
+          updatedItem['latest-episode'] = String(webHighestEp || webLatestEpRaw);
+          updatedItem.episode = `Ep ${webHighestEp || webLatestEpRaw}`;
+          updatedItem.updated_at = new Date().toISOString();
+          currentMaster.unshift(updatedItem);
+          fs.writeFileSync(masterPath, JSON.stringify(currentMaster, null, 2), 'utf-8');
+        }
+
+        gitCommitAndPush(slug, webHighestEp || webLatestEpRaw);
+
+      } catch (err) {
+        console.error(`  ❌ Gagal memproses ${slug}: ${err.message}`);
+        console.log(`  ➡️ Melanjutkan ke donghua berikutnya...`);
+      }
+    } else {
+      console.log(`  ✅ Sudah up-to-date. Lewati.`);
     }
   }
 
-  await browser.close();
-  console.log('\n=== Semua pengecekan & update selesai ===');
+  console.log('\n=== Semua donghua selesai diperiksa! ===');
 }
 
-run();
+main();
