@@ -1,357 +1,210 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Dongflix Automation</title>
+  <title>Dongflix Admin - Data Management</title>
+  <meta name="referrer" content="no-referrer">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: #f8fafc; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    svg { max-width: 100%; height: auto; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 sm:p-6 md:p-8">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
 
-  <div class="max-w-5xl mx-auto space-y-6">
-    <!-- Header -->
-    <header class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
-      <div>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-lg">
-            DF
-          </div>
-          <div>
-            <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Dongflix Automation Admin</h1>
-            <p class="text-xs text-slate-400">Kontrol Scraper, Sinkronisasi Katalog, & Update Episode</p>
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="/" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition">
-          Beranda Web
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="text-xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 bg-clip-text text-transparent">
+          Dongflix Admin
         </a>
-        <a href="/donghua/" class="px-3 py-2 text-xs font-medium rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition">
-          Katalog
-        </a>
+        <span class="text-[10px] font-bold uppercase tracking-wider bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 px-2 py-0.5 rounded-full font-mono">
+          Dashboard
+        </span>
       </div>
-    </header>
 
-    <!-- GitHub Config Section -->
-    <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-      <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-indigo-400">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-        Konfigurasi GitHub Repository & PAT
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">GitHub Personal Access Token (PAT)</label>
-          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">Repository Path (Owner/Repo)</label>
-          <input type="text" id="ghRepo" placeholder="zahrulmo01-gif/dongflix2.0" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-        </div>
-      </div>
-      <div class="flex justify-end">
-        <button onclick="saveCredentials()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 rounded-xl transition">
-          Simpan Konfigurasi
+      <nav class="flex items-center gap-2">
+        <a href="/" class="text-xs font-semibold text-slate-300 hover:text-white px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">
+          Lihat Web
+        </a>
+        <button onclick="loadAdminData()" class="text-xs font-semibold text-cyan-400 px-3.5 py-2 rounded-xl bg-cyan-950/40 border border-cyan-800/60 hover:bg-cyan-900/40 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh Data
         </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8 space-y-6">
+    
+    <!-- STATS CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Total Judul Terdata</span>
+        <h2 id="statTotal" class="text-2xl font-black text-white mt-1">...</h2>
       </div>
-    </section>
-
-    <!-- Trigger Actions Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <!-- Panel Katalog -->
-      <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between space-y-4">
-        <div>
-          <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-2">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-blue-400">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-            Manajemen Katalog Donghua
-          </h2>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Pilih tindakan: hanya menambahkan judul baru yang belum ada, atau menyelaraskan urutan list katalog agar mengikuti urutan Anichin.
-          </p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
-          <button onclick="triggerWorkflow('scrape-list')" class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
-            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Scrape Baru Saja
-          </button>
-          <button onclick="triggerWorkflow('sync-order')" class="flex-1 px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
-            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Perbaiki Urutan List
-          </button>
-        </div>
-      </section>
-
-      <!-- Panel Auto Smart Scraper -->
-      <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between space-y-4">
-        <div>
-          <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2 mb-2">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-emerald-400">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            Smart Scraper Semua Episode
-          </h2>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            Mengecek seluruh judul di database secara otomatis, melakukan delta-scrape episode baru, auto-bump posisi, dan push langsung per-judul.
-          </p>
-        </div>
-        <div class="pt-2">
-          <button onclick="triggerWorkflow('scrape-all-episodes')" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
-            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Jalankan Smart Scrape Semua
-          </button>
-        </div>
-      </section>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Status Ongoing</span>
+        <h2 id="statOngoing" class="text-2xl font-black text-emerald-400 mt-1">...</h2>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl">
+        <span class="text-xs font-medium text-slate-400">Status Completed</span>
+        <h2 id="statCompleted" class="text-2xl font-black text-blue-400 mt-1">...</h2>
+      </div>
     </div>
 
-    <!-- Scrape Episode Spesifik dengan List Donghua -->
-    <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-indigo-400">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-            </svg>
-            Scrape Episode Donghua Tertentu
-          </h2>
-          <p class="text-xs text-slate-400 mt-1">Cari judul donghua di bawah lalu klik tombol scrape pada judul yang diinginkan.</p>
-        </div>
-        <div class="w-full sm:w-64">
-          <input 
-            type="text" 
-            id="searchInput" 
-            oninput="filterDonghuaList()" 
-            placeholder="Cari judul / slug..." 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"
-          >
-        </div>
+    <!-- FILTER BAR -->
+    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="relative w-full sm:w-80">
+        <input 
+          id="adminSearchInput" 
+          type="text" 
+          placeholder="Cari slug atau judul..." 
+          oninput="applyFilter()"
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition"
+        >
       </div>
 
-      <!-- List Kontainer Donghua -->
-      <div class="border border-slate-800/80 rounded-xl overflow-hidden bg-slate-950">
-        <div class="max-h-72 overflow-y-auto divide-y divide-slate-800/60" id="donghuaListContainer">
-          <div class="p-4 text-center text-xs text-slate-500">Memuat daftar donghua...</div>
-        </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <select 
+          id="statusFilter" 
+          onchange="applyFilter()" 
+          class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-cyan-500"
+        >
+          <option value="ALL">Semua Status</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+        </select>
+        <span id="filteredCountInfo" class="text-xs text-slate-400 font-mono">Memuat...</span>
       </div>
-      <div class="flex items-center justify-between text-xs text-slate-500 px-1">
-        <span id="donghuaCount">0 Donghua terdaftar</span>
-        <button onclick="loadDonghuaList()" class="text-indigo-400 hover:text-indigo-300 transition">Muat Ulang List</button>
-      </div>
-    </section>
+    </div>
 
-    <!-- Terminal Monitor -->
-    <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="statusDot"></span>
-          <h2 class="text-sm font-semibold text-slate-200 font-mono">Terminal Monitor</h2>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="clearTerminal()" class="text-xs text-slate-400 hover:text-slate-200 transition">Bersihkan</button>
-          <span class="text-slate-700">|</span>
-          <button onclick="fetchLatestLogs()" class="text-xs text-indigo-400 hover:text-indigo-300 transition">Cek Status Runner</button>
-        </div>
+    <!-- TABLE LIST -->
+    <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider font-mono">
+            <tr>
+              <th class="p-4 w-12 text-center">#</th>
+              <th class="p-4">Donghua</th>
+              <th class="p-4">Slug</th>
+              <th class="p-4 text-center">Status</th>
+              <th class="p-4 text-center">Episode</th>
+              <th class="p-4">Updated At</th>
+              <th class="p-4 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody" class="divide-y divide-slate-800/60">
+            <tr>
+              <td colspan="7" class="p-8 text-center text-slate-500">Memuat katalog dari API Proxy...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div id="terminal" class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-1 select-text">
-        <div class="text-slate-500">[Info] Sistem siap. Masukkan token & repository untuk memicu workflow.</div>
-      </div>
-    </section>
-  </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800 bg-slate-950 px-4 py-6 text-center text-xs text-slate-500">
+    <p>&copy; 2026 Dongflix Admin Panel</p>
+  </footer>
 
   <script>
-    const DEFAULT_REPO = 'zahrulmo01-gif/dongflix2.0';
-    let allDonghuaData = [];
+    let rawDonghuaList = [];
+    let filteredList = [];
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedToken = localStorage.getItem('DF_GH_TOKEN') || '';
-      const savedRepo = localStorage.getItem('DF_GH_REPO') || DEFAULT_REPO;
-      document.getElementById('ghToken').value = savedToken;
-      document.getElementById('ghRepo').value = savedRepo;
+    async function loadAdminData() {
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Memuat data dari API Proxy...</td></tr>';
 
-      if (savedToken) {
-        logTerminal(`[Sistem] Konfigurasi termuat untuk: ${savedRepo}`);
-      }
-
-      loadDonghuaList();
-    });
-
-    function saveCredentials() {
-      const token = document.getElementById('ghToken').value.trim();
-      const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_REPO;
-
-      localStorage.setItem('DF_GH_TOKEN', token);
-      localStorage.setItem('DF_GH_REPO', repo);
-
-      logTerminal(`[Sistem] Konfigurasi berhasil disimpan.`);
-    }
-
-    function logTerminal(message, type = 'info') {
-      const terminal = document.getElementById('terminal');
-      const row = document.createElement('div');
-      const time = new Date().toLocaleTimeString('id-ID');
-
-      if (type === 'error') {
-        row.className = 'text-rose-400';
-      } else if (type === 'success') {
-        row.className = 'text-emerald-400';
-      } else if (type === 'warn') {
-        row.className = 'text-amber-400';
-      } else {
-        row.className = 'text-slate-300';
-      }
-
-      row.textContent = `[${time}] ${message}`;
-      terminal.appendChild(row);
-      terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    function clearTerminal() {
-      document.getElementById('terminal').innerHTML = '';
-      logTerminal('[Terminal dibersihkan]');
-    }
-
-    // Ambil data donghua.json langsung untuk dirender ke list
-    async function loadDonghuaList() {
-      const container = document.getElementById('donghuaListContainer');
-      const countLabel = document.getElementById('donghuaCount');
-      
       try {
-        const res = await fetch('/donghua/donghua.json?t=' + Date.now());
-        if (!res.ok) throw new Error('Gagal memuat donghua.json');
-        
-        allDonghuaData = await res.json();
-        countLabel.textContent = `${allDonghuaData.length} Donghua terdaftar`;
-        renderDonghuaItems(allDonghuaData);
+        const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('API Proxy gagal merespons');
+        rawDonghuaList = await res.json();
+
+        // Hitung statistik
+        document.getElementById('statTotal').innerText = rawDonghuaList.length;
+        document.getElementById('statOngoing').innerText = rawDonghuaList.filter(d => (d.status || '').toLowerCase() === 'ongoing').length;
+        document.getElementById('statCompleted').innerText = rawDonghuaList.filter(d => (d.status || '').toLowerCase() === 'completed').length;
+
+        filteredList = [...rawDonghuaList];
+        renderTable();
       } catch (err) {
-        container.innerHTML = `<div class="p-4 text-center text-xs text-rose-400">Gagal mengambil katalog: ${err.message}</div>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-rose-400">Gagal mengambil data: ${err.message}</td></tr>`;
       }
     }
 
-    function renderDonghuaItems(items) {
-      const container = document.getElementById('donghuaListContainer');
-      if (items.length === 0) {
-        container.innerHTML = `<div class="p-4 text-center text-xs text-slate-500">Donghua tidak ditemukan.</div>`;
+    function renderTable() {
+      const tbody = document.getElementById('adminTableBody');
+      document.getElementById('filteredCountInfo').innerText = `${filteredList.length} dari ${rawDonghuaList.length}`;
+
+      if (filteredList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-500">Tidak ada judul yang sesuai.</td></tr>';
         return;
       }
 
-      container.innerHTML = items.map((item, index) => `
-        <div class="p-3 hover:bg-slate-900/50 flex items-center justify-between gap-3 transition">
-          <div class="flex items-center gap-3 min-w-0">
-            <span class="text-xs font-mono text-slate-600 w-6 text-right">${index + 1}</span>
-            <div class="min-w-0">
-              <div class="text-xs font-semibold text-slate-200 truncate">${item.title}</div>
-              <div class="text-[11px] font-mono text-slate-500 flex items-center gap-2">
-                <span>${item.slug}</span>
-                <span>•</span>
-                <span class="text-indigo-400">${item.episode || item['latest-episode'] || 'Ep -'}</span>
+      tbody.innerHTML = filteredList.slice(0, 100).map((item, idx) => {
+        const isCompleted = (item.status || '').toLowerCase() === 'completed';
+        const coverImg = item.cover || 'https://via.placeholder.com/60x80?text=No+Cover';
+        const epVal = item['latest-episode'] || item.episode || '-';
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="p-4 text-center font-mono text-slate-500">${idx + 1}</td>
+            <td class="p-4">
+              <div class="flex items-center gap-3">
+                <img src="${coverImg}" referrerpolicy="no-referrer" class="w-9 h-12 object-cover rounded-md border border-slate-800 shrink-0" onerror="this.src='https://via.placeholder.com/60x80?text=No+Cover'">
+                <span class="font-semibold text-slate-200 line-clamp-1 max-w-xs" title="${item.title}">${item.title}</span>
               </div>
-            </div>
-          </div>
-          <button 
-            onclick="triggerSingleEpisode('${item.slug}', '${item.title.replace(/'/g, "\\'")}')" 
-            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition shrink-0 flex items-center gap-1.5">
-            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
-            Scrape
-          </button>
-        </div>
-      `).join('');
+            </td>
+            <td class="p-4 font-mono text-slate-400 text-[11px]">${item.slug}</td>
+            <td class="p-4 text-center">
+              <span class="px-2 py-0.5 rounded-md font-semibold text-[10px] ${isCompleted ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">
+                ${item.status || 'Ongoing'}
+              </span>
+            </td>
+            <td class="p-4 text-center font-mono font-bold text-cyan-400">
+              ${epVal}
+            </td>
+            <td class="p-4 font-mono text-slate-500 text-[11px]">
+              ${item.updated_at ? new Date(item.updated_at).toLocaleDateString('id-ID') : '-'}
+            </td>
+            <td class="p-4 text-right">
+              <a href="/donghua/${encodeURIComponent(item.slug)}" target="_blank" class="text-cyan-400 hover:text-cyan-300 font-semibold text-[11px] bg-cyan-950/60 border border-cyan-800/60 px-2.5 py-1 rounded-lg transition">
+                Buka
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
-    function filterDonghuaList() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      const filtered = allDonghuaData.filter(item => 
-        (item.title && item.title.toLowerCase().includes(query)) ||
-        (item.slug && item.slug.toLowerCase().includes(query))
-      );
-      renderDonghuaItems(filtered);
+    function applyFilter() {
+      const q = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+      const st = document.getElementById('statusFilter').value;
+
+      filteredList = rawDonghuaList.filter(item => {
+        const matchTitle = (item.title && item.title.toLowerCase().includes(q)) || (item.slug && item.slug.toLowerCase().includes(q));
+        const matchStatus = st === 'ALL' || (item.status && item.status.toLowerCase() === st.toLowerCase());
+        return matchTitle && matchStatus;
+      });
+
+      renderTable();
     }
 
-    async function triggerWorkflow(eventType, clientPayload = {}) {
-      const token = document.getElementById('ghToken').value.trim();
-      const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_REPO;
-
-      if (!token) {
-        logTerminal('Error: Harap isi GitHub Personal Access Token terlebih dahulu!', 'error');
-        return;
-      }
-
-      logTerminal(`Mengirim trigger [${eventType}] ke GitHub Actions...`);
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            event_type: eventType,
-            client_payload: clientPayload
-          })
-        });
-
-        if (res.status === 204) {
-          logTerminal(`Workflow [${eventType}] berhasil dimulai di server GitHub!`, 'success');
-          setTimeout(fetchLatestLogs, 4000);
-        } else {
-          const errData = await res.json().catch(() => ({}));
-          logTerminal(`Gagal memicu workflow (${res.status}): ${errData.message || 'Periksa izin token.'}`, 'error');
-        }
-      } catch (err) {
-        logTerminal(`Request gagal: ${err.message}`, 'error');
-      }
-    }
-
-    function triggerSingleEpisode(slug, title) {
-      if (!slug) return;
-      logTerminal(`Mempersiapkan scrape episode untuk: ${title || slug}`);
-      triggerWorkflow('scrape-episode', { target_slug: slug });
-    }
-
-    async function fetchLatestLogs() {
-      const token = document.getElementById('ghToken').value.trim();
-      const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_REPO;
-
-      if (!token) return;
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${repo}/actions/runs?per_page=1`, {
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!res.ok) return;
-
-        const data = await res.json();
-        if (data.workflow_runs && data.workflow_runs.length > 0) {
-          const run = data.workflow_runs[0];
-          const status = run.status;
-          const conclusion = run.conclusion || 'sedang berjalan';
-          logTerminal(`Workflow Terkini (#${run.run_number}): Status = ${status}, Hasil = ${conclusion}`, 'info');
-        }
-      } catch (_) {}
-    }
+    loadAdminData();
   </script>
 </body>
 </html>
