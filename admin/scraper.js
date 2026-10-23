@@ -45,52 +45,92 @@ function sanitizeTitle(rawTitle) {
 }
 
 function parseEpisodeNumber(epString) {
-  if (!epString || epString === 'null') return 0;
+  if (!epString || epString === 'null' || epString === null) return 0;
   const match = String(epString).match(/(\d+(\.\d+)?)/);
   return match ? parseFloat(match[1]) : 0;
 }
 
-// Mengambil detail lengkap donghua (sinopsis, genre, rilis) untuk entri baru
-async function fetchDonghuaDetail(page, detailUrl) {
+// Mengambil detail lengkap donghua/movie langsung dari halaman Anichin
+async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackSlug = '') {
   try {
-    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
+    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const html = await page.content();
     const $ = cheerio.load(html);
 
+    // 1. Ekstrak Genre
     const genres = [];
     $('.genxed a, .genre-info a, .info-content .spe span:contains("Genre") a').each((_, el) => {
       const g = $(el).text().trim();
       if (g && !genres.includes(g)) genres.push(g);
     });
 
+    // 2. Ekstrak Sinopsis
     let synopsis = $('.entry-content p, .synp .entry-content, .desc p').first().text().trim();
     if (!synopsis) {
       synopsis = $('.entry-content, .desc').first().text().trim();
     }
 
-    let released = '';
-    $('.spe span, .info-content span').each((_, el) => {
-      const txt = $(el).text().trim();
-      if (txt.toLowerCase().includes('released') || txt.toLowerCase().includes('tanggal')) {
-        released = txt.replace(/released\s*:\s*/i, '').trim();
-      }
-    });
-
+    // 3. Ekstrak Spesifikasi (Status, Rilis, Tipe, Total Episode)
+    let released = 'Tanggal -';
     let status = 'Ongoing';
+    let detectedType = 'Donghua';
+    let totalEp = 0;
+
     $('.spe span, .info-content span').each((_, el) => {
       const txt = $(el).text().trim();
-      if (txt.toLowerCase().includes('status')) {
-        if (txt.toLowerCase().includes('completed')) status = 'Completed';
+      const lower = txt.toLowerCase();
+
+      // Tanggal Rilis
+      if (lower.includes('tanggal rilis') || lower.includes('released')) {
+        released = txt.replace(/tanggal rilis\s*:\s*/i, '').replace(/released\s*:\s*/i, '').trim();
+      }
+
+      // Status
+      if (lower.includes('status')) {
+        if (lower.includes('completed') || lower.includes('tamat')) {
+          status = 'Completed';
+        } else if (lower.includes('ongoing')) {
+          status = 'Ongoing';
+        }
+      }
+
+      // Tipe (Donghua vs Movie)
+      if (lower.includes('tipe') || lower.includes('type')) {
+        if (lower.includes('movie')) {
+          detectedType = 'Movie';
+        }
+      }
+
+      // Total Episode
+      if (lower.includes('episode')) {
+        const epFound = parseEpisodeNumber(txt);
+        if (epFound > 0) totalEp = epFound;
       }
     });
 
-    return { genres, synopsis, released: released || 'Tanggal -', status };
-  } catch (_) {
+    // Fallback deteksi movie dari judul atau slug jika tidak terdeteksi di spesifikasi
+    const combinedCheck = `${fallbackTitle} ${fallbackSlug}`.toLowerCase();
+    if (combinedCheck.includes('movie')) {
+      detectedType = 'Movie';
+    }
+
+    return {
+      genres: genres.length > 0 ? genres : ["Action", "Adventure", "Fantasy", "Martial Arts", "Cultivation"],
+      synopsis: synopsis || '',
+      released: released.startsWith('Tanggal') ? released : `Tanggal  ${released}`,
+      status,
+      type: detectedType,
+      totalEp
+    };
+  } catch (err) {
+    const isMovieFallback = `${fallbackTitle} ${fallbackSlug}`.toLowerCase().includes('movie');
     return {
       genres: ["Action", "Adventure", "Fantasy", "Martial Arts", "Cultivation"],
       synopsis: "",
       released: "Tanggal -",
-      status: "Ongoing"
+      status: "Ongoing",
+      type: isMovieFallback ? "Movie" : "Donghua",
+      totalEp: 0
     };
   }
 }
@@ -131,7 +171,7 @@ async function main() {
 
   try {
     const targetUrl = `${BASE_URL}/donghua/`;
-    console.log(`Membaca daftar dari: ${targetUrl}`);
+    console.log(`Membaca katalog dari: ${targetUrl}`);
 
     await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
     const html = await page.content();
@@ -169,25 +209,29 @@ async function main() {
       });
     });
 
-    console.log(`Ditemukan ${scrapedCards.length} judul dari web.`);
+    console.log(`Ditemukan ${scrapedCards.length} judul pada halaman pertama.`);
 
     let updatedCount = 0;
 
-    // Iterasi dari belakang ke depan agar kartu urutan 1 tetap paling atas
+    // Iterasi terbalik agar kartu urutan teratas pada web tetap berada paling atas di array
     for (let i = scrapedCards.length - 1; i >= 0; i--) {
       const card = scrapedCards[i];
       const existingIdx = masterList.findIndex(d => d.slug === card.slug);
 
       if (existingIdx > -1) {
         if (isNewOnly) {
-          // Lewati judul yang sudah ada jika mode scrape baru saja
           continue;
         }
 
-        // Mode sync-order: Perbarui urutan dan bersihkan judul duplikat
+        // Mode sync-order: update data eksisting dan pindahkan ke urutan teratas
         const [item] = masterList.splice(existingIdx, 1);
         item.title = sanitizeTitle(item.title) || card.title;
         if (card.cover && !item.cover) item.cover = card.cover;
+
+        // Validasi tipe jika belum Movie
+        if (`${item.title} ${item.slug}`.toLowerCase().includes('movie')) {
+          item.type = 'Movie';
+        }
 
         const safeEp = card.epRaw !== '1' ? card.epRaw : (item['latest-episode'] || '1');
         item['latest-episode'] = safeEp;
@@ -197,24 +241,24 @@ async function main() {
         masterList.unshift(item);
         updatedCount++;
       } else {
-        // Judul baru: Ambil data sinopsis & genres lengkap
-        console.log(`  ✨ Menambahkan judul baru: ${card.title} (${card.slug})`);
-        const detail = await fetchDonghuaDetail(page, card.link);
+        // Judul baru: ambil detail lengkap dari halaman spesifik
+        console.log(`✨ Menambahkan entri baru: ${card.title} (${card.slug})`);
+        const detail = await fetchDonghuaDetail(page, card.link, card.title, card.slug);
+
+        const finalEp = detail.totalEp > 0 ? String(detail.totalEp) : card.epRaw;
 
         const newItem = {
           title: card.title,
           slug: card.slug,
           link: card.link,
           cover: card.cover,
-          type: "Donghua",
-          status: detail.status || "Ongoing",
-          episode: `Ep ${card.epRaw}`,
-          released: detail.released || "Tanggal -",
-          genres: detail.genres.length > 0 ? detail.genres : [
-            "Action", "Adventure", "Fantasy", "Martial Arts", "Cultivation"
-          ],
-          synopsis: detail.synopsis || "",
-          "latest-episode": card.epRaw,
+          type: detail.type,
+          status: detail.status,
+          episode: `Ep ${finalEp}`,
+          released: detail.released,
+          genres: detail.genres,
+          synopsis: detail.synopsis,
+          "latest-episode": finalEp,
           updated_at: new Date().toISOString()
         };
 
@@ -224,9 +268,9 @@ async function main() {
     }
 
     fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
-    console.log(`✅ Berhasil memproses ${updatedCount} judul ke donghua.json.`);
+    console.log(`✅ Berhasil memproses ${updatedCount} judul ke dalam donghua.json.`);
 
-    // Git push otomatis
+    // Otomasi Git Commit & Push
     try {
       execSync('git config --local user.email "action@github.com"', { stdio: 'ignore' });
       execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
@@ -243,17 +287,17 @@ async function main() {
         execSync('git push origin main', { stdio: 'inherit' });
         console.log('🚀 Perubahan katalog berhasil di-push ke GitHub!');
       } else {
-        console.log('ℹ️ Tidak ada perubahan urutan katalog.');
+        console.log('ℹ️ Tidak ada perubahan data baru.');
       }
     } catch (pushErr) {
-      console.warn(`⚠️ Gagal git push otomatis: ${pushErr.message}`);
+      console.warn(`⚠️ Git push dilewati / gagal: ${pushErr.message}`);
       try {
         execSync('git rebase --abort', { stdio: 'ignore' });
       } catch (_) {}
     }
 
   } catch (error) {
-    console.error('Error saat eksekusi scraper:', error);
+    console.error('Terjadi error saat scraping:', error);
   } finally {
     await browser.close().catch(() => {});
   }
