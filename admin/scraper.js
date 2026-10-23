@@ -50,7 +50,30 @@ function parseEpisodeNumber(epString) {
   return match ? parseFloat(match[1]) : 0;
 }
 
-// Mengambil detail lengkap donghua/movie langsung dari halaman Anichin
+function gitPushCheckpoint(commitMsg) {
+  try {
+    execSync('git config --local user.email "action@github.com"', { stdio: 'ignore' });
+    execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
+    execSync('git add donghua/donghua.json', { stdio: 'ignore' });
+
+    const status = execSync('git status --porcelain').toString().trim();
+    if (status) {
+      execSync(`git commit -m "${commitMsg} [skip ci]"`, { stdio: 'inherit' });
+      try {
+        execSync('git pull --rebase origin main', { stdio: 'inherit' });
+      } catch (_) {
+        execSync('git pull --rebase', { stdio: 'inherit' });
+      }
+      execSync('git push origin main', { stdio: 'inherit' });
+      console.log('🚀 Checkpoint tersimpan dan di-push ke GitHub!');
+    }
+  } catch (err) {
+    console.warn(`⚠️ Gagal simpan checkpoint: ${err.message}`);
+    try { execSync('git rebase --abort', { stdio: 'ignore' }); } catch (_) {}
+  }
+}
+
+// Mengambil detail lengkap donghua/movie langsung dari halaman detail Anichin
 async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackSlug = '') {
   try {
     await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -70,7 +93,7 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       synopsis = $('.entry-content, .desc').first().text().trim();
     }
 
-    // 3. Ekstrak Spesifikasi (Status, Rilis, Tipe, Total Episode)
+    // 3. Ekstrak Spesifikasi (Status, Rilis, Tipe, Episode)
     let released = 'Tanggal -';
     let status = 'Ongoing';
     let detectedType = 'Donghua';
@@ -108,11 +131,15 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       }
     });
 
-    // Fallback deteksi movie dari judul atau slug jika tidak terdeteksi di spesifikasi
+    // Fallback kata Movie dari judul / slug
     const combinedCheck = `${fallbackTitle} ${fallbackSlug}`.toLowerCase();
     if (combinedCheck.includes('movie')) {
       detectedType = 'Movie';
     }
+
+    // Ekstrak cover resolusi tinggi jika tersedia
+    let coverHigh = $('.thumb img, .bigcontent img').attr('src') || $('.thumb img, .bigcontent img').attr('data-src') || '';
+    if (coverHigh.startsWith('//')) coverHigh = `https:${coverHigh}`;
 
     return {
       genres: genres.length > 0 ? genres : ["Action", "Adventure", "Fantasy", "Martial Arts", "Cultivation"],
@@ -120,7 +147,8 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       released: released.startsWith('Tanggal') ? released : `Tanggal  ${released}`,
       status,
       type: detectedType,
-      totalEp
+      totalEp,
+      cover: coverHigh
     };
   } catch (err) {
     const isMovieFallback = `${fallbackTitle} ${fallbackSlug}`.toLowerCase().includes('movie');
@@ -130,7 +158,8 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
       released: "Tanggal -",
       status: "Ongoing",
       type: isMovieFallback ? "Movie" : "Donghua",
-      totalEp: 0
+      totalEp: 0,
+      cover: ""
     };
   }
 }
@@ -138,8 +167,9 @@ async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackS
 async function main() {
   const isSyncOrder = process.argv.includes('--mode=sync-order');
   const isNewOnly = process.argv.includes('--mode=new-only');
+  const isUpdateAllDetails = process.argv.includes('--mode=update-all-details');
 
-  console.log(`=== Menjalankan Scraper: ${isSyncOrder ? 'SYNC-ORDER' : (isNewOnly ? 'NEW-ONLY' : 'DEFAULT')} ===`);
+  console.log(`=== Menjalankan Scraper: ${isUpdateAllDetails ? 'UPDATE-ALL-DETAILS' : (isSyncOrder ? 'SYNC-ORDER' : (isNewOnly ? 'NEW-ONLY' : 'DEFAULT'))} ===`);
 
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) {
@@ -170,6 +200,59 @@ async function main() {
   await page.setUserAgent(getRandomUserAgent());
 
   try {
+    // ==========================================
+    // MODE KHUSUS: UPDATE SEMUA DETAIL DONGHUA
+    // ==========================================
+    if (isUpdateAllDetails) {
+      console.log(`Memulai proses update detail untuk ${masterList.length} judul...`);
+
+      for (let i = 0; i < masterList.length; i++) {
+        const item = masterList[i];
+        item.title = sanitizeTitle(item.title);
+
+        const detailUrl = item.link || `${BASE_URL}/${item.slug}/`;
+        console.log(`[${i + 1}/${masterList.length}] Scraping detail: ${item.title} (${item.slug})...`);
+
+        const detail = await fetchDonghuaDetail(page, detailUrl, item.title, item.slug);
+
+        item.type = detail.type;
+        item.status = detail.status;
+        item.released = detail.released;
+        item.genres = detail.genres;
+        if (detail.synopsis) item.synopsis = detail.synopsis;
+        if (detail.cover && !item.cover) item.cover = detail.cover;
+
+        // Update episode jika dari halaman terbaca lebih tinggi
+        if (detail.totalEp > 0) {
+          const currentNum = parseEpisodeNumber(item['latest-episode']);
+          if (detail.totalEp >= currentNum) {
+            item['latest-episode'] = String(detail.totalEp);
+            item.episode = `Ep ${detail.totalEp}`;
+          }
+        }
+
+        item.updated_at = new Date().toISOString();
+
+        // Simpan file lokal berkala
+        fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
+
+        // Checkpoint Git setiap 10 judul
+        if ((i + 1) % 10 === 0) {
+          gitPushCheckpoint(`Auto: Batch updated details (${i + 1}/${masterList.length})`);
+        }
+
+        // Delay sopan agar tidak terblokir
+        await new Promise(r => setTimeout(r, 1200));
+      }
+
+      gitPushCheckpoint(`Auto: Finished updating all donghua details`);
+      console.log('✅ Selesai memperbarui semua detail donghua!');
+      return;
+    }
+
+    // ==========================================
+    // MODE DEFAULT / SYNC-ORDER / NEW-ONLY
+    // ==========================================
     const targetUrl = `${BASE_URL}/donghua/`;
     console.log(`Membaca katalog dari: ${targetUrl}`);
 
@@ -210,25 +293,19 @@ async function main() {
     });
 
     console.log(`Ditemukan ${scrapedCards.length} judul pada halaman pertama.`);
-
     let updatedCount = 0;
 
-    // Iterasi terbalik agar kartu urutan teratas pada web tetap berada paling atas di array
     for (let i = scrapedCards.length - 1; i >= 0; i--) {
       const card = scrapedCards[i];
       const existingIdx = masterList.findIndex(d => d.slug === card.slug);
 
       if (existingIdx > -1) {
-        if (isNewOnly) {
-          continue;
-        }
+        if (isNewOnly) continue;
 
-        // Mode sync-order: update data eksisting dan pindahkan ke urutan teratas
         const [item] = masterList.splice(existingIdx, 1);
         item.title = sanitizeTitle(item.title) || card.title;
         if (card.cover && !item.cover) item.cover = card.cover;
 
-        // Validasi tipe jika belum Movie
         if (`${item.title} ${item.slug}`.toLowerCase().includes('movie')) {
           item.type = 'Movie';
         }
@@ -241,10 +318,8 @@ async function main() {
         masterList.unshift(item);
         updatedCount++;
       } else {
-        // Judul baru: ambil detail lengkap dari halaman spesifik
-        console.log(`✨ Menambahkan entri baru: ${card.title} (${card.slug})`);
+        console.log(`✨ Menambahkan judul baru: ${card.title} (${card.slug})`);
         const detail = await fetchDonghuaDetail(page, card.link, card.title, card.slug);
-
         const finalEp = detail.totalEp > 0 ? String(detail.totalEp) : card.epRaw;
 
         const newItem = {
@@ -269,32 +344,7 @@ async function main() {
 
     fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
     console.log(`✅ Berhasil memproses ${updatedCount} judul ke dalam donghua.json.`);
-
-    // Otomasi Git Commit & Push
-    try {
-      execSync('git config --local user.email "action@github.com"', { stdio: 'ignore' });
-      execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
-      execSync('git add donghua/donghua.json', { stdio: 'ignore' });
-
-      const status = execSync('git status --porcelain').toString().trim();
-      if (status) {
-        execSync(`git commit -m "Auto: Update Catalog (${isSyncOrder ? 'Sync Order' : 'New Only'}) [skip ci]"`, { stdio: 'inherit' });
-        try {
-          execSync('git pull --rebase origin main', { stdio: 'inherit' });
-        } catch (_) {
-          execSync('git pull --rebase', { stdio: 'inherit' });
-        }
-        execSync('git push origin main', { stdio: 'inherit' });
-        console.log('🚀 Perubahan katalog berhasil di-push ke GitHub!');
-      } else {
-        console.log('ℹ️ Tidak ada perubahan data baru.');
-      }
-    } catch (pushErr) {
-      console.warn(`⚠️ Git push dilewati / gagal: ${pushErr.message}`);
-      try {
-        execSync('git rebase --abort', { stdio: 'ignore' });
-      } catch (_) {}
-    }
+    gitPushCheckpoint(`Auto: Update Catalog (${isSyncOrder ? 'Sync Order' : 'New Only'})`);
 
   } catch (error) {
     console.error('Terjadi error saat scraping:', error);
