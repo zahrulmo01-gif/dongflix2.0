@@ -2,11 +2,11 @@ name: Dongflix Automation Scraper
 
 on:
   repository_dispatch:
-    types: [scrape-list, sync-order, scrape-episode, scrape-all-episodes]
+    types: [scrape-list, sync-order, scrape-episode, scrape-all-episodes, clean-json]
   workflow_dispatch:
     inputs:
       action_type:
-        description: 'Pilih aksi: list (baru saja), sync-order (urutkan), episode, atau all'
+        description: 'Pilih aksi: list, sync-order, episode, all, atau clean-json'
         required: true
         default: 'all'
       target_slug:
@@ -53,10 +53,15 @@ jobs:
         if: github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all'
         run: node admin/scrape-all-smart.js
 
+      # 5. Clean JSON Data (Fix Null & Duplikat)
+      - name: Clean JSON Data
+        if: github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json'
+        run: node admin/clean-json.js
+
       # Commit dan Push Hasil
       - name: Commit & Push Changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
           git add donghua/donghua.json donghua/episodes/*.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update database katalog/urutan [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update database katalog/urutan [skip ci]" && git pull --rebase origin main && git push origin main)
