@@ -143,7 +143,7 @@ function parseServersFromHtml(html) {
   return [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
 }
 
-// 1. Eksekusi cepat lewat fetch HTTP
+// Eksekusi cepat lewat fetch HTTP
 async function fetchEpisodeDirect(ep) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 9000);
@@ -182,7 +182,7 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
-// 2. Setup tab page yang aman dari race condition
+// Setup page Puppeteer yang terisolasi
 async function createIsolatedPage(browser) {
   const page = await browser.newPage();
   await page.setUserAgent(getRandomUserAgent());
@@ -226,6 +226,7 @@ async function scrapeEpisodeWithPage(page, ep) {
   }
 }
 
+// Push checkpoint ke GitHub dengan auto rebase
 function gitPushCheckpoint(slug, count, total) {
   try {
     console.log(`\n  💾 [Git Checkpoint] Mendorong progres ${count}/${total} episode ke GitHub...`);
@@ -233,17 +234,28 @@ function gitPushCheckpoint(slug, count, total) {
     execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
     execSync(`git add donghua/episodes/${slug}.json donghua/donghua.json`, { stdio: 'ignore' });
 
-    const status = execSync('git status --porcelain').toString();
+    const status = execSync('git status --porcelain').toString().trim();
     if (status) {
       execSync(`git commit -m "Auto: Progres ${slug} (${count}/${total} ep) [skip ci]"`, { stdio: 'ignore' });
-      execSync('git push', { stdio: 'ignore' });
+      
+      try {
+        execSync('git pull --rebase origin main', { stdio: 'ignore' });
+      } catch (_) {
+        execSync('git pull --rebase', { stdio: 'ignore' });
+      }
+
+      execSync('git push origin main', { stdio: 'inherit' });
       console.log(`  🚀 [Git Checkpoint] Berhasil push progres ${count}/${total} ke GitHub!\n`);
     }
   } catch (err) {
     console.warn(`  ⚠️ [Git Checkpoint] Gagal push checkpoint: ${err.message}`);
+    try {
+      execSync('git rebase --abort', { stdio: 'ignore' });
+    } catch (_) {}
   }
 }
 
+// Memperbarui donghua.json dan memindahkan judul yang discrape ke indeks paling atas
 function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) return;
@@ -252,15 +264,23 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
     const rawData = fs.readFileSync(masterPath, 'utf-8');
     const donghuaList = JSON.parse(rawData);
 
-    for (const item of donghuaList) {
-      if (item.slug === slug) {
-        item['latest-episode'] = String(latestEpisodeValue);
-        item.episode = `Ep ${latestEpisodeValue}`;
-        break;
-      }
+    const targetIndex = donghuaList.findIndex((item) => item.slug === slug);
+
+    if (targetIndex !== -1) {
+      const [updatedItem] = donghuaList.splice(targetIndex, 1);
+
+      updatedItem['latest-episode'] = String(latestEpisodeValue);
+      updatedItem.episode = `Ep ${latestEpisodeValue}`;
+      updatedItem.updated_at = new Date().toISOString();
+
+      donghuaList.unshift(updatedItem);
+
+      fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
+      console.log(`  🔝 Berhasil memindahkan ${slug} ke urutan teratas di donghua.json!`);
     }
-    fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-  } catch (_) {}
+  } catch (err) {
+    console.warn(`  ⚠️ Gagal memperbarui urutan donghua.json: ${err.message}`);
+  }
 }
 
 const rawSlug = process.env.TARGET_SLUG || process.argv[2];
@@ -416,10 +436,8 @@ async function run() {
       const idx = queueIndex++;
       const ep = newEpisodesToScrape[idx];
 
-      // Coba lewat HTTP cepat dulu
       let result = await fetchEpisodeDirect(ep);
 
-      // Fallback: gunakan dedicated page milik worker ini sendiri jika butuh Puppeteer
       if (!result || !result.servers || result.servers.length === 0) {
         if (!workerPage) {
           const b = await launchBrowser();
