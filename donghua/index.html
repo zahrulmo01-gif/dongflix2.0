@@ -4,38 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Katalog Donghua & Movie - Dongflix.my.id</title>
+  <title>Katalog Donghua - Dongflix.my.id</title>
 
   <style>
     :root {
       --bg-main: #000000;
       --bg-card: #0a0a0a;
-      --bg-skeleton: #121212;
-      --bg-search-input: #121212;
+      --bg-skeleton: #141416;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
       --color-movie: #f59e0b;
-      --color-star: #f59e0b;
       --text-main: #ffffff;
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
-      --border-color: rgba(255, 255, 255, 0.12);
+      --border-color: rgba(255, 255, 255, 0.1);
+      /* iOS Glass Tokens */
+      --glass-bg: rgba(20, 20, 24, 0.58);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --glass-border-top: rgba(255, 255, 255, 0.28);
+      --glass-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      --glass-blur: blur(16px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
-
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding-top: 86px;
-      padding-bottom: 50px;
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      touch-action: manipulation; 
+    }
+    
+    body { 
+      background-color: var(--bg-main); 
+      color: var(--text-main); 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      padding-top: 76px;
+      padding-bottom: 50px; 
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-    /* FLOATING HEADER PILL */
+    /* FLOATING GLASS PILL HEADER */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -49,6 +60,8 @@
       margin: 0 auto;
       padding: 0 16px;
       pointer-events: none;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .header-bar > * { pointer-events: auto; }
@@ -65,12 +78,12 @@
       top: -3px;
       left: 50%;
       transform: translateX(-50%);
-      width: 42px;
+      width: 44px;
       height: 3.5px;
       background: var(--color-accent);
       border-radius: 9999px;
-      box-shadow: 0 0 12px var(--color-accent), 0 0 20px var(--color-accent);
-      opacity: 0.95;
+      box-shadow: 0 0 10px var(--color-accent), 0 0 18px var(--color-accent);
+      opacity: 0.9;
       pointer-events: none;
     }
 
@@ -78,39 +91,40 @@
       position: relative;
       display: flex;
       align-items: center;
-      background: rgba(15, 15, 18, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px;
       padding: 6px 18px;
       height: 46px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
-      transition: all 0.25s ease;
+      box-shadow: var(--glass-shadow);
       cursor: pointer;
+      transform: translateZ(0);
     }
 
-    .brand-title-capsule {
-      font-size: 18.5px;
-      font-weight: 900;
-      color: #ffffff;
-      letter-spacing: -0.4px;
-      text-decoration: none;
-      display: inline-flex;
+    .brand-title-capsule { 
+      font-size: 18.5px; 
+      font-weight: 900; 
+      color: #ffffff; 
+      letter-spacing: -0.4px; 
+      text-decoration: none; 
+      display: inline-flex; 
       align-items: center;
       gap: 7px;
     }
 
-    .brand-title-capsule .brand-accent {
-      color: var(--color-accent);
-      text-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+    .brand-title-capsule .brand-accent { 
+      color: var(--color-accent); 
+      text-shadow: 0 0 14px rgba(56, 189, 248, 0.6); 
     }
 
     .tld-badge {
       display: inline-flex;
       align-items: center;
-      background: rgba(56, 189, 248, 0.16);
-      color: var(--color-accent);
+      background: rgba(56, 189, 248, 0.2);
+      color: #e0f2fe;
       border: 1px solid rgba(56, 189, 248, 0.35);
       font-size: 11px;
       font-weight: 800;
@@ -121,305 +135,283 @@
       text-transform: lowercase;
     }
 
-    .header-actions-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     .action-btn {
       width: 46px;
       height: 46px;
       border-radius: 50%;
-      background: rgba(15, 15, 18, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s ease;
-      text-decoration: none;
+      box-shadow: var(--glass-shadow);
       flex-shrink: 0;
+      transform: translateZ(0);
+      text-decoration: none;
     }
 
     .action-btn:hover {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: rgba(56, 189, 248, 0.5);
+      background: rgba(26, 26, 32, 0.75);
+      border-color: rgba(56, 189, 248, 0.45);
       color: var(--color-accent);
-      transform: translateY(-1px);
     }
 
-    .action-btn svg {
-      width: 19px;
-      height: 19px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .action-btn svg { 
+      width: 19px; 
+      height: 19px; 
+      stroke: currentColor; 
+      fill: none; 
+      stroke-width: 2.2; 
+      stroke-linecap: round; 
+      stroke-linejoin: round; 
     }
 
-    /* FILTER & SEARCH BAR TOP */
-    .catalog-controls {
+    /* SEARCH & FILTER CONTROLS */
+    .catalog-top-panel {
+      margin-top: 12px;
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      margin-bottom: 24px;
     }
 
-    .filter-pills {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .filter-pills::-webkit-scrollbar { display: none; }
-
-    .filter-pill {
-      background: rgba(18, 18, 20, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-muted);
-      border-radius: 9999px;
-      padding: 7px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    .filter-pill.active {
-      color: #fff;
-      background: var(--color-primary);
-      border-color: var(--color-accent);
-      box-shadow: 0 0 14px rgba(2, 132, 199, 0.45);
-    }
-
-    .filter-pill.movie-pill.active {
-      background: var(--color-movie);
-      border-color: #fde047;
-      color: #000;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
-    }
-
-    .search-input-box {
+    .search-box-wrap {
       position: relative;
-      display: flex;
-      align-items: center;
       width: 100%;
-      height: 46px;
+      height: 48px;
     }
 
-    .search-input-box svg {
+    .search-box-wrap svg {
       position: absolute;
-      left: 16px;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
       width: 18px;
       height: 18px;
       stroke: var(--text-muted);
       fill: none;
       stroke-width: 2.2;
+      pointer-events: none;
     }
 
-    .search-input-field {
+    .search-field {
       width: 100%;
       height: 100%;
-      background: rgba(15, 15, 18, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px;
-      padding: 0 18px 0 44px;
+      padding: 0 20px 0 48px;
       color: var(--text-main);
       font-size: 14px;
+      font-family: inherit;
       outline: none;
-      transition: all 0.2s ease;
+      box-shadow: var(--glass-shadow);
+      transition: border-color 0.2s;
     }
 
-    .search-input-field:focus {
+    .search-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-field:focus {
       border-color: var(--color-accent);
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
     }
 
-    .catalog-heading-row {
+    .filter-pills-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .filter-pills-row::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: var(--text-sub);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      box-shadow: var(--glass-shadow);
+      white-space: nowrap;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
 
-    .catalog-title {
-      font-size: 20px;
-      font-weight: 800;
+    .filter-pill.active {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: rgba(56, 189, 248, 0.45);
       color: #ffffff;
-      display: flex;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .active-category-indicator {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-    }
-
-    .catalog-count-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--color-accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 12px;
+      border-radius: 9999px;
       font-size: 12px;
-      color: var(--text-muted);
       font-weight: 700;
+      width: fit-content;
     }
 
-    /* GRID & CARDS IDENTIK DENGAN BERANDA */
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .card-grid {
+    .active-category-indicator button {
+      background: none;
+      border: none;
+      color: inherit;
       cursor: pointer;
-      text-decoration: none;
+      font-size: 14px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .catalog-count-info {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 18px;
+      padding-left: 2px;
+    }
+
+    /* CARD GRID TANPA BORDER POSTER */
+    .grid-catalog { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      column-gap: 10px; 
+      row-gap: 22px; 
+    }
+
+    .card-grid { 
+      text-decoration: none !important; 
+      border: none !important; 
       display: block;
     }
 
-    .card-grid-img-wrapper {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      border-radius: 14px;
-      overflow: hidden;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
+    .card-grid-img-wrapper { 
+      position: relative; 
+      width: 100%; 
+      height: 180px; 
+      border-radius: 14px; 
+      overflow: hidden; 
+      background: var(--bg-card); 
+      border: none !important;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
       transform: translateZ(0);
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
-    .card-grid img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
+    .card-grid-img-wrapper img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
     }
-
-    .badge-ep {
-      position: absolute;
-      top: 8px;
-      left: 8px;
+    
+    .badge-ep { 
+      position: absolute; 
+      top: 8px; 
+      left: 8px; 
       background: rgba(2, 132, 199, 0.9);
-      color: var(--text-main);
-      font-size: 9px;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 6px;
-      z-index: 2;
-      text-transform: uppercase;
-    }
-
-    .badge-ep.movie {
-      background: rgba(245, 158, 11, 0.95);
-      color: #000;
+      color: var(--text-main); 
+      font-size: 9px; 
+      font-weight: 800; 
+      padding: 3.5px 9px; 
+      border-radius: 9999px; 
+      text-transform: uppercase; 
     }
 
     .card-bottom-info {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
+      position: absolute; 
+      bottom: 8px; 
+      left: 8px; 
       right: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 2;
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      z-index: 2; 
       pointer-events: none;
-      gap: 4px;
     }
 
-    .badge-bottom {
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--color-accent);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2.5px 6px;
-      border-radius: 6px;
-      white-space: nowrap;
+    .badge-bottom { 
+      background: var(--glass-bg); 
+      backdrop-filter: var(--glass-blur); 
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); 
+      border-top: 1px solid var(--glass-border-top); 
+      color: #ffffff; 
+      font-size: 9.5px; 
+      font-weight: 800; 
+      padding: 3px 9px; 
+      border-radius: 9999px; 
+      white-space: nowrap; 
     }
 
-    .badge-bottom.movie {
-      color: #fbbf24;
-      border-color: rgba(245, 158, 11, 0.35);
+    .card-title { 
+      margin-top: 8px; 
+      font-size: 13.5px; 
+      font-weight: 700; 
+      color: #ffffff; 
+      line-height: 1.35;
+      display: -webkit-box; 
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical; 
+      overflow: hidden; 
     }
 
-    .card-title {
-      margin-top: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-sub);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    /* SKELETON PLACEHOLDER */
+    @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
+    .card-skeleton { width: 100%; }
+    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
+    .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* PAGINATION / LOAD MORE */
-    .load-more-btn {
-      display: block;
-      width: 100%;
-      max-width: 600px;
-      margin: 32px auto 0;
-      padding: 14px;
-      background: var(--bg-card);
-      color: var(--color-accent);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
+    /* FLOATING ON-TOP */
+    .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
+    .floating-circle-btn {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); color: var(--text-main); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
     }
-
-    .load-more-btn:hover {
-      background: rgba(56, 189, 248, 0.12);
-      border-color: var(--color-accent);
-    }
+    .floating-circle-btn.show { opacity: 1; visibility: visible; }
+    .floating-circle-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
     @media (min-width: 768px) {
-      .catalog-controls {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .search-input-box { max-width: 380px; }
-      .grid-3 {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 16px;
-      }
-      .card-grid-img-wrapper { height: 235px; }
-      .card-grid:hover .card-grid-img-wrapper {
-        transform: translateY(-5px);
-        border-color: rgba(56, 189, 248, 0.45);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-      }
-      .card-grid:hover img { transform: scale(1.06); }
-      .card-title { font-size: 13px; margin-top: 10px; }
+      .grid-catalog { grid-template-columns: repeat(6, 1fr); column-gap: 16px; row-gap: 28px; }
+      .card-grid-img-wrapper, .card-skeleton-img { height: 235px; }
+      .card-title { font-size: 14.5px; margin-top: 10px; }
     }
 
-    footer {
-      margin-top: 60px;
-      padding: 26px 16px;
-      border-top: 1px solid var(--border-color);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
+    footer { margin-top: 60px; padding: 26px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
     footer a { color: var(--color-accent); text-decoration: none; }
   </style>
 </head>
 <body>
 
-  <!-- FLOATING GLASS PILL HEADER -->
+  <!-- FLOATING GLASS PILL HEADER (HANYA LOGO PILL DAN HOME) -->
   <header class="header-bar">
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
-      <div class="nav-capsule" onclick="window.location.href='/'">
+      <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <a href="/" class="brand-title-capsule">
           <span>Dong<span class="brand-accent">flix</span></span>
           <span class="tld-badge">.my.id</span>
@@ -427,58 +419,69 @@
       </div>
     </div>
 
-    <div class="header-actions-group">
-      <a href="/" class="action-btn" title="Kembali ke Beranda">
-        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </a>
-    </div>
+    <a href="/" class="action-btn" aria-label="Beranda">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </a>
   </header>
 
-  <main class="container">
-    <!-- FILTER TABS & SEARCH INPUT -->
-    <div class="catalog-controls">
-      <div class="filter-pills">
-        <button class="filter-pill active" id="tabAll" onclick="setFilter('all')">Semua Koleksi</button>
-        <button class="filter-pill" id="tabSeries" onclick="setFilter('series')">Series Donghua</button>
-        <button class="filter-pill movie-pill" id="tabMovie" onclick="setFilter('movie')">Movie</button>
-      </div>
-
-      <div class="search-input-box">
+  <div class="container">
+    <div class="catalog-top-panel">
+      <!-- PENCARIAN KATALOG DENGAN SVG DI KIRI -->
+      <div class="search-box-wrap">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="catalogSearchInput" class="search-input-field" placeholder="Cari dalam katalog..." oninput="handleSearch(this.value)">
+        <input type="text" class="search-field" id="catalogSearchInput" placeholder="Cari judul di katalog..." onkeyup="handleFilterChange()">
       </div>
+
+      <!-- FILTER KATEGORI TYPE -->
+      <div class="filter-pills-row">
+        <button class="filter-pill active" id="pillAll" onclick="setCatalogType('all')">Semua</button>
+        <button class="filter-pill" id="pillSeries" onclick="setCatalogType('series')">Series</button>
+        <button class="filter-pill" id="pillOngoing" onclick="setCatalogType('ongoing')">Ongoing</button>
+        <button class="filter-pill" id="pillCompleted" onclick="setCatalogType('completed')">Tamat</button>
+        <button class="filter-pill" id="pillMovie" onclick="setCatalogType('movie')">Movie</button>
+      </div>
+
+      <!-- INDIKATOR KATEGORI/GENRE AKTIF -->
+      <div id="categoryIndicatorWrap" style="display: none;"></div>
     </div>
 
-    <!-- HEADER TITLE & HITUNGAN -->
-    <div class="catalog-heading-row">
-      <h1 class="catalog-title" id="sectionTitle">
-        Semua Donghua
-      </h1>
-      <span class="catalog-count-badge" id="countBadge">Memuat...</span>
-    </div>
+    <div class="catalog-count-info" id="catalogCountInfo">Menampilkan koleksi donghua...</div>
 
     <!-- GRID KATALOG -->
-    <div class="grid-3" id="catalogGrid">
-      <div class="card-grid"><div class="card-grid-img-wrapper" style="background:#111;"></div></div>
-      <div class="card-grid"><div class="card-grid-img-wrapper" style="background:#111;"></div></div>
-      <div class="card-grid"><div class="card-grid-img-wrapper" style="background:#111;"></div></div>
+    <div class="grid-catalog" id="catalogGrid">
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
     </div>
+  </div>
 
-    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">Muat Lebih Banyak</button>
-  </main>
+  <aside class="bottom-floating-controls">
+    <button class="floating-circle-btn" id="backToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Kembali ke atas">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+    </button>
+  </aside>
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Ditenagai oleh Real-time GitHub Proxy.</p>
+      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Seluruh hak cipta dilindungi.</p>
     </div>
   </footer>
 
   <script>
-    let masterData = [];
-    let filteredData = [];
-    let currentFilter = 'all'; // 'all', 'series', 'movie'
-    let currentPage = 1;
-    const pageSize = 24;
+    let masterList = [];
+    let currentTypeFilter = 'all';
+    let currentCategoryFilter = '';
+
+    function sanitizeTitle(rawTitle) {
+      if (!rawTitle) return 'Donghua';
+      const str = rawTitle.trim();
+      const half = Math.floor(str.length / 2);
+      if (str.length > 4 && str.slice(0, half) === str.slice(half)) return str.slice(0, half).trim();
+      return str;
+    }
 
     function isMovieItem(item) {
       if (!item) return false;
@@ -487,14 +490,9 @@
       return typeStr === 'movie' || titleStr.includes('movie');
     }
 
-    function sanitizeTitle(rawTitle) {
-      if (!rawTitle) return 'Donghua';
-      const str = rawTitle.trim();
-      const half = Math.floor(str.length / 2);
-      if (str.length > 4 && str.slice(0, half) === str.slice(half)) {
-        return str.slice(0, half).trim();
-      }
-      return str;
+    function parseStatusText(item) {
+      const rawStatus = (item.status || item.type || '').toString().toLowerCase();
+      return (rawStatus.includes('completed') || rawStatus.includes('tamat') || rawStatus.includes('end')) ? 'COMPLETED' : 'ONGOING';
     }
 
     function parseEpisodeText(item) {
@@ -503,137 +501,160 @@
       return item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || 'Ep 1');
     }
 
-    function parseStatusText(item) {
-      const rawStatus = (item.status || item.type || '').toString().toLowerCase();
-      if (rawStatus.includes('completed') || rawStatus.includes('tamat') || rawStatus.includes('end')) {
-        return 'COMPLETED';
-      }
-      return 'ONGOING';
+    function getImageUrl(item) {
+      return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
     }
 
-    function createCard(item) {
+    window.addEventListener('scroll', () => {
+      const onTopBtn = document.getElementById('backToTopBtn');
+      if (window.scrollY > 300) onTopBtn.classList.add('show');
+      else onTopBtn.classList.remove('show');
+    }, { passive: true });
+
+    function setCatalogType(type) {
+      currentTypeFilter = type;
+      document.getElementById('pillAll').classList.toggle('active', type === 'all');
+      document.getElementById('pillSeries').classList.toggle('active', type === 'series');
+      document.getElementById('pillOngoing').classList.toggle('active', type === 'ongoing');
+      document.getElementById('pillCompleted').classList.toggle('active', type === 'completed');
+      document.getElementById('pillMovie').classList.toggle('active', type === 'movie');
+      updateUrlState();
+      handleFilterChange();
+    }
+
+    function removeCategoryFilter() {
+      currentCategoryFilter = '';
+      updateUrlState();
+      updateCategoryBadge();
+      handleFilterChange();
+    }
+
+    function updateCategoryBadge() {
+      const wrap = document.getElementById('categoryIndicatorWrap');
+      if (!wrap) return;
+      if (currentCategoryFilter) {
+        wrap.style.display = 'block';
+        wrap.innerHTML = `
+          <div class="active-category-indicator">
+            <span>Kategori: ${currentCategoryFilter}</span>
+            <button onclick="removeCategoryFilter()" aria-label="Hapus filter kategori">&times;</button>
+          </div>
+        `;
+      } else {
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+      }
+    }
+
+    function updateUrlState() {
+      const params = new URLSearchParams();
+      if (currentTypeFilter && currentTypeFilter !== 'all') {
+        params.set('type', currentTypeFilter);
+      }
+      if (currentCategoryFilter) {
+        params.set('category', currentCategoryFilter);
+      }
+      const newQuery = params.toString();
+      const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+      window.history.replaceState({}, '', newUrl);
+    }
+
+    function createGridCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
       card.href = `/donghua/${encodeURIComponent(item.slug)}`;
-
       const isMovie = isMovieItem(item);
-      const episodeText = parseEpisodeText(item);
-      const statusText = parseStatusText(item);
-      const titleText = sanitizeTitle(item.title);
-      const posterUrl = item.cover || item.thumbnail || 'https://via.placeholder.com/300x400?text=No+Cover';
 
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
-          <img src="${posterUrl}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'" />
-          <span class="badge-ep ${isMovie ? 'movie' : ''}">${isMovie ? 'MOVIE' : statusText}</span>
+          <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
+          <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           <div class="card-bottom-info">
-            <span class="badge-bottom ${isMovie ? 'movie' : ''}">${isMovie ? statusText : episodeText}</span>
+            <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
           </div>
         </div>
-        <div class="card-title">${titleText}</div>
+        <div class="card-title">${sanitizeTitle(item.title)}</div>
       `;
       return card;
     }
 
-    function applyFilter() {
-      const searchVal = document.getElementById('catalogSearchInput').value.trim().toLowerCase();
-
-      filteredData = masterData.filter(item => {
-        const matchesFilter =
-          currentFilter === 'all' ? true :
-          currentFilter === 'movie' ? isMovieItem(item) :
-          !isMovieItem(item);
-
-        const titleText = (item.title || '').toLowerCase();
-        const slugText = (item.slug || '').toLowerCase();
-        const matchesSearch = !searchVal || titleText.includes(searchVal) || slugText.includes(searchVal);
-
-        return matchesFilter && matchesSearch;
-      });
-
-      // Update Judul & Hitungan
-      const sectionTitle = document.getElementById('sectionTitle');
-      if (currentFilter === 'movie') sectionTitle.innerText = 'Katalog Movie';
-      else if (currentFilter === 'series') sectionTitle.innerText = 'Katalog Series Donghua';
-      else sectionTitle.innerText = 'Semua Koleksi Donghua';
-
-      document.getElementById('countBadge').innerText = `${filteredData.length} Judul`;
-
-      currentPage = 1;
-      renderCurrentPage();
-    }
-
-    function renderCurrentPage() {
+    function handleFilterChange() {
+      const query = (document.getElementById('catalogSearchInput').value || '').trim().toLowerCase();
       const grid = document.getElementById('catalogGrid');
-      const loadBtn = document.getElementById('loadMoreBtn');
+      const countInfo = document.getElementById('catalogCountInfo');
 
-      if (currentPage === 1) grid.innerHTML = '';
+      const filtered = masterList.filter(item => {
+        // Filter Pencarian Teks
+        const titleStr = (item.title || item.name || '').toLowerCase();
+        const slugStr = (item.slug || '').toLowerCase();
+        const matchesQuery = titleStr.includes(query) || slugStr.includes(query);
+        if (!matchesQuery) return false;
 
-      const start = (currentPage - 1) * pageSize;
-      const end = start + pageSize;
-      const slice = filteredData.slice(start, end);
+        // Filter Tipe
+        const isMovie = isMovieItem(item);
+        const status = parseStatusText(item);
+        if (currentTypeFilter === 'movie' && !isMovie) return false;
+        if (currentTypeFilter === 'series' && isMovie) return false;
+        if (currentTypeFilter === 'ongoing' && (status !== 'ONGOING' || isMovie)) return false;
+        if (currentTypeFilter === 'completed' && (status !== 'COMPLETED' || isMovie)) return false;
 
-      if (slice.length > 0) {
-        slice.forEach(item => grid.appendChild(createCard(item)));
-        currentPage++;
-      }
-
-      if (filteredData.length === 0) {
-        grid.innerHTML = '<p style="color:var(--text-muted);font-size:13px;grid-column:1/-1;text-align:center;padding:40px 0;">Tidak ada judul yang cocok.</p>';
-      }
-
-      loadBtn.style.display = (end >= filteredData.length) ? 'none' : 'block';
-    }
-
-    function loadMore() {
-      renderCurrentPage();
-    }
-
-    function setFilter(type, updateHistory = true) {
-      currentFilter = type;
-
-      document.getElementById('tabAll').classList.toggle('active', type === 'all');
-      document.getElementById('tabSeries').classList.toggle('active', type === 'series');
-      document.getElementById('tabMovie').classList.toggle('active', type === 'movie');
-
-      if (updateHistory) {
-        const newUrl = type === 'movie' ? '/donghua/?type=movie' :
-                       type === 'series' ? '/donghua/?type=series' : '/donghua/';
-        window.history.pushState({}, '', newUrl);
-      }
-
-      applyFilter();
-    }
-
-    function handleSearch() {
-      applyFilter();
-    }
-
-    async function initCatalog() {
-      try {
-        const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Gagal memuat katalog');
-        masterData = await res.json();
-
-        // Cek Query Param (?type=movie atau ?type=series)
-        const params = new URLSearchParams(window.location.search);
-        const typeParam = (params.get('type') || '').toLowerCase();
-
-        if (typeParam === 'movie') {
-          setFilter('movie', false);
-        } else if (typeParam === 'series') {
-          setFilter('series', false);
-        } else {
-          setFilter('all', false);
+        // Filter Kategori / Genre (Case Insensitive)
+        if (currentCategoryFilter) {
+          const catLower = currentCategoryFilter.toLowerCase();
+          const genres = Array.isArray(item.genres) 
+            ? item.genres 
+            : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
+          
+          const hasCategory = genres.some(g => g && g.toLowerCase() === catLower);
+          if (!hasCategory) return false;
         }
 
-      } catch (err) {
-        document.getElementById('catalogGrid').innerHTML = '<p style="color:#ef4444;font-size:13px;grid-column:1/-1;text-align:center;">Gagal memuat katalog donghua.</p>';
-        document.getElementById('countBadge').innerText = '0 Judul';
+        return true;
+      });
+
+      grid.innerHTML = '';
+      countInfo.innerText = `Menampilkan ${filtered.length} judul`;
+
+      if (filtered.length > 0) {
+        filtered.forEach(item => grid.appendChild(createGridCard(item)));
+      } else {
+        grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align: center; padding: 40px 0;">Tidak ditemukan donghua yang sesuai.</p>';
       }
     }
 
-    window.onload = initCatalog;
+    function initParams() {
+      const params = new URLSearchParams(window.location.search);
+      
+      const type = params.get('type');
+      if (type && ['all', 'series', 'ongoing', 'completed', 'movie'].includes(type.toLowerCase())) {
+        currentTypeFilter = type.toLowerCase();
+        document.getElementById('pillAll').classList.toggle('active', currentTypeFilter === 'all');
+        document.getElementById('pillSeries').classList.toggle('active', currentTypeFilter === 'series');
+        document.getElementById('pillOngoing').classList.toggle('active', currentTypeFilter === 'ongoing');
+        document.getElementById('pillCompleted').classList.toggle('active', currentTypeFilter === 'completed');
+        document.getElementById('pillMovie').classList.toggle('active', currentTypeFilter === 'movie');
+      }
+
+      const category = params.get('category');
+      if (category) {
+        currentCategoryFilter = category.trim();
+        updateCategoryBadge();
+      }
+    }
+
+    async function loadCatalogData() {
+      try {
+        const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error();
+        masterList = await res.json();
+        initParams();
+        handleFilterChange();
+      } catch (_) {
+        document.getElementById('catalogGrid').innerHTML = '<p style="color: #ef4444; font-size: 13px; grid-column: 1 / -1; text-align: center; padding: 40px 0;">Gagal memuat katalog donghua.</p>';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadCatalogData);
   </script>
 </body>
 </html>
