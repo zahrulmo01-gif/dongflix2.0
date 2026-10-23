@@ -31,7 +31,7 @@ function resolveUrl(url) {
 }
 
 function parseEpisodeNumber(epString) {
-  if (!epString) return 0;
+  if (!epString || epString === 'null') return 0;
   const match = String(epString).match(/(\d+(\.\d+)?)/);
   return match ? parseFloat(match[1]) : 0;
 }
@@ -143,7 +143,7 @@ function parseServersFromHtml(html) {
   return [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
 }
 
-// Eksekusi cepat lewat fetch HTTP
+// 1. Eksekusi cepat lewat fetch HTTP
 async function fetchEpisodeDirect(ep) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 9000);
@@ -182,7 +182,7 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
-// Setup page Puppeteer yang terisolasi
+// 2. Setup tab page yang aman dari race condition
 async function createIsolatedPage(browser) {
   const page = await browser.newPage();
   await page.setUserAgent(getRandomUserAgent());
@@ -255,7 +255,7 @@ function gitPushCheckpoint(slug, count, total) {
   }
 }
 
-// Memperbarui donghua.json dan memindahkan judul yang discrape ke indeks paling atas
+// Memperbarui donghua.json: cegah null, fallback ke episode lama, dan unshift ke urutan teratas
 function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) return;
@@ -269,14 +269,44 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
     if (targetIndex !== -1) {
       const [updatedItem] = donghuaList.splice(targetIndex, 1);
 
-      updatedItem['latest-episode'] = String(latestEpisodeValue);
-      updatedItem.episode = `Ep ${latestEpisodeValue}`;
+      // 1. Semak nilai dari parameter fungsi
+      let safeEp = parseEpisodeNumber(latestEpisodeValue);
+
+      // 2. Jika 0 / null, periksa fail episode JSON yang baharu disimpan
+      if (!safeEp) {
+        const epFile = path.resolve(`donghua/episodes/${slug}.json`);
+        if (fs.existsSync(epFile)) {
+          try {
+            const eps = JSON.parse(fs.readFileSync(epFile, 'utf-8'));
+            if (Array.isArray(eps) && eps.length > 0) {
+              const nums = eps.map((e) => parseEpisodeNumber(e.episode)).filter((n) => n > 0);
+              if (nums.length > 0) safeEp = Math.max(...nums);
+            }
+          } catch (_) {}
+        }
+      }
+
+      // 3. Jika masih null, ambil daripada latest-episode lama atau episode lama
+      if (!safeEp) {
+        if (updatedItem['latest-episode'] && updatedItem['latest-episode'] !== 'null') {
+          safeEp = parseEpisodeNumber(updatedItem['latest-episode']);
+        } else if (updatedItem.episode && updatedItem.episode !== 'null') {
+          safeEp = parseEpisodeNumber(updatedItem.episode);
+        }
+      }
+
+      // 4. Fallback mutlak jika tiada rekod angka sama sekali
+      const finalEpString = (safeEp && safeEp > 0) ? String(safeEp) : '1';
+
+      updatedItem['latest-episode'] = finalEpString;
+      updatedItem.episode = `Ep ${finalEpString}`;
       updatedItem.updated_at = new Date().toISOString();
 
+      // Pindahkan ke kedudukan paling atas
       donghuaList.unshift(updatedItem);
 
       fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
-      console.log(`  🔝 Berhasil memindahkan ${slug} ke urutan teratas di donghua.json!`);
+      console.log(`  🔝 Berhasil memindahkan ${slug} (Ep ${finalEpString}) ke urutan teratas di donghua.json!`);
     }
   } catch (err) {
     console.warn(`  ⚠️ Gagal memperbarui urutan donghua.json: ${err.message}`);
@@ -412,6 +442,7 @@ async function run() {
 
   if (newEpisodesToScrape.length === 0) {
     console.log('Semua episode sudah tersimpan lengkap. Tidak ada antrean baru.');
+    updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
     if (browser) await browser.close().catch(() => {});
     return;
   }
