@@ -78,7 +78,7 @@
             Manajemen Katalog Donghua
           </h2>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Pilih tindakan pengelolaan master list: hanya memasukkan judul yang belum terdaftar atau menyelaraskan ulang urutan list sesuai web Anichin.
+            Pilih tindakan: hanya menambahkan judul baru yang belum ada, atau menyelaraskan urutan list katalog agar mengikuti urutan Anichin.
           </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-2.5 pt-2">
@@ -107,7 +107,7 @@
             Smart Scraper Semua Episode
           </h2>
           <p class="text-xs text-slate-400 leading-relaxed">
-            Membandingkan seluruh judul dengan rilisan web Anichin secara otomatis, melakukan delta-scrape episode baru, auto-bump posisi, dan commit langsung per-judul.
+            Mengecek seluruh judul di database secara otomatis, melakukan delta-scrape episode baru, auto-bump posisi, dan push langsung per-judul.
           </p>
         </div>
         <div class="pt-2">
@@ -122,22 +122,38 @@
       </section>
     </div>
 
-    <!-- Scrape Single Donghua By Slug -->
+    <!-- Scrape Episode Spesifik dengan List Donghua -->
     <section class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-      <div>
-        <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-indigo-400">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-          </svg>
-          Scrape Episode Spesifik (Per Slug)
-        </h2>
-        <p class="text-xs text-slate-400 mt-1">Masukkan slug donghua untuk hanya memproses atau melengkapi episode dari judul tersebut.</p>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-indigo-400">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+            </svg>
+            Scrape Episode Donghua Tertentu
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Cari judul donghua di bawah lalu klik tombol scrape pada judul yang diinginkan.</p>
+        </div>
+        <div class="w-full sm:w-64">
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="filterDonghuaList()" 
+            placeholder="Cari judul / slug..." 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition"
+          >
+        </div>
       </div>
-      <div class="flex flex-col sm:flex-row gap-3">
-        <input type="text" id="targetSlugInput" placeholder="Contoh: swallowed-star atau perfect-world" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition">
-        <button onclick="triggerSingleEpisode()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shrink-0">
-          Scrape Slug Ini
-        </button>
+
+      <!-- List Kontainer Donghua -->
+      <div class="border border-slate-800/80 rounded-xl overflow-hidden bg-slate-950">
+        <div class="max-h-72 overflow-y-auto divide-y divide-slate-800/60" id="donghuaListContainer">
+          <div class="p-4 text-center text-xs text-slate-500">Memuat daftar donghua...</div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+        <span id="donghuaCount">0 Donghua terdaftar</span>
+        <button onclick="loadDonghuaList()" class="text-indigo-400 hover:text-indigo-300 transition">Muat Ulang List</button>
       </div>
     </section>
 
@@ -154,7 +170,7 @@
           <button onclick="fetchLatestLogs()" class="text-xs text-indigo-400 hover:text-indigo-300 transition">Cek Status Runner</button>
         </div>
       </div>
-      <div id="terminal" class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 font-mono text-xs text-slate-300 h-72 overflow-y-auto space-y-1 select-text">
+      <div id="terminal" class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-1 select-text">
         <div class="text-slate-500">[Info] Sistem siap. Masukkan token & repository untuk memicu workflow.</div>
       </div>
     </section>
@@ -162,6 +178,7 @@
 
   <script>
     const DEFAULT_REPO = 'zahrulmo01-gif/dongflix2.0';
+    let allDonghuaData = [];
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedToken = localStorage.getItem('DF_GH_TOKEN') || '';
@@ -170,8 +187,10 @@
       document.getElementById('ghRepo').value = savedRepo;
 
       if (savedToken) {
-        logTerminal(`[Sistem] Token konfigurasi dimuat untuk repositori: ${savedRepo}`);
+        logTerminal(`[Sistem] Konfigurasi termuat untuk: ${savedRepo}`);
       }
+
+      loadDonghuaList();
     });
 
     function saveCredentials() {
@@ -209,6 +228,62 @@
       logTerminal('[Terminal dibersihkan]');
     }
 
+    // Ambil data donghua.json langsung untuk dirender ke list
+    async function loadDonghuaList() {
+      const container = document.getElementById('donghuaListContainer');
+      const countLabel = document.getElementById('donghuaCount');
+      
+      try {
+        const res = await fetch('/donghua/donghua.json?t=' + Date.now());
+        if (!res.ok) throw new Error('Gagal memuat donghua.json');
+        
+        allDonghuaData = await res.json();
+        countLabel.textContent = `${allDonghuaData.length} Donghua terdaftar`;
+        renderDonghuaItems(allDonghuaData);
+      } catch (err) {
+        container.innerHTML = `<div class="p-4 text-center text-xs text-rose-400">Gagal mengambil katalog: ${err.message}</div>`;
+      }
+    }
+
+    function renderDonghuaItems(items) {
+      const container = document.getElementById('donghuaListContainer');
+      if (items.length === 0) {
+        container.innerHTML = `<div class="p-4 text-center text-xs text-slate-500">Donghua tidak ditemukan.</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map((item, index) => `
+        <div class="p-3 hover:bg-slate-900/50 flex items-center justify-between gap-3 transition">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-xs font-mono text-slate-600 w-6 text-right">${index + 1}</span>
+            <div class="min-w-0">
+              <div class="text-xs font-semibold text-slate-200 truncate">${item.title}</div>
+              <div class="text-[11px] font-mono text-slate-500 flex items-center gap-2">
+                <span>${item.slug}</span>
+                <span>•</span>
+                <span class="text-indigo-400">${item.episode || item['latest-episode'] || 'Ep -'}</span>
+              </div>
+            </div>
+          </div>
+          <button 
+            onclick="triggerSingleEpisode('${item.slug}', '${item.title.replace(/'/g, "\\'")}')" 
+            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition shrink-0 flex items-center gap-1.5">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+            Scrape
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function filterDonghuaList() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = allDonghuaData.filter(item => 
+        (item.title && item.title.toLowerCase().includes(query)) ||
+        (item.slug && item.slug.toLowerCase().includes(query))
+      );
+      renderDonghuaItems(filtered);
+    }
+
     async function triggerWorkflow(eventType, clientPayload = {}) {
       const token = document.getElementById('ghToken').value.trim();
       const repo = document.getElementById('ghRepo').value.trim() || DEFAULT_REPO;
@@ -218,7 +293,7 @@
         return;
       }
 
-      logTerminal(`Mengirim sinyal trigger: [${eventType}] ke GitHub Actions...`);
+      logTerminal(`Mengirim trigger [${eventType}] ke GitHub Actions...`);
 
       try {
         const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
@@ -235,7 +310,7 @@
         });
 
         if (res.status === 204) {
-          logTerminal(`Workflow [${eventType}] berhasil dipicu di latar belakang!`, 'success');
+          logTerminal(`Workflow [${eventType}] berhasil dimulai di server GitHub!`, 'success');
           setTimeout(fetchLatestLogs, 4000);
         } else {
           const errData = await res.json().catch(() => ({}));
@@ -246,12 +321,9 @@
       }
     }
 
-    function triggerSingleEpisode() {
-      const slug = document.getElementById('targetSlugInput').value.trim();
-      if (!slug) {
-        logTerminal('Masukkan slug donghua terlebih dahulu!', 'warn');
-        return;
-      }
+    function triggerSingleEpisode(slug, title) {
+      if (!slug) return;
+      logTerminal(`Mempersiapkan scrape episode untuk: ${title || slug}`);
       triggerWorkflow('scrape-episode', { target_slug: slug });
     }
 
