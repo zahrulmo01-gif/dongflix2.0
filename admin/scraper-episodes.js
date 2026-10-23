@@ -7,16 +7,37 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-const CONCURRENCY = 3;
 
-// URL Cloudflare Worker anti-403 Dailymotion milikmu
+// Menjalankan hingga 5 tab paralel untuk mempercepat proses
+const CONCURRENCY = 5;
+
+// URL Cloudflare Worker anti-403 Dailymotion
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
+
+// Rotasi User-Agent modern
+const USER_AGENTS = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
+];
+
+function getRandomUserAgent() {
+  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
+}
 
 function resolveUrl(url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('//')) return `https:${url}`;
   return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+function parseEpisodeNumber(epString) {
+  if (!epString) return 0;
+  const match = String(epString).match(/(\d+(\.\d+)?)/);
+  return match ? parseFloat(match[1]) : 0;
 }
 
 function extractCleanUrl(rawVal) {
@@ -65,11 +86,10 @@ if (!rawSlug) {
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
 async function setupPageConfig(page) {
-  await page.setUserAgent(
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-  );
+  await page.setUserAgent(getRandomUserAgent());
   await page.setRequestInterception(true);
   page.on('request', (req) => {
+    // Memblokir aset berat agar resource CPU & RAM tetap hemat
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
       req.abort();
     } else {
@@ -86,7 +106,7 @@ async function scrapeSingleEpisode(page, ep) {
     const content = await page.content();
     const $$ = cheerio.load(content);
 
-    // 1. Ekstrak Select Dropdown
+    // 1. Ekstrak Select Dropdown Server
     $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
       const o = $$(opt);
       let name = o.text().trim();
@@ -100,7 +120,7 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 2. Ekstrak Mirror Tab
+    // 2. Ekstrak Mirror Tab Server
     $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
       const el = $$(a);
       let name = el.text().trim();
@@ -114,7 +134,7 @@ async function scrapeSingleEpisode(page, ep) {
       }
     });
 
-    // 3. Ekstrak Iframe Bawaan
+    // 3. Ekstrak Default Iframe
     const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
     if (defaultIframe) {
       const cleanIframe = extractCleanUrl(defaultIframe);
@@ -123,7 +143,6 @@ async function scrapeSingleEpisode(page, ep) {
       }
     }
 
-    // Kelompokkan dan urutkan: OK.ru -> D-Tube -> Dailymotion -> Lainnya
     const okruServers = [];
     const dtubeServers = [];
     const dailyServers = [];
@@ -189,7 +208,26 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 }
 
 async function run() {
-  console.log(`=== Memulai Scrape Episode: ${cleanSlug} ===`);
+  console.log(`=== Memulai Scrape Episode: ${cleanSlug} (Concurrency: ${CONCURRENCY}) ===`);
+
+  const outDir = path.resolve('donghua/episodes');
+  const targetJsonPath = path.join(outDir, `${cleanSlug}.json`);
+  let existingEpisodes = [];
+
+  // Baca data JSON lokal jika sudah pernah ada
+  if (fs.existsSync(targetJsonPath)) {
+    try {
+      existingEpisodes = JSON.parse(fs.readFileSync(targetJsonPath, 'utf-8'));
+      if (!Array.isArray(existingEpisodes)) existingEpisodes = [];
+    } catch (_) {
+      existingEpisodes = [];
+    }
+  }
+
+  // Petakan nomor episode yang sudah tersimpan di database lokal
+  const existingEpNumbers = new Set(
+    existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
+  );
 
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -243,7 +281,7 @@ async function run() {
     }
   });
 
-  const episodeQueue = [];
+  const rawEpisodeList = [];
   $('.eplister ul li, .episodelist ul li, ul.clstyle li').each((_, el) => {
     const item = $(el);
     const fullLink = resolveUrl(item.find('a').attr('href') || '');
@@ -252,34 +290,50 @@ async function run() {
     const date = item.find('.epl-date, .date').text().trim() || '-';
 
     if (fullLink && fullLink.startsWith('http')) {
-      episodeQueue.push({ epNum, title, link: fullLink, date });
+      rawEpisodeList.push({ epNum, title, link: fullLink, date });
     }
   });
 
-  if (!latestEpisodeFound && episodeQueue.length > 0) {
-    latestEpisodeFound = episodeQueue[0].epNum || '1';
+  if (!latestEpisodeFound && rawEpisodeList.length > 0) {
+    latestEpisodeFound = rawEpisodeList[0].epNum || '1';
   }
 
-  console.log(`Total episode yang ditemukan: ${episodeQueue.length}`);
+  // FILTER DELTA: Hanya simpan link episode yang belum tercatat di file JSON lokal
+  const newEpisodesToScrape = rawEpisodeList.filter((ep) => {
+    const num = parseEpisodeNumber(ep.epNum);
+    return !existingEpNumbers.has(num);
+  });
 
-  // Reusable tab worker pool
+  console.log(`Total episode di web: ${rawEpisodeList.length}`);
+  console.log(`Episode sudah tersimpan: ${existingEpisodes.length}`);
+  console.log(`Episode baru yang akan discrape: ${newEpisodesToScrape.length}`);
+
+  // Jika tidak ada episode baru, langsung selesai tanpa membuka tab browser tambahan
+  if (newEpisodesToScrape.length === 0) {
+    console.log('Semua episode sudah tersimpan lengkap. Tidak ada antrean baru.');
+    await browser.close();
+    return;
+  }
+
+  // Siapkan worker tabs sesuai batasan concurrency
   const workerTabs = [];
-  for (let i = 0; i < CONCURRENCY; i++) {
+  const actualConcurrency = Math.min(CONCURRENCY, newEpisodesToScrape.length);
+  for (let i = 0; i < actualConcurrency; i++) {
     const p = await browser.newPage();
     await setupPageConfig(p);
     workerTabs.push(p);
   }
 
-  const allDetailedEpisodes = new Array(episodeQueue.length);
+  const newlyScrapedResults = new Array(newEpisodesToScrape.length);
   let currentIndex = 0;
 
   async function worker(page) {
-    while (currentIndex < episodeQueue.length) {
+    while (currentIndex < newEpisodesToScrape.length) {
       const idx = currentIndex++;
-      const ep = episodeQueue[idx];
+      const ep = newEpisodesToScrape[idx];
       const res = await scrapeSingleEpisode(page, ep);
-      allDetailedEpisodes[idx] = res;
-      console.log(`Episode diproses: ${idx + 1}/${episodeQueue.length} (Ep ${ep.epNum})`);
+      newlyScrapedResults[idx] = res;
+      console.log(`Episode diproses: ${idx + 1}/${newEpisodesToScrape.length} (Ep ${ep.epNum})`);
     }
   }
 
@@ -290,12 +344,14 @@ async function run() {
   }
   await browser.close().catch(() => {});
 
-  const outDir = path.resolve('donghua/episodes');
+  // Gabungkan episode baru di posisi atas tanpa membuang episode lama
+  const finalEpisodes = [...newlyScrapedResults, ...existingEpisodes];
+
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-  fs.writeFileSync(path.join(outDir, `${cleanSlug}.json`), JSON.stringify(allDetailedEpisodes, null, 2), 'utf-8');
+  fs.writeFileSync(targetJsonPath, JSON.stringify(finalEpisodes, null, 2), 'utf-8');
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
-  console.log(`Selesai! Berhasil disimpan di donghua/episodes/${cleanSlug}.json`);
+  console.log(`Selesai! Berhasil menambahkan ${newEpisodesToScrape.length} episode baru ke ${cleanSlug}.json`);
 }
 
 run();
