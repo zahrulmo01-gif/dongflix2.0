@@ -130,7 +130,7 @@
     </form>
   </div>
 
-  <!-- DASHBOARD UTAMA (TERSEMBUNYI SEBELUM LOGIN) -->
+  <!-- DASHBOARD UTAMA -->
   <div class="max-w-5xl mx-auto space-y-6 relative z-10" id="adminDashboard" style="display: none;">
     <!-- Header -->
     <header class="glass-card flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 px-4 sm:px-6">
@@ -232,7 +232,7 @@
         </div>
       </div>
 
-      <!-- List Kontainer Donghua Rapi -->
+      <!-- List Kontainer Donghua Rapi (Tata Letak Tombol Responsif) -->
       <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-950/80">
         <div class="max-h-80 overflow-y-auto divide-y divide-slate-800/60" id="donghuaListContainer">
           <div class="p-4 text-center text-xs text-slate-500">Memuat daftar donghua...</div>
@@ -413,7 +413,6 @@
       logTerminal('[Terminal dibersihkan]');
     }
 
-    // Ambil data melalui Serverless API Proxy
     async function loadDonghuaList() {
       const container = document.getElementById('donghuaListContainer');
       const countLabel = document.getElementById('donghuaCount');
@@ -433,7 +432,7 @@
       }
     }
 
-    // Render list donghua jadi jauh lebih rapi selaras dengan web
+    // List item responsif dengan tata letak flex agar tombol Edit & Scrape tersusun rapi
     function renderDonghuaItems(items) {
       const container = document.getElementById('donghuaListContainer');
       if (!container) return;
@@ -449,19 +448,19 @@
         const isMovie = (item.type || '').toLowerCase() === 'movie' || `${titleClean} ${item.slug}`.toLowerCase().includes('movie');
 
         return `
-          <div class="p-3 hover:bg-slate-900/60 flex items-center justify-between gap-3 transition">
+          <div class="p-3 hover:bg-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition">
             <div class="flex items-center gap-3.5 min-w-0">
-              <span class="text-xs font-mono text-slate-500 w-6 text-right">${index + 1}</span>
+              <span class="text-xs font-mono text-slate-500 w-6 text-right shrink-0">${index + 1}</span>
               <div class="w-10 h-14 rounded-lg overflow-hidden bg-slate-900 border border-slate-800 shrink-0">
                 <img src="${poster}" alt="${titleClean}" class="w-full h-full object-cover" referrerpolicy="no-referrer">
               </div>
               <div class="min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-bold text-white truncate" title="${titleClean}">${titleClean}</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold text-white truncate max-w-[180px] sm:max-w-xs" title="${titleClean}">${titleClean}</span>
                   ${isMovie ? '<span class="text-[9px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded">MOVIE</span>' : ''}
                 </div>
-                <div class="text-[11px] font-mono text-slate-400 flex items-center gap-2 mt-0.5">
-                  <span class="truncate max-w-[140px] sm:max-w-xs text-slate-500">${item.slug}</span>
+                <div class="text-[11px] font-mono text-slate-400 flex items-center gap-2 mt-0.5 flex-wrap">
+                  <span class="truncate max-w-[120px] sm:max-w-[180px] text-slate-500">${item.slug}</span>
                   <span>•</span>
                   <span class="text-sky-400 font-semibold">${epDisplay}</span>
                   <span>•</span>
@@ -469,7 +468,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
+            <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
               <button 
                 onclick="openEditModal('${item.slug}')" 
                 class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition flex items-center gap-1 border border-slate-700">
@@ -497,7 +496,6 @@
       renderDonghuaItems(filtered);
     }
 
-    // FITUR EDIT MANUAL DONGHUA
     function openEditModal(slug) {
       const item = allDonghuaData.find(d => d.slug === slug);
       if (!item) return;
@@ -555,7 +553,6 @@
       }
     }
 
-    // Trigger repository_dispatch melalui backend API Proxy (Vercel ENV)
     async function triggerWorkflow(eventType, clientPayload = {}) {
       logTerminal(`Mengirim trigger [${eventType}] ke server Vercel API...`);
 
