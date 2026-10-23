@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Dongflix.my.id - Streaming Donghua Sub Indo</title>
+  <title>Dongflix - Streaming Donghua Sub Indo</title>
+  
+  <!-- Favicon / Ikon Web -->
+  <link rel="icon" type="image/png" href="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png">
+  <link rel="apple-touch-icon" href="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png">
+
+  <!-- Google Fonts untuk styling font khusus tulisan flix -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -37,7 +46,7 @@
     body { 
       background-color: var(--bg-main); 
       color: var(--text-main); 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
       padding-top: 0;
       padding-bottom: 50px; 
       overflow-x: hidden;
@@ -98,7 +107,7 @@
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px;
-      padding: 6px 18px;
+      padding: 6px 20px;
       height: 46px;
       box-shadow: var(--glass-shadow);
       cursor: pointer;
@@ -106,34 +115,32 @@
     }
 
     .brand-title-capsule { 
-      font-size: 18.5px; 
+      font-size: 22px; 
       font-weight: 900; 
       color: #ffffff; 
       letter-spacing: -0.4px; 
       text-decoration: none; 
       display: inline-flex; 
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
 
+    .brand-logo-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      background: transparent !important;
+    }
+
+    /* Kustomisasi font khusus untuk tulisan flix */
     .brand-title-capsule .brand-accent { 
       color: var(--color-accent); 
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.2px;
       text-shadow: 0 0 14px rgba(56, 189, 248, 0.6); 
-    }
-
-    .tld-badge {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(56, 189, 248, 0.2);
-      color: #e0f2fe;
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      padding: 3px 7px;
-      border-radius: 7px;
-      line-height: 1.2;
-      text-transform: lowercase;
     }
 
     .header-actions-group { display: flex; align-items: center; gap: 10px; }
@@ -379,14 +386,15 @@
       flex-shrink: 0;
     }
 
-    /* BARIS BADGE KATEGORI / GENRE */
+    /* BARIS BADGE KATEGORI / GENRE (RAPAT, FLEX-WRAP, TANPA BATAS TINGGI KAKU) */
     .genre-scroll-wrapper {
-      margin-top: 40px;
+      margin-top: 36px;
       margin-bottom: 8px;
     }
 
     .genre-scroll-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
@@ -407,9 +415,12 @@
       padding: 7px 16px;
       border-radius: 9999px;
       text-decoration: none;
+      width: fit-content;
       white-space: nowrap;
       box-shadow: var(--glass-shadow);
       transition: background 0.2s, border-color 0.2s, color 0.2s;
+      text-align: center;
+      flex-shrink: 0;
     }
 
     .genre-badge-item:hover {
@@ -418,7 +429,7 @@
       color: #ffffff;
     }
 
-    /* CARD GRID DONGHUA & MOVIE (SEMUA TETAP BIRU) */
+    /* CARD GRID DONGHUA & MOVIE */
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 22px; }
     .card-grid { text-decoration: none !important; border: none !important; }
     .card-grid-img-wrapper { 
@@ -520,8 +531,8 @@
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <a href="/" class="brand-title-capsule">
+          <img src="https://i.ibb.co.com/1YjhpzqZ/IMG-6395.png" alt="Logo" class="brand-logo-icon">
           <span>Dong<span class="brand-accent">flix</span></span>
-          <span class="tld-badge">.my.id</span>
         </a>
       </div>
     </div>
@@ -644,7 +655,7 @@
       </div>
     </section>
 
-    <!-- BADGE KATEGORI / GENRE LENGKAP -->
+    <!-- BADGE KATEGORI / GENRE (RAPAT, FLEX-WRAP, PANJANG DINAMIS) -->
     <div class="genre-scroll-wrapper">
       <div class="genre-scroll-row" id="genreBar">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
@@ -721,7 +732,7 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 <a href="/">Dongflix.my.id</a>. Seluruh hak cipta dilindungi.</p>
+      <p>&copy; 2026 Dongflix.my.id. Seluruh hak cipta dilindungi.</p>
     </div>
   </footer>
 
@@ -979,7 +990,6 @@
       return card;
     }
 
-    /* CARD GRID DONGHUA & MOVIE TETAP BERWARNA BIRU */
     function createGridCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
@@ -999,7 +1009,6 @@
       return card;
     }
 
-    /* RENDER BADGE GENRE DINAMIS BERDASARKAN DATA KATALOG (JIKA ADA GENRE BARU) */
     function renderGenreBar(items) {
       const genreBar = document.getElementById('genreBar');
       if (!genreBar || !Array.isArray(items)) return;
@@ -1013,7 +1022,7 @@
 
       if (genreSet.size > 0) {
         genreBar.innerHTML = '';
-        Array.from(genreSet).slice(0, 15).forEach(genre => {
+        Array.from(genreSet).slice(0, 16).forEach(genre => {
           const pill = document.createElement('a');
           pill.className = 'genre-badge-item';
           pill.href = `/donghua/?category=${encodeURIComponent(genre)}`;
@@ -1034,25 +1043,20 @@
 
         renderHeroSlider(masterList);
 
-        // Render Populer Hari Ini
         const popRow = document.getElementById('todayPopularRow');
         popRow.innerHTML = '';
         masterList.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
 
-        // Render Donghua Terbaru
         const latestGrid = document.getElementById('latestGrid');
         latestGrid.innerHTML = '';
         donghuaList.slice(0, 12).forEach(item => latestGrid.appendChild(createGridCard(item)));
 
-        // Render Badge Kategori/Genre Dinamis
         renderGenreBar(masterList);
 
-        // Render Movie Terbaru (Tetap Biru)
         const movieGrid = document.getElementById('movieGrid');
         movieGrid.innerHTML = '';
         movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item)));
 
-        // Render Donghua Populer
         const popAllGrid = document.getElementById('popularAllGrid');
         popAllGrid.innerHTML = '';
         donghuaList.slice(6, 12).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
