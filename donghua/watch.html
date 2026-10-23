@@ -43,7 +43,7 @@
 
     .container { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
 
-    /* HEADER SEMULA */
+    /* HEADER */
     header {
       position: fixed;
       top: 0;
@@ -172,9 +172,9 @@
     .server-custom-btn svg { width: 20px; height: 20px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; }
     .server-select-hidden { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
     .server-tooltip-hint {
-      position: absolute; top: -45px; left: 10px; background: var(--color-primary); color: #ffffff; padding: 6px 12px;
+      position: absolute; top: -45px; left: -10px; background: var(--color-primary); color: #ffffff; padding: 6px 12px;
       border-radius: 8px; font-size: 11px; font-weight: 700; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.5); z-index: 50; opacity: 0;
-      pointer-events: none; transition: all 0.4s ease;
+      pointer-events: none; transition: all 0.4s ease; white-space: nowrap;
     }
     .server-tooltip-hint.show { opacity: 1; }
 
@@ -195,6 +195,80 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
+    /* REKOMENDASI DONGHUA (SMART CATEGORY MATCH) */
+    .recommendations-section {
+      margin-top: 32px;
+      margin-bottom: 32px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 22px;
+    }
+    .recommendations-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .rec-card {
+      text-decoration: none !important;
+      display: block;
+      cursor: pointer;
+    }
+    .rec-thumb-box {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-card);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .rec-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .rec-badge-ep {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(2, 132, 199, 0.9);
+      color: #fff;
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2.5px 7px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+    }
+    .rec-card-title {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .recommendations-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+      }
+      .rec-thumb-box {
+        height: 165px;
+      }
+    }
+
     /* BOTTOM SHEET */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
@@ -214,7 +288,7 @@
     .sheet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 10px; overflow-y: auto; padding-bottom: 24px; }
 
     /* COMMENTS */
-    .comments-section { margin-top: 28px; border-top: 1px solid var(--border-color); padding-top: 22px; }
+    .comments-section { border-top: 1px solid var(--border-color); padding-top: 22px; }
     .comments-header-wrapper { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .comments-header-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #f8fafc; }
     .comments-header-title svg { width: 18px; height: 18px; stroke: var(--color-accent); fill: none; stroke-width: 2.2; }
@@ -251,7 +325,6 @@
 </head>
 <body>
 
-<!-- HEADER ASLI SEMULA -->
 <header>
   <div class="header-content">
     <div class="header-left-group" onclick="goBack()">
@@ -334,6 +407,15 @@
     <div id="mediaDetailsGroup">
       <div class="skeleton" style="height:120px;margin-bottom:20px;"></div>
     </div>
+
+    <!-- REKOMENDASI DONGHUA (BERDASARKAN KATEGORI) -->
+    <section class="recommendations-section" id="recommendationsSection" style="display:none;">
+      <h3 class="recommendations-title">
+        <svg style="width:18px;height:18px;stroke:var(--color-accent);fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Rekomendasi Serupa
+      </h3>
+      <div class="recommendations-grid" id="recommendationsGrid"></div>
+    </section>
 
     <!-- COMMENTS SECTION -->
     <section class="comments-section">
@@ -424,13 +506,11 @@
     return match ? parseFloat(match[1]) : fallback;
   }
 
-  /* LOGIKA PINTAR TOMBOL KEMBALI */
   function goBack() {
     const referrer = document.referrer;
     if (referrer) {
       try {
         const refUrl = new URL(referrer);
-        // Jika berasal dari domain web ini sendiri
         if (refUrl.host === window.location.host) {
           if (refUrl.pathname === '/' || refUrl.pathname === '') {
             window.location.href = '/';
@@ -444,17 +524,14 @@
       } catch (_) {}
     }
 
-    // Jika ada history browser sebelumnya
     if (window.history.length > 1) {
       window.history.back();
       return;
     }
 
-    // Jika dibuka langsung dari luar/link langsung, arahkan ke beranda
     window.location.href = '/';
   }
 
-  /* SIMPAN RIWAYAT TONTONAN LANGSUNG KE LOCALSTORAGE */
   function saveContinueHistory(epNum) {
     if (!targetSlug) return;
     try {
@@ -626,6 +703,60 @@
     }
   }
 
+  /* REKOMENDASI DONGHUA BERDASARKAN KATEGORI */
+  function renderSmartRecommendations(currentGenres, currentSlug, catalog) {
+    const section = document.getElementById('recommendationsSection');
+    const grid = document.getElementById('recommendationsGrid');
+    if (!section || !grid || !Array.isArray(catalog)) return;
+
+    // Filter keluar donghua yang sedang diputar
+    const others = catalog.filter(item => item.slug !== currentSlug);
+    if (others.length === 0) return;
+
+    // Beri skor kecocokan kategori/genre
+    const scored = others.map(item => {
+      let score = 0;
+      const itemGenres = Array.isArray(item.genres) 
+        ? item.genres 
+        : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
+
+      if (currentGenres && currentGenres.length > 0) {
+        itemGenres.forEach(g => {
+          if (g && currentGenres.some(cg => cg.toLowerCase() === g.toLowerCase())) {
+            score += 2;
+          }
+        });
+      }
+      // Tambahkan sedikit nilai acak agar rekomendasi bervariasi jika skor sama
+      score += Math.random() * 0.5;
+      return { item, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const topRecs = scored.slice(0, 6).map(s => s.item);
+
+    if (topRecs.length === 0) return;
+
+    grid.innerHTML = topRecs.map(item => {
+      const title = sanitizeTitle(item.title);
+      const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
+      const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
+      const epText = isMovie ? 'MOVIE' : (item['latest-episode'] ? `Ep ${item['latest-episode']}` : (item.episode || 'Ep 1'));
+
+      return `
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-card">
+          <div class="rec-thumb-box">
+            <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" />
+            <span class="rec-badge-ep">${epText}</span>
+          </div>
+          <div class="rec-card-title">${title}</div>
+        </a>
+      `;
+    }).join('');
+
+    section.style.display = 'block';
+  }
+
   async function loadDetail() {
     if (!targetSlug) return;
 
@@ -642,8 +773,8 @@
           document.getElementById('topHeaderTitle').innerText = currentMainTitle;
           document.getElementById('pageTitle').innerText = `${currentMainTitle} - Dongflix`;
 
-          const genresHtml = (Array.isArray(info.genres) ? info.genres : [])
-            .map(g => `<span class="genre-pill">${g}</span>`).join('');
+          const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
+          const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
 
           document.getElementById('mediaDetailsGroup').innerHTML = `
             <div class="media-meta-card">
@@ -664,6 +795,9 @@
               <p class="synopsis-text">${info.synopsis || info.description || info.desc || 'Tidak ada deskripsi sinopsis.'}</p>
             </div>
           `;
+
+          // Panggil rekomendasi cerdas berdasarkan kategori
+          renderSmartRecommendations(genresList, targetSlug, catalog);
         }
       }
 
@@ -716,7 +850,6 @@
     const finalEpNum = episode.episode || episode.number || extractEpNumber(episode.title || episode.slug, 1);
     window.currentPlayingEpisodeNum = finalEpNum;
 
-    // Simpan langsung ke riwayat tontonan
     saveContinueHistory(finalEpNum);
 
     document.querySelectorAll('.ep-box').forEach(b => b.classList.remove('active'));
