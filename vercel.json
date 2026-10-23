@@ -1,8 +1,16 @@
 {
   "rewrites": [
     {
-      "source": "/donghua/:slug",
+      "source": "/donghua",
       "destination": "/donghua/index.html"
+    },
+    {
+      "source": "/donghua/",
+      "destination": "/donghua/index.html"
+    },
+    {
+      "source": "/donghua/:slug",
+      "destination": "/donghua/watch.html"
     }
   ]
 }
