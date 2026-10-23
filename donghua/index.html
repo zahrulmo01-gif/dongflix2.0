@@ -177,26 +177,30 @@
       margin-bottom: 20px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     .search-box-wrap {
       position: relative;
       width: 100%;
       height: 48px;
+      display: flex;
+      align-items: center;
     }
 
-    .search-box-wrap svg {
+    /* ICON PENCARIAN ABU MUDA DENGAN POSISI & Z-INDEX PASTI */
+    .search-icon-svg {
       position: absolute;
       left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 18px;
-      height: 18px;
-      stroke: var(--text-muted);
+      width: 19px;
+      height: 19px;
+      stroke: #9ca3af; /* Abu-abu muda */
       fill: none;
-      stroke-width: 2.2;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
       pointer-events: none;
+      z-index: 5;
     }
 
     .search-field {
@@ -215,10 +219,12 @@
       outline: none;
       box-shadow: var(--glass-shadow);
       transition: border-color 0.2s;
+      position: relative;
+      z-index: 1;
     }
 
     .search-field::placeholder {
-      color: var(--text-muted);
+      color: #9ca3af;
     }
 
     .search-field:focus {
@@ -226,6 +232,7 @@
       box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
     }
 
+    /* BARIS FILTER TIPE */
     .filter-pills-row {
       display: flex;
       gap: 8px;
@@ -243,9 +250,9 @@
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
       color: var(--text-sub);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
-      padding: 7px 16px;
+      padding: 6px 15px;
       border-radius: 9999px;
       cursor: pointer;
       box-shadow: var(--glass-shadow);
@@ -260,29 +267,43 @@
       box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
     }
 
-    .active-category-indicator {
-      display: inline-flex;
-      align-items: center;
+    /* BARIS PEMILIHAN KATEGORI / GENRE */
+    .category-pills-row {
+      display: flex;
       gap: 8px;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--color-accent);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 4px 12px;
-      border-radius: 9999px;
-      font-size: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .category-pills-row::-webkit-scrollbar { display: none; }
+
+    .category-pill {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      color: #9ca3af;
+      font-size: 11.5px;
       font-weight: 700;
-      width: fit-content;
+      padding: 5px 13px;
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
     }
 
-    .active-category-indicator button {
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-      display: flex;
-      align-items: center;
+    .category-pill:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .category-pill.active {
+      background: rgba(2, 132, 199, 0.3);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
     .catalog-count-info {
@@ -407,7 +428,7 @@
 </head>
 <body>
 
-  <!-- FLOATING GLASS PILL HEADER (HANYA LOGO PILL DAN HOME) -->
+  <!-- FLOATING GLASS PILL HEADER -->
   <header class="header-bar">
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
@@ -426,13 +447,16 @@
 
   <div class="container">
     <div class="catalog-top-panel">
-      <!-- PENCARIAN KATALOG DENGAN SVG DI KIRI -->
+      <!-- PENCARIAN DENGAN ICON ABU MUDA DENGAN KELAS KHUSUS -->
       <div class="search-box-wrap">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <svg class="search-icon-svg" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
         <input type="text" class="search-field" id="catalogSearchInput" placeholder="Cari judul di katalog..." onkeyup="handleFilterChange()">
       </div>
 
-      <!-- FILTER KATEGORI TYPE -->
+      <!-- FILTER TIPE -->
       <div class="filter-pills-row">
         <button class="filter-pill active" id="pillAll" onclick="setCatalogType('all')">Semua</button>
         <button class="filter-pill" id="pillSeries" onclick="setCatalogType('series')">Series</button>
@@ -441,8 +465,22 @@
         <button class="filter-pill" id="pillMovie" onclick="setCatalogType('movie')">Movie</button>
       </div>
 
-      <!-- INDIKATOR KATEGORI/GENRE AKTIF -->
-      <div id="categoryIndicatorWrap" style="display: none;"></div>
+      <!-- PEMILIHAN KATEGORI / GENRE -->
+      <div class="category-pills-row" id="categoryPillsRow">
+        <button class="category-pill active" onclick="setCategoryFilter('')">Semua Genre</button>
+        <button class="category-pill" onclick="setCategoryFilter('Action')">Action</button>
+        <button class="category-pill" onclick="setCategoryFilter('Adventure')">Adventure</button>
+        <button class="category-pill" onclick="setCategoryFilter('Fantasy')">Fantasy</button>
+        <button class="category-pill" onclick="setCategoryFilter('Cultivation')">Cultivation</button>
+        <button class="category-pill" onclick="setCategoryFilter('Martial Arts')">Martial Arts</button>
+        <button class="category-pill" onclick="setCategoryFilter('Romance')">Romance</button>
+        <button class="category-pill" onclick="setCategoryFilter('Sci-Fi')">Sci-Fi</button>
+        <button class="category-pill" onclick="setCategoryFilter('Comedy')">Comedy</button>
+        <button class="category-pill" onclick="setCategoryFilter('Supernatural')">Supernatural</button>
+        <button class="category-pill" onclick="setCategoryFilter('Historical')">Historical</button>
+        <button class="category-pill" onclick="setCategoryFilter('Isekai')">Isekai</button>
+        <button class="category-pill" onclick="setCategoryFilter('Mystery')">Mystery</button>
+      </div>
     </div>
 
     <div class="catalog-count-info" id="catalogCountInfo">Menampilkan koleksi donghua...</div>
@@ -522,28 +560,21 @@
       handleFilterChange();
     }
 
-    function removeCategoryFilter() {
-      currentCategoryFilter = '';
-      updateUrlState();
-      updateCategoryBadge();
-      handleFilterChange();
-    }
+    function setCategoryFilter(category) {
+      currentCategoryFilter = category;
+      const buttons = document.querySelectorAll('#categoryPillsRow .category-pill');
+      buttons.forEach(btn => {
+        if (!category && btn.innerText === 'Semua Genre') {
+          btn.classList.add('active');
+        } else if (category && btn.innerText.toLowerCase() === category.toLowerCase()) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
 
-    function updateCategoryBadge() {
-      const wrap = document.getElementById('categoryIndicatorWrap');
-      if (!wrap) return;
-      if (currentCategoryFilter) {
-        wrap.style.display = 'block';
-        wrap.innerHTML = `
-          <div class="active-category-indicator">
-            <span>Kategori: ${currentCategoryFilter}</span>
-            <button onclick="removeCategoryFilter()" aria-label="Hapus filter kategori">&times;</button>
-          </div>
-        `;
-      } else {
-        wrap.style.display = 'none';
-        wrap.innerHTML = '';
-      }
+      updateUrlState();
+      handleFilterChange();
     }
 
     function updateUrlState() {
@@ -584,13 +615,13 @@
       const countInfo = document.getElementById('catalogCountInfo');
 
       const filtered = masterList.filter(item => {
-        // Filter Pencarian Teks
+        // 1. Filter Pencarian Teks
         const titleStr = (item.title || item.name || '').toLowerCase();
         const slugStr = (item.slug || '').toLowerCase();
         const matchesQuery = titleStr.includes(query) || slugStr.includes(query);
         if (!matchesQuery) return false;
 
-        // Filter Tipe
+        // 2. Filter Tipe
         const isMovie = isMovieItem(item);
         const status = parseStatusText(item);
         if (currentTypeFilter === 'movie' && !isMovie) return false;
@@ -598,7 +629,7 @@
         if (currentTypeFilter === 'ongoing' && (status !== 'ONGOING' || isMovie)) return false;
         if (currentTypeFilter === 'completed' && (status !== 'COMPLETED' || isMovie)) return false;
 
-        // Filter Kategori / Genre (Case Insensitive)
+        // 3. Filter Kategori / Genre
         if (currentCategoryFilter) {
           const catLower = currentCategoryFilter.toLowerCase();
           const genres = Array.isArray(item.genres) 
@@ -638,7 +669,14 @@
       const category = params.get('category');
       if (category) {
         currentCategoryFilter = category.trim();
-        updateCategoryBadge();
+        const buttons = document.querySelectorAll('#categoryPillsRow .category-pill');
+        buttons.forEach(btn => {
+          if (btn.innerText.toLowerCase() === currentCategoryFilter.toLowerCase()) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
       }
     }
 
