@@ -14,7 +14,6 @@
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
-      --color-movie: #f59e0b;
       --color-star: #f59e0b;
       --text-main: #ffffff;
       --text-sub: #d1d5db;
@@ -238,7 +237,7 @@
       color: #ffffff; font-size: 9px; font-weight: 800; padding: 2.5px 8px; border-radius: 9999px;
     }
 
-    /* PLACEHOLDER SKELETON SEMUA SECTION */
+    /* PLACEHOLDER SKELETON */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
 
@@ -252,7 +251,7 @@
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* SLIDER DENGAN PROGRESSIVE BLUR & MENGGELAP */
+    /* SLIDER */
     .hero-slider-wrapper { 
       position: relative; width: 100%; height: 460px; overflow: hidden; background: #000; 
       transform: translateZ(0); contain: paint;
@@ -282,14 +281,12 @@
     .dot { width: 8px; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s; }
     .dot.active { width: 28px; background: var(--color-accent); border-radius: 10px; }
 
-    /* CONTENT SECTIONS DENGAN JARAK LEBIH LEGA */
+    /* CONTENT SECTIONS */
     .section-block { margin-top: 40px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-    /* ========================================================
-       LANJUTKAN MENONTON (JARAK LEGA & TIDAK MEPET)
-       ======================================================== */
+    /* LANJUTKAN MENONTON */
     .continue-section-wrapper {
       margin-top: 36px;
       margin-bottom: 24px;
@@ -382,7 +379,46 @@
       flex-shrink: 0;
     }
 
-    /* CARD GRID DONGHUA & MOVIE */
+    /* BARIS BADGE KATEGORI / GENRE */
+    .genre-scroll-wrapper {
+      margin-top: 40px;
+      margin-bottom: 8px;
+    }
+
+    .genre-scroll-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+    }
+    .genre-scroll-row::-webkit-scrollbar { display: none; }
+
+    .genre-badge-item {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-top: 1px solid var(--glass-border-top);
+      color: var(--text-sub);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: var(--glass-shadow);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .genre-badge-item:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #ffffff;
+    }
+
+    /* CARD GRID DONGHUA & MOVIE (SEMUA TETAP BIRU) */
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 22px; }
     .card-grid { text-decoration: none !important; border: none !important; }
     .card-grid-img-wrapper { 
@@ -401,10 +437,11 @@
     .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
     .badge-ep { 
-      position: absolute; top: 8px; left: 8px; background: rgba(2, 132, 199, 0.9);
-      color: var(--text-main); font-size: 9px; font-weight: 800; padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
+      position: absolute; top: 8px; left: 8px; 
+      background: rgba(2, 132, 199, 0.9);
+      color: var(--text-main); font-size: 9px; font-weight: 800; 
+      padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
     }
-    .badge-ep.movie { background: rgba(245, 158, 11, 0.95); color: #000; }
 
     .card-bottom-info {
       position: absolute; bottom: 8px; left: 8px; right: 8px;
@@ -416,7 +453,6 @@
       border-top: 1px solid var(--glass-border-top); color: #ffffff; font-size: 9.5px; font-weight: 800; 
       padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
     }
-    .badge-bottom.movie { color: #fde047; }
 
     .card-title { 
       margin-top: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; line-height: 1.35;
@@ -608,14 +644,32 @@
       </div>
     </section>
 
-    <!-- 4. MOVIE TERBARU DENGAN SKELETON PLACEHOLDER -->
+    <!-- BADGE KATEGORI / GENRE LENGKAP -->
+    <div class="genre-scroll-wrapper">
+      <div class="genre-scroll-row" id="genreBar">
+        <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
+        <a href="/donghua/?category=Adventure" class="genre-badge-item">Adventure</a>
+        <a href="/donghua/?category=Fantasy" class="genre-badge-item">Fantasy</a>
+        <a href="/donghua/?category=Cultivation" class="genre-badge-item">Cultivation</a>
+        <a href="/donghua/?category=Martial%20Arts" class="genre-badge-item">Martial Arts</a>
+        <a href="/donghua/?category=Romance" class="genre-badge-item">Romance</a>
+        <a href="/donghua/?category=Sci-Fi" class="genre-badge-item">Sci-Fi</a>
+        <a href="/donghua/?category=Comedy" class="genre-badge-item">Comedy</a>
+        <a href="/donghua/?category=Supernatural" class="genre-badge-item">Supernatural</a>
+        <a href="/donghua/?category=Historical" class="genre-badge-item">Historical</a>
+        <a href="/donghua/?category=Isekai" class="genre-badge-item">Isekai</a>
+        <a href="/donghua/?category=Mystery" class="genre-badge-item">Mystery</a>
+      </div>
+    </div>
+
+    <!-- 4. MOVIE TERBARU (TETAP WARNA BIRU) -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">
-          <svg class="icon-svg" style="color: var(--color-movie);" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg>
+          <svg class="icon-svg" style="color: var(--color-accent);" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg>
           Movie Terbaru
         </h2>
-        <a href="/donghua/?type=movie" class="see-all-btn movie">Lihat Semua</a>
+        <a href="/donghua/?type=movie" class="see-all-btn">Lihat Semua</a>
       </div>
       <div class="grid-3" id="movieGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
@@ -798,7 +852,7 @@
           <div class="hero-blur-layer"></div>
           <div class="hero-overlay"></div>
           <div class="hero-content">
-            <span class="badge-tag ${isMovieItem(item) ? 'movie' : ''}">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
+            <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
             <h1 class="hero-title">${sanitizeTitle(item.title)}</h1>
             <div class="hero-meta">
               <span class="rating-star">★ 9.0</span>
@@ -925,6 +979,7 @@
       return card;
     }
 
+    /* CARD GRID DONGHUA & MOVIE TETAP BERWARNA BIRU */
     function createGridCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
@@ -934,14 +989,38 @@
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
           <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
-          <span class="badge-ep ${isMovie ? 'movie' : ''}">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
+          <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           <div class="card-bottom-info">
-            <span class="badge-bottom ${isMovie ? 'movie' : ''}">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
+            <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
           </div>
         </div>
         <div class="card-title">${sanitizeTitle(item.title)}</div>
       `;
       return card;
+    }
+
+    /* RENDER BADGE GENRE DINAMIS BERDASARKAN DATA KATALOG (JIKA ADA GENRE BARU) */
+    function renderGenreBar(items) {
+      const genreBar = document.getElementById('genreBar');
+      if (!genreBar || !Array.isArray(items)) return;
+
+      const genreSet = new Set();
+      items.forEach(it => {
+        if (Array.isArray(it.genres)) {
+          it.genres.forEach(g => { if (g && g.trim()) genreSet.add(g.trim()); });
+        }
+      });
+
+      if (genreSet.size > 0) {
+        genreBar.innerHTML = '';
+        Array.from(genreSet).slice(0, 15).forEach(genre => {
+          const pill = document.createElement('a');
+          pill.className = 'genre-badge-item';
+          pill.href = `/donghua/?category=${encodeURIComponent(genre)}`;
+          pill.innerText = genre;
+          genreBar.appendChild(pill);
+        });
+      }
     }
 
     async function loadMainData() {
@@ -965,7 +1044,10 @@
         latestGrid.innerHTML = '';
         donghuaList.slice(0, 12).forEach(item => latestGrid.appendChild(createGridCard(item)));
 
-        // Render Movie Terbaru
+        // Render Badge Kategori/Genre Dinamis
+        renderGenreBar(masterList);
+
+        // Render Movie Terbaru (Tetap Biru)
         const movieGrid = document.getElementById('movieGrid');
         movieGrid.innerHTML = '';
         movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item)));
