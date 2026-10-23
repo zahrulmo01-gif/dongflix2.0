@@ -255,6 +255,8 @@
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
+      color: #cbd5e1;
+      transition: all 0.2s ease;
     }
 
     .ep-box.active {
@@ -873,8 +875,8 @@
 
   function getSortedEpisodes() {
     return [...globalEpisodes].sort((a, b) => {
-      const numA = extractEpNumber(a.episode || a.number, 0);
-      const numB = extractEpNumber(b.episode || b.number, 0);
+      const numA = extractEpNumber(a.episode || a.number || a.title || a.slug, 0);
+      const numB = extractEpNumber(b.episode || b.number || b.title || b.slug, 0);
       return episodeSortMode === 'oldest' ? numA - numB : numB - numA;
     });
   }
@@ -884,15 +886,15 @@
     if (!epGrid) return;
     epGrid.innerHTML = '';
 
-    getSortedEpisodes().forEach((ep, index) => {
-      const epNum = ep.episode || ep.number || (index + 1);
+    getSortedEpisodes().forEach((ep) => {
+      const epNum = ep.episode || ep.number || extractEpNumber(ep.title || ep.slug, 1);
       const box = document.createElement('div');
       box.className = 'ep-box';
       box.innerText = epNum;
       box.id = `ep-box-${epNum}`;
       if (String(epNum) === String(window.currentPlayingEpisodeNum)) box.classList.add('active');
 
-      box.onclick = () => selectEpisode(index);
+      box.onclick = () => selectEpisodeByNum(epNum);
       epGrid.appendChild(box);
     });
   }
@@ -1047,7 +1049,8 @@
 
         if (globalEpisodes.length > 0) {
           renderEpisodeGrid();
-          selectEpisode(0);
+          const firstEpNum = globalEpisodes[0].episode || globalEpisodes[0].number || extractEpNumber(globalEpisodes[0].title || globalEpisodes[0].slug, 1);
+          selectEpisodeByNum(firstEpNum);
         } else {
           document.getElementById('playerMediaContainer').innerText = 'Episode belum tersedia.';
         }
@@ -1065,22 +1068,33 @@
     loadComments();
   }
 
-  function selectEpisode(index) {
+  function selectEpisodeByNum(epNum) {
     closeEpisodeSheet();
-    const episode = globalEpisodes[index];
+    
+    const episode = globalEpisodes.find(e => {
+      const num = e.episode || e.number || extractEpNumber(e.title || e.slug, 0);
+      return String(num) === String(epNum);
+    }) || globalEpisodes[0];
+
     if (!episode) return;
 
-    const epNum = episode.episode || (index + 1);
-    window.currentPlayingEpisodeNum = epNum;
+    const finalEpNum = episode.episode || episode.number || extractEpNumber(episode.title || episode.slug, 1);
+    window.currentPlayingEpisodeNum = finalEpNum;
 
-    document.querySelectorAll('#epGrid .ep-box').forEach(b => b.classList.remove('active'));
-    const activeBox = document.getElementById(`ep-box-${epNum}`);
-    if (activeBox) activeBox.classList.add('active');
+    document.querySelectorAll('.ep-box').forEach(b => b.classList.remove('active'));
+    const activeBox = document.getElementById(`ep-box-${finalEpNum}`);
+    if (activeBox) {
+      activeBox.classList.add('active');
+      activeBox.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
 
-    const servers = (episode.servers || []).map((s, i) => ({
-      name: s.name || `Server ${i + 1}`,
-      url: s.link || s.url || ''
-    })).filter(s => /^https?:\/\//i.test(s.url));
+    const rawServers = episode.servers || episode.server || [];
+    const servers = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
+      .map((s, i) => ({
+        name: s.name || s.title || `Server ${i + 1}`,
+        url: s.link || s.url || (typeof s === 'string' ? s : '')
+      }))
+      .filter(s => /^https?:\/\//i.test(s.url));
 
     const serverSelect = document.getElementById('serverSelect');
     serverSelect.innerHTML = '';
@@ -1096,7 +1110,7 @@
       currentServerUrl = servers[0].url;
       renderPlayer(servers[0].url);
     } else {
-      document.getElementById('playerMediaContainer').innerText = 'Server tidak tersedia.';
+      document.getElementById('playerMediaContainer').innerHTML = '<div class="detail-player-box">Server video belum tersedia.</div>';
     }
   }
 
@@ -1114,14 +1128,15 @@
 
   function openEpisodeSheet() {
     const grid = document.getElementById('sheetEpGrid');
+    if (!grid) return;
     grid.innerHTML = '';
 
-    getSortedEpisodes().forEach((ep, index) => {
-      const epNum = ep.episode || (index + 1);
+    getSortedEpisodes().forEach((ep) => {
+      const epNum = ep.episode || ep.number || extractEpNumber(ep.title || ep.slug, 1);
       const box = document.createElement('div');
       box.className = `ep-box ${String(epNum) === String(window.currentPlayingEpisodeNum) ? 'active' : ''}`;
       box.innerText = epNum;
-      box.onclick = () => selectEpisode(index);
+      box.onclick = () => selectEpisodeByNum(epNum);
       grid.appendChild(box);
     });
 
