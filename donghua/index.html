@@ -9,6 +9,9 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="metaCanonical" href="https://dongflix.my.id/donghua/">
 
+  <!-- Bypass Hotlink Protection Image -->
+  <meta name="referrer" content="no-referrer">
+
   <meta property="og:type" content="video.tv_show">
   <meta property="og:title" id="ogTitle" content="Koleksi Donghua Sub Indo - Dongflix">
   <meta property="og:description" id="ogDesc" content="Nonton streaming donghua subtitle Indonesia update terbaru di Dongflix.">
@@ -121,8 +124,9 @@
               id="detailCover" 
               src="" 
               alt="Cover" 
+              referrerpolicy="no-referrer"
               class="w-28 sm:w-36 aspect-[3/4] object-cover rounded-xl border border-slate-800 shadow-lg shrink-0 mx-auto sm:mx-0"
-              onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'"
+              onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=No+Cover';"
             >
             <div class="space-y-3 text-center sm:text-left flex-1">
               <h1 id="detailTitle" class="text-xl sm:text-2xl font-extrabold text-white leading-tight"></h1>
@@ -228,7 +232,7 @@
 
   <!-- FOOTER -->
   <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 px-4 py-6 text-center text-xs text-slate-500">
-    <p>&copy; 2026 Dongflix. Nonton Donghua Subtitle Indonesia Gratis.</p>
+    <p>&copy; 2026 Dongflix. Ditenagai oleh Real-time GitHub Proxy.</p>
   </footer>
 
   <script>
@@ -265,22 +269,19 @@
       }
 
       try {
+        // Hanya ambil data dari Serverless API Proxy
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error('API Proxy gagal merespons');
         allData = await res.json();
       } catch (e) {
-        try {
-          const localRes = await fetch('/donghua/donghua.json?t=' + Date.now());
-          allData = await localRes.json();
-        } catch (localErr) {
-          allData = [];
-        }
+        console.error('Gagal mengambil katalog dari API:', e);
+        allData = [];
       }
 
       if (!allData || allData.length === 0) {
         document.getElementById('catalogGrid').innerHTML = `
           <div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">
-            Database belum siap. Buka admin panel untuk scrape katalog terlebih dahulu.
+            Gagal memuat katalog donghua via API. Pastikan token dan repositori sudah diatur di Vercel.
           </div>
         `;
         document.getElementById('totalCounter').innerText = '0 donghua';
@@ -337,7 +338,7 @@
       const pageTitle = `Nonton ${cleanTitle} Sub Indo - Dongflix`;
       document.title = pageTitle;
       document.getElementById('metaTitle').innerText = pageTitle;
-      document.getElementById('metaCanonical').href = `https://dongflix.my.id/donghua/?slug=${item.slug}`;
+      document.getElementById('metaCanonical').href = `https://dongflix.my.id/donghua/${item.slug}`;
 
       await loadEpisodes(item.slug);
     }
@@ -347,16 +348,14 @@
       listContainer.innerHTML = '<div class="text-xs text-slate-500 py-8 text-center">Memuat daftar episode...</div>';
 
       try {
-        let res = await fetch(`/api/donghua?path=episodes/${encodeURIComponent(slug)}.json`, { cache: 'no-store' });
-        if (!res.ok) {
-          res = await fetch(`/donghua/episodes/${encodeURIComponent(slug)}.json?t=` + Date.now());
-        }
-        if (!res.ok) throw new Error();
+        // Ambil data episode langsung dari API Proxy
+        const res = await fetch(`/api/donghua?path=episodes/${encodeURIComponent(slug)}.json`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('File episode tidak ditemukan di API');
         
         currentEpisodes = await res.json();
-        if (!Array.isArray(currentEpisodes) || currentEpisodes.length === 0) throw new Error();
+        if (!Array.isArray(currentEpisodes) || currentEpisodes.length === 0) throw new Error('Daftar episode kosong');
 
-        // Urutkan episode dari 1 ke atas secara otomatis di memori browser
+        // Urutkan episode dari kecil ke besar secara otomatis
         currentEpisodes.sort((a, b) => {
           const numA = parseFloat(String(a.episode).replace(/[^0-9.]/g, '')) || 0;
           const numB = parseFloat(String(b.episode).replace(/[^0-9.]/g, '')) || 0;
@@ -486,14 +485,15 @@
       const coverImg = item.cover || 'https://via.placeholder.com/300x400?text=No+Cover';
       
       return `
-        <a href="/donghua/index.html?slug=${encodeURIComponent(item.slug)}" class="group bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-950/20 transition duration-200">
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="group bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-950/20 transition duration-200">
           <div class="aspect-[3/4] w-full bg-slate-950 relative overflow-hidden">
             <img 
               src="${coverImg}" 
               alt="${cleanTitle}" 
-              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
               loading="lazy"
-              onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'"
+              referrerpolicy="no-referrer"
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300" 
+              onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400?text=No+Cover';"
             >
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
             
@@ -531,7 +531,7 @@
       displayedCatalogCount = 0;
 
       if (filteredData.length === 0) {
-        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-500">Tidak ada judul donghua yang cocok.</div>';
+        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">Tidak ada judul donghua yang cocok.</div>';
         document.getElementById('totalCounter').innerText = '0 donghua';
         document.getElementById('btnLoadMore').classList.add('hidden');
         return;
