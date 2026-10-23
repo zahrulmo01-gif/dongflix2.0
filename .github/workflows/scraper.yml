@@ -2,18 +2,17 @@ name: Dongflix Automation Scraper
 
 on:
   repository_dispatch:
-    types: [scrape-list, scrape-episode, scrape-all-episodes]
+    types: [scrape-list, sync-order, scrape-episode, scrape-all-episodes]
   workflow_dispatch:
     inputs:
       action_type:
-        description: 'Pilih aksi: list, episode, atau all'
+        description: 'Pilih aksi: list (baru saja), sync-order (urutkan), episode, atau all'
         required: true
         default: 'all'
       target_slug:
         description: 'Slug Donghua (khusus jika memilih aksi episode)'
         required: false
 
-# Wajib izin tulis agar git push di runner tidak ditolak (403)
 permissions:
   contents: write
 
@@ -34,25 +33,30 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 1. Jalankan Scrape List Katalog Master
-      - name: Run Scraper List Donghua
+      # 1. Scrape Donghua Baru Saja (Skip yang sudah ada)
+      - name: Scrape New Donghua Only
         if: github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list'
-        run: node admin/scraper.js
+        run: node admin/scraper.js --mode=new-only
 
-      # 2. Jalankan Scrape Single Episode
+      # 2. Perbaiki Urutan List Mengikuti Anichin
+      - name: Sync Order with Anichin
+        if: github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order'
+        run: node admin/scraper.js --mode=sync-order
+
+      # 3. Scrape Single Episode
       - name: Run Scraper Single Episode
         if: github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode'
         run: node admin/scraper-episodes.js ${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}
 
-      # 3. Jalankan Smart Scrape All (Push otomatis langsung berjalan per-judul)
+      # 4. Smart Scrape All Episodes
       - name: Run Smart Scrape All Episodes
         if: github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all'
         run: node admin/scrape-all-smart.js
 
-      # Push cadangan untuk action list / single-episode atau sisa file yang belum ter-push
-      - name: Final Commit & Push
+      # Commit dan Push Hasil
+      - name: Commit & Push Changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
           git add donghua/donghua.json donghua/episodes/*.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update remaining changes [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update database katalog/urutan [skip ci]" && git push)
