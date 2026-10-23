@@ -8,9 +8,7 @@ import { execSync } from 'child_process';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-
-// Concurrency dinaikkan karena jalur utama menggunakan HTTP Fetch ringan
-const CONCURRENCY = 6;
+const CONCURRENCY = 4; // 4 worker paralel stabil untuk HTTP + browser fallback
 const PUSH_INTERVAL = 50;
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
@@ -79,7 +77,7 @@ function parseServersFromHtml(html) {
   const $$ = cheerio.load(html);
   const rawServers = [];
 
-  // 1. Dropdown select mirror
+  // Dropdown select server
   $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
     const o = $$(opt);
     let name = o.text().trim();
@@ -93,7 +91,7 @@ function parseServersFromHtml(html) {
     }
   });
 
-  // 2. Tab mirror links
+  // Mirror tabs
   $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
     const el = $$(a);
     let name = el.text().trim();
@@ -107,7 +105,7 @@ function parseServersFromHtml(html) {
     }
   });
 
-  // 3. Default iframe
+  // Default iframe
   const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
   if (defaultIframe) {
     const cleanIframe = extractCleanUrl(defaultIframe);
@@ -145,7 +143,7 @@ function parseServersFromHtml(html) {
   return [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
 }
 
-// Ekstraksi instan menggunakan HTTP Fetch (tanpa overhead browser)
+// 1. Eksekusi cepat lewat fetch HTTP
 async function fetchEpisodeDirect(ep) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 9000);
@@ -164,7 +162,6 @@ async function fetchEpisodeDirect(ep) {
     if (!res.ok) return null;
     const html = await res.text();
 
-    // Pastikan bukan halaman challenge Cloudflare
     if (html.includes('Just a moment...') || html.includes('challenge-running')) {
       return null;
     }
@@ -185,7 +182,26 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
-// Fallback Puppeteer cepat untuk halaman yang memblokir direct HTTP
+// 2. Setup tab page yang aman dari race condition
+async function createIsolatedPage(browser) {
+  const page = await browser.newPage();
+  await page.setUserAgent(getRandomUserAgent());
+  await page.setRequestInterception(true);
+
+  page.on('request', (req) => {
+    if (req.isInterceptResolutionHandled()) return;
+
+    const type = req.resourceType();
+    if (['image', 'stylesheet', 'font', 'media', 'other'].includes(type)) {
+      req.abort().catch(() => {});
+    } else {
+      req.continue().catch(() => {});
+    }
+  });
+
+  return page;
+}
+
 async function scrapeEpisodeWithPage(page, ep) {
   try {
     await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
@@ -275,7 +291,6 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
-  // Ambil halaman index donghua via HTTP Fetch terlebih dahulu
   let indexHtml = null;
   const indexTargets = [
     `${BASE_URL}/${cleanSlug}/`,
@@ -299,23 +314,27 @@ async function run() {
     } catch (_) {}
   }
 
-  // Jika direct fetch terhalang, buka browser headless hanya untuk halaman daftar episode
   let browser = null;
-  if (!indexHtml) {
-    browser = await puppeteer.launch({
-      headless: 'new',
-      protocolTimeout: 180000,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--blink-settings=imagesEnabled=false'
-      ]
-    });
+  const launchBrowser = async () => {
+    if (!browser) {
+      browser = await puppeteer.launch({
+        headless: 'new',
+        protocolTimeout: 180000,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--blink-settings=imagesEnabled=false'
+        ]
+      });
+    }
+    return browser;
+  };
 
-    const page = await browser.newPage();
-    await page.setUserAgent(getRandomUserAgent());
+  if (!indexHtml) {
+    const b = await launchBrowser();
+    const page = await createIsolatedPage(b);
     for (const url of indexTargets) {
       try {
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -326,12 +345,12 @@ async function run() {
         }
       } catch (_) {}
     }
-    await page.close();
+    await page.close().catch(() => {});
   }
 
   if (!indexHtml) {
     console.error('Container list episode tidak ditemukan.');
-    if (browser) await browser.close();
+    if (browser) await browser.close().catch(() => {});
     process.exit(1);
   }
 
@@ -373,7 +392,7 @@ async function run() {
 
   if (newEpisodesToScrape.length === 0) {
     console.log('Semua episode sudah tersimpan lengkap. Tidak ada antrean baru.');
-    if (browser) await browser.close();
+    if (browser) await browser.close().catch(() => {});
     return;
   }
 
@@ -388,51 +407,25 @@ async function run() {
     fs.writeFileSync(targetJsonPath, JSON.stringify(combined, null, 2), 'utf-8');
   };
 
-  // Antrean eksekusi multi-worker
   let queueIndex = 0;
-  let fallbackPage = null;
-
-  async function getFallbackPage() {
-    if (!browser) {
-      browser = await puppeteer.launch({
-        headless: 'new',
-        protocolTimeout: 180000,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--blink-settings=imagesEnabled=false'
-        ]
-      });
-    }
-    if (!fallbackPage) {
-      fallbackPage = await browser.newPage();
-      await fallbackPage.setUserAgent(getRandomUserAgent());
-      await fallbackPage.setRequestInterception(true);
-      fallbackPage.on('request', (req) => {
-        if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
-    }
-    return fallbackPage;
-  }
 
   async function worker(workerId) {
+    let workerPage = null;
+
     while (queueIndex < newEpisodesToScrape.length) {
       const idx = queueIndex++;
       const ep = newEpisodesToScrape[idx];
 
-      // 1. Eksekusi cepat lewat Direct HTTP
+      // Coba lewat HTTP cepat dulu
       let result = await fetchEpisodeDirect(ep);
 
-      // 2. Fallback Puppeteer jika respons diblokir atau kosong
+      // Fallback: gunakan dedicated page milik worker ini sendiri jika butuh Puppeteer
       if (!result || !result.servers || result.servers.length === 0) {
-        const page = await getFallbackPage();
-        result = await scrapeEpisodeWithPage(page, ep);
+        if (!workerPage) {
+          const b = await launchBrowser();
+          workerPage = await createIsolatedPage(b);
+        }
+        result = await scrapeEpisodeWithPage(workerPage, ep);
       }
 
       newlyScrapedResults.push(result);
@@ -446,6 +439,10 @@ async function run() {
         gitPushCheckpoint(cleanSlug, processedCount, newEpisodesToScrape.length);
         lastPushedCount = processedCount;
       }
+    }
+
+    if (workerPage) {
+      await workerPage.close().catch(() => {});
     }
   }
 
