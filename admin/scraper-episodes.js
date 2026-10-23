@@ -7,16 +7,12 @@ import path from 'path';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-
-// Turunkan sedikit ke 4 agar runner GitHub Actions tidak kehabisan RAM/CDP socket
-const CONCURRENCY = 4;
-
+const CONCURRENCY = 3;
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
 ];
@@ -83,8 +79,12 @@ if (!rawSlug) {
 
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
-async function setupPageConfig(page) {
+async function createFreshPage(browser) {
+  const page = await browser.newPage();
   await page.setUserAgent(getRandomUserAgent());
+  await page.setDefaultNavigationTimeout(35000);
+  await page.setDefaultTimeout(35000);
+
   await page.setRequestInterception(true);
   page.on('request', (req) => {
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(req.resourceType())) {
@@ -93,6 +93,8 @@ async function setupPageConfig(page) {
       req.continue();
     }
   });
+
+  return page;
 }
 
 async function scrapeSingleEpisode(page, ep) {
@@ -201,7 +203,7 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
 }
 
 async function run() {
-  console.log(`=== Memulai Scrape Episode: ${cleanSlug} (Concurrency: ${CONCURRENCY}) ===`);
+  console.log(`=== Memulai Scrape Episode: ${cleanSlug} ===`);
 
   const outDir = path.resolve('donghua/episodes');
   const targetJsonPath = path.join(outDir, `${cleanSlug}.json`);
@@ -220,23 +222,24 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
-  // protocolTimeout ditingkatkan menjadi 180 detik agar Puppeteer tidak crash saat antrean panjang
   const browser = await puppeteer.launch({
     headless: 'new',
-    protocolTimeout: 180000,
+    protocolTimeout: 300000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
+      '--disable-extensions',
+      '--disable-component-update',
       '--no-first-run',
       '--no-zygote',
-      '--single-process'
+      '--single-process',
+      '--js-flags="--max-old-space-size=512"'
     ]
   });
 
-  const mainPage = await browser.newPage();
-  await setupPageConfig(mainPage);
+  const mainPage = await createFreshPage(browser);
 
   const possibleUrls = [
     `${BASE_URL}/${cleanSlug}/`,
@@ -306,53 +309,61 @@ async function run() {
     return;
   }
 
-  const workerTabs = [];
-  const actualConcurrency = Math.min(CONCURRENCY, newEpisodesToScrape.length);
-  for (let i = 0; i < actualConcurrency; i++) {
-    const p = await browser.newPage();
-    await setupPageConfig(p);
-    workerTabs.push(p);
-  }
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
   const newlyScrapedResults = new Array(newEpisodesToScrape.length);
   let currentIndex = 0;
 
-  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-
-  // Fungsi simpan berkala agar data tidak lenyap jika ada error
   const saveProgress = () => {
     const finished = newlyScrapedResults.filter(Boolean);
     const combined = [...finished, ...existingEpisodes];
     fs.writeFileSync(targetJsonPath, JSON.stringify(combined, null, 2), 'utf-8');
   };
 
-  async function worker(page) {
+  async function worker(workerId) {
+    let page = await createFreshPage(browser);
+    let requestsOnThisTab = 0;
+
     while (currentIndex < newEpisodesToScrape.length) {
       const idx = currentIndex++;
       const ep = newEpisodesToScrape[idx];
+
+      if (requestsOnThisTab >= 15) {
+        try {
+          await page.close();
+        } catch (_) {}
+        page = await createFreshPage(browser);
+        requestsOnThisTab = 0;
+      }
+
       try {
         const res = await scrapeSingleEpisode(page, ep);
         newlyScrapedResults[idx] = res;
+        requestsOnThisTab++;
         console.log(`Episode diproses: ${idx + 1}/${newEpisodesToScrape.length} (Ep ${ep.epNum})`);
-        
-        // Simpan setiap kelipatan 25 episode
-        if ((idx + 1) % 25 === 0) {
+
+        if ((idx + 1) % 10 === 0) {
           saveProgress();
         }
       } catch (err) {
-        console.warn(`Gagal memproses Ep ${ep.epNum}, dilewati.`);
+        console.warn(`[Worker ${workerId}] Retry atau lewati Ep ${ep.epNum}`);
       }
     }
+
+    try {
+      await page.close();
+    } catch (_) {}
   }
 
-  await Promise.all(workerTabs.map((p) => worker(p)));
-
-  for (const p of workerTabs) {
-    await p.close().catch(() => {});
+  const workerPromises = [];
+  const actualConcurrency = Math.min(CONCURRENCY, newEpisodesToScrape.length);
+  for (let i = 0; i < actualConcurrency; i++) {
+    workerPromises.push(worker(i + 1));
   }
+
+  await Promise.all(workerPromises);
   await browser.close().catch(() => {});
 
-  // Simpan hasil akhir lengkap
   saveProgress();
   updateMasterDonghuaJson(cleanSlug, latestEpisodeFound);
   console.log(`Selesai! Berhasil memproses antrean episode untuk ${cleanSlug}.json`);
