@@ -156,6 +156,35 @@
       </div>
     </header>
 
+    <!-- Konfigurasi GitHub Token & Repo (Form Seperti Semula) -->
+    <section class="glass-card space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+        <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="text-sky-400 shrink-0">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          Konfigurasi GitHub Target
+        </h2>
+        <span class="text-[11px] text-slate-400">Tersimpan otomatis di browser lokal Anda</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">GitHub Personal Access Token (PAT)</label>
+          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 font-mono transition">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">Repository (username/repo)</label>
+          <input type="text" id="ghRepo" placeholder="zahrulmo01-gif/dongflix2.0" class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 font-mono transition">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button onclick="saveGitHubConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Simpan Kredensial GitHub
+        </button>
+      </div>
+    </section>
+
     <!-- Trigger Actions Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <!-- Panel Katalog -->
@@ -232,7 +261,7 @@
         </div>
       </div>
 
-      <!-- List Kontainer Donghua Rapi (Tata Letak Tombol Responsif) -->
+      <!-- List Kontainer Donghua Rapi -->
       <div class="border border-slate-700/60 rounded-xl overflow-hidden bg-slate-950/80">
         <div class="max-h-80 overflow-y-auto divide-y divide-slate-800/60" id="donghuaListContainer">
           <div class="p-4 text-center text-xs text-slate-500">Memuat daftar donghua...</div>
@@ -258,7 +287,7 @@
         </div>
       </div>
       <div id="terminal" class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-1 select-text">
-        <div class="text-slate-500">[Info] Sistem siap. Token & repository dikelola otomatis melalui lingkungan Vercel.</div>
+        <div class="text-slate-500">[Info] Sistem siap. Token & repository langsung terhubung ke GitHub API.</div>
       </div>
     </section>
   </div>
@@ -320,6 +349,15 @@
     let allDonghuaData = [];
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Ambil konfigurasi GitHub yang tersimpan
+      const savedToken = localStorage.getItem('df_gh_token') || '';
+      const savedRepo = localStorage.getItem('df_gh_repo') || 'zahrulmo01-gif/dongflix2.0';
+      
+      const tokenInput = document.getElementById('ghToken');
+      const repoInput = document.getElementById('ghRepo');
+      if (tokenInput) tokenInput.value = savedToken;
+      if (repoInput) repoInput.value = savedRepo;
+
       const isAuth = sessionStorage.getItem('df_admin_auth');
       if (isAuth === 'true') {
         showDashboard();
@@ -333,6 +371,28 @@
         }
       }
     });
+
+    function saveGitHubConfig() {
+      const token = document.getElementById('ghToken').value.trim();
+      const repo = document.getElementById('ghRepo').value.trim();
+
+      if (!token || !repo) {
+        logTerminal('Token dan nama Repository wajib diisi!', 'warn');
+        alert('Mohon isi Token dan nama Repository GitHub Anda.');
+        return;
+      }
+
+      localStorage.setItem('df_gh_token', token);
+      localStorage.setItem('df_gh_repo', repo);
+      logTerminal(`Konfigurasi GitHub tersimpan untuk repo: ${repo}`, 'success');
+      alert('Kredensial GitHub berhasil disimpan di browser!');
+    }
+
+    function getGitHubCredentials() {
+      const token = (document.getElementById('ghToken').value || localStorage.getItem('df_gh_token') || '').trim();
+      const repo = (document.getElementById('ghRepo').value || localStorage.getItem('df_gh_repo') || '').trim();
+      return { token, repo };
+    }
 
     function handleAdminLogin(e) {
       e.preventDefault();
@@ -425,14 +485,13 @@
         allDonghuaData = await res.json();
         countLabel.textContent = `${allDonghuaData.length} Donghua terdaftar`;
         renderDonghuaItems(allDonghuaData);
-        logTerminal(`[Katalog] Berhasil mengambil ${allDonghuaData.length} judul dari GitHub Proxy.`, 'success');
+        logTerminal(`[Katalog] Berhasil mengambil ${allDonghuaData.length} judul.`, 'success');
       } catch (err) {
         container.innerHTML = `<div class="p-4 text-center text-xs text-rose-400">Gagal mengambil katalog: ${err.message}</div>`;
         logTerminal(`[Katalog Error] ${err.message}`, 'error');
       }
     }
 
-    // List item responsif dengan tata letak flex agar tombol Edit & Scrape tersusun rapi
     function renderDonghuaItems(items) {
       const container = document.getElementById('donghuaListContainer');
       if (!container) return;
@@ -531,47 +590,44 @@
 
       closeEditModal();
       logTerminal(`Menyimpan perubahan manual untuk: ${updatedData.title}...`, 'info');
+      triggerWorkflow('update-manual-item', { original_slug: originalSlug, updated_item: updatedData });
+    }
+
+    // Mengirim Trigger Repository Dispatch Langsung ke GitHub API
+    async function triggerWorkflow(eventType, clientPayload = {}) {
+      const { token, repo } = getGitHubCredentials();
+
+      if (!token || !repo) {
+        logTerminal(`[Gagal] Token GitHub atau Repository belum diisi! Silakan lengkapi form di atas.`, 'error');
+        alert('Mohon isi dan simpan GitHub Token serta Repository di panel atas terlebih dahulu.');
+        return;
+      }
+
+      logTerminal(`Mengirim trigger [${eventType}] langsung ke GitHub: ${repo}...`);
 
       try {
-        const res = await fetch('/api/admin/dispatch', {
+        const res = await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({
-            event_type: 'update-manual-item',
-            client_payload: { original_slug: originalSlug, updated_item: updatedData }
+            event_type: eventType,
+            client_payload: clientPayload
           })
         });
 
-        if (res.ok) {
-          logTerminal(`Perubahan manual untuk "${updatedData.title}" berhasil disimpan ke GitHub!`, 'success');
-          setTimeout(loadDonghuaList, 3000);
-        } else {
-          logTerminal(`Gagal menyimpan perubahan manual.`, 'error');
-        }
-      } catch (err) {
-        logTerminal(`Gagal mengirim data edit manual: ${err.message}`, 'error');
-      }
-    }
-
-    async function triggerWorkflow(eventType, clientPayload = {}) {
-      logTerminal(`Mengirim trigger [${eventType}] ke server Vercel API...`);
-
-      try {
-        const res = await fetch('/api/admin/dispatch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event_type: eventType, client_payload: clientPayload })
-        });
-
-        if (res.ok) {
-          logTerminal(`Workflow [${eventType}] berhasil dipicu melalui Environment Vercel!`, 'success');
+        if (res.status === 204) {
+          logTerminal(`Trigger [${eventType}] berhasil dikirim ke GitHub Actions!`, 'success');
           setTimeout(fetchLatestLogs, 4000);
         } else {
-          const errData = await res.json().catch(() => ({}));
-          logTerminal(`Gagal memicu (${res.status}): ${errData.message || 'Periksa pengaturan env Vercel.'}`, 'error');
+          const errText = await res.text();
+          logTerminal(`Gagal memicu GitHub (${res.status}): ${errText || 'Token tidak valid atau tidak ada izin workflow.'}`, 'error');
         }
       } catch (err) {
-        logTerminal(`Request gagal: ${err.message}`, 'error');
+        logTerminal(`Koneksi ke GitHub gagal: ${err.message}`, 'error');
       }
     }
 
@@ -582,7 +638,25 @@
     }
 
     async function fetchLatestLogs() {
-      logTerminal('Memeriksa status action terbaru dari server...', 'info');
+      const { token, repo } = getGitHubCredentials();
+      if (!token || !repo) return;
+
+      logTerminal('Memeriksa status action runner terbaru di GitHub...', 'info');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repo}/actions/runs?per_page=1`, {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.workflow_runs && data.workflow_runs.length > 0) {
+            const run = data.workflow_runs[0];
+            logTerminal(`[Runner] ${run.name} (#${run.run_number}) -> Status: ${run.status}, Kesimpulan: ${run.conclusion || 'sedang berjalan'}`, 'success');
+          }
+        }
+      } catch (_) {}
     }
   </script>
 </body>
