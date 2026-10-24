@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Masuk & Daftar - Dongflix</title>
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+
+  <script type="module" src="/assets/firebase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-card: #0c121e;
+      --color-primary: #0284c7;
+      --color-accent: #38bdf8;
+      --text-main: #ffffff;
+      --text-sub: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.12);
+      --glass-bg: rgba(15, 23, 42, 0.7);
+      --glass-blur: blur(20px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      border-radius: 16px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-accent);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .brand-header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-header p {
+      font-size: 12.5px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .tab-switch {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      background: #060a12;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0 14px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--color-accent);
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 46px;
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit:active { transform: scale(0.98); }
+
+    .alert-box {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-bottom: 14px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .alert-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+    }
+
+    .alert-success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+    }
+
+    .back-home-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-sub);
+      text-decoration: none;
+    }
+    .back-home-link:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow"></div>
+
+  <div class="login-card">
+    <div class="brand-header">
+      <div class="brand-logo">DF</div>
+      <h1 id="panelTitle">Masuk ke Akun</h1>
+      <p id="panelSub">Simpan bookmark, histori tontonan, dan ikut berkomentar</p>
+    </div>
+
+    <!-- Alert Notifikasi -->
+    <div id="alertBox" class="alert-box"></div>
+
+    <!-- Switch Tab Login / Register -->
+    <div class="tab-switch">
+      <button type="button" class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Masuk</button>
+      <button type="button" class="tab-btn" id="tabRegister" onclick="switchTab('register')">Daftar Akun</button>
+    </div>
+
+    <!-- Form Autentikasi -->
+    <form id="authForm" onsubmit="handleAuthSubmit(event)">
+      <div class="form-group" id="groupName" style="display: none;">
+        <label>Nama Pengguna</label>
+        <input type="text" id="inputName" class="form-input" placeholder="Masukkan nama Anda..." autocomplete="nickname">
+      </div>
+
+      <div class="form-group">
+        <label>Alamat Email</label>
+        <input type="email" id="inputEmail" class="form-input" placeholder="nama@email.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="inputPassword" class="form-input" placeholder="Minimal 6 karakter..." required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnSubmit">Masuk Sekarang</button>
+    </form>
+
+    <a href="/" class="back-home-link">← Kembali ke Beranda Dongflix</a>
+  </div>
+
+  <script type="module">
+    import { auth, db, ref, get, set, onAuthStateChanged } from '/assets/firebase-config.js';
+    import { 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    window.auth = auth;
+    window.db = db;
+    window.fbRef = ref;
+    window.fbGet = get;
+    window.fbSet = set;
+    window.fbSignIn = signInWithEmailAndPassword;
+    window.fbCreateUser = createUserWithEmailAndPassword;
+
+    // Jika sudah login, langsung alihkan ke profil
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = '/profil/';
+      }
+    });
+  </script>
+
+  <script>
+    let currentMode = 'login';
+    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+
+    function switchTab(mode) {
+      currentMode = mode;
+      const tabLogin = document.getElementById('tabLogin');
+      const tabRegister = document.getElementById('tabRegister');
+      const groupName = document.getElementById('groupName');
+      const btnSubmit = document.getElementById('btnSubmit');
+      const panelTitle = document.getElementById('panelTitle');
+      const panelSub = document.getElementById('panelSub');
+      const alertBox = document.getElementById('alertBox');
+
+      alertBox.style.display = 'none';
+
+      if (mode === 'login') {
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        groupName.style.display = 'none';
+        btnSubmit.innerText = 'Masuk Sekarang';
+        panelTitle.innerText = 'Masuk ke Akun';
+        panelSub.innerText = 'Simpan bookmark, histori tontonan, dan ikut berkomentar';
+      } else {
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        groupName.style.display = 'block';
+        btnSubmit.innerText = 'Daftarkan Akun';
+        panelTitle.innerText = 'Buat Akun Baru';
+        panelSub.innerText = 'Bergabunglah bersama komunitas penonton Dongflix';
+      }
+    }
+
+    function showAlert(msg, isSuccess = false) {
+      const box = document.getElementById('alertBox');
+      box.className = `alert-box ${isSuccess ? 'alert-success' : 'alert-error'}`;
+      box.innerText = msg;
+      box.style.display = 'block';
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('inputEmail').value.trim();
+      const password = document.getElementById('inputPassword').value;
+      const name = document.getElementById('inputName').value.trim();
+      const btn = document.getElementById('btnSubmit');
+
+      if (!window.auth || !window.fbSignIn || !window.fbCreateUser) {
+        showAlert('Menghubungkan ke server Firebase, mohon tunggu sesaat...');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Memproses...';
+
+      try {
+        if (currentMode === 'login') {
+          await window.fbSignIn(window.auth, email, password);
+          showAlert('Login berhasil! Mengalihkan...', true);
+          setTimeout(() => { window.location.href = '/profil/'; }, 800);
+        } else {
+          const userCredential = await window.fbCreateUser(window.auth, email, password);
+          const user = userCredential.user;
+
+          // Simpan data profil awal ke Realtime Database
+          if (window.db && window.fbRef && window.fbSet) {
+            const emailKey = email.toLowerCase().replace(/\./g, ',');
+            const role = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
+            
+            await window.fbSet(window.fbRef(window.db, `users/${emailKey}`), {
+              name: name || `user${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+              email: email,
+              photoURL: '',
+              status: role,
+              level: 1,
+              followersCount: 0,
+              followingCount: 0,
+              createdAt: Date.now()
+            });
+          }
+
+          showAlert('Pendaftaran sukses! Mengalihkan ke profil...', true);
+          setTimeout(() => { window.location.href = '/profil/'; }, 1000);
+        }
+      } catch (err) {
+        let msg = err.message;
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+          msg = 'Email atau password yang Anda masukkan salah.';
+        } else if (err.code === 'auth/email-already-in-use') {
+          msg = 'Email ini sudah terdaftar. Silakan login.';
+        } else if (err.code === 'auth/weak-password') {
+          msg = 'Password terlalu lemah (minimal 6 karakter).';
+        }
+        showAlert(msg, false);
+        btn.disabled = false;
+        btn.innerText = currentMode === 'login' ? 'Masuk Sekarang' : 'Daftarkan Akun';
+      }
+    }
+  </script>
+</body>
+</html>
