@@ -702,6 +702,7 @@
   let episodeSortMode = 'oldest';
   let hasIncrementedView = false;
   let currentSortMode = 'latest';
+  let currentViewCount = '0';
   const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
@@ -772,7 +773,7 @@
 
       <div class="action-item">
         <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span id="viewCountText">0</span>
+        <span id="viewCountText">${currentViewCount}</span>
       </div>
 
       <button class="action-item" id="btnFavorite" onclick="toggleFavorite()">
@@ -790,6 +791,7 @@
         <span>Bagikan</span>
       </button>
     `;
+    checkFavorite();
   }
 
   function updateSocialMetaTags(title, cover, synopsis, slug) {
@@ -970,8 +972,9 @@
 
         if (result && result.snapshot) {
           const newVal = result.snapshot.val();
+          currentViewCount = formatViewDisplay(newVal);
           const countEl = document.getElementById('viewCountText');
-          if (countEl) countEl.innerText = formatViewDisplay(newVal);
+          if (countEl) countEl.innerText = currentViewCount;
         }
 
         window.fbTransaction(dailyRef, (currentVal) => {
@@ -983,8 +986,9 @@
         const newCount = currentCount + 1;
         
         await window.fbSet(totalRef, newCount);
+        currentViewCount = formatViewDisplay(newCount);
         const countEl = document.getElementById('viewCountText');
-        if (countEl) countEl.innerText = formatViewDisplay(newCount);
+        if (countEl) countEl.innerText = currentViewCount;
 
         const dailySnap = await window.fbGet(dailyRef);
         const dailyCount = dailySnap.exists() ? (parseInt(dailySnap.val(), 10) || 0) : 0;
@@ -995,8 +999,9 @@
       try {
         const snap = await window.fbGet(totalRef);
         if (snap.exists()) {
+          currentViewCount = formatViewDisplay(snap.val());
           const countEl = document.getElementById('viewCountText');
-          if (countEl) countEl.innerText = formatViewDisplay(snap.val());
+          if (countEl) countEl.innerText = currentViewCount;
         }
       } catch (_) {}
     }
