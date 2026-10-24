@@ -6,16 +6,13 @@
   <meta name="referrer" content="no-referrer">
   <title>Dongflix - Streaming Donghua Sub Indo</title>
   
-  <!-- Favicon / Ikon Web (Lokal/Internal Repository) -->
   <link rel="icon" type="image/png" href="image/IMG_6395.png">
   <link rel="apple-touch-icon" href="image/IMG_6395.png">
 
-  <!-- Google Fonts untuk styling font khusus tulisan flix -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Konfigurasi Firebase Modular -->
   <script type="module" src="/assets/firebase-config.js"></script>
 
   <style>
@@ -31,7 +28,6 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
-      /* iOS Glass Tokens */
       --glass-bg: rgba(20, 20, 24, 0.58);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
@@ -39,12 +35,7 @@
       --glass-blur: blur(16px);
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      touch-action: manipulation; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
     
     body { 
       background-color: var(--bg-main); 
@@ -59,7 +50,6 @@
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
-    /* FLOATING GLASS PILL HEADER */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -168,7 +158,6 @@
 
     .action-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    /* GLASS POPOVER MENU */
     .popover-menu {
       display: none;
       position: fixed;
@@ -201,7 +190,6 @@
     }
     .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-    /* SEARCH MODAL */
     .modal-overlay { 
       display: none; 
       position: fixed; 
@@ -246,7 +234,6 @@
       color: #ffffff; font-size: 9px; font-weight: 800; padding: 2.5px 8px; border-radius: 9999px;
     }
 
-    /* PLACEHOLDER SKELETON */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
 
@@ -260,7 +247,6 @@
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
@@ -398,12 +384,10 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.6); 
     }
 
-    /* CONTENT SECTIONS */
     .section-block { margin-top: 40px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-    /* LANJUTKAN MENONTON */
     .continue-section-wrapper { margin-top: 36px; margin-bottom: 24px; }
     .continue-section-wrapper .section-title { margin-bottom: 16px; }
     .continue-scroll-row {
@@ -479,7 +463,6 @@
       flex-shrink: 0;
     }
 
-    /* BADGE KATEGORI / GENRE */
     .genre-scroll-wrapper { margin-top: 36px; margin-bottom: 8px; }
     .genre-scroll-row {
       display: flex;
@@ -518,7 +501,6 @@
       color: #ffffff;
     }
 
-    /* CARD GRID DONGHUA & MOVIE */
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 22px; }
     .card-grid { text-decoration: none !important; border: none !important; }
     .card-grid-img-wrapper { 
@@ -543,7 +525,6 @@
       padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
     }
 
-    /* BARIS BAWAH COVER (EPISODE KIRI & BADGE MATA KANAN) */
     .card-bottom-info {
       position: absolute; bottom: 8px; left: 8px; right: 8px;
       display: flex; justify-content: space-between; align-items: center; z-index: 2; pointer-events: none;
@@ -555,7 +536,6 @@
       padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
     }
 
-    /* BADGE VIEW MATA DI COVER */
     .badge-view-count {
       display: inline-flex;
       align-items: center;
@@ -584,7 +564,6 @@
     }
     .see-all-btn { color: var(--color-accent); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
 
-    /* FEATURED POPULER */
     .popular-featured-row { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .popular-featured-row::-webkit-scrollbar { display: none; }
     .popular-featured-card { flex: 0 0 88%; max-width: 380px; height: 185px; display: flex; gap: 14px; text-decoration: none !important; }
@@ -620,7 +599,6 @@
       color: #d1d5db; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 9999px;
     }
 
-    /* BACK TO TOP */
     .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
     .floating-circle-btn {
       width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
@@ -646,7 +624,6 @@
 </head>
 <body>
 
-  <!-- FLOATING GLASS PILL HEADER -->
   <header class="header-bar">
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
@@ -668,7 +645,6 @@
     </div>
   </header>
 
-  <!-- GLASS POPOVER MENU -->
   <div class="popover-menu" id="popoverMenu">
     <a href="/"><span>Beranda</span><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
     <a href="/donghua/"><span>Katalog Lengkap</span><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></a>
@@ -676,7 +652,6 @@
     <a href="/donghua/?type=movie"><span>Movie Terbaru</span><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg></a>
   </div>
 
-  <!-- SEARCH MODAL -->
   <div class="modal-overlay" id="searchModalOverlay">
     <div class="search-modal-container">
       <div class="search-modal-header">
@@ -701,7 +676,6 @@
     </div>
   </div>
 
-  <!-- HERO SLIDER PLACEHOLDER AWAL -->
   <div class="hero-slider-wrapper" id="heroSlider">
     <div class="skeleton skeleton-hero">
       <div style="width: 100%; max-width: 760px; margin: 0 auto;">
@@ -714,7 +688,6 @@
   </div>
 
   <div class="container">
-    <!-- 1. LANJUTKAN MENONTON -->
     <section class="section-block continue-section-wrapper" id="continueSection" style="display: none !important;">
       <h2 class="section-title">
         <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -723,7 +696,7 @@
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
-    <!-- 2. POPULER HARI INI (DIURUTKAN DARI VIEWS TERBANYAK) -->
+    <!-- POPULER HARI INI (BERDASARKAN views_daily HARI INI) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -757,7 +730,6 @@
       </div>
     </section>
 
-    <!-- 3. DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -776,7 +748,6 @@
       </div>
     </section>
 
-    <!-- BADGE KATEGORI / GENRE -->
     <div class="genre-scroll-wrapper">
       <div class="genre-scroll-row" id="genreBar">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
@@ -794,7 +765,6 @@
       </div>
     </div>
 
-    <!-- 4. MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -810,7 +780,7 @@
       </div>
     </section>
 
-    <!-- 5. DONGHUA POPULER (DIURUTKAN DARI VIEWS FIREBASE) -->
+    <!-- DONGHUA POPULER (BERDASARKAN views_total AKUMULASI) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -857,7 +827,6 @@
     </div>
   </footer>
 
-  <!-- SCRIPT KONEKSI FIREBASE UNTUK VIEWS TOTAL -->
   <script type="module">
     try {
       const fb = await import('/assets/firebase-config.js');
@@ -865,7 +834,6 @@
       window.fbRef = fb.ref;
       window.fbGet = fb.get;
 
-      // Panggil sinkronisasi views ke tampilan
       if (typeof window.syncFirebaseViews === 'function') {
         window.syncFirebaseViews();
       }
@@ -881,7 +849,8 @@
     let donghuaList = [];
     let movieList = [];
     let masterList = [];
-    let viewsDataMap = {}; // Menyimpan data views_total dari Firebase
+    let viewsDataMap = {}; // views_total
+    let dailyViewsMap = {}; // views_daily hari ini
 
     function formatViewCount(val) {
       const num = parseInt(val, 10);
@@ -889,6 +858,14 @@
       if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
       if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
       return String(num);
+    }
+
+    function getTodayDateString() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
 
     function sanitizeTitle(rawTitle) {
@@ -1185,8 +1162,19 @@
       }
     }
 
-    /* FUNGSI PENGURUTAN POPULER BERDASARKAN VIEWS FIREBASE */
-    function getSortedByViewsList() {
+    /* PENGURUTAN: Populer Hari Ini (views_daily) & Populer Akumulasi (views_total) */
+    function getSortedDailyList() {
+      return [...masterList].sort((a, b) => {
+        const viewsA = parseInt(dailyViewsMap[a.slug] || 0, 10);
+        const viewsB = parseInt(dailyViewsMap[b.slug] || 0, 10);
+        if (viewsB === viewsA) {
+          return parseInt(viewsDataMap[b.slug] || 0, 10) - parseInt(viewsDataMap[a.slug] || 0, 10);
+        }
+        return viewsB - viewsA;
+      });
+    }
+
+    function getSortedTotalList() {
       return [...masterList].sort((a, b) => {
         const viewsA = parseInt(viewsDataMap[a.slug] || 0, 10);
         const viewsB = parseInt(viewsDataMap[b.slug] || 0, 10);
@@ -1195,44 +1183,51 @@
     }
 
     function renderPopularSections() {
-      const popularSorted = getSortedByViewsList();
-
-      // Render Populer Hari Ini (Peringkat 1 s/d 6 Terbanyak)
+      // 1. Populer Hari Ini -> Diambil dari views_daily hari ini
+      const dailySorted = getSortedDailyList();
       const popRow = document.getElementById('todayPopularRow');
       if (popRow) {
         popRow.innerHTML = '';
-        popularSorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
+        dailySorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
       }
 
-      // Render Donghua Populer (Peringkat berikutnya)
+      // 2. Donghua Populer -> Diambil dari views_total
+      const totalSorted = getSortedTotalList();
       const popAllGrid = document.getElementById('popularAllGrid');
       if (popAllGrid) {
         popAllGrid.innerHTML = '';
-        popularSorted.slice(6, 12).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
+        totalSorted.slice(0, 6).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
       }
     }
 
-    /* AMBIL DATA VIEWS DARI FIREBASE -> views_total */
+    /* SINKRONISASI views_total & views_daily DARI FIREBASE */
     window.syncFirebaseViews = async function() {
       if (!window.db || !window.fbRef || !window.fbGet) return;
 
+      const todayStr = getTodayDateString();
+
       try {
-        const snap = await window.fbGet(window.fbRef(window.db, 'views_total'));
-        if (snap.exists()) {
-          viewsDataMap = snap.val() || {};
+        const [snapTotal, snapDaily] = await Promise.all([
+          window.fbGet(window.fbRef(window.db, 'views_total')),
+          window.fbGet(window.fbRef(window.db, `views_daily/${todayStr}`))
+        ]);
 
-          // Perbarui teks view counter pada seluruh kartu yang sudah ada
-          document.querySelectorAll('.view-num').forEach(el => {
-            const slug = el.getAttribute('data-slug');
-            if (slug && viewsDataMap[slug] !== undefined) {
-              el.innerText = formatViewCount(viewsDataMap[slug]);
-            }
-          });
+        if (snapTotal.exists()) {
+          viewsDataMap = snapTotal.val() || {};
+        }
+        if (snapDaily.exists()) {
+          dailyViewsMap = snapDaily.val() || {};
+        }
 
-          // Urutkan ulang Donghua Populer berdasarkan views tertinggi
-          if (masterList.length > 0) {
-            renderPopularSections();
+        document.querySelectorAll('.view-num').forEach(el => {
+          const slug = el.getAttribute('data-slug');
+          if (slug && viewsDataMap[slug] !== undefined) {
+            el.innerText = formatViewCount(viewsDataMap[slug]);
           }
+        });
+
+        if (masterList.length > 0) {
+          renderPopularSections();
         }
       } catch (_) {}
     };
@@ -1259,7 +1254,6 @@
         movieGrid.innerHTML = '';
         movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item)));
 
-        // Ambil data view Firebase jika sudah siap
         if (window.syncFirebaseViews) {
           window.syncFirebaseViews();
         }
