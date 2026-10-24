@@ -131,7 +131,7 @@
       text-overflow: ellipsis;
     }
 
-    /* PLAYER WRAPPER & COOL BLUE LOADER */
+    /* PLAYER WRAPPER & BLUE CIRCLE LOADER */
     .player-wrapper {
       margin: 0 -16px 18px;
       width: calc(100% + 32px);
@@ -247,7 +247,7 @@
       border-radius: 8px; 
     }
 
-    /* HOLDER ACTION BAR */
+    /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center; background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 6px; margin-bottom: 24px; position: relative;
@@ -357,7 +357,7 @@
     .recommendations-scroll-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .recommendations-scroll-row::-webkit-scrollbar { display: none; }
 
-    /* SHEET & KOMENTAR ALA TIKTOK */
+    /* SHEET & TIKTOK COMMENT STYLES */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -412,9 +412,7 @@
       stroke-width: 2.2;
     }
 
-    .btn-sort-wrapper {
-      position: relative;
-    }
+    .btn-sort-wrapper { position: relative; }
 
     .btn-sort-svg {
       background: rgba(255, 255, 255, 0.06);
@@ -457,9 +455,7 @@
       z-index: 120;
     }
 
-    .sort-dropdown-menu.active {
-      display: block;
-    }
+    .sort-dropdown-menu.active { display: block; }
 
     .sort-dropdown-item {
       display: flex;
@@ -1005,24 +1001,21 @@
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
-  function cleanSlug(str) {
-    let raw = String(str || '').trim();
-    if (!raw) {
-      const urlParams = new URLSearchParams(window.location.search);
-      raw = urlParams.get('slug') || window.location.pathname;
+  /* FUNGSI PEMBERSIH SLUG AKURAT UNTUK SEMUA FORMAT URL */
+  function getCleanMainSlug() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let s = urlParams.get('slug');
+    if (!s) {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const donghuaIdx = parts.indexOf('donghua');
+      if (donghuaIdx !== -1 && parts[donghuaIdx + 1]) {
+        s = parts[donghuaIdx + 1];
+      } else {
+        s = parts[parts.length - 1] || '';
+      }
     }
-    raw = raw.replace(/^https?:\/\/[^\/]+/i, '').split('?')[0].split('#')[0];
-    const parts = raw.split('/').filter(Boolean);
-    const donghuaIdx = parts.indexOf('donghua');
-    if (donghuaIdx !== -1 && parts[donghuaIdx + 1]) {
-      return parts[donghuaIdx + 1];
-    }
-    return parts[parts.length - 1] || '';
-  }
-
-  function getCleanMainSlug(str) {
-    const raw = cleanSlug(str);
-    return raw.replace(/-episode-\d+.*$/i, '').replace(/-ep-\d+.*$/i, '');
+    s = String(s || '').trim().replace(/^https?:\/\/[^\/]+/i, '').split('?')[0].split('#')[0];
+    return s.replace(/-episode-\d+.*$/i, '').replace(/-ep-\d+.*$/i, '').replace(/^\/+|\/+$/g, '');
   }
 
   let targetSlug = getCleanMainSlug();
@@ -1610,7 +1603,62 @@
     if (loader) loader.classList.add('hidden');
   }
 
+  function renderSmartRecommendations(currentGenres, currentSlug, catalog) {
+    const section = document.getElementById('recommendationsSection');
+    const row = document.getElementById('recommendationsRow');
+    if (!section || !row || !Array.isArray(catalog)) return;
+
+    const others = catalog.filter(item => item.slug !== currentSlug);
+    if (others.length === 0) return;
+
+    const scored = others.map(item => {
+      let score = 0;
+      const itemGenres = Array.isArray(item.genres) 
+        ? item.genres 
+        : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
+
+      if (currentGenres && currentGenres.length > 0) {
+        itemGenres.forEach(g => {
+          if (g && currentGenres.some(cg => cg.toLowerCase() === g.toLowerCase())) {
+            score += 2;
+          }
+        });
+      }
+      score += Math.random() * 0.5;
+      return { item, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const topRecs = scored.slice(0, 15).map(s => s.item);
+
+    if (topRecs.length === 0) return;
+
+    row.innerHTML = topRecs.map(item => {
+      const title = sanitizeTitle(item.title);
+      const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
+      const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
+      const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
+      const epText = isMovie ? 'MOVIE' : `Ep ${epNum}`;
+      const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'TAMAT' : 'ONGOING';
+
+      return `
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-card-item">
+          <div class="rec-poster-box">
+            <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" />
+            <span class="rec-badge-status">${statusText}</span>
+            <span class="rec-badge-ep">${epText}</span>
+          </div>
+          <div class="rec-card-title">${title}</div>
+        </a>
+      `;
+    }).join('');
+
+    section.style.display = 'block';
+  }
+
   async function loadDetail() {
+    targetSlug = getCleanMainSlug();
+
     if (!targetSlug) {
       document.getElementById('playerMediaContainer').innerHTML = '<div style="color:var(--text-muted);">Donghua tidak tersedia</div>';
       document.getElementById('mainContentGroup').style.display = 'none';
@@ -1619,59 +1667,78 @@
     }
 
     try {
+      let catalog = null;
+      let info = null;
+
       const catRes = await fetch('/api/donghua?path=donghua.json');
       if (catRes.ok) {
-        const catalog = await catRes.json();
-        const info = catalog.find(d => d.slug === targetSlug);
+        catalog = await catRes.json();
+        info = catalog.find(d => String(d.slug).toLowerCase() === targetSlug.toLowerCase());
+      }
 
-        if (!info) {
-          document.getElementById('playerMediaContainer').innerHTML = '<div style="color:var(--text-muted);">Donghua tidak tersedia</div>';
-          document.getElementById('mainContentGroup').style.display = 'none';
-          document.getElementById('notFoundBox').style.display = 'flex';
-          return;
+      if (!info) {
+        let altRes = await fetch(`/api/detail?slug=${encodeURIComponent(targetSlug)}`).then(r => r.json()).catch(() => null);
+        if (altRes && altRes.success && altRes.data) {
+          info = {
+            slug: targetSlug,
+            title: altRes.data.judul || altRes.data.title || initialDisplayTitle,
+            cover: altRes.data.poster || '',
+            synopsis: altRes.data.synopsis || altRes.data.desc || '',
+            status: altRes.data.status || 'Ongoing',
+            released: altRes.data.released || '-',
+            genres: altRes.data.genres || ['Action', 'Fantasy']
+          };
         }
+      }
 
-        if (typeof window.triggerViewIncrement === 'function') {
-          window.triggerViewIncrement();
-        }
-
-        currentMainTitle = sanitizeTitle(info.title);
-        currentPoster = info.cover || info.poster || info.thumbnail || '';
-        const currentSynopsis = info.synopsis || info.description || info.desc || '';
-
-        updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
-
-        document.getElementById('topHeaderTitle').innerText = currentMainTitle;
-
-        const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
-        const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
-
-        document.getElementById('mediaDetailsGroup').innerHTML = `
-          <div class="media-meta-card">
-            <div class="media-cover-wrapper">
-              <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" alt="${currentMainTitle}" />
-            </div>
-            <div class="media-info-col">
-              <h1 class="media-title">${currentMainTitle}</h1>
-              <div class="genre-badges-row">${genresHtml}</div>
-              <div class="status-release-row">
-                <span>Status: <strong>${info.status || 'Ongoing'}</strong></span>
-                <span>Rilis: <strong>${info.released || '-'}</strong></span>
-              </div>
-            </div>
-          </div>
-          <div class="synopsis-block">
-            <div class="synopsis-heading">SINOPSIS</div>
-            <p class="synopsis-text">${currentSynopsis || 'Tidak ada deskripsi sinopsis.'}</p>
-          </div>
-        `;
-
-        renderSmartRecommendations(genresList, targetSlug, catalog);
-      } else {
+      if (!info) {
+        hidePlayerLoader();
         document.getElementById('playerMediaContainer').innerHTML = '<div style="color:var(--text-muted);">Donghua tidak tersedia</div>';
         document.getElementById('mainContentGroup').style.display = 'none';
         document.getElementById('notFoundBox').style.display = 'flex';
         return;
+      }
+
+      // RESET TAMPILAN JIKA DONGHUA ADA
+      document.getElementById('mainContentGroup').style.display = 'block';
+      document.getElementById('notFoundBox').style.display = 'none';
+
+      if (typeof window.triggerViewIncrement === 'function') {
+        window.triggerViewIncrement();
+      }
+
+      currentMainTitle = sanitizeTitle(info.title);
+      currentPoster = info.cover || info.poster || info.thumbnail || '';
+      const currentSynopsis = info.synopsis || info.description || info.desc || '';
+
+      updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
+      document.getElementById('topHeaderTitle').innerText = currentMainTitle;
+
+      const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
+      const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
+
+      document.getElementById('mediaDetailsGroup').innerHTML = `
+        <div class="media-meta-card">
+          <div class="media-cover-wrapper">
+            <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" alt="${currentMainTitle}" />
+          </div>
+          <div class="media-info-col">
+            <h1 class="media-title">${currentMainTitle}</h1>
+            <div class="genre-badges-row">${genresHtml}</div>
+            <div class="status-release-row">
+              <span>Status: <strong>${info.status || 'Ongoing'}</strong></span>
+              <span>Rilis: <strong>${info.released || '-'}</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="synopsis-block">
+          <div class="synopsis-heading">SINOPSIS</div>
+          <p class="synopsis-text">${currentSynopsis || 'Tidak ada deskripsi sinopsis.'}</p>
+        </div>
+      `;
+
+      if (Array.isArray(catalog)) {
+        renderSmartRecommendations(genresList, targetSlug, catalog);
       }
 
       const epRes = await fetch(`/api/donghua?path=episodes/${encodeURIComponent(targetSlug)}.json`);
