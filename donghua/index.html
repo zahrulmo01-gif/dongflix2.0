@@ -4,16 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Katalog Donghua - Dongflix</title>
+  <title>Katalog Donghua Sub Indo Lengkap - Dongflix</title>
   
+  <!-- Meta Tag Dasar & SEO -->
+  <meta name="description" content="Jelajahi katalog lengkap donghua (anime China) subtitle Indonesia terbaru, ongoing, tamat, dan movie di Dongflix. Nonton streaming gratis kualitas HD tanpa buffering.">
+  <meta name="keywords" content="katalog donghua, daftar donghua sub indo, anime china lengkap, streaming donghua hd, dongflix katalog, nonton donghua gratis">
+  <meta name="author" content="Dongflix">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+  <link rel="canonical" href="https://dongflix.my.id/donghua/">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dongflix">
+  <meta property="og:title" content="Katalog Donghua Sub Indo Lengkap - Dongflix">
+  <meta property="og:description" content="Temukan dan tonton ribuan judul donghua subtitle Indonesia terlengkap dan terupdate kualitas HD di Dongflix.">
+  <meta property="og:url" content="https://dongflix.my.id/donghua/">
+  <meta property="og:image" content="https://dongflix.my.id/image/IMG_6395.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Katalog Donghua Dongflix">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Katalog Donghua Sub Indo Lengkap - Dongflix">
+  <meta name="twitter:description" content="Temukan dan tonton ribuan judul donghua subtitle Indonesia terlengkap dan terupdate kualitas HD di Dongflix.">
+  <meta name="twitter:image" content="https://dongflix.my.id/image/IMG_6395.png">
+
   <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+  <meta name="theme-color" content="#000000">
 
-  <!-- Google Fonts untuk styling font khusus tulisan flix -->
+  <!-- Structured Data JSON-LD (CollectionPage Schema) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Katalog Donghua Sub Indo Lengkap - Dongflix",
+    "url": "https://dongflix.my.id/donghua/",
+    "description": "Daftar katalog donghua subtitle Indonesia terlengkap dengan pembaruan harian di Dongflix.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Dongflix",
+      "url": "https://dongflix.my.id/"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase Config Modular -->
+  <script type="module" src="/assets/firebase-config.js"></script>
 
   <style>
     :root {
@@ -23,7 +68,7 @@
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
-      --color-movie: #f59e0b;
+      --color-star: #f59e0b;
       --text-main: #ffffff;
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
@@ -36,18 +81,13 @@
       --glass-blur: blur(16px);
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      touch-action: manipulation; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
     
     body { 
       background-color: var(--bg-main); 
       color: var(--text-main); 
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
-      padding-top: 76px;
+      padding-top: 86px;
       padding-bottom: 50px; 
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
@@ -55,7 +95,7 @@
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-    /* FLOATING GLASS PILL HEADER */
+    /* FLOATING PILL HEADER */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -70,7 +110,6 @@
       padding: 0 16px;
       pointer-events: none;
       transform: translateZ(0);
-      will-change: transform;
     }
 
     .header-bar > * { pointer-events: auto; }
@@ -111,6 +150,7 @@
       box-shadow: var(--glass-shadow);
       cursor: pointer;
       transform: translateZ(0);
+      text-decoration: none;
     }
 
     .brand-title-capsule { 
@@ -128,8 +168,6 @@
       width: 24px;
       height: 24px;
       object-fit: contain;
-      display: inline-block;
-      vertical-align: middle;
       background: transparent !important;
     }
 
@@ -140,6 +178,8 @@
       letter-spacing: 0.2px;
       text-shadow: 0 0 14px rgba(56, 189, 248, 0.6); 
     }
+
+    .header-actions-group { display: flex; align-items: center; gap: 10px; }
 
     .action-btn {
       width: 46px;
@@ -158,91 +198,56 @@
       box-shadow: var(--glass-shadow);
       flex-shrink: 0;
       transform: translateZ(0);
-      text-decoration: none;
     }
 
-    .action-btn:hover {
-      background: rgba(26, 26, 32, 0.75);
-      border-color: rgba(56, 189, 248, 0.45);
-      color: var(--color-accent);
-    }
+    .action-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    .action-btn svg { 
-      width: 19px; 
-      height: 19px; 
-      stroke: currentColor; 
-      fill: none; 
-      stroke-width: 2.2; 
-      stroke-linecap: round; 
-      stroke-linejoin: round; 
-    }
-
-    /* SEARCH & FILTER CONTROLS */
-    .catalog-top-panel {
-      margin-top: 12px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .search-box-wrap {
-      position: relative;
-      width: 100%;
-      height: 48px;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-icon-svg {
-      position: absolute;
-      left: 18px;
-      width: 19px;
-      height: 19px;
-      stroke: #9ca3af;
-      fill: none;
-      stroke-width: 2.3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .search-field {
-      width: 100%;
-      height: 100%;
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
+    /* GLASS POPOVER MENU */
+    .popover-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      right: 16px;
+      background: rgba(22, 22, 26, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
-      border-radius: 9999px;
-      padding: 0 20px 0 48px;
+      border-radius: 18px;
+      padding: 8px;
+      min-width: 210px;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6);
+      z-index: 105;
+      transform: translateZ(0);
+    }
+
+    .popover-menu.active { display: block; }
+    .popover-menu a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
       color: var(--text-main);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      box-shadow: var(--glass-shadow);
-      transition: border-color 0.2s;
-      position: relative;
-      z-index: 1;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 12px;
     }
+    .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-    .search-field::placeholder { color: #9ca3af; }
+    /* SEARCH & FILTER CONTROLS */
+    .catalog-header-section { margin-bottom: 24px; }
+    .catalog-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .catalog-title { font-size: 20px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 8px; }
+    .catalog-total-badge { font-size: 11.5px; font-weight: 700; color: var(--color-accent); background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.3); padding: 4px 10px; border-radius: 9999px; }
 
-    .search-field:focus {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
-    }
-
-    /* BARIS FILTER TIPE */
     .filter-pills-row {
       display: flex;
       gap: 8px;
       overflow-x: auto;
+      padding-bottom: 8px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
     }
     .filter-pills-row::-webkit-scrollbar { display: none; }
 
@@ -251,86 +256,63 @@
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
       color: var(--text-sub);
       font-size: 12px;
       font-weight: 700;
-      padding: 6px 15px;
-      border-radius: 9999px;
-      cursor: pointer;
-      box-shadow: var(--glass-shadow);
-      white-space: nowrap;
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
-    }
-
-    .filter-pill.active {
-      background: rgba(56, 189, 248, 0.25);
-      border-color: rgba(56, 189, 248, 0.45);
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
-    }
-
-    /* BARIS PEMILIHAN KATEGORI / GENRE */
-    .category-pills-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
-    }
-    .category-pills-row::-webkit-scrollbar { display: none; }
-
-    .category-pill {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-top: 1px solid rgba(255, 255, 255, 0.18);
-      color: #9ca3af;
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 5px 13px;
+      padding: 7px 16px;
       border-radius: 9999px;
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s ease;
     }
-
-    .category-pill:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .category-pill.active {
-      background: rgba(2, 132, 199, 0.3);
+    .filter-pill.active {
+      background: rgba(56, 189, 248, 0.25);
       border-color: rgba(56, 189, 248, 0.5);
       color: #ffffff;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
-    .catalog-count-info {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 18px;
-      padding-left: 2px;
+    /* SEARCH MODAL */
+    .modal-overlay { 
+      display: none; 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.75); 
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 999; 
+      padding: 16px; 
+      overflow-y: auto; 
+    }
+    .modal-overlay.active { display: block; }
+    .search-modal-container { max-width: 1100px; margin: 0 auto; }
+    .search-modal-header { display: flex; align-items: center; gap: 10px; height: 46px; margin-bottom: 12px; }
+    .search-input-box { flex: 1; position: relative; display: flex; align-items: center; height: 46px; }
+    .search-input-box svg { position: absolute; left: 16px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; }
+    .search-input-field { 
+      width: 100%; height: 46px; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border); border-top: 1px solid var(--glass-border-top);
+      border-radius: 9999px; padding: 0 18px 0 44px; color: var(--text-main); font-size: 14.5px; outline: none;
+    }
+    .modal-close-btn { 
+      background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); 
+      cursor: pointer; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close-btn svg { width: 19px; height: 19px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+    .search-results-list { display: flex; flex-direction: column; gap: 10px; }
+    .search-item-card { 
+      display: flex; gap: 14px; background: rgba(22, 22, 26, 0.65); border: 1px solid var(--glass-border); 
+      border-radius: 16px; padding: 10px; cursor: pointer; text-decoration: none; 
+    }
+    .search-item-thumb { width: 72px; height: 98px; border-radius: 12px; flex-shrink: 0; background: var(--bg-card); position: relative; overflow: hidden; }
+    .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .search-item-thumb .badge-cover-ep {
+      position: absolute; bottom: 6px; left: 6px; background: var(--glass-bg); border: 1px solid var(--glass-border);
+      color: #ffffff; font-size: 9px; font-weight: 800; padding: 2.5px 8px; border-radius: 9999px;
     }
 
     /* CARD GRID */
-    .grid-catalog { 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      column-gap: 10px; 
-      row-gap: 22px; 
-    }
-
-    .card-grid { 
-      text-decoration: none !important; 
-      border: none !important; 
-      display: block;
-    }
-
+    .grid-catalog { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 10px; row-gap: 22px; }
+    .card-grid { text-decoration: none !important; }
     .card-grid-img-wrapper { 
       position: relative; 
       width: 100%; 
@@ -338,104 +320,82 @@
       border-radius: 14px; 
       overflow: hidden; 
       background: var(--bg-card); 
-      border: none !important;
       box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
       transform: translateZ(0);
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
     }
-
-    .card-grid-img-wrapper img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-    }
+    .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
     .badge-ep { 
-      position: absolute; 
-      top: 8px; 
-      left: 8px; 
+      position: absolute; top: 8px; left: 8px; 
       background: rgba(2, 132, 199, 0.9);
-      color: var(--text-main); 
-      font-size: 9px; 
-      font-weight: 800; 
-      padding: 3.5px 9px; 
-      border-radius: 9999px; 
-      text-transform: uppercase; 
+      color: var(--text-main); font-size: 9px; font-weight: 800; 
+      padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
     }
 
     .card-bottom-info {
-      position: absolute; 
-      bottom: 8px; 
-      left: 8px; 
-      right: 8px;
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      z-index: 2; 
-      pointer-events: none;
+      position: absolute; bottom: 8px; left: 8px; right: 8px;
+      display: flex; justify-content: space-between; align-items: center; z-index: 2; pointer-events: none;
     }
 
     .badge-bottom { 
-      background: var(--glass-bg); 
-      backdrop-filter: var(--glass-blur); 
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border); 
-      border-top: 1px solid var(--glass-border-top); 
-      color: #ffffff; 
-      font-size: 9.5px; 
-      font-weight: 800; 
-      padding: 3px 9px; 
-      border-radius: 9999px; 
-      white-space: nowrap; 
+      background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); 
+      border-top: 1px solid var(--glass-border-top); color: #ffffff; font-size: 9.5px; font-weight: 800; 
+      padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
+    }
+
+    .badge-view-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.5px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f1f5f9;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 9999px;
+    }
+    .badge-view-count svg {
+      width: 11px;
+      height: 11px;
+      stroke: var(--color-accent);
+      fill: none;
+      stroke-width: 2.2;
     }
 
     .card-title { 
-      margin-top: 8px; 
-      font-size: 13.5px; 
-      font-weight: 700; 
-      color: #ffffff; 
-      line-height: 1.35;
-      display: -webkit-box; 
-      -webkit-line-clamp: 2; 
-      -webkit-box-orient: vertical; 
-      overflow: hidden; 
+      margin-top: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; line-height: 1.35;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
     }
 
-    /* TOMBOL MUAT LEBIH BANYAK */
-    .load-more-wrap {
-      display: flex;
-      justify-content: center;
-      margin-top: 40px;
-    }
+    /* LOAD MORE BUTTON */
+    .load-more-container { text-align: center; margin-top: 36px; }
     .btn-load-more {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
-      color: var(--text-main);
-      font-size: 13.5px;
-      font-weight: 800;
+      color: var(--color-accent);
       padding: 12px 32px;
-      border-radius: 14px;
+      font-size: 13.5px;
+      font-weight: 700;
+      border-radius: 9999px;
       cursor: pointer;
       box-shadow: var(--glass-shadow);
-      transition: background 0.2s, border-color 0.2s;
+      transition: all 0.2s ease;
     }
-    .btn-load-more:hover {
-      background: rgba(56, 189, 248, 0.2);
-      border-color: rgba(56, 189, 248, 0.4);
-    }
+    .btn-load-more:active { transform: scale(0.97); }
 
-    /* SKELETON PLACEHOLDER */
+    /* SKELETON */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
-    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
-    .card-skeleton { width: 100%; }
-    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
+    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; }
+    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* FLOATING ON-TOP */
+    /* BACK TO TOP */
     .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
     .floating-circle-btn {
       width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
@@ -447,12 +407,9 @@
 
     @media (min-width: 768px) {
       .grid-catalog { grid-template-columns: repeat(6, 1fr); column-gap: 16px; row-gap: 28px; }
-      .card-grid-img-wrapper, .card-skeleton-img { height: 235px; }
-      .card-title { font-size: 14.5px; margin-top: 10px; }
     }
 
     footer { margin-top: 60px; padding: 26px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
-    footer a { color: var(--color-accent); text-decoration: none; }
   </style>
 </head>
 <body>
@@ -461,71 +418,81 @@
   <header class="header-bar">
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
-      <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-        <a href="/" class="brand-title-capsule">
-          <img src="../image/IMG_6395.png" alt="Logo" class="brand-logo-icon">
+      <a href="/" class="nav-capsule">
+        <span class="brand-title-capsule">
+          <img src="../image/IMG_6395.png" alt="Logo Dongflix" class="brand-logo-icon">
           <span>Dong<span class="brand-accent">flix</span></span>
-        </a>
-      </div>
+        </span>
+      </a>
     </div>
 
-    <a href="/" class="action-btn" aria-label="Beranda">
-      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </a>
+    <div class="header-actions-group">
+      <button class="action-btn" onclick="openSearchModal()" aria-label="Cari Donghua">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <button class="action-btn" id="socialMenuBtn" onclick="togglePopoverMenu()" aria-label="Menu Navigasi">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
   </header>
 
-  <div class="container">
-    <div class="catalog-top-panel">
-      <!-- PENCARIAN -->
-      <div class="search-box-wrap">
-        <svg class="search-icon-svg" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" class="search-field" id="catalogSearchInput" placeholder="Cari judul di katalog..." onkeyup="handleFilterChange()">
-      </div>
+  <!-- GLASS POPOVER MENU -->
+  <div class="popover-menu" id="popoverMenu">
+    <a href="/"><span>Beranda</span><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></a>
+    <a href="/donghua/"><span>Katalog Lengkap</span><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></a>
+    <a href="/donghua/?status=ongoing"><span>Donghua Ongoing</span><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></a>
+    <a href="/donghua/?type=movie"><span>Movie Terbaru</span><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg></a>
+  </div>
 
-      <!-- FILTER TIPE -->
-      <div class="filter-pills-row">
-        <button class="filter-pill active" id="pillAll" onclick="setCatalogType('all')">Semua</button>
-        <button class="filter-pill" id="pillSeries" onclick="setCatalogType('series')">Series</button>
-        <button class="filter-pill" id="pillOngoing" onclick="setCatalogType('ongoing')">Ongoing</button>
-        <button class="filter-pill" id="pillCompleted" onclick="setCatalogType('completed')">Tamat</button>
-        <button class="filter-pill" id="pillMovie" onclick="setCatalogType('movie')">Movie</button>
+  <!-- SEARCH MODAL -->
+  <div class="modal-overlay" id="searchModalOverlay">
+    <div class="search-modal-container">
+      <div class="search-modal-header">
+        <div class="search-input-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua atau movie..." onkeyup="handleSearchInput(event)">
+        </div>
+        <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="Tutup Pencarian">
+          <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
       </div>
-
-      <!-- PEMILIHAN KATEGORI / GENRE -->
-      <div class="category-pills-row" id="categoryPillsRow">
-        <button class="category-pill active" onclick="setCategoryFilter('')">Semua Genre</button>
-        <button class="category-pill" onclick="setCategoryFilter('Action')">Action</button>
-        <button class="category-pill" onclick="setCategoryFilter('Adventure')">Adventure</button>
-        <button class="category-pill" onclick="setCategoryFilter('Fantasy')">Fantasy</button>
-        <button class="category-pill" onclick="setCategoryFilter('Cultivation')">Cultivation</button>
-        <button class="category-pill" onclick="setCategoryFilter('Martial Arts')">Martial Arts</button>
-        <button class="category-pill" onclick="setCategoryFilter('Romance')">Romance</button>
-        <button class="category-pill" onclick="setCategoryFilter('Sci-Fi')">Sci-Fi</button>
-        <button class="category-pill" onclick="setCategoryFilter('Comedy')">Comedy</button>
-        <button class="category-pill" onclick="setCategoryFilter('Supernatural')">Supernatural</button>
-        <button class="category-pill" onclick="setCategoryFilter('Historical')">Historical</button>
-        <button class="category-pill" onclick="setCategoryFilter('Isekai')">Isekai</button>
-        <button class="category-pill" onclick="setCategoryFilter('Mystery')">Mystery</button>
+      <div class="search-results-list" id="searchResultsList">
+        <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul yang ingin dicari...</p>
       </div>
     </div>
+  </div>
 
-    <div class="catalog-count-info" id="catalogCountInfo">Menampilkan koleksi donghua...</div>
+  <div class="container">
+    <section class="catalog-header-section">
+      <div class="catalog-title-row">
+        <h1 class="catalog-title">
+          <svg style="width:20px;height:20px;stroke:var(--color-accent);fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          Katalog Donghua
+        </h1>
+        <span class="catalog-total-badge" id="catalogTotalBadge">Memuat...</span>
+      </div>
+
+      <!-- FILTER STATUS & TIPE -->
+      <div class="filter-pills-row" id="filterPillsRow">
+        <button class="filter-pill active" onclick="applyFilter('all')">Semua</button>
+        <button class="filter-pill" onclick="applyFilter('ongoing')">Ongoing</button>
+        <button class="filter-pill" onclick="applyFilter('completed')">Tamat</button>
+        <button class="filter-pill" onclick="applyFilter('movie')">Movie</button>
+      </div>
+    </section>
 
     <!-- GRID KATALOG -->
     <div class="grid-catalog" id="catalogGrid">
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-      <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+      <div class="card-grid"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
     </div>
 
-    <!-- TOMBOL MUAT LEBIH BANYAK -->
-    <div class="load-more-wrap" id="loadMoreContainer" style="display: none;">
+    <!-- LOAD MORE BUTTON -->
+    <div class="load-more-container" id="loadMoreContainer" style="display: none;">
       <button class="btn-load-more" onclick="loadMoreItems()">Muat Lebih Banyak</button>
     </div>
   </div>
@@ -542,13 +509,35 @@
     </div>
   </footer>
 
+  <script type="module">
+    try {
+      const fb = await import('/assets/firebase-config.js');
+      window.db = fb.db;
+      window.fbRef = fb.ref;
+      window.fbGet = fb.get;
+
+      if (typeof window.syncFirebaseViews === 'function') {
+        window.syncFirebaseViews();
+      }
+    } catch (_) {}
+  </script>
+
   <script>
-    let masterList = [];
+    let rawCatalog = [];
     let filteredList = [];
     let displayedCount = 0;
-    const pageSize = 18;
-    let currentTypeFilter = 'all';
-    let currentCategoryFilter = '';
+    const ITEMS_PER_PAGE = 18;
+    let currentFilter = 'all';
+    let viewsDataMap = {};
+    let searchTimer = null;
+
+    function formatViewCount(val) {
+      const num = parseInt(val, 10);
+      if (isNaN(num) || num <= 0) return '0';
+      if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      return String(num);
+    }
 
     function sanitizeTitle(rawTitle) {
       if (!rawTitle) return 'Donghua';
@@ -580,58 +569,73 @@
       return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
     }
 
+    function togglePopoverMenu() {
+      document.getElementById('popoverMenu').classList.toggle('active');
+    }
+
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('popoverMenu');
+      const btn = document.getElementById('socialMenuBtn');
+      if (popover && btn && !btn.contains(e.target) && !popover.contains(e.target)) popover.classList.remove('active');
+    });
+
+    function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('searchInputModal').focus(); }
+    function closeSearchModal() { document.getElementById('searchModalOverlay').classList.remove('active'); }
+
     window.addEventListener('scroll', () => {
       const onTopBtn = document.getElementById('backToTopBtn');
       if (window.scrollY > 300) onTopBtn.classList.add('show');
       else onTopBtn.classList.remove('show');
     }, { passive: true });
 
-    function setCatalogType(type) {
-      currentTypeFilter = type;
-      document.getElementById('pillAll').classList.toggle('active', type === 'all');
-      document.getElementById('pillSeries').classList.toggle('active', type === 'series');
-      document.getElementById('pillOngoing').classList.toggle('active', type === 'ongoing');
-      document.getElementById('pillCompleted').classList.toggle('active', type === 'completed');
-      document.getElementById('pillMovie').classList.toggle('active', type === 'movie');
-      updateUrlState();
-      handleFilterChange();
-    }
+    function handleSearchInput() {
+      const inputEl = document.getElementById('searchInputModal');
+      const query = inputEl ? inputEl.value.trim().toLowerCase() : '';
+      const resultsList = document.getElementById('searchResultsList');
 
-    function setCategoryFilter(category) {
-      currentCategoryFilter = category;
-      const buttons = document.querySelectorAll('#categoryPillsRow .category-pill');
-      buttons.forEach(btn => {
-        if (!category && btn.innerText === 'Semua Genre') {
-          btn.classList.add('active');
-        } else if (category && btn.innerText.toLowerCase() === category.toLowerCase()) {
-          btn.classList.add('active');
+      clearTimeout(searchTimer);
+      if (query === '') {
+        resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Ketik judul yang ingin dicari...</p>';
+        return;
+      }
+
+      searchTimer = setTimeout(() => {
+        const matches = rawCatalog.filter(item => {
+          const t = (item.title || '').toLowerCase();
+          const s = (item.slug || '').toLowerCase();
+          return t.includes(query) || s.includes(query);
+        });
+
+        resultsList.innerHTML = '';
+        if (matches.length > 0) {
+          matches.slice(0, 25).forEach(item => {
+            const card = document.createElement('a');
+            card.className = 'search-item-card';
+            card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+            card.innerHTML = `
+              <div class="search-item-thumb">
+                <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
+                <span class="badge-cover-ep">${parseEpisodeText(item)}</span>
+              </div>
+              <div class="search-item-info">
+                <div style="font-size:13.5px;font-weight:700;color:#fff;margin-bottom:4px;">${sanitizeTitle(item.title)}</div>
+                <div style="font-size:11.5px;color:var(--text-muted);">Status: ${parseStatusText(item)} • ${isMovieItem(item) ? 'Movie' : 'Donghua'}</div>
+              </div>
+            `;
+            resultsList.appendChild(card);
+          });
         } else {
-          btn.classList.remove('active');
+          resultsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 40px;">Tidak ada hasil ditemukan.</p>';
         }
-      });
-
-      updateUrlState();
-      handleFilterChange();
+      }, 150);
     }
 
-    function updateUrlState() {
-      const params = new URLSearchParams();
-      if (currentTypeFilter && currentTypeFilter !== 'all') {
-        params.set('type', currentTypeFilter);
-      }
-      if (currentCategoryFilter) {
-        params.set('category', currentCategoryFilter);
-      }
-      const newQuery = params.toString();
-      const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
-      window.history.replaceState({}, '', newUrl);
-    }
-
-    function createGridCard(item) {
+    function createCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
       card.href = `/donghua/${encodeURIComponent(item.slug)}`;
       const isMovie = isMovieItem(item);
+      const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
 
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
@@ -639,6 +643,10 @@
           <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           <div class="card-bottom-info">
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
+            <div class="badge-view-count">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
+            </div>
           </div>
         </div>
         <div class="card-title">${sanitizeTitle(item.title)}</div>
@@ -646,64 +654,18 @@
       return card;
     }
 
-    function handleFilterChange() {
-      const query = (document.getElementById('catalogSearchInput').value || '').trim().toLowerCase();
-
-      filteredList = masterList.filter(item => {
-        const titleStr = (item.title || item.name || '').toLowerCase();
-        const slugStr = (item.slug || '').toLowerCase();
-        const matchesQuery = titleStr.includes(query) || slugStr.includes(query);
-        if (!matchesQuery) return false;
-
-        const isMovie = isMovieItem(item);
-        const status = parseStatusText(item);
-        if (currentTypeFilter === 'movie' && !isMovie) return false;
-        if (currentTypeFilter === 'series' && isMovie) return false;
-        if (currentTypeFilter === 'ongoing' && (status !== 'ONGOING' || isMovie)) return false;
-        if (currentTypeFilter === 'completed' && (status !== 'COMPLETED' || isMovie)) return false;
-
-        if (currentCategoryFilter) {
-          const catLower = currentCategoryFilter.toLowerCase();
-          const genres = Array.isArray(item.genres) 
-            ? item.genres 
-            : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
-          
-          const hasCategory = genres.some(g => g && g.toLowerCase() === catLower);
-          if (!hasCategory) return false;
-        }
-
-        return true;
-      });
-
-      displayedCount = 0;
-      document.getElementById('catalogGrid').innerHTML = '';
-      renderCatalogBatch();
-    }
-
     function renderCatalogBatch() {
       const grid = document.getElementById('catalogGrid');
-      const countInfo = document.getElementById('catalogCountInfo');
-      const loadMoreWrap = document.getElementById('loadMoreContainer');
+      const loadMoreBtn = document.getElementById('loadMoreContainer');
+      const nextBatch = filteredList.slice(displayedCount, displayedCount + ITEMS_PER_PAGE);
 
-      countInfo.innerText = `Menampilkan ${filteredList.length} judul`;
-
-      const nextBatch = filteredList.slice(displayedCount, displayedCount + pageSize);
-      if (displayedCount === 0 && nextBatch.length === 0) {
-        grid.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align: center; padding: 40px 0;">Tidak ditemukan donghua yang sesuai.</p>';
-        loadMoreWrap.style.display = 'none';
-        return;
-      }
-
-      nextBatch.forEach(item => {
-        grid.appendChild(createGridCard(item));
-      });
-
+      nextBatch.forEach(item => grid.appendChild(createCard(item)));
       displayedCount += nextBatch.length;
 
       if (displayedCount < filteredList.length) {
-        loadMoreWrap.style.display = 'flex';
+        loadMoreBtn.style.display = 'block';
       } else {
-        loadMoreWrap.style.display = 'none';
+        loadMoreBtn.style.display = 'none';
       }
     }
 
@@ -711,46 +673,87 @@
       renderCatalogBatch();
     }
 
-    function initParams() {
+    function applyFilter(filterType) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.filter-pill')).find(b => b.innerText.toLowerCase() === (filterType === 'all' ? 'semua' : filterType));
+      if (activeBtn) activeBtn.classList.add('active');
+
       const params = new URLSearchParams(window.location.search);
+      const categoryParam = (params.get('category') || '').toLowerCase();
+
+      filteredList = rawCatalog.filter(item => {
+        // Filter URL category jika ada
+        if (categoryParam) {
+          const genres = Array.isArray(item.genres) ? item.genres : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
+          const matchCat = genres.some(g => g.toLowerCase() === categoryParam);
+          if (!matchCat) return false;
+        }
+
+        if (filterType === 'ongoing') return parseStatusText(item) === 'ONGOING' && !isMovieItem(item);
+        if (filterType === 'completed') return parseStatusText(item) === 'COMPLETED' && !isMovieItem(item);
+        if (filterType === 'movie') return isMovieItem(item);
+        return true;
+      });
+
+      document.getElementById('catalogTotalBadge').innerText = `${filteredList.length} Judul`;
       
-      const type = params.get('type');
-      if (type && ['all', 'series', 'ongoing', 'completed', 'movie'].includes(type.toLowerCase())) {
-        currentTypeFilter = type.toLowerCase();
-        document.getElementById('pillAll').classList.toggle('active', currentTypeFilter === 'all');
-        document.getElementById('pillSeries').classList.toggle('active', currentTypeFilter === 'series');
-        document.getElementById('pillOngoing').classList.toggle('active', currentTypeFilter === 'ongoing');
-        document.getElementById('pillCompleted').classList.toggle('active', currentTypeFilter === 'completed');
-        document.getElementById('pillMovie').classList.toggle('active', currentTypeFilter === 'movie');
+      const grid = document.getElementById('catalogGrid');
+      grid.innerHTML = '';
+      displayedCount = 0;
+
+      if (filteredList.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px 0;">Tidak ada donghua yang sesuai filter.</p>';
+        document.getElementById('loadMoreContainer').style.display = 'none';
+        return;
       }
 
-      const category = params.get('category');
-      if (category) {
-        currentCategoryFilter = category.trim();
-        const buttons = document.querySelectorAll('#categoryPillsRow .category-pill');
-        buttons.forEach(btn => {
-          if (btn.innerText.toLowerCase() === currentCategoryFilter.toLowerCase()) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
-      }
+      renderCatalogBatch();
     }
 
-    async function loadCatalogData() {
+    window.syncFirebaseViews = async function() {
+      if (!window.db || !window.fbRef || !window.fbGet) return;
+      try {
+        const snap = await window.fbGet(window.fbRef(window.db, 'views_total'));
+        if (snap.exists()) {
+          viewsDataMap = snap.val() || {};
+          document.querySelectorAll('.view-num').forEach(el => {
+            const slug = el.getAttribute('data-slug');
+            if (slug && viewsDataMap[slug] !== undefined) {
+              el.innerText = formatViewCount(viewsDataMap[slug]);
+            }
+          });
+        }
+      } catch (_) {}
+    };
+
+    async function initCatalog() {
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
         if (!res.ok) throw new Error();
-        masterList = await res.json();
-        initParams();
-        handleFilterChange();
+        rawCatalog = await res.json();
+
+        // Cek filter default dari URL parameter
+        const params = new URLSearchParams(window.location.search);
+        const typeParam = params.get('type');
+        const statusParam = params.get('status');
+
+        let initialFilter = 'all';
+        if (typeParam === 'movie') initialFilter = 'movie';
+        else if (statusParam === 'ongoing') initialFilter = 'ongoing';
+        else if (statusParam === 'completed') initialFilter = 'completed';
+
+        applyFilter(initialFilter);
+
+        if (window.syncFirebaseViews) {
+          window.syncFirebaseViews();
+        }
       } catch (_) {
-        document.getElementById('catalogGrid').innerHTML = '<p style="color: #ef4444; font-size: 13px; grid-column: 1 / -1; text-align: center; padding: 40px 0;">Gagal memuat katalog donghua.</p>';
+        document.getElementById('catalogGrid').innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 14px; padding: 40px 0;">Gagal memuat katalog donghua.</p>';
       }
     }
 
-    window.addEventListener('DOMContentLoaded', loadCatalogData);
+    window.addEventListener('DOMContentLoaded', initCatalog);
   </script>
 </body>
 </html>
