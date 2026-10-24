@@ -19,14 +19,14 @@
   <meta property="og:title" id="ogTitle" content="Nonton Donghua Sub Indo - Dongflix">
   <meta property="og:description" id="ogDescription" content="Nonton streaming donghua subtitle Indonesia kualitas terbaik di Dongflix.">
   <meta property="og:url" id="ogUrl" content="https://dongflix.my.id/">
-  <meta property="og:image" id="ogImage" content="https://dongflix.my.id/image/IMG_6395.png">
-  <meta property="og:image:alt" id="ogImageAlt" content="Cover Donghua Dongflix">
+  <meta property="og:image" id="ogImage" content="">
+  <meta property="og:image:alt" id="ogImageAlt" content="Cover Donghua">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" id="twitterTitle" content="Nonton Donghua Sub Indo - Dongflix">
   <meta name="twitter:description" id="twitterDescription" content="Nonton streaming donghua subtitle Indonesia kualitas terbaik di Dongflix.">
-  <meta name="twitter:image" id="twitterImage" content="https://dongflix.my.id/image/IMG_6395.png">
+  <meta name="twitter:image" id="twitterImage" content="">
 
   <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
@@ -622,14 +622,16 @@
     return `${year}-${month}-${day}`;
   }
 
-  /* UPDATE METATAG & SEO CARD SHARE SECARA DINAMIS */
+  /* UPDATE METATAG & SEO CARD SHARE DENGAN COVER ASLI DONGHUA */
   function updateSocialMetaTags(title, cover, synopsis, slug) {
     const fullTitle = `Nonton ${title} Sub Indo - Dongflix`;
     const cleanSynopsis = synopsis && synopsis.length > 20 
       ? synopsis.replace(/\s+/g, ' ').slice(0, 160) + '...'
       : `Nonton streaming ${title} subtitle Indonesia gratis dan terlengkap dengan kualitas HD di Dongflix.`;
     const canonicalPageUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(slug)}`;
-    const finalCoverUrl = cover.startsWith('http') ? cover : `https://dongflix.my.id/${cover.replace(/^\/+/, '')}`;
+    
+    // Gunakan langsung URL cover asli
+    const finalCoverUrl = cover || '';
 
     // Title Tag
     document.title = fullTitle;
@@ -965,7 +967,7 @@
           currentPoster = info.cover || info.poster || info.thumbnail || '';
           const currentSynopsis = info.synopsis || info.description || info.desc || '';
 
-          // Pasang tag meta dan kartu share sosmed otomatis
+          // Pasang tag meta dan kartu share sosmed dengan URL cover asli
           updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
 
           document.getElementById('topHeaderTitle').innerText = currentMainTitle;
