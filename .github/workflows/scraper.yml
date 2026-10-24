@@ -2,15 +2,18 @@ name: Dongflix Automation Scraper
 
 on:
   repository_dispatch:
-    types: [scrape-list, sync-order, scrape-episode, scrape-all-episodes, clean-json, update-all-details]
+    types: [scrape-list, sync-order, scrape-episode, scrape-selected-episodes, scrape-all-episodes, clean-json, update-all-details]
   workflow_dispatch:
     inputs:
       action_type:
-        description: 'Pilih aksi: list, sync-order, episode, all, clean-json, atau update-all-details'
+        description: 'Pilih aksi: list, sync-order, episode, selected-episodes, all, clean-json, atau update-all-details'
         required: true
         default: 'sync-order'
       target_slug:
-        description: 'Slug Donghua (khusus jika memilih aksi episode)'
+        description: 'Slug Donghua'
+        required: false
+      selected_episodes:
+        description: 'Daftar nomor episode (dipisah koma, contoh: 1,2,5)'
         required: false
 
 permissions:
@@ -52,17 +55,22 @@ jobs:
         if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
         run: node admin/scraper.js --mode=update-all-details
 
-      # 4. Scrape Single Episode
+      # 4. Scrape Single Episode (Mode Otomatis Seluruh Episode Baru)
       - name: Run Scraper Single Episode
         if: ${{ github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode' }}
-        run: node admin/scraper-episodes.js ${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}
+        run: node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}"
 
-      # 5. Smart Scrape All Episodes
+      # 5. Scrape Episode Parsial (Hanya episode yang dicentang admin)
+      - name: Run Scraper Selected Episodes
+        if: ${{ github.event.action == 'scrape-selected-episodes' || github.event.inputs.action_type == 'selected-episodes' }}
+        run: node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug \vert{}\vert{} github.event.inputs.target_slug }}" --episodes="${{ github.event.client_payload.selected_episodes || github.event.inputs.selected_episodes }}"
+
+      # 6. Smart Scrape All Episodes
       - name: Run Smart Scrape All Episodes
         if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all' }}
         run: node admin/scrape-all-smart.js
 
-      # 6. Clean JSON Data (Fix Null & Duplikat)
+      # 7. Clean JSON Data (Fix Null & Duplikat)
       - name: Clean JSON Data
         if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
         run: node admin/clean-json.js
