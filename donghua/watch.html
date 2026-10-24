@@ -554,28 +554,28 @@
     <!-- ACTION BAR -->
     <div class="action-bar">
       <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
-      <div class="server-custom-btn">
+      <div class="server-custom-btn" onclick="handleActionClick('server', event)">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         <span style="font-size:11px;color:var(--text-muted);font-weight:600;">Server</span>
         <select class="server-select-hidden" id="serverSelect" onchange="switchServer(this.value)"></select>
       </div>
 
-      <div class="action-item">
+      <button class="action-item" onclick="handleActionClick('views', event)">
         <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         <span id="viewCountText">0</span>
-      </div>
+      </button>
 
-      <button class="action-item" id="btnFavorite" onclick="toggleFavorite()">
+      <button class="action-item" id="btnFavorite" onclick="handleActionClick('favorite', event)">
         <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         <span>Favorit</span>
       </button>
 
-      <button class="action-item" onclick="triggerDownload()">
+      <button class="action-item" onclick="handleActionClick('download', event)">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>Unduh</span>
       </button>
 
-      <button class="action-item" onclick="triggerShare()">
+      <button class="action-item" onclick="handleActionClick('share', event)">
         <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         <span>Bagikan</span>
       </button>
@@ -821,7 +821,26 @@
     window.location.href = '/';
   }
 
-  function goToHomeLogin() { window.location.href = '/'; }
+  function goToHomeLogin() { window.location.href = 'https://dongflix.my.id/profil/login.html'; }
+
+  function handleActionClick(actionType, event) {
+    if (!window.currentUser) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      goToHomeLogin();
+      return;
+    }
+
+    if (actionType === 'favorite') {
+      toggleFavorite();
+    } else if (actionType === 'download') {
+      triggerDownload();
+    } else if (actionType === 'share') {
+      triggerShare();
+    }
+  }
 
   function saveContinueHistory(epNum) {
     if (!targetSlug) return;
@@ -1268,7 +1287,7 @@
   }
 
   async function submitComment() {
-    if (!window.currentUser) { alert('Anda harus login terlebih dahulu.'); return; }
+    if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById('commentInput');
     const text = input.value.trim();
     if (!text) return;
@@ -1294,7 +1313,7 @@
   }
 
   async function submitReply(parentId) {
-    if (!window.currentUser) return;
+    if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById(`replyInput-${parentId}`);
     const text = input ? input.value.trim() : '';
     if (!text) return;
