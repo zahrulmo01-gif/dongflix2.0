@@ -334,7 +334,7 @@
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
-    /* DETAIL & SINOPSIS */
+    /* MEDIA DETAIL & SINOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
     .media-cover-wrapper {
       width: 105px; min-width: 105px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden;
@@ -459,7 +459,7 @@
       }
     }
 
-    /* SHEET & KOMENTAR ALA TIKTOK */
+    /* SHEET & KOMENTAR */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -685,6 +685,12 @@
       flex-shrink: 0;
     }
 
+    .tiktok-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .comment-content {
       flex: 1;
       min-width: 0;
@@ -900,7 +906,6 @@
 </header>
 
 <div class="container">
-  <!-- PLAYER WRAPPER -->
   <div class="player-wrapper">
     <div class="detail-player-box" id="playerMediaContainer">
       <div class="player-loader-overlay" id="playerLoaderOverlay">
@@ -912,7 +917,6 @@
     </div>
   </div>
 
-  <!-- KOTAK PESAN KETIKA DONGHUA TIDAK TERSEDIA -->
   <div class="not-found-box" id="notFoundBox" style="display: none;">
     <p class="not-found-text">Donghua mungkin sudah dihapus atau cek kembali link yang ada buka.</p>
     <a href="/" class="btn-home-notfound">
@@ -922,7 +926,7 @@
   </div>
 
   <div id="mainContentGroup">
-    <!-- HOLDER EPISODE LIST -->
+    <!-- EPISODE LIST -->
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
@@ -953,7 +957,7 @@
       </div>
     </div>
 
-    <!-- HOLDER ACTION BAR -->
+    <!-- ACTION BAR -->
     <div class="action-bar">
       <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
       <div class="server-custom-btn">
@@ -1084,6 +1088,11 @@
       window.updateCommentAuthUI();
     }
   });
+
+  // Pastikan inisialisasi komentar segera berjalan begitu Firebase siap
+  if (typeof window.loadComments === 'function') {
+    window.loadComments();
+  }
 </script>
 
 <script>
@@ -1097,7 +1106,6 @@
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
-  /* FUNGSI PEMBERSIH SLUG AKURAT */
   function getCleanMainSlug() {
     const urlParams = new URLSearchParams(window.location.search);
     let s = urlParams.get('slug');
@@ -1395,11 +1403,18 @@
     loadComments();
   }
 
-  /* LOAD COMMENTS LANGSUNG DARI FIREBASE */
-  async function loadComments() {
+  /* LOAD COMMENTS LANGSUNG DARI FIREBASE (DENGAN REFRESH AUTO-RETRY) */
+  window.loadComments = async function() {
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
-    if (!window.db || !targetSlug) return;
+    if (!container) return;
+
+    if (!window.db || !window.fbRef || !window.fbGet) {
+      setTimeout(window.loadComments, 300);
+      return;
+    }
+
+    if (!targetSlug) return;
 
     try {
       const commentsRef = window.fbRef(window.db, `comments/${targetSlug}`);
@@ -1411,13 +1426,16 @@
         const mainComments = [];
         const repliesMap = {};
 
-        countBadge.innerText = `(${Object.keys(commentsData).length})`;
+        const keys = Object.keys(commentsData);
+        if (countBadge) countBadge.innerText = `(${keys.length})`;
 
-        Object.keys(commentsData).forEach(key => {
-          const item = { id: key, ...commentsData[key] };
+        keys.forEach(key => {
+          const item = { id: String(key), ...commentsData[key] };
+          // Pastikan parentId diperlakukan sebagai string murni
           if (item.parentId) {
-            if (!repliesMap[item.parentId]) repliesMap[item.parentId] = [];
-            repliesMap[item.parentId].push(item);
+            const pId = String(item.parentId);
+            if (!repliesMap[pId]) repliesMap[pId] = [];
+            repliesMap[pId].push(item);
           } else {
             mainComments.push(item);
           }
@@ -1431,7 +1449,7 @@
             const repliesB = (repliesMap[b.id] || []).length;
             return repliesB - repliesA;
           }
-          return (b.timestamp || 0) - (a.timestamp || 0);
+          return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
         });
 
         if (mainComments.length === 0) {
@@ -1441,17 +1459,18 @@
 
         mainComments.forEach(item => {
           const replies = repliesMap[item.id] || [];
+          replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
           const cardEl = renderTikTokCommentCardSync(item, replies);
           container.appendChild(cardEl);
         });
       } else {
-        countBadge.innerText = '(0)';
+        if (countBadge) countBadge.innerText = '(0)';
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
       container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar.</p>';
     }
-  }
+  };
 
   function renderTikTokCommentCardSync(item, replies = []) {
     const card = document.createElement('div');
@@ -1598,7 +1617,7 @@
       const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
       await window.fbSet(newCommentRef, commentItem);
       input.value = '';
-      loadComments();
+      window.loadComments();
     } catch (e) {
       alert('Gagal mengirim komentar: ' + e.message);
     }
@@ -1615,7 +1634,7 @@
       uid: window.currentUser.uid, 
       email: window.currentUser.email || '', 
       text: text, 
-      parentId: parentId, 
+      parentId: String(parentId), 
       timestamp: Date.now(),
       isAdmin: isAdmin
     };
@@ -1623,7 +1642,7 @@
     try {
       const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
       await window.fbSet(newCommentRef, replyItem);
-      loadComments();
+      window.loadComments();
     } catch (e) {
       alert('Gagal membalas komentar: ' + e.message);
     }
@@ -1634,7 +1653,7 @@
     try {
       const commentRef = window.fbRef(window.db, `comments/${targetSlug}/${commentId}`);
       await window.fbRemove(commentRef);
-      loadComments();
+      window.loadComments();
     } catch (e) {
       alert('Gagal menghapus komentar: ' + e.message);
     }
@@ -1842,7 +1861,7 @@
     }
 
     checkFavorite();
-    loadComments();
+    window.loadComments();
   }
 
   function selectEpisodeByNum(epNum) {
