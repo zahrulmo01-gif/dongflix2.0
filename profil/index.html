@@ -9,8 +9,6 @@
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
 
-  <script type="module" src="/assets/firebase-config.js"></script>
-
   <style>
     :root {
       --bg-main: #000000;
@@ -41,7 +39,6 @@
 
     .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
 
-    /* HEADER */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -71,7 +68,6 @@
 
     .brand-title { font-size: 17px; font-weight: 700; color: #fff; }
 
-    /* PROFILE CARD */
     .profile-card {
       background: var(--glass-bg);
       backdrop-filter: var(--glass-blur);
@@ -159,7 +155,6 @@
       border: none;
     }
 
-    /* STATS ROW (FOLLOWERS, LEVEL, DLL) */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -189,7 +184,6 @@
       margin-top: 2px;
     }
 
-    /* TOMBOL AKSI PENGATURAN */
     .actions-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -232,7 +226,6 @@
       color: #fff;
     }
 
-    /* SECTION FAVORIT */
     .section-title {
       font-size: 15px;
       font-weight: 800;
@@ -276,7 +269,6 @@
       overflow: hidden;
     }
 
-    /* MODAL PENGATURAN (MODAL POPUP) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -341,7 +333,6 @@
   </header>
 
   <div class="container">
-    <!-- KARTU PROFIL UTAMA -->
     <div class="profile-card">
       <div class="avatar-wrapper" id="profileAvatar" onclick="openModal('modalPhoto')">
         <span id="avatarInitial">U</span>
@@ -357,7 +348,6 @@
         <span class="badge-admin" id="badgeAdmin" style="display: none;">★ ADMIN</span>
       </div>
 
-      <!-- STATISTIK (FOLLOWERS, FOLLOWING, LEVEL) -->
       <div class="stats-row">
         <div class="stat-item">
           <span class="stat-val" id="statFollowers">0</span>
@@ -373,7 +363,6 @@
         </div>
       </div>
 
-      <!-- TOMBOL PENGATURAN AKUN -->
       <div class="actions-grid">
         <button class="btn-action" onclick="openModal('modalName')">
           <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -391,9 +380,8 @@
       </div>
     </div>
 
-    <!-- DAFTAR FAVORIT -->
     <div class="section-title">
-      <svg width="16" height="16" fill="currentColor" class="text-amber-400" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      <svg width="16" height="16" fill="currentColor" style="color: #f59e0b;" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       Donghua Favorit Tersimpan
     </div>
     <div class="favorites-list" id="favoritesContainer">
@@ -454,28 +442,9 @@
     import { auth, db, ref, get, set, onAuthStateChanged } from '/assets/firebase-config.js';
     import { updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    window.auth = auth;
-    window.db = db;
-    window.fbRef = ref;
-    window.fbGet = get;
-    window.fbSet = set;
-    window.fbUpdatePassword = updatePassword;
-    window.fbSignOut = signOut;
-
-    // CEK LOGIN: Jika belum login, alihkan ke login.html
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = '/profil/login.html';
-      } else {
-        window.currentUser = user;
-        await loadUserData(user);
-      }
-    });
-  </script>
-
-  <script>
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let base64Photo = '';
+    let currentAuthUser = null;
 
     function getDbKey(email) {
       if (!email) return '';
@@ -485,10 +454,10 @@
     async function loadUserData(user) {
       document.getElementById('userEmail').innerText = user.email;
       const emailKey = getDbKey(user.email);
-      const userRef = window.fbRef(window.db, `users/${emailKey}`);
+      const userRef = ref(db, `users/${emailKey}`);
 
       try {
-        const snap = await window.fbGet(userRef);
+        const snap = await get(userRef);
         let data = snap.exists() ? snap.val() : {};
 
         const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() || data.status === 'admin';
@@ -505,22 +474,21 @@
         document.getElementById('statFollowers').innerText = data.followersCount || 0;
         document.getElementById('statFollowing').innerText = data.followingCount || 0;
 
-        // Avatar
         const avatarBox = document.getElementById('profileAvatar');
         if (photoURL) {
-          avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='${name.charAt(0).toUpperCase()}'">`;
+          avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span>${name.charAt(0).toUpperCase()}</span>'">`;
         } else {
           avatarBox.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
         }
 
-        // Ambil Data Favorit
-        loadUserFavorites(emailKey, data.favorites);
+        loadUserFavorites(data.favorites);
       } catch (e) {
         console.error('Gagal mengambil profil:', e);
+        document.getElementById('userName').innerText = user.email.split('@')[0];
       }
     }
 
-    function loadUserFavorites(emailKey, rtdbFavorites) {
+    function loadUserFavorites(rtdbFavorites) {
       const container = document.getElementById('favoritesContainer');
       const countEl = document.getElementById('statFavorites');
       let favList = [];
@@ -534,7 +502,7 @@
       countEl.innerText = favList.length;
 
       if (favList.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-sub);font-size:12px;grid-column: span 3;">Belum ada donghua favorit.</p>';
+        container.innerHTML = '<p style="color:var(--text-sub);font-size:12px;grid-column: 1 / -1;">Belum ada donghua favorit.</p>';
         return;
       }
 
@@ -546,25 +514,10 @@
       `).join('');
     }
 
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // Simpan Nama Baru
-    async function handleSaveName(e) {
-      e.preventDefault();
-      const newName = document.getElementById('newNameInput').value.trim();
-      if (!newName || !window.currentUser) return;
-
-      const emailKey = getDbKey(window.currentUser.email);
-      await window.fbSet(window.fbRef(window.db, `users/${emailKey}/name`), newName);
-
-      document.getElementById('userName').innerText = newName;
-      closeModal('modalName');
-      alert('Nama berhasil diubah!');
-    }
-
-    // Convert file gambar ke Base64
-    function previewImage(input) {
+    window.previewImage = function(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -572,26 +525,37 @@
         };
         reader.readAsDataURL(input.files[0]);
       }
-    }
+    };
 
-    // Simpan Foto Profil
-    async function handleSavePhoto(e) {
+    window.handleSaveName = async function(e) {
+      e.preventDefault();
+      const newName = document.getElementById('newNameInput').value.trim();
+      if (!newName || !currentAuthUser) return;
+
+      const emailKey = getDbKey(currentAuthUser.email);
+      await set(ref(db, `users/${emailKey}/name`), newName);
+
+      document.getElementById('userName').innerText = newName;
+      window.closeModal('modalName');
+      alert('Nama berhasil diubah!');
+    };
+
+    window.handleSavePhoto = async function(e) {
       e.preventDefault();
       const urlPhoto = document.getElementById('urlPhotoInput').value.trim();
       const finalPhoto = base64Photo || urlPhoto;
-      if (!finalPhoto || !window.currentUser) return;
+      if (!finalPhoto || !currentAuthUser) return;
 
-      const emailKey = getDbKey(window.currentUser.email);
-      await window.fbSet(window.fbRef(window.db, `users/${emailKey}/photoURL`), finalPhoto);
+      const emailKey = getDbKey(currentAuthUser.email);
+      await set(ref(db, `users/${emailKey}/photoURL`), finalPhoto);
 
       const avatarBox = document.getElementById('profileAvatar');
       avatarBox.innerHTML = `<img src="${finalPhoto}" alt="Avatar">`;
-      closeModal('modalPhoto');
+      window.closeModal('modalPhoto');
       alert('Foto profil berhasil diperbarui!');
-    }
+    };
 
-    // Simpan Password Baru
-    async function handleSavePassword(e) {
+    window.handleSavePassword = async function(e) {
       e.preventDefault();
       const newPass = document.getElementById('newPassInput').value;
       if (!newPass || newPass.length < 6) {
@@ -600,21 +564,29 @@
       }
 
       try {
-        await window.fbUpdatePassword(window.currentUser, newPass);
-        closeModal('modalPassword');
+        await updatePassword(currentAuthUser, newPass);
+        window.closeModal('modalPassword');
         alert('Password akun berhasil diperbarui!');
       } catch (err) {
         alert('Gagal ubah password: ' + err.message);
       }
-    }
+    };
 
-    // Logout
-    async function handleLogout() {
+    window.handleLogout = async function() {
       if (confirm('Yakin ingin keluar dari akun?')) {
-        await window.fbSignOut(window.auth);
+        await signOut(auth);
         window.location.href = '/profil/login.html';
       }
-    }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/profil/login.html';
+      } else {
+        currentAuthUser = user;
+        await loadUserData(user);
+      }
+    });
   </script>
 </body>
 </html>
