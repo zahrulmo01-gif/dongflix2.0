@@ -225,7 +225,6 @@
       transition: all 0.4s ease; 
       white-space: nowrap;
     }
-    /* Segitiga Panah Menunjuk ke Bawah */
     .server-tooltip-hint::after {
       content: '';
       position: absolute;
@@ -549,16 +548,17 @@
 
 <script type="module">
   try {
-    const { auth, db, ref, get, set, transaction, onAuthStateChanged } = await import('/assets/firebase-config.js');
-    window.auth = auth;
-    window.db = db;
-    window.fbRef = ref;
-    window.fbGet = get;
-    window.fbSet = set;
-    window.fbTransaction = transaction;
+    const fb = await import('/assets/firebase-config.js');
+    window.auth = fb.auth;
+    window.db = fb.db;
+    window.fbRef = fb.ref;
+    window.fbGet = fb.get;
+    window.fbSet = fb.set;
+    // Mendukung modular SDK runTransaction atau transaction
+    window.fbTransaction = fb.runTransaction || fb.transaction;
 
-    if (auth) {
-      onAuthStateChanged(auth, (user) => {
+    if (fb.auth && fb.onAuthStateChanged) {
+      fb.onAuthStateChanged(fb.auth, (user) => {
         window.currentUser = user;
         const form = document.getElementById('commentFormBox');
         const notice = document.getElementById('commentLoginNotice');
@@ -567,6 +567,11 @@
           notice.style.display = user ? 'none' : 'block';
         }
       });
+    }
+
+    // Panggil penambahan view setelah koneksi Firebase siap
+    if (typeof window.triggerViewIncrement === 'function') {
+      window.triggerViewIncrement();
     }
   } catch (_) {}
 </script>
@@ -577,6 +582,7 @@
   let currentPoster = '';
   let currentServerUrl = '';
   let episodeSortMode = 'oldest';
+  let hasIncrementedView = false;
 
   function extractTargetSlug() {
     const segments = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/');
@@ -715,15 +721,35 @@
 
   function goToHomeLogin() { window.location.href = '/'; }
 
-  async function initViews() {
-    if (!targetSlug || !window.db) return;
+  /* TAMBAH 1 VIEW SECARA ATOMIK KE FIREBASE -> views_total -> slug */
+  window.triggerViewIncrement = async function() {
+    if (!targetSlug || !window.db || !window.fbRef || hasIncrementedView) return;
+    hasIncrementedView = true;
+
     try {
-      const totalRef = window.fbRef(window.db, `views_total/${targetSlug}`);
-      await window.fbTransaction(totalRef, c => (c || 0) + 1);
-      const snap = await window.fbGet(totalRef);
-      if (snap.exists()) document.getElementById('viewCountText').innerText = String(snap.val());
+      const viewRef = window.fbRef(window.db, `views_total/${targetSlug}`);
+
+      if (typeof window.fbTransaction === 'function') {
+        const result = await window.fbTransaction(viewRef, (currentVal) => {
+          return (currentVal || 0) + 1;
+        });
+
+        if (result && result.snapshot) {
+          const totalVal = result.snapshot.val();
+          document.getElementById('viewCountText').innerText = String(totalVal);
+          return;
+        }
+      }
+
+      // Fallback membaca nilai jika transaction tidak mengembalikan snapshot langsung
+      if (typeof window.fbGet === 'function') {
+        const snap = await window.fbGet(viewRef);
+        if (snap.exists()) {
+          document.getElementById('viewCountText').innerText = String(snap.val());
+        }
+      }
     } catch (_) {}
-  }
+  };
 
   function toggleFavorite() {
     if (!targetSlug) return;
@@ -942,7 +968,7 @@
     }
 
     checkFavorite();
-    initViews();
+    if (window.triggerViewIncrement) window.triggerViewIncrement();
     loadComments();
   }
 
