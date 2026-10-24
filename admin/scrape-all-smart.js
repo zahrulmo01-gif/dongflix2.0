@@ -98,8 +98,20 @@ async function getWebLatestEpisode(slug) {
   return null;
 }
 
+// Cek apakah ada filter slug pilihan
+let targetSelectedSlugs = null;
+const slugsArg = process.argv.find(arg => arg.startsWith('--slugs='));
+if (slugsArg) {
+  const rawList = slugsArg.split('=')[1];
+  if (rawList) {
+    targetSelectedSlugs = new Set(
+      rawList.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    );
+  }
+}
+
 async function main() {
-  console.log('=== Memulai Smart Scrape Semua Donghua ===');
+  console.log('=== Memulai Scrape Donghua ===');
 
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) {
@@ -113,6 +125,12 @@ async function main() {
   } catch (e) {
     console.error('Format donghua.json rusak:', e.message);
     process.exit(1);
+  }
+
+  // Jika ada pilihan slug dari checklist admin, filter donghuaList
+  if (targetSelectedSlugs && targetSelectedSlugs.size > 0) {
+    donghuaList = donghuaList.filter(d => targetSelectedSlugs.has(String(d.slug).toLowerCase()));
+    console.log(`🎯 Mode Pilihan Terpilih Aktif: Memproses ${donghuaList.length} donghua terpilih.`);
   }
 
   const episodesDir = path.resolve('donghua/episodes');
@@ -145,8 +163,11 @@ async function main() {
     console.log(`  - Episode Lokal : ${localHighestEp > 0 ? localHighestEp : 'Belum discrape'}`);
     console.log(`  - Episode di Web: ${webHighestEp > 0 ? webHighestEp : (webLatestEpRaw || 'Tidak terdeteksi')}`);
 
-    if (webHighestEp > localHighestEp || localHighestEp === 0) {
-      console.log(`  🚀 RILISAN BARU DITEMUKAN! Memulai delta scrape...`);
+    // Jika mode checklist terpilih, selalu jalankan scrape untuk donghua tersebut
+    const isTargetSelected = targetSelectedSlugs && targetSelectedSlugs.has(String(slug).toLowerCase());
+
+    if (isTargetSelected || webHighestEp > localHighestEp || localHighestEp === 0) {
+      console.log(`  🚀 Memulai proses scrape episode untuk ${slug}...`);
 
       try {
         execSync(`node admin/scraper-episodes.js ${slug}`, { stdio: 'inherit' });
@@ -170,21 +191,7 @@ async function main() {
 
         if (targetIndex > -1) {
           const [updatedItem] = currentMaster.splice(targetIndex, 1);
-          
-          let safeEp = null;
-
-          if (finalEpNum && finalEpNum > 0) {
-            safeEp = String(finalEpNum);
-          } else if (updatedItem['latest-episode'] && updatedItem['latest-episode'] !== 'null') {
-            safeEp = String(updatedItem['latest-episode']);
-          } else if (updatedItem.episode && updatedItem.episode !== 'null') {
-            const parsedFromEp = parseEpisodeNumber(updatedItem.episode);
-            safeEp = parsedFromEp > 0 ? String(parsedFromEp) : String(updatedItem.episode).replace(/[^0-9.]/g, '');
-          }
-
-          if (!safeEp) {
-            safeEp = '1';
-          }
+          let safeEp = (finalEpNum && finalEpNum > 0) ? String(finalEpNum) : (updatedItem['latest-episode'] || '1');
 
           updatedItem['latest-episode'] = safeEp;
           updatedItem.episode = `Ep ${safeEp}`;
