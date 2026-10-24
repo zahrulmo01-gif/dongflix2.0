@@ -78,6 +78,7 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
+      /* iOS Glass Tokens */
       --glass-bg: rgba(20, 20, 24, 0.58);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
@@ -210,6 +211,7 @@
       gap: 12px;
     }
 
+    /* INPUT PENCARIAN & ICON FIX */
     .search-input-box { 
       position: relative; 
       display: flex; 
@@ -222,10 +224,11 @@
       left: 16px; 
       width: 18px; 
       height: 18px; 
-      stroke: var(--text-muted); 
-      fill: none; 
-      stroke-width: 2.2; 
+      stroke: #94a3b8 !important; 
+      fill: none !important; 
+      stroke-width: 2.4; 
       pointer-events: none; 
+      z-index: 10;
       display: block !important;
     }
     .search-input-field { 
@@ -245,6 +248,7 @@
     }
     .search-input-field:focus { border-color: var(--color-accent); }
 
+    /* BARIS FILTER SCROLL */
     .filter-scroll-row {
       display: flex;
       gap: 8px;
@@ -269,7 +273,6 @@
       white-space: nowrap;
       transition: all 0.2s ease;
       flex-shrink: 0;
-      border: 1px solid var(--glass-border);
     }
     .filter-pill.active {
       background: rgba(56, 189, 248, 0.25);
@@ -426,7 +429,7 @@
   </header>
 
   <div class="container">
-    <!-- KONTROL: SEARCH, TYPE, DAN GENRE -->
+    <!-- KONTROL: SEARCH, TYPE, DAN SEMUA GENRE -->
     <div class="controls-panel">
       <!-- 1. INPUT PENCARIAN DENGAN ICON LUP -->
       <div class="search-input-box">
@@ -443,9 +446,25 @@
         <button class="filter-pill" onclick="setTypeFilter('completed')">Tamat</button>
       </div>
 
-      <!-- 3. PIL FILTER SEMUA GENRE -->
+      <!-- 3. PIL FILTER DAFTAR SEMUA GENRE SESUAI PERMINTAAN -->
       <div class="filter-scroll-row" id="categoryFilterRow">
         <button class="filter-pill active" onclick="setCategoryFilter('all')">Semua Genre</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Action')">Action</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Adventure')">Adventure</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Fantasy')">Fantasy</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Romance')">Romance</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Martial Arts')">Martial Arts</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Reincarnation')">Reincarnation</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Slice of Life')">Slice of Life</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Video Game')">Video Game</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Comedy')">Comedy</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Reincaranation')">Reincaranation</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Drama')">Drama</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Mystery')">Mystery</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Super Power')">Super Power</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Suspense')">Suspense</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Time Travel')">Time Travel</button>
+        <button class="filter-pill" onclick="setCategoryFilter('Historical')">Historical</button>
       </div>
     </div>
 
@@ -589,27 +608,6 @@
       applyFilters();
     }
 
-    function populateCategoryPills() {
-      const container = document.getElementById('categoryFilterRow');
-      const genreSet = new Set();
-
-      rawCatalog.forEach(item => {
-        const genres = Array.isArray(item.genres) 
-          ? item.genres 
-          : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
-        genres.forEach(g => { if (g) genreSet.add(g); });
-      });
-
-      const sortedGenres = Array.from(genreSet).sort();
-      sortedGenres.forEach(genre => {
-        const btn = document.createElement('button');
-        btn.className = `filter-pill ${selectedCategory.toLowerCase() === genre.toLowerCase() ? 'active' : ''}`;
-        btn.innerText = genre;
-        btn.onclick = () => setCategoryFilter(genre);
-        container.appendChild(btn);
-      });
-    }
-
     function createCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
@@ -732,9 +730,9 @@
         if (statusParam === 'ongoing') selectedType = 'ongoing';
         if (statusParam === 'completed') selectedType = 'completed';
 
-        populateCategoryPills();
         setTypeFilter(selectedType);
         if (selectedCategory !== 'all') setCategoryFilter(selectedCategory);
+        else applyFilters();
 
         if (window.syncFirebaseViews) {
           window.syncFirebaseViews();
