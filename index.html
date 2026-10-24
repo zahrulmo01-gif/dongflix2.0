@@ -15,6 +15,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Konfigurasi Firebase Modular -->
+  <script type="module" src="/assets/firebase-config.js"></script>
+
   <style>
     :root {
       --bg-main: #000000;
@@ -134,7 +137,6 @@
       background: transparent !important;
     }
 
-    /* Kustomisasi font khusus untuk tulisan flix */
     .brand-title-capsule .brand-accent { 
       color: var(--color-accent); 
       font-family: 'Outfit', sans-serif;
@@ -258,7 +260,7 @@
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* SLIDER (Penyempurnaan Sinematik & Estetik) */
+    /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
@@ -287,11 +289,8 @@
       transform: scale(1.02);
       transition: transform 6s ease-out;
     }
-    .hero-slide.active .hero-bg-img {
-      transform: scale(1);
-    }
+    .hero-slide.active .hero-bg-img { transform: scale(1); }
     
-    /* Gradasi Halus Sinematik Multi-Layer */
     .hero-overlay { 
       position: absolute; 
       inset: 0; 
@@ -345,10 +344,7 @@
       font-weight: 600; 
       margin-bottom: 16px; 
     }
-    .rating-star {
-      color: var(--color-star);
-      font-weight: 800;
-    }
+    .rating-star { color: var(--color-star); font-weight: 800; }
     .badge-status-green { 
       background: rgba(56, 189, 248, 0.15); 
       color: var(--color-accent); 
@@ -374,9 +370,7 @@
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .btn-watch:active {
-      transform: scale(0.97);
-    }
+    .btn-watch:active { transform: scale(0.97); }
     .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
     
     .slider-dots { 
@@ -401,7 +395,7 @@
       width: 26px; 
       background: var(--color-accent); 
       border-radius: 9999px; 
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6); 
     }
 
     /* CONTENT SECTIONS */
@@ -410,15 +404,8 @@
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
     /* LANJUTKAN MENONTON */
-    .continue-section-wrapper {
-      margin-top: 36px;
-      margin-bottom: 24px;
-    }
-
-    .continue-section-wrapper .section-title {
-      margin-bottom: 16px;
-    }
-
+    .continue-section-wrapper { margin-top: 36px; margin-bottom: 24px; }
+    .continue-section-wrapper .section-title { margin-bottom: 16px; }
     .continue-scroll-row {
       display: flex;
       gap: 16px;
@@ -453,14 +440,7 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
       transform: translateZ(0);
     }
-
-    .continue-thumb-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
+    .continue-thumb-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .continue-thumb-box .continue-eps-text {
       position: absolute;
       left: 12px;
@@ -472,7 +452,6 @@
       z-index: 2;
       pointer-events: none;
     }
-
     .continue-item-title {
       font-size: 14px;
       font-weight: 800;
@@ -483,7 +462,6 @@
       text-overflow: ellipsis;
       margin-top: 2px;
     }
-
     .continue-time-row {
       display: flex;
       align-items: center;
@@ -492,7 +470,6 @@
       font-weight: 600;
       color: #94a3b8;
     }
-
     .continue-time-row svg {
       width: 14px;
       height: 14px;
@@ -502,12 +479,8 @@
       flex-shrink: 0;
     }
 
-    /* BARIS BADGE KATEGORI / GENRE (RAPAT, FLEX-WRAP, TANPA BATAS TINGGI KAKU) */
-    .genre-scroll-wrapper {
-      margin-top: 36px;
-      margin-bottom: 8px;
-    }
-
+    /* BADGE KATEGORI / GENRE */
+    .genre-scroll-wrapper { margin-top: 36px; margin-bottom: 8px; }
     .genre-scroll-row {
       display: flex;
       flex-wrap: wrap;
@@ -570,6 +543,7 @@
       padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
     }
 
+    /* BARIS BAWAH COVER (EPISODE KIRI & BADGE MATA KANAN) */
     .card-bottom-info {
       position: absolute; bottom: 8px; left: 8px; right: 8px;
       display: flex; justify-content: space-between; align-items: center; z-index: 2; pointer-events: none;
@@ -579,6 +553,29 @@
       background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); 
       border-top: 1px solid var(--glass-border-top); color: #ffffff; font-size: 9.5px; font-weight: 800; 
       padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
+    }
+
+    /* BADGE VIEW MATA DI COVER */
+    .badge-view-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.5px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f1f5f9;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 9999px;
+    }
+    .badge-view-count svg {
+      width: 11px;
+      height: 11px;
+      stroke: var(--color-accent);
+      fill: none;
+      stroke-width: 2.2;
     }
 
     .card-title { 
@@ -594,6 +591,7 @@
     .popular-vertical-list { display: flex; flex-direction: column; gap: 18px; }
     .popular-vertical-list .popular-featured-card { flex: 1 1 auto; max-width: 100%; }
     .featured-thumb-box { 
+      position: relative;
       width: 135px; 
       min-width: 135px; 
       height: 185px; 
@@ -601,16 +599,21 @@
       overflow: hidden; 
       background: #111; 
       border: none !important;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.8); 
       flex-shrink: 0; 
       transform: translateZ(0);
     }
     .featured-thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+    .featured-thumb-box .badge-view-count {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+    }
+
     .featured-info-col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
     .featured-title { font-size: 15.5px; font-weight: 800; color: #ffffff; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .featured-synopsis { font-size: 11px; color: #94a3b8; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
     .featured-synopsis.clamp-3 { -webkit-line-clamp: 3; }
-    .featured-synopsis.clamp-5 { -webkit-line-clamp: 5; }
     .featured-genres { font-size: 11px; color: #64748b; line-height: 1.35; font-weight: 500; }
     .featured-pill-btn {
       align-self: flex-start; background: #1c1c1e; border: 1px solid rgba(255, 255, 255, 0.12);
@@ -720,7 +723,7 @@
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
-    <!-- 2. POPULER HARI INI DENGAN SKELETON PLACEHOLDER -->
+    <!-- 2. POPULER HARI INI (DIURUTKAN DARI VIEWS TERBANYAK) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -754,7 +757,7 @@
       </div>
     </section>
 
-    <!-- 3. DONGHUA TERBARU DENGAN SKELETON PLACEHOLDER -->
+    <!-- 3. DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -773,7 +776,7 @@
       </div>
     </section>
 
-    <!-- BADGE KATEGORI / GENRE (RAPAT, FLEX-WRAP, PANJANG DINAMIS) -->
+    <!-- BADGE KATEGORI / GENRE -->
     <div class="genre-scroll-wrapper">
       <div class="genre-scroll-row" id="genreBar">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
@@ -791,7 +794,7 @@
       </div>
     </div>
 
-    <!-- 4. MOVIE TERBARU (TETAP WARNA BIRU) -->
+    <!-- 4. MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -807,7 +810,7 @@
       </div>
     </section>
 
-    <!-- 5. DONGHUA POPULER DENGAN SKELETON PLACEHOLDER -->
+    <!-- 5. DONGHUA POPULER (DIURUTKAN DARI VIEWS FIREBASE) -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -854,6 +857,21 @@
     </div>
   </footer>
 
+  <!-- SCRIPT KONEKSI FIREBASE UNTUK VIEWS TOTAL -->
+  <script type="module">
+    try {
+      const fb = await import('/assets/firebase-config.js');
+      window.db = fb.db;
+      window.fbRef = fb.ref;
+      window.fbGet = fb.get;
+
+      // Panggil sinkronisasi views ke tampilan
+      if (typeof window.syncFirebaseViews === 'function') {
+        window.syncFirebaseViews();
+      }
+    } catch (_) {}
+  </script>
+
   <script>
     let searchTimer = null;
     let currentSlide = 0;
@@ -863,6 +881,15 @@
     let donghuaList = [];
     let movieList = [];
     let masterList = [];
+    let viewsDataMap = {}; // Menyimpan data views_total dari Firebase
+
+    function formatViewCount(val) {
+      const num = parseInt(val, 10);
+      if (isNaN(num) || num <= 0) return '0';
+      if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+      return String(num);
+    }
 
     function sanitizeTitle(rawTitle) {
       if (!rawTitle) return 'Donghua';
@@ -1026,7 +1053,6 @@
       if (dots[currentSlide]) dots[currentSlide].classList.add('active');
     }
 
-    /* RENDER LANJUTKAN MENONTON */
     function renderContinueWatching() {
       const container = document.getElementById('continueSection');
       const row = document.getElementById('continueRow');
@@ -1088,10 +1114,15 @@
       const badgeText = isMovie ? 'Movie' : `Ep ${epNum} / ${parseStatusText(item) === 'COMPLETED' ? 'Completed' : 'Ongoing'}`;
       const synopsisText = item.synopsis || item.description || item.desc || `${titleText} menceritakan petualangan kultivasi tanpa sihir yang penuh pertempuran hebat di benua spiritual melawan takdir.`;
       const genresFormatted = Array.isArray(item.genres) && item.genres.length > 0 ? item.genres.join(' • ') : 'Action • Adventure • Fantasy';
+      const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
 
       card.innerHTML = `
         <div class="featured-thumb-box">
           <img src="${getImageUrl(item)}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" />
+          <div class="badge-view-count">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
+          </div>
         </div>
         <div class="featured-info-col">
           <div class="featured-text-top">
@@ -1112,6 +1143,7 @@
       card.className = 'card-grid';
       card.href = `/donghua/${encodeURIComponent(item.slug)}`;
       const isMovie = isMovieItem(item);
+      const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
 
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
@@ -1119,6 +1151,10 @@
           <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           <div class="card-bottom-info">
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
+            <div class="badge-view-count">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
+            </div>
           </div>
         </div>
         <div class="card-title">${sanitizeTitle(item.title)}</div>
@@ -1149,6 +1185,58 @@
       }
     }
 
+    /* FUNGSI PENGURUTAN POPULER BERDASARKAN VIEWS FIREBASE */
+    function getSortedByViewsList() {
+      return [...masterList].sort((a, b) => {
+        const viewsA = parseInt(viewsDataMap[a.slug] || 0, 10);
+        const viewsB = parseInt(viewsDataMap[b.slug] || 0, 10);
+        return viewsB - viewsA;
+      });
+    }
+
+    function renderPopularSections() {
+      const popularSorted = getSortedByViewsList();
+
+      // Render Populer Hari Ini (Peringkat 1 s/d 6 Terbanyak)
+      const popRow = document.getElementById('todayPopularRow');
+      if (popRow) {
+        popRow.innerHTML = '';
+        popularSorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
+      }
+
+      // Render Donghua Populer (Peringkat berikutnya)
+      const popAllGrid = document.getElementById('popularAllGrid');
+      if (popAllGrid) {
+        popAllGrid.innerHTML = '';
+        popularSorted.slice(6, 12).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
+      }
+    }
+
+    /* AMBIL DATA VIEWS DARI FIREBASE -> views_total */
+    window.syncFirebaseViews = async function() {
+      if (!window.db || !window.fbRef || !window.fbGet) return;
+
+      try {
+        const snap = await window.fbGet(window.fbRef(window.db, 'views_total'));
+        if (snap.exists()) {
+          viewsDataMap = snap.val() || {};
+
+          // Perbarui teks view counter pada seluruh kartu yang sudah ada
+          document.querySelectorAll('.view-num').forEach(el => {
+            const slug = el.getAttribute('data-slug');
+            if (slug && viewsDataMap[slug] !== undefined) {
+              el.innerText = formatViewCount(viewsDataMap[slug]);
+            }
+          });
+
+          // Urutkan ulang Donghua Populer berdasarkan views tertinggi
+          if (masterList.length > 0) {
+            renderPopularSections();
+          }
+        }
+      } catch (_) {}
+    };
+
     async function loadMainData() {
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
@@ -1159,10 +1247,7 @@
         movieList = masterList.filter(item => isMovieItem(item));
 
         renderHeroSlider(masterList);
-
-        const popRow = document.getElementById('todayPopularRow');
-        popRow.innerHTML = '';
-        masterList.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
+        renderPopularSections();
 
         const latestGrid = document.getElementById('latestGrid');
         latestGrid.innerHTML = '';
@@ -1174,9 +1259,10 @@
         movieGrid.innerHTML = '';
         movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item)));
 
-        const popAllGrid = document.getElementById('popularAllGrid');
-        popAllGrid.innerHTML = '';
-        donghuaList.slice(6, 12).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
+        // Ambil data view Firebase jika sudah siap
+        if (window.syncFirebaseViews) {
+          window.syncFirebaseViews();
+        }
 
       } catch (_) {}
     }
