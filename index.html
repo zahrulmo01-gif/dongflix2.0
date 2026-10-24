@@ -227,19 +227,42 @@
 
     .action-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    .user-avatar-btn {
+    /* GAYA AVATAR BULAT DENGAN RING BIRU DAN PUSAT ORANYE */
+    .user-avatar-custom-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #000000;
+      border: 3.5px solid #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5px;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+      flex-shrink: 0;
+    }
+
+    .user-avatar-inner-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #f97316;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    .user-avatar-inner-circle img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 50%;
       display: block;
-    }
-
-    .user-avatar-initial {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--color-accent);
-      text-transform: uppercase;
     }
 
     .popover-menu {
@@ -1029,9 +1052,19 @@
 
             if (socialMenuBtn) {
               if (photoURL) {
-                socialMenuBtn.innerHTML = `<img src="${photoURL}" alt="Profil" class="user-avatar-btn" onerror="this.outerHTML='<span class=\\'user-avatar-initial\\'>${initial}</span>'">`;
+                socialMenuBtn.innerHTML = `
+                  <div class="user-avatar-custom-btn">
+                    <div class="user-avatar-inner-circle">
+                      <img src="${photoURL}" alt="${initial}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />
+                    </div>
+                  </div>
+                `;
               } else {
-                socialMenuBtn.innerHTML = `<span class="user-avatar-initial">${initial}</span>`;
+                socialMenuBtn.innerHTML = `
+                  <div class="user-avatar-custom-btn">
+                    <div class="user-avatar-inner-circle">${initial}</div>
+                  </div>
+                `;
               }
             }
           } else {
@@ -1356,7 +1389,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
