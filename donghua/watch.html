@@ -45,7 +45,7 @@
     :root {
       --bg-main: #000000;
       --bg-card: #0a0a0a;
-      --bg-skeleton: #121212;
+      --bg-skeleton: #141416;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
@@ -131,11 +131,11 @@
       text-overflow: ellipsis;
     }
 
-    .skeleton { background: #182232; border-radius: 8px; }
+    /* PLAYER AREA & COOL BLUE LOADER */
     .player-wrapper {
       margin: 0 -16px 18px;
       width: calc(100% + 32px);
-      background: #000;
+      background: #000000;
       aspect-ratio: 16/9;
       position: relative;
       overflow: hidden;
@@ -144,12 +144,97 @@
     }
 
     .detail-player-box {
-      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-      color: var(--text-muted); font-size: 13px;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .player-iframe { width: 100%; height: 100%; border: none; }
+    .player-loader-overlay {
+      position: absolute;
+      inset: 0;
+      background: #000000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
 
+    .player-loader-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .cool-spinner {
+      position: relative;
+      width: 52px;
+      height: 52px;
+    }
+
+    .spinner-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(56, 189, 248, 0.15);
+      border-top-color: var(--color-accent);
+      border-right-color: var(--color-primary);
+      animation: spinCool 0.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    }
+
+    .spinner-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px;
+      height: 18px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      box-shadow: 0 0 14px var(--color-accent);
+      animation: pulseCore 1.4s ease-in-out infinite;
+    }
+
+    .spinner-text {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+
+    @keyframes spinCool {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseCore {
+      0%, 100% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    }
+
+    .player-iframe { width: 100%; height: 100%; border: none; display: block; }
+
+    /* SKELETON SHIMMER */
+    @keyframes skeletonPulse { 
+      0%, 100% { opacity: 0.35; } 
+      50% { opacity: 0.75; } 
+    }
+    .skeleton { 
+      background-color: var(--bg-skeleton); 
+      animation: skeletonPulse 1.5s infinite ease-in-out; 
+      border-radius: 8px; 
+    }
+
+    /* EPISODE LIST */
     .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .ep-header-title { font-size: 16px; font-weight: 800; }
     .episode-sort-wrapper { position: relative; margin-left: auto; }
@@ -221,6 +306,7 @@
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
+    /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center; background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 6px; margin-bottom: 24px; position: relative;
@@ -267,6 +353,7 @@
     }
     .server-tooltip-hint.show { opacity: 1; }
 
+    /* DETAIL & SYNOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
     .media-cover-wrapper {
       width: 105px; min-width: 105px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden;
@@ -283,6 +370,7 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
+    /* RECOMMENDATIONS */
     .recommendations-section {
       margin-top: 32px;
       margin-bottom: 32px;
@@ -445,19 +533,28 @@
       <button class="icon-circle-btn" aria-label="Kembali">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
-      <span class="brand-title" id="topHeaderTitle">Memuat...</span>
+      <span class="brand-title" id="topHeaderTitle"></span>
     </div>
   </div>
 </header>
 
 <div class="container">
+  <!-- PLAYER WRAPPER DENGAN COOL BLUE LOADER -->
   <div class="player-wrapper">
     <div class="detail-player-box" id="playerMediaContainer">
-      <div class="skeleton" style="width:100%;height:100%;border-radius:0;"></div>
+      <div class="player-loader-overlay" id="playerLoaderOverlay">
+        <div class="cool-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-core"></div>
+        </div>
+        <span class="spinner-text">Memuat Video...</span>
+      </div>
+      <iframe class="player-iframe" id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media; fullscreen" referrerpolicy="no-referrer" style="display:none;" onload="onIframeLoaded()"></iframe>
     </div>
   </div>
 
   <div>
+    <!-- EPISODE LIST -->
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
@@ -488,6 +585,7 @@
       </div>
     </div>
 
+    <!-- ACTION BAR -->
     <div class="action-bar">
       <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
       <div class="server-custom-btn">
@@ -517,8 +615,22 @@
       </button>
     </div>
 
+    <!-- DETAIL & SINOPSIS DENGAN SKELETON PLACEHOLDER -->
     <div id="mediaDetailsGroup">
-      <div class="skeleton" style="height:120px;margin-bottom:20px;"></div>
+      <div class="media-meta-card">
+        <div class="media-cover-wrapper skeleton"></div>
+        <div class="media-info-col">
+          <div class="skeleton" style="height: 22px; width: 75%; margin-bottom: 6px;"></div>
+          <div class="skeleton" style="height: 18px; width: 50%; margin-bottom: 6px;"></div>
+          <div class="skeleton" style="height: 14px; width: 60%;"></div>
+        </div>
+      </div>
+      <div class="synopsis-block">
+        <div class="skeleton" style="height: 12px; width: 80px; margin-bottom: 10px;"></div>
+        <div class="skeleton" style="height: 14px; width: 100%; margin-bottom: 6px;"></div>
+        <div class="skeleton" style="height: 14px; width: 95%; margin-bottom: 6px;"></div>
+        <div class="skeleton" style="height: 14px; width: 70%; margin-bottom: 24px;"></div>
+      </div>
     </div>
 
     <section class="recommendations-section" id="recommendationsSection" style="display:none;">
@@ -604,6 +716,22 @@
   }
 
   const targetSlug = extractTargetSlug();
+
+  // FORMAT SLUG JADI JUDUL KAPITAL INSTAN (CONTOH: "renegade-immortal" -> "Renegade Immortal")
+  function slugToTitleCase(slug) {
+    if (!slug) return 'Donghua';
+    return slug
+      .split('-')
+      .filter(Boolean)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  // PASANG LANGSUNG JUDUL AWAL KE HEADER DARI SLUG AGAR TIDAK MUNCUL TULISAN "Memuat..."
+  const initialDisplayTitle = slugToTitleCase(targetSlug);
+  const headerTitleEl = document.getElementById('topHeaderTitle');
+  if (headerTitleEl) headerTitleEl.innerText = initialDisplayTitle;
+  document.title = `Nonton ${initialDisplayTitle} Sub Indo - Dongflix`;
 
   function sanitizeTitle(str) {
     if (!str) return '';
@@ -698,7 +826,7 @@
       historyList.unshift({
         slug: targetSlug,
         mainPath: targetSlug,
-        title: currentMainTitle || 'Donghua',
+        title: currentMainTitle || initialDisplayTitle || 'Donghua',
         poster: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
         cover: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
         episode: `Ep ${epNum}`,
@@ -814,7 +942,7 @@
       favs = favs.filter(f => f.slug !== targetSlug);
       document.getElementById('btnFavorite').classList.remove('active');
     } else {
-      favs.unshift({ slug: targetSlug, title: currentMainTitle, poster: currentPoster });
+      favs.unshift({ slug: targetSlug, title: currentMainTitle || initialDisplayTitle, poster: currentPoster });
       document.getElementById('btnFavorite').classList.add('active');
     }
     localStorage.setItem('df_favorites', JSON.stringify(favs));
@@ -833,7 +961,7 @@
   }
 
   function triggerShare() {
-    const shareTitle = `Nonton ${currentMainTitle || 'Donghua'} Sub Indo - Dongflix`;
+    const shareTitle = `Nonton ${currentMainTitle || initialDisplayTitle} Sub Indo - Dongflix`;
     const shareUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(targetSlug)}`;
     if (navigator.share) {
       navigator.share({ title: shareTitle, url: shareUrl }).catch(() => {});
@@ -950,7 +1078,6 @@
   }
 
   async function loadDetail() {
-    // 1. Cek slug kosong
     if (!targetSlug) {
       window.location.replace('/404.html');
       return;
@@ -962,13 +1089,12 @@
         const catalog = await catRes.json();
         const info = catalog.find(d => d.slug === targetSlug);
 
-        // 2. Jika slug tidak ada di database, redirect langsung ke 404 tanpa menambah view
         if (!info) {
           window.location.replace('/404.html');
           return;
         }
 
-        // 3. Donghua VALID & BERHASIL DITEMUKAN: Tambahkan view di sini
+        // DONGHUA VALID: Tambahkan view counter
         if (typeof window.triggerViewIncrement === 'function') {
           window.triggerViewIncrement();
         }
@@ -979,11 +1105,13 @@
 
         updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
 
-        document.getElementById('topHeaderTitle').innerText = currentMainTitle;
+        // Perbarui judul di bar atas jika berbeda dari hasil olah slug
+        if (headerTitleEl) headerTitleEl.innerText = currentMainTitle;
 
         const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
         const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
 
+        // GANTI PLACEHOLDER SKELETON DENGAN DATA KONTEN ASLI
         document.getElementById('mediaDetailsGroup').innerHTML = `
           <div class="media-meta-card">
             <div class="media-cover-wrapper">
@@ -1030,7 +1158,8 @@
 
           selectEpisodeByNum(initialEp);
         } else {
-          document.getElementById('playerMediaContainer').innerText = 'Episode belum tersedia.';
+          hidePlayerLoader();
+          document.getElementById('playerMediaContainer').innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Episode belum tersedia.</div>';
         }
       }
     } catch (_) {
@@ -1094,7 +1223,8 @@
       currentServerUrl = servers[0].url;
       renderPlayer(servers[0].url);
     } else {
-      document.getElementById('playerMediaContainer').innerHTML = '<div class="detail-player-box">Server video belum tersedia.</div>';
+      hidePlayerLoader();
+      document.getElementById('playerMediaContainer').innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Server video belum tersedia.</div>';
     }
   }
 
@@ -1105,9 +1235,33 @@
     }
   }
 
+  function showPlayerLoader() {
+    const loader = document.getElementById('playerLoaderOverlay');
+    const iframe = document.getElementById('videoIframe');
+    if (loader) loader.classList.remove('hidden');
+    if (iframe) iframe.style.display = 'none';
+  }
+
+  function hidePlayerLoader() {
+    const loader = document.getElementById('playerLoaderOverlay');
+    const iframe = document.getElementById('videoIframe');
+    if (loader) loader.classList.add('hidden');
+    if (iframe) iframe.style.display = 'block';
+  }
+
   function renderPlayer(url) {
-    const box = document.getElementById('playerMediaContainer');
-    box.innerHTML = `<iframe class="player-iframe" src="${url}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" referrerpolicy="no-referrer"></iframe>`;
+    showPlayerLoader();
+    const iframe = document.getElementById('videoIframe');
+    if (iframe) {
+      iframe.src = url;
+    }
+  }
+
+  function onIframeLoaded() {
+    const iframe = document.getElementById('videoIframe');
+    if (iframe && iframe.src && iframe.src !== 'about:blank' && iframe.src !== window.location.href) {
+      hidePlayerLoader();
+    }
   }
 
   function openEpisodeSheet() {
