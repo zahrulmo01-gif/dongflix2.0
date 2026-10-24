@@ -13,13 +13,6 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="canonicalUrl" href="https://dongflix.my.id/">
 
-  <!-- Web Manifest & PWA Support -->
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Dongflix">
-
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="video.other">
   <meta property="og:site_name" content="Dongflix">
@@ -38,6 +31,13 @@
   <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+
+  <!-- Web Manifest & PWA Support -->
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Dongflix">
 
   <script type="module" src="/assets/firebase-config.js"></script>
 
@@ -586,10 +586,6 @@
         }
       });
     }
-
-    if (typeof window.triggerViewIncrement === 'function') {
-      window.triggerViewIncrement();
-    }
   } catch (_) {}
 </script>
 
@@ -954,6 +950,7 @@
   }
 
   async function loadDetail() {
+    // 1. Cek slug kosong
     if (!targetSlug) {
       window.location.replace('/404.html');
       return;
@@ -965,9 +962,15 @@
         const catalog = await catRes.json();
         const info = catalog.find(d => d.slug === targetSlug);
 
+        // 2. Jika slug tidak ada di database, redirect langsung ke 404 tanpa menambah view
         if (!info) {
           window.location.replace('/404.html');
           return;
+        }
+
+        // 3. Donghua VALID & BERHASIL DITEMUKAN: Tambahkan view di sini
+        if (typeof window.triggerViewIncrement === 'function') {
+          window.triggerViewIncrement();
         }
 
         currentMainTitle = sanitizeTitle(info.title);
@@ -1042,7 +1045,6 @@
     }
 
     checkFavorite();
-    if (window.triggerViewIncrement) window.triggerViewIncrement();
     loadComments();
   }
 
