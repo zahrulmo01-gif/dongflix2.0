@@ -192,6 +192,11 @@
       display: flex; justify-content: space-around; align-items: center;
       background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
       border-radius: 18px; padding: 12px 6px; margin-bottom: 24px; position: relative;
+      min-height: 58px;
+    }
+
+    .action-holder-item {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
 
     .action-item {
@@ -552,33 +557,28 @@
     </div>
 
     <!-- ACTION BAR -->
-    <div class="action-bar">
-      <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
-      <div class="server-custom-btn" onclick="handleActionClick('server', event)">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">Server</span>
-        <select class="server-select-hidden" id="serverSelect" onchange="switchServer(this.value)"></select>
+    <div class="action-bar" id="actionBarContainer">
+      <!-- HOLDER / SKELETON SAAT MEMUAT -->
+      <div class="action-holder-item">
+        <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
+        <div class="skeleton" style="width: 34px; height: 10px; border-radius: 4px;"></div>
       </div>
-
-      <button class="action-item" onclick="handleActionClick('views', event)">
-        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span id="viewCountText">0</span>
-      </button>
-
-      <button class="action-item" id="btnFavorite" onclick="handleActionClick('favorite', event)">
-        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <span>Favorit</span>
-      </button>
-
-      <button class="action-item" onclick="handleActionClick('download', event)">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Unduh</span>
-      </button>
-
-      <button class="action-item" onclick="handleActionClick('share', event)">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        <span>Bagikan</span>
-      </button>
+      <div class="action-holder-item">
+        <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
+        <div class="skeleton" style="width: 26px; height: 10px; border-radius: 4px;"></div>
+      </div>
+      <div class="action-holder-item">
+        <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
+        <div class="skeleton" style="width: 32px; height: 10px; border-radius: 4px;"></div>
+      </div>
+      <div class="action-holder-item">
+        <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
+        <div class="skeleton" style="width: 30px; height: 10px; border-radius: 4px;"></div>
+      </div>
+      <div class="action-holder-item">
+        <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
+        <div class="skeleton" style="width: 36px; height: 10px; border-radius: 4px;"></div>
+      </div>
     </div>
 
     <!-- DETAIL & SINOPSIS -->
@@ -759,6 +759,39 @@
     return String(n);
   }
 
+  function renderActionBarContent() {
+    const bar = document.getElementById('actionBarContainer');
+    if (!bar) return;
+    bar.innerHTML = `
+      <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
+      <div class="server-custom-btn">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">Server</span>
+        <select class="server-select-hidden" id="serverSelect" onchange="switchServer(this.value)"></select>
+      </div>
+
+      <div class="action-item">
+        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="viewCountText">0</span>
+      </div>
+
+      <button class="action-item" id="btnFavorite" onclick="toggleFavorite()">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span>Favorit</span>
+      </button>
+
+      <button class="action-item" onclick="triggerDownload()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Unduh</span>
+      </button>
+
+      <button class="action-item" onclick="triggerShare()">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span>Bagikan</span>
+      </button>
+    `;
+  }
+
   function updateSocialMetaTags(title, cover, synopsis, slug) {
     const fullTitle = `Nonton ${title} Sub Indo - Dongflix`;
     const cleanSynopsis = synopsis && synopsis.length > 20 
@@ -822,25 +855,6 @@
   }
 
   function goToHomeLogin() { window.location.href = 'https://dongflix.my.id/profil/login.html'; }
-
-  function handleActionClick(actionType, event) {
-    if (!window.currentUser) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      goToHomeLogin();
-      return;
-    }
-
-    if (actionType === 'favorite') {
-      toggleFavorite();
-    } else if (actionType === 'download') {
-      triggerDownload();
-    } else if (actionType === 'share') {
-      triggerShare();
-    }
-  }
 
   function saveContinueHistory(epNum) {
     if (!targetSlug) return;
@@ -995,10 +1009,12 @@
 
     if (exists) {
       favs = favs.filter(f => f.slug !== targetSlug);
-      document.getElementById('btnFavorite').classList.remove('active');
+      const btn = document.getElementById('btnFavorite');
+      if (btn) btn.classList.remove('active');
     } else {
       favs.unshift({ slug: targetSlug, title: currentMainTitle || initialDisplayTitle, poster: currentPoster });
-      document.getElementById('btnFavorite').classList.add('active');
+      const btn = document.getElementById('btnFavorite');
+      if (btn) btn.classList.add('active');
     }
     localStorage.setItem('df_favorites', JSON.stringify(favs));
   }
@@ -1006,7 +1022,8 @@
   function checkFavorite() {
     const favs = JSON.parse(localStorage.getItem('df_favorites') || '[]');
     if (favs.some(f => f.slug === targetSlug)) {
-      document.getElementById('btnFavorite').classList.add('active');
+      const btn = document.getElementById('btnFavorite');
+      if (btn) btn.classList.add('active');
     }
   }
 
@@ -1472,6 +1489,8 @@
         return;
       }
 
+      renderActionBarContent();
+
       document.getElementById('mainContentGroup').style.display = 'block';
       document.getElementById('notFoundBox').style.display = 'none';
 
@@ -1590,21 +1609,23 @@
       .filter(s => /^https?:\/\//i.test(s.url));
 
     const serverSelect = document.getElementById('serverSelect');
-    serverSelect.innerHTML = '';
+    if (serverSelect) {
+      serverSelect.innerHTML = '';
 
-    if (servers.length > 0) {
-      servers.forEach((srv, i) => {
-        const opt = document.createElement('option');
-        opt.value = srv.url;
-        opt.innerText = srv.name;
-        if (i === 0) opt.selected = true;
-        serverSelect.appendChild(opt);
-      });
-      currentServerUrl = servers[0].url;
-      renderPlayer(servers[0].url);
-    } else {
-      hidePlayerLoader();
-      document.getElementById('playerMediaContainer').innerHTML = '<div class="detail-player-box">Server video belum tersedia.</div>';
+      if (servers.length > 0) {
+        servers.forEach((srv, i) => {
+          const opt = document.createElement('option');
+          opt.value = srv.url;
+          opt.innerText = srv.name;
+          if (i === 0) opt.selected = true;
+          serverSelect.appendChild(opt);
+        });
+        currentServerUrl = servers[0].url;
+        renderPlayer(servers[0].url);
+      } else {
+        hidePlayerLoader();
+        document.getElementById('playerMediaContainer').innerHTML = '<div class="detail-player-box">Server video belum tersedia.</div>';
+      }
     }
   }
 
