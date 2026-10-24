@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Profil Saya - Dongflix</title>
+  <meta name="referrer" content="no-referrer">
+
+  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+
+  <script type="module" src="/assets/firebase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-card: #0c121e;
+      --bg-skeleton: #141416;
+      --color-primary: #0284c7;
+      --color-accent: #38bdf8;
+      --text-main: #ffffff;
+      --text-sub: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --glass-bg: rgba(15, 23, 42, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      --glass-blur: blur(20px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding-top: 68px;
+      padding-bottom: 60px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 0 16px; }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0) 100%);
+      padding: 10px 16px 16px;
+    }
+
+    .header-content {
+      max-width: 800px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; height: 44px;
+    }
+
+    .header-left-group { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+
+    .icon-circle-btn {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      border-radius: 50%;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+    }
+    .icon-circle-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+
+    .brand-title { font-size: 17px; font-weight: 700; color: #fff; }
+
+    /* PROFILE CARD */
+    .profile-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 24px 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .avatar-wrapper {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      border: 3px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 20px rgba(2, 132, 199, 0.35);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 3px;
+    }
+
+    .badges-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge-admin {
+      background: #f59e0b;
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .badge-level {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--color-accent);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-level.admin-lvl {
+      background: #f59e0b;
+      color: #000;
+      border: none;
+    }
+
+    /* STATS ROW (FOLLOWERS, LEVEL, DLL) */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-val {
+      font-size: 17px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* TOMBOL AKSI PENGATURAN */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .btn-action {
+      height: 42px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .btn-logout {
+      grid-column: span 2;
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    /* SECTION FAVORIT */
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .favorites-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .fav-item {
+      text-decoration: none;
+      background: #090d16;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fav-poster {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      background: #141416;
+    }
+
+    .fav-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      padding: 8px 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* MODAL PENGATURAN (MODAL POPUP) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 200;
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+
+    .modal-close {
+      position: absolute;
+      top: 18px; right: 18px;
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .input-group { margin-bottom: 14px; }
+    .input-group label { display: block; font-size: 11.5px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
+    .input-modal {
+      width: 100%; height: 42px; background: #040812; border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 0 12px; color: #fff; font-size: 13px; outline: none;
+    }
+    .input-modal:focus { border-color: var(--color-accent); }
+
+    .btn-save-modal {
+      width: 100%; height: 42px; background: var(--color-primary); color: #fff; border: none;
+      border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <div class="header-left-group" onclick="window.location.href='/'">
+        <button class="icon-circle-btn">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <span class="brand-title">Profil Pengguna</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- KARTU PROFIL UTAMA -->
+    <div class="profile-card">
+      <div class="avatar-wrapper" id="profileAvatar" onclick="openModal('modalPhoto')">
+        <span id="avatarInitial">U</span>
+      </div>
+
+      <div class="user-name">
+        <span id="userName">Memuat...</span>
+      </div>
+      <div class="user-email" id="userEmail">...</div>
+
+      <div class="badges-row">
+        <span class="badge-level" id="badgeLevel">Lv1</span>
+        <span class="badge-admin" id="badgeAdmin" style="display: none;">★ ADMIN</span>
+      </div>
+
+      <!-- STATISTIK (FOLLOWERS, FOLLOWING, LEVEL) -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-val" id="statFollowers">0</span>
+          <span class="stat-lbl">Pengikut</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val" id="statFollowing">0</span>
+          <span class="stat-lbl">Mengikuti</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val" id="statFavorites">0</span>
+          <span class="stat-lbl">Favorit</span>
+        </div>
+      </div>
+
+      <!-- TOMBOL PENGATURAN AKUN -->
+      <div class="actions-grid">
+        <button class="btn-action" onclick="openModal('modalName')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          Ubah Nama
+        </button>
+        <button class="btn-action" onclick="openModal('modalPhoto')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Ganti Foto
+        </button>
+        <button class="btn-action" onclick="openModal('modalPassword')" style="grid-column: span 2;">
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Ubah Password
+        </button>
+        <button class="btn-action btn-logout" onclick="handleLogout()">Keluar dari Akun</button>
+      </div>
+    </div>
+
+    <!-- DAFTAR FAVORIT -->
+    <div class="section-title">
+      <svg width="16" height="16" fill="currentColor" class="text-amber-400" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      Donghua Favorit Tersimpan
+    </div>
+    <div class="favorites-list" id="favoritesContainer">
+      <p style="color:var(--text-sub);font-size:12px;">Memuat favorit...</p>
+    </div>
+  </div>
+
+  <!-- MODAL: GANTI NAMA -->
+  <div id="modalName" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modalName')">&times;</button>
+      <div class="modal-title">Ubah Nama Profil</div>
+      <form onsubmit="handleSaveName(event)">
+        <div class="input-group">
+          <label>Nama Pengguna Baru</label>
+          <input type="text" id="newNameInput" class="input-modal" required placeholder="Masukkan nama baru...">
+        </div>
+        <button type="submit" class="btn-save-modal">Simpan Nama</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: GANTI FOTO PROFIL -->
+  <div id="modalPhoto" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modalPhoto')">&times;</button>
+      <div class="modal-title">Ganti Foto Profil</div>
+      <form onsubmit="handleSavePhoto(event)">
+        <div class="input-group">
+          <label>Pilih File Gambar</label>
+          <input type="file" id="filePhotoInput" accept="image/*" class="input-modal" onchange="previewImage(this)">
+        </div>
+        <div class="input-group">
+          <label>Atau URL Foto Langsung</label>
+          <input type="url" id="urlPhotoInput" class="input-modal" placeholder="https://example.com/foto.jpg">
+        </div>
+        <button type="submit" class="btn-save-modal">Perbarui Foto</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: GANTI PASSWORD -->
+  <div id="modalPassword" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modalPassword')">&times;</button>
+      <div class="modal-title">Ubah Password Akun</div>
+      <form onsubmit="handleSavePassword(event)">
+        <div class="input-group">
+          <label>Password Baru</label>
+          <input type="password" id="newPassInput" class="input-modal" required placeholder="Minimal 6 karakter...">
+        </div>
+        <button type="submit" class="btn-save-modal">Simpan Password Baru</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, ref, get, set, onAuthStateChanged } from '/assets/firebase-config.js';
+    import { updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    window.auth = auth;
+    window.db = db;
+    window.fbRef = ref;
+    window.fbGet = get;
+    window.fbSet = set;
+    window.fbUpdatePassword = updatePassword;
+    window.fbSignOut = signOut;
+
+    // CEK LOGIN: Jika belum login, alihkan ke login.html
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/profil/login.html';
+      } else {
+        window.currentUser = user;
+        await loadUserData(user);
+      }
+    });
+  </script>
+
+  <script>
+    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+    let base64Photo = '';
+
+    function getDbKey(email) {
+      if (!email) return '';
+      return email.toLowerCase().replace(/\./g, ',');
+    }
+
+    async function loadUserData(user) {
+      document.getElementById('userEmail').innerText = user.email;
+      const emailKey = getDbKey(user.email);
+      const userRef = window.fbRef(window.db, `users/${emailKey}`);
+
+      try {
+        const snap = await window.fbGet(userRef);
+        let data = snap.exists() ? snap.val() : {};
+
+        const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() || data.status === 'admin';
+        const name = data.name || user.email.split('@')[0];
+        const photoURL = data.photoURL || '';
+
+        document.getElementById('userName').innerText = name;
+        document.getElementById('badgeLevel').innerText = isAdmin ? 'Lv999+' : `Lv${data.level || 1}`;
+        if (isAdmin) {
+          document.getElementById('badgeLevel').classList.add('admin-lvl');
+          document.getElementById('badgeAdmin').style.display = 'inline-block';
+        }
+
+        document.getElementById('statFollowers').innerText = data.followersCount || 0;
+        document.getElementById('statFollowing').innerText = data.followingCount || 0;
+
+        // Avatar
+        const avatarBox = document.getElementById('profileAvatar');
+        if (photoURL) {
+          avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='${name.charAt(0).toUpperCase()}'">`;
+        } else {
+          avatarBox.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
+        }
+
+        // Ambil Data Favorit
+        loadUserFavorites(emailKey, data.favorites);
+      } catch (e) {
+        console.error('Gagal mengambil profil:', e);
+      }
+    }
+
+    function loadUserFavorites(emailKey, rtdbFavorites) {
+      const container = document.getElementById('favoritesContainer');
+      const countEl = document.getElementById('statFavorites');
+      let favList = [];
+
+      if (rtdbFavorites && typeof rtdbFavorites === 'object') {
+        favList = Object.values(rtdbFavorites);
+      } else {
+        favList = JSON.parse(localStorage.getItem('df_favorites') || '[]');
+      }
+
+      countEl.innerText = favList.length;
+
+      if (favList.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-sub);font-size:12px;grid-column: span 3;">Belum ada donghua favorit.</p>';
+        return;
+      }
+
+      container.innerHTML = favList.map(item => `
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="fav-item">
+          <img src="${item.poster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="fav-poster" alt="${item.title}" referrerpolicy="no-referrer">
+          <div class="fav-title">${item.title}</div>
+        </a>
+      `).join('');
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    // Simpan Nama Baru
+    async function handleSaveName(e) {
+      e.preventDefault();
+      const newName = document.getElementById('newNameInput').value.trim();
+      if (!newName || !window.currentUser) return;
+
+      const emailKey = getDbKey(window.currentUser.email);
+      await window.fbSet(window.fbRef(window.db, `users/${emailKey}/name`), newName);
+
+      document.getElementById('userName').innerText = newName;
+      closeModal('modalName');
+      alert('Nama berhasil diubah!');
+    }
+
+    // Convert file gambar ke Base64
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          base64Photo = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Simpan Foto Profil
+    async function handleSavePhoto(e) {
+      e.preventDefault();
+      const urlPhoto = document.getElementById('urlPhotoInput').value.trim();
+      const finalPhoto = base64Photo || urlPhoto;
+      if (!finalPhoto || !window.currentUser) return;
+
+      const emailKey = getDbKey(window.currentUser.email);
+      await window.fbSet(window.fbRef(window.db, `users/${emailKey}/photoURL`), finalPhoto);
+
+      const avatarBox = document.getElementById('profileAvatar');
+      avatarBox.innerHTML = `<img src="${finalPhoto}" alt="Avatar">`;
+      closeModal('modalPhoto');
+      alert('Foto profil berhasil diperbarui!');
+    }
+
+    // Simpan Password Baru
+    async function handleSavePassword(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('newPassInput').value;
+      if (!newPass || newPass.length < 6) {
+        alert('Password minimal 6 karakter!');
+        return;
+      }
+
+      try {
+        await window.fbUpdatePassword(window.currentUser, newPass);
+        closeModal('modalPassword');
+        alert('Password akun berhasil diperbarui!');
+      } catch (err) {
+        alert('Gagal ubah password: ' + err.message);
+      }
+    }
+
+    // Logout
+    async function handleLogout() {
+      if (confirm('Yakin ingin keluar dari akun?')) {
+        await window.fbSignOut(window.auth);
+        window.location.href = '/profil/login.html';
+      }
+    }
+  </script>
+</body>
+</html>
