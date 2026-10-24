@@ -20,6 +20,7 @@
       --color-primary: #0284c7;
       --color-accent: #38bdf8;
       --color-gold: #f59e0b;
+      --color-red: #ef4444;
       --text-main: #ffffff;
       --text-sub: #94a3b8;
       --text-muted: #64748b;
@@ -35,7 +36,7 @@
       background-color: var(--bg-base);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-top: 64px;
+      padding-top: 68px;
       padding-bottom: 70px;
       min-height: 100vh;
       overflow-x: hidden;
@@ -63,13 +64,15 @@
       z-index: 10;
     }
 
-    /* HEADER: BERSIH & TANPA GRADASI GELAP */
+    /* HEADER DENGAN GRADASI GELAP */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: transparent;
-      padding: 10px 16px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 16px 16px;
     }
 
     .header-content {
@@ -240,7 +243,7 @@
       margin-top: 2px;
     }
 
-    /* SECTION TITLE */
+    /* SECTION HEADER & TOMBOL HAPUS SEMUA */
     .section-header {
       display: flex;
       align-items: center;
@@ -257,6 +260,21 @@
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .btn-clear-all {
+      background: transparent;
+      border: none;
+      color: #f87171;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .btn-clear-all:hover {
+      background: rgba(239, 68, 68, 0.15);
     }
 
     /* MENU LIST (iOS STYLE) */
@@ -315,12 +333,12 @@
     }
     .scroll-row::-webkit-scrollbar { display: none; }
 
-    /* KOLEKSI FAVORIT (SCROLL HORIZONTAL) */
+    /* CARD FAVORIT */
     .fav-card {
+      position: relative;
       flex: 0 0 130px;
       min-width: 130px;
       max-width: 130px;
-      text-decoration: none;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 14px;
@@ -330,6 +348,14 @@
       transition: transform 0.2s, border-color 0.2s;
     }
     .fav-card:hover { transform: translateY(-2px); border-color: rgba(56, 189, 248, 0.35); }
+
+    .fav-link {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
 
     .fav-poster-wrap {
       width: 100%;
@@ -351,12 +377,12 @@
       overflow: hidden;
     }
 
-    /* RIWAYAT NONTON (UI SEPERTI DI BERANDA) */
+    /* CARD RIWAYAT NONTON */
     .history-card {
+      position: relative;
       flex: 0 0 230px;
       min-width: 230px;
       max-width: 230px;
-      text-decoration: none;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
@@ -366,6 +392,13 @@
       transition: transform 0.2s;
     }
     .history-card:hover { transform: translateY(-2px); border-color: rgba(56, 189, 248, 0.35); }
+
+    .history-link {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
 
     .history-cover-wrap {
       width: 100%;
@@ -433,6 +466,32 @@
       font-size: 10.5px;
       color: var(--text-muted);
       font-weight: 500;
+    }
+
+    /* TOMBOL HAPUS SATU-SATU (X) PADA CARD */
+    .btn-delete-card {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-delete-card:hover {
+      background: #ef4444;
+      border-color: #ef4444;
+      transform: scale(1.1);
     }
 
     /* MODAL */
@@ -580,23 +639,25 @@
       </button>
     </div>
 
-    <!-- DONGHUA FAVORIT (HORIZONTAL SCROLL) -->
+    <!-- DONGHUA FAVORIT -->
     <div class="section-header">
       <span class="section-title">
         <svg width="15" height="15" fill="currentColor" style="color: var(--color-gold);" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         Koleksi Favorit
       </span>
+      <button class="btn-clear-all" id="btnClearAllFavorites" onclick="clearAllFavorites()" style="display: none;">Hapus Semua</button>
     </div>
     <div class="scroll-row" id="favoritesContainer">
       <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat favorit...</p>
     </div>
 
-    <!-- RIWAYAT NONTON (CONTINUE WATCHING SEPERTI BERANDA) -->
+    <!-- RIWAYAT NONTON -->
     <div class="section-header">
       <span class="section-title">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Riwayat Nonton Terakhir
       </span>
+      <button class="btn-clear-all" id="btnClearAllHistory" onclick="clearAllHistory()" style="display: none;">Hapus Semua</button>
     </div>
     <div class="scroll-row" id="historyContainer">
       <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat riwayat nonton...</p>
@@ -653,7 +714,7 @@
   </div>
 
   <script type="module">
-    import { auth, db, ref, get, set, onAuthStateChanged } from '/assets/firebase-config.js';
+    import { auth, db, ref, get, set, remove, onAuthStateChanged } from '/assets/firebase-config.js';
     import { updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
@@ -702,10 +763,11 @@
       }
     }
 
-    /* RENDER FAVORIT (HORIZONTAL SCROLL) */
+    /* RENDER FAVORIT */
     function loadUserFavorites(rtdbFavorites) {
       const container = document.getElementById('favoritesContainer');
       const countEl = document.getElementById('statFavorites');
+      const clearBtn = document.getElementById('btnClearAllFavorites');
       let favList = [];
 
       if (rtdbFavorites && typeof rtdbFavorites === 'object') {
@@ -718,22 +780,29 @@
 
       if (favList.length === 0) {
         container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
+        if (clearBtn) clearBtn.style.display = 'none';
         return;
       }
 
+      if (clearBtn) clearBtn.style.display = 'block';
+
       container.innerHTML = favList.map(item => `
-        <a href="/donghua/${encodeURIComponent(item.slug)}" class="fav-card">
-          <div class="fav-poster-wrap">
-            <img src="${item.poster || 'https://via.placeholder.com/150x200?text=No+Cover'}" alt="${item.title}" referrerpolicy="no-referrer">
-          </div>
-          <div class="fav-title">${item.title}</div>
-        </a>
+        <div class="fav-card" id="fav-${item.slug}">
+          <button class="btn-delete-card" onclick="deleteSingleFavorite('${item.slug}')" title="Hapus dari Favorit">&times;</button>
+          <a href="/donghua/${encodeURIComponent(item.slug)}" class="fav-link">
+            <div class="fav-poster-wrap">
+              <img src="${item.poster || 'https://via.placeholder.com/150x200?text=No+Cover'}" alt="${item.title}" referrerpolicy="no-referrer">
+            </div>
+            <div class="fav-title">${item.title}</div>
+          </a>
+        </div>
       `).join('');
     }
 
-    /* RENDER RIWAYAT NONTON (UI SEPERTI BERANDA) */
+    /* RENDER RIWAYAT NONTON */
     function loadUserHistory(rtdbHistory) {
       const container = document.getElementById('historyContainer');
+      const clearBtn = document.getElementById('btnClearAllHistory');
       let historyList = [];
 
       if (rtdbHistory && typeof rtdbHistory === 'object') {
@@ -746,8 +815,11 @@
 
       if (historyList.length === 0) {
         container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
+        if (clearBtn) clearBtn.style.display = 'none';
         return;
       }
+
+      if (clearBtn) clearBtn.style.display = 'block';
 
       container.innerHTML = historyList.map(item => {
         const epLabel = item.episode || 'Ep 1';
@@ -757,22 +829,25 @@
         const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : (item.updatedAt ? getTimeAgo(item.updatedAt) : 'Baru saja');
 
         return `
-          <a href="/donghua/${encodeURIComponent(targetSlug)}${epPath}" class="history-card">
-            <div class="history-cover-wrap">
-              <img src="${poster}" alt="${item.title}" referrerpolicy="no-referrer">
-              <span class="history-ep-badge">${epLabel}</span>
-              <div class="history-play-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <div class="history-card" id="hist-${targetSlug}">
+            <button class="btn-delete-card" onclick="deleteSingleHistory('${targetSlug}')" title="Hapus Riwayat">&times;</button>
+            <a href="/donghua/${encodeURIComponent(targetSlug)}${epPath}" class="history-link">
+              <div class="history-cover-wrap">
+                <img src="${poster}" alt="${item.title}" referrerpolicy="no-referrer">
+                <span class="history-ep-badge">${epLabel}</span>
+                <div class="history-play-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div class="history-progress-bar">
+                  <div class="history-progress-fill"></div>
+                </div>
               </div>
-              <div class="history-progress-bar">
-                <div class="history-progress-fill"></div>
+              <div class="history-content">
+                <div class="history-title">${item.title || 'Donghua'}</div>
+                <div class="history-time">Terakhir ditonton • ${timeAgo}</div>
               </div>
-            </div>
-            <div class="history-content">
-              <div class="history-title">${item.title || 'Donghua'}</div>
-              <div class="history-time">Terakhir ditonton • ${timeAgo}</div>
-            </div>
-          </a>
+            </a>
+          </div>
         `;
       }).join('');
     }
@@ -788,6 +863,84 @@
       if (days < 30) return `${days}h yang lalu`;
       return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     }
+
+    /* HAPUS FAVORIT SATU PER SATU */
+    window.deleteSingleFavorite = async function(slug) {
+      if (!confirm('Hapus donghua ini dari koleksi favorit?')) return;
+      
+      let favs = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
+      favs = favs.filter(f => f.slug !== slug);
+      localStorage.setItem('df_favorites', JSON.stringify(favs));
+      localStorage.setItem('rz_favorites', JSON.stringify(favs));
+
+      if (currentAuthUser) {
+        const emailKey = getDbKey(currentAuthUser.email);
+        await remove(ref(db, `users/${emailKey}/favorites/${slug}`)).catch(() => {});
+      }
+
+      const card = document.getElementById(`fav-${slug}`);
+      if (card) card.remove();
+      
+      const countEl = document.getElementById('statFavorites');
+      if (countEl) countEl.innerText = favs.length;
+
+      if (favs.length === 0) {
+        document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
+        document.getElementById('btnClearAllFavorites').style.display = 'none';
+      }
+    };
+
+    /* HAPUS SEMUA FAVORIT */
+    window.clearAllFavorites = async function() {
+      if (!confirm('Yakin ingin menghapus SEMUA koleksi favorit Anda?')) return;
+
+      localStorage.removeItem('df_favorites');
+      localStorage.removeItem('rz_favorites');
+
+      if (currentAuthUser) {
+        const emailKey = getDbKey(currentAuthUser.email);
+        await remove(ref(db, `users/${emailKey}/favorites`)).catch(() => {});
+      }
+
+      document.getElementById('statFavorites').innerText = '0';
+      document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
+      document.getElementById('btnClearAllFavorites').style.display = 'none';
+    };
+
+    /* HAPUS RIWAYAT NONTON SATU PER SATU */
+    window.deleteSingleHistory = async function(slug) {
+      let historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
+      historyList = historyList.filter(item => (item.mainPath || item.slug) !== slug);
+      localStorage.setItem('rz_continue_history', JSON.stringify(historyList));
+
+      if (currentAuthUser) {
+        const emailKey = getDbKey(currentAuthUser.email);
+        await remove(ref(db, `users/${emailKey}/history/${slug}`)).catch(() => {});
+      }
+
+      const card = document.getElementById(`hist-${slug}`);
+      if (card) card.remove();
+
+      if (historyList.length === 0) {
+        document.getElementById('historyContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
+        document.getElementById('btnClearAllHistory').style.display = 'none';
+      }
+    };
+
+    /* HAPUS SEMUA RIWAYAT NONTON */
+    window.clearAllHistory = async function() {
+      if (!confirm('Yakin ingin menghapus SEMUA riwayat tontonan Anda?')) return;
+
+      localStorage.removeItem('rz_continue_history');
+
+      if (currentAuthUser) {
+        const emailKey = getDbKey(currentAuthUser.email);
+        await remove(ref(db, `users/${emailKey}/history`)).catch(() => {});
+      }
+
+      document.getElementById('historyContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
+      document.getElementById('btnClearAllHistory').style.display = 'none';
+    };
 
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
