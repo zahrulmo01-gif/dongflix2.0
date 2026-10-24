@@ -357,7 +357,7 @@
     .recommendations-scroll-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .recommendations-scroll-row::-webkit-scrollbar { display: none; }
 
-    /* SHEET & COMMENTS */
+    /* SHEET & KOMENTAR ALA TIKTOK */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -374,37 +374,425 @@
     }
     .sheet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 10px; overflow-y: auto; padding-bottom: 24px; }
 
-    .comments-section { border-top: 1px solid var(--border-color); padding-top: 22px; }
-    .comments-header-wrapper { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .comments-header-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #f8fafc; }
+    .comments-section {
+      margin-top: 24px;
+      border-top: 1px solid #1e293b;
+      padding-top: 20px;
+      width: 100%;
+      display: block;
+      text-align: left !important;
+    }
+
+    .comments-header-wrapper {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100% !important;
+      margin-bottom: 16px !important;
+      position: relative;
+    }
+
+    .comments-header-title {
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      color: #f8fafc !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      text-align: left !important;
+    }
+
+    .comments-header-title svg {
+      width: 18px;
+      height: 18px;
+      stroke: #38bdf8;
+      fill: none;
+      stroke-width: 2.2;
+    }
+
+    .btn-sort-wrapper {
+      position: relative;
+    }
+
+    .btn-sort-svg {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid #1e293b;
+      color: #38bdf8;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sort-svg svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .btn-sort-svg:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+    }
+
+    .sort-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 42px;
+      right: 0;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 6px;
+      min-width: 140px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+      z-index: 120;
+    }
+
+    .sort-dropdown-menu.active {
+      display: block;
+    }
+
+    .sort-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      color: #94a3b8;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .sort-dropdown-item:hover,
+    .sort-dropdown-item.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+
     .comment-input-box {
-      display: flex; align-items: center; gap: 10px; background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: 9999px; padding: 6px 8px 6px 18px; margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 24px;
+      padding: 6px 8px 6px 16px;
+      margin-bottom: 20px;
+      width: 100%;
     }
-    .comment-textarea { flex: 1; height: 38px; background: transparent; border: none; color: #fff; font-size: 13.5px; outline: none; }
+
+    .comment-input-box:focus-within {
+      border-color: #38bdf8;
+    }
+
+    .comment-textarea {
+      flex: 1;
+      height: 38px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      line-height: 38px;
+    }
+
     .btn-send-comment {
-      background: var(--color-primary); color: #fff; border: none; width: 38px; height: 38px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
+
+    .btn-send-comment svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+    }
+
     .comment-login-notice {
-      background: rgba(20, 20, 24, 0.6); border: 1px dashed rgba(56, 189, 248, 0.35); border-radius: 16px;
-      padding: 16px; text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 20px;
     }
-    .comment-login-notice a { color: var(--color-accent); font-weight: 700; cursor: pointer; }
-    .comments-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .comment-login-notice a {
+      color: #38bdf8;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      text-align: left !important;
+    }
+
     .comment-card {
-      display: flex; gap: 12px; align-items: flex-start; background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 14px; padding: 12px;
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      align-items: flex-start;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+      position: relative;
+      touch-action: pan-y;
     }
+
+    .comment-card.pinned {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.03);
+    }
+
     .tiktok-avatar {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary); color: #fff;
-      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      overflow: hidden;
+      flex-shrink: 0;
     }
-    .comment-content { flex: 1; min-width: 0; }
-    .comment-user-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-    .tiktok-username { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-    .comment-body-text { font-size: 13px; color: #f1f5f9; line-height: 1.45; word-break: break-word; margin-bottom: 6px; }
-    .comment-time { font-size: 11px; color: #64748b; }
+
+    .tiktok-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .comment-content {
+      flex: 1;
+      min-width: 0;
+      text-align: left !important;
+    }
+
+    .comment-user-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+
+    .tiktok-username {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .tiktok-username.admin {
+      color: #f59e0b !important;
+    }
+
+    .badge-admin {
+      background: #f59e0b;
+      color: #000;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .badge-level {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .badge-level.admin-lvl {
+      background: #f59e0b;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .comment-body-text {
+      font-size: 13.5px;
+      color: #f1f5f9;
+      line-height: 1.4;
+      word-break: break-word;
+      margin-bottom: 6px;
+      text-align: left !important;
+    }
+
+    .comment-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .comment-time {
+      font-size: 11px;
+    }
+
+    .btn-reply-tiktok {
+      font-weight: 700;
+      color: #94a3b8;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 11.5px;
+    }
+
+    .btn-reply-tiktok:hover {
+      color: #fff;
+    }
+
+    .btn-delete-tiktok {
+      font-weight: 700;
+      color: #ef4444;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 11.5px;
+    }
+
+    .comment-like-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 2px;
+      color: #64748b;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .comment-like-box svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .comment-like-box.liked svg {
+      fill: #ef4444;
+      stroke: #ef4444;
+    }
+
+    .replies-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #38bdf8;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 8px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .replies-toggle-btn::before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 1px;
+      background: #0284c7;
+    }
+
+    .replies-container {
+      display: none;
+      margin-top: 10px;
+      flex-direction: column;
+      gap: 10px;
+      padding-left: 14px;
+      border-left: 2px solid #0284c7;
+      width: 100%;
+    }
+
+    .replies-container.show {
+      display: flex;
+    }
+
+    .reply-card {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      padding: 8px;
+      width: 100%;
+    }
+
+    .reply-card .tiktok-avatar {
+      width: 26px;
+      height: 26px;
+      font-size: 11px;
+    }
+
+    .reply-input-box {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .reply-input {
+      flex: 1;
+      height: 34px;
+      background: #0b1329;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      padding: 0 12px;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .btn-reply-send {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      padding: 0 14px;
+      border-radius: 18px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -474,7 +862,7 @@
       </div>
     </div>
 
-    <!-- HOLDER ACTION BAR (SERVER, VIEW, FAVORIT, UNDUH, BAGIKAN) -->
+    <!-- HOLDER ACTION BAR -->
     <div class="action-bar">
       <div class="server-tooltip-hint" id="serverHint">Ganti server pemutaran di sini</div>
       <div class="server-custom-btn">
@@ -530,18 +918,37 @@
       <div class="recommendations-scroll-row" id="recommendationsRow"></div>
     </section>
 
-    <section class="comments-section">
+    <!-- SECTION KOMENTAR ALA TIKTOK -->
+    <section class="comments-section" id="commentsSection">
       <div class="comments-header-wrapper">
         <h3 class="comments-header-title">
           <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Komentar <span id="commentsCountBadge">(0)</span>
+          Komentar
+          <span id="commentsCountBadge">(0)</span>
         </h3>
+
+        <div class="btn-sort-wrapper">
+          <button class="btn-sort-svg" onclick="toggleSortDropdown(event)" title="Urutkan Komentar">
+            <svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M9 18h6"/></svg>
+          </button>
+          <div class="sort-dropdown-menu" id="sortDropdownMenu">
+            <div class="sort-dropdown-item active" id="sortOptLatest" onclick="selectSortOrder('latest')">
+              <span>Terbaru</span>
+            </div>
+            <div class="sort-dropdown-item" id="sortOptTop" onclick="selectSortOrder('top')">
+              <span>Teratas</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="comment-input-box" id="commentFormBox" style="display:none;">
         <input class="comment-textarea" id="commentInput" placeholder="Tambah komentar..." />
         <button class="btn-send-comment" onclick="submitComment()">
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <svg viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
         </button>
       </div>
 
@@ -550,7 +957,7 @@
       </div>
 
       <div class="comments-list" id="commentsListContainer">
-        <p style="font-size:12px;color:var(--text-muted);">Memuat komentar...</p>
+        <p style="font-size:12px;color:#64748b;">Memuat komentar...</p>
       </div>
     </section>
   </div>
@@ -567,27 +974,24 @@
 </div>
 
 <script type="module">
-  try {
-    const fb = await import('/assets/firebase-config.js');
-    window.auth = fb.auth;
-    window.db = fb.db;
-    window.fbRef = fb.ref;
-    window.fbGet = fb.get;
-    window.fbSet = fb.set;
-    window.fbTransaction = fb.runTransaction || fb.transaction;
+  import { auth, db, ref, get, set, remove, transaction, onAuthStateChanged } from '/assets/firebase-config.js';
 
-    if (fb.auth && fb.onAuthStateChanged) {
-      fb.onAuthStateChanged(fb.auth, (user) => {
-        window.currentUser = user;
-        const form = document.getElementById('commentFormBox');
-        const notice = document.getElementById('commentLoginNotice');
-        if (form && notice) {
-          form.style.display = user ? 'flex' : 'none';
-          notice.style.display = user ? 'none' : 'block';
-        }
-      });
+  window.auth = auth;
+  window.db = db;
+  window.fbRef = ref;
+  window.fbGet = get;
+  window.fbSet = set;
+  window.fbRemove = remove;
+  window.fbTransaction = transaction;
+
+  window.currentUser = null;
+
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if (window.updateCommentAuthUI) {
+      window.updateCommentAuthUI();
     }
-  } catch (_) {}
+  });
 </script>
 
 <script>
@@ -597,6 +1001,9 @@
   let currentServerUrl = '';
   let episodeSortMode = 'oldest';
   let hasIncrementedView = false;
+  let currentSortMode = 'latest';
+
+  const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
   function cleanSlug(str) {
     let raw = String(str || '').trim();
@@ -633,6 +1040,35 @@
   const headerTitleEl = document.getElementById('topHeaderTitle');
   if (headerTitleEl) headerTitleEl.innerText = initialDisplayTitle;
   document.title = `Nonton ${initialDisplayTitle} Sub Indo - Dongflix`;
+
+  function getDbKey(email) {
+    if (!email) return '';
+    return email.toLowerCase().replace(/\./g, ',');
+  }
+
+  function generateRandomUsername() {
+    const randomDigits = Math.floor(1000000000 + Math.random() * 9000000000);
+    return `user${randomDigits}`;
+  }
+
+  async function ensureUserRecord(user) {
+    if (!user || !window.db) return;
+    const userKey = getDbKey(user.email);
+    const userRef = window.fbRef(window.db, `users/${userKey}`);
+    const snap = await window.fbGet(userRef);
+
+    if (!snap.exists() || !snap.val().name) {
+      const defaultName = generateRandomUsername();
+      const statusRole = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
+      await window.fbSet(userRef, {
+        name: defaultName,
+        email: user.email,
+        photoURL: '',
+        status: statusRole,
+        createdAt: Date.now()
+      });
+    }
+  }
 
   function sanitizeTitle(str) {
     if (!str) return '';
@@ -758,6 +1194,8 @@
   document.addEventListener('click', () => {
     const menu = document.getElementById('episodeSortMenu');
     if (menu) menu.classList.remove('active');
+    const dropdown = document.getElementById('sortDropdownMenu');
+    if (dropdown) dropdown.classList.remove('active');
   });
 
   function getSortedEpisodes() {
@@ -872,110 +1310,299 @@
     }
   }
 
+  window.updateCommentAuthUI = function() {
+    const formBox = document.getElementById('commentFormBox');
+    const noticeBox = document.getElementById('commentLoginNotice');
+    if (window.currentUser) {
+      if (formBox) formBox.style.display = 'flex';
+      if (noticeBox) noticeBox.style.display = 'none';
+    } else {
+      if (formBox) formBox.style.display = 'none';
+      if (noticeBox) noticeBox.style.display = 'block';
+    }
+  };
+
+  function toggleSortDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('sortDropdownMenu').classList.toggle('active');
+  }
+
+  function selectSortOrder(mode) {
+    currentSortMode = mode;
+    document.getElementById('sortOptLatest').classList.toggle('active', mode === 'latest');
+    document.getElementById('sortOptTop').classList.toggle('active', mode === 'top');
+    document.getElementById('sortDropdownMenu').classList.remove('active');
+    loadComments();
+  }
+
   async function loadComments() {
     const container = document.getElementById('commentsListContainer');
-    if (!window.db || !targetSlug) {
-      container.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Belum ada komentar.</p>';
-      return;
-    }
+    const countBadge = document.getElementById('commentsCountBadge');
+    if (!window.db || !targetSlug) return;
 
     try {
-      const snap = await window.fbGet(window.fbRef(window.db, `comments/${targetSlug}`));
-      if (snap.exists()) {
-        const data = snap.val();
-        const list = Object.values(data).reverse();
-        document.getElementById('commentsCountBadge').innerText = `(${list.length})`;
+      const commentsRef = window.fbRef(window.db, `comments/${targetSlug}`);
+      const snap = await window.fbGet(commentsRef);
 
-        container.innerHTML = list.map(item => `
-          <div class="comment-card">
-            <div class="tiktok-avatar">${(item.email || 'U')[0].toUpperCase()}</div>
-            <div class="comment-content">
-              <div class="comment-user-row">
-                <span class="tiktok-username">${item.email ? item.email.split('@')[0] : 'User'}</span>
-              </div>
-              <div class="comment-body-text">${item.text}</div>
-              <span class="comment-time">${new Date(item.timestamp).toLocaleDateString('id-ID')}</span>
-            </div>
-          </div>
-        `).join('');
+      if (snap.exists()) {
+        const commentsData = snap.val();
+        container.innerHTML = '';
+        const mainComments = [];
+        const repliesMap = {};
+
+        countBadge.innerText = `(${Object.keys(commentsData).length})`;
+
+        Object.keys(commentsData).forEach(key => {
+          const item = { id: key, ...commentsData[key] };
+          if (item.parentId) {
+            if (!repliesMap[item.parentId]) repliesMap[item.parentId] = [];
+            repliesMap[item.parentId].push(item);
+          } else {
+            mainComments.push(item);
+          }
+        });
+
+        mainComments.sort((a, b) => {
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+          if (currentSortMode === 'top') {
+            const repliesA = (repliesMap[a.id] || []).length;
+            const repliesB = (repliesMap[b.id] || []).length;
+            return repliesB - repliesA;
+          }
+          return b.timestamp - a.timestamp;
+        });
+
+        if (mainComments.length === 0) {
+          container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
+          return;
+        }
+
+        for (const item of mainComments) {
+          const replies = repliesMap[item.id] || [];
+          const cardEl = await renderTikTokCommentCardAsync(item, replies);
+          container.appendChild(cardEl);
+        }
       } else {
-        container.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Belum ada komentar.</p>';
+        countBadge.innerText = '(0)';
+        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
-    } catch (_) {
-      container.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Gagal memuat komentar.</p>';
+    } catch (e) {
+      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar.</p>';
     }
+  }
+
+  async function fetchUserProfileByEmailOrUid(userEmail, uid) {
+    if (!window.db) return null;
+    try {
+      if (userEmail) {
+        const userKey = getDbKey(userEmail);
+        const snap = await window.fbGet(window.fbRef(window.db, `users/${userKey}`));
+        if (snap.exists()) return snap.val();
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  async function renderTikTokCommentCardAsync(item, replies = []) {
+    const card = document.createElement('div');
+    card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
+    card.id = `comment-${item.id}`;
+
+    const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
+    const profile = await fetchUserProfileByEmailOrUid(item.email, item.uid);
+    const currentAuthorName = profile?.name || item.author || 'User';
+    const currentPhotoURL = profile?.photoURL || item.photoURL || '';
+    const authorEmail = (profile?.email || item.email || '').toLowerCase();
+    const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || profile?.status === 'admin';
+    const initial = currentAuthorName.charAt(0).toUpperCase();
+
+    const photoHtml = currentPhotoURL ? `<img src="${currentPhotoURL}" />` : initial;
+    const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+
+    const isMyComment = window.currentUser && (window.currentUser.email === item.email || window.currentUser.uid === item.uid);
+    let actionButtons = '';
+
+    if (window.currentUser) {
+      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}')">Balas</button>`;
+      if (isMyComment || (window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase())) {
+        actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
+      }
+    }
+
+    let repliesHtml = '';
+    if (replies.length > 0) {
+      let renderedReplies = '';
+      for (const reply of replies) {
+        renderedReplies += await renderTikTokReplyCardHtmlAsync(reply);
+      }
+      repliesHtml = `
+        <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
+          Lihat ${replies.length} balasan ▾
+        </button>
+        <div class="replies-container" id="replies-box-${item.id}">${renderedReplies}</div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="tiktok-avatar">${photoHtml}</div>
+      <div class="comment-content">
+        <div class="comment-user-row">
+          <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
+          ${levelBadge} ${adminBadge}
+        </div>
+        <div class="comment-body-text">${escapeHtml(item.text)}</div>
+        <div class="comment-footer-actions">
+          <span class="comment-time">${timeAgo}</span>
+          ${actionButtons}
+        </div>
+        <div id="reply-input-wrapper-${item.id}"></div>
+        ${repliesHtml}
+      </div>
+      <div class="comment-like-box" onclick="toggleLikeComment(this)">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+    `;
+
+    return card;
+  }
+
+  async function renderTikTokReplyCardHtmlAsync(reply) {
+    const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
+    const profile = await fetchUserProfileByEmailOrUid(reply.email, reply.uid);
+    const currentAuthorName = profile?.name || reply.author || 'User';
+    const currentPhotoURL = profile?.photoURL || reply.photoURL || '';
+    const authorEmail = (profile?.email || reply.email || '').toLowerCase();
+    const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || profile?.status === 'admin';
+    const initial = currentAuthorName.charAt(0).toUpperCase();
+
+    const photoHtml = currentPhotoURL ? `<img src="${currentPhotoURL}" />` : initial;
+    const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+
+    const isMyComment = window.currentUser && (window.currentUser.email === reply.email || window.currentUser.uid === reply.uid);
+    let deleteBtn = '';
+    if (window.currentUser && (isMyComment || (window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()))) {
+      deleteBtn = `<button class="btn-delete-tiktok" onclick="deleteComment('${reply.id}')">Hapus</button>`;
+    }
+
+    return `
+      <div class="reply-card" id="comment-${reply.id}">
+        <div class="tiktok-avatar">${photoHtml}</div>
+        <div class="comment-content">
+          <div class="comment-user-row">
+            <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
+            ${levelBadge} ${adminBadge}
+          </div>
+          <div class="comment-body-text">${escapeHtml(reply.text)}</div>
+          <div class="comment-footer-actions">
+            <span class="comment-time">${timeAgo}</span>
+            ${deleteBtn}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function toggleRepliesDisplay(commentId, count) {
+    const container = document.getElementById(`replies-box-${commentId}`);
+    const btn = document.getElementById(`btn-toggle-${commentId}`);
+    if (!container || !btn) return;
+
+    if (container.classList.contains('show')) {
+      container.classList.remove('show');
+      btn.innerText = `Lihat ${count} balasan ▾`;
+    } else {
+      container.classList.add('show');
+      btn.innerText = 'Sembunyikan balasan ▴';
+    }
+  }
+
+  function toggleLikeComment(el) { el.classList.toggle('liked'); }
+
+  function toggleReplyBox(commentId) {
+    const container = document.getElementById(`reply-input-wrapper-${commentId}`);
+    if (!container) return;
+    if (container.innerHTML !== '') {
+      container.innerHTML = '';
+      return;
+    }
+    container.innerHTML = `
+      <div class="reply-input-box">
+        <input type="text" class="reply-input" id="replyInput-${commentId}" placeholder="Tulis balasan..." />
+        <button class="btn-reply-send" onclick="submitReply('${commentId}')">Kirim</button>
+      </div>
+    `;
   }
 
   async function submitComment() {
+    if (!window.currentUser) { alert('Anda harus login terlebih dahulu.'); return; }
     const input = document.getElementById('commentInput');
     const text = input.value.trim();
-    if (!text || !window.currentUser || !window.db) return;
+    if (!text) return;
+
+    await ensureUserRecord(window.currentUser);
+    const commentItem = { uid: window.currentUser.uid, email: window.currentUser.email || '', text: text, timestamp: Date.now() };
 
     try {
-      await window.fbSet(window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`), {
-        uid: window.currentUser.uid,
-        email: window.currentUser.email || '',
-        text,
-        timestamp: Date.now()
-      });
+      const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
+      await window.fbSet(newCommentRef, commentItem);
       input.value = '';
       loadComments();
     } catch (e) {
-      alert('Gagal mengirim komentar.');
+      alert('Gagal mengirim komentar: ' + e.message);
     }
   }
 
-  function renderSmartRecommendations(currentGenres, currentSlug, catalog) {
-    const section = document.getElementById('recommendationsSection');
-    const row = document.getElementById('recommendationsRow');
-    if (!section || !row || !Array.isArray(catalog)) return;
+  async function submitReply(parentId) {
+    if (!window.currentUser) return;
+    const input = document.getElementById(`replyInput-${parentId}`);
+    const text = input ? input.value.trim() : '';
+    if (!text) return;
 
-    const others = catalog.filter(item => item.slug !== currentSlug);
-    if (others.length === 0) return;
+    await ensureUserRecord(window.currentUser);
+    const replyItem = { uid: window.currentUser.uid, email: window.currentUser.email || '', text: text, parentId: parentId, timestamp: Date.now() };
 
-    const scored = others.map(item => {
-      let score = 0;
-      const itemGenres = Array.isArray(item.genres) 
-        ? item.genres 
-        : (typeof item.genres === 'string' ? item.genres.split(/[,•/]/).map(g => g.trim()) : []);
+    try {
+      const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
+      await window.fbSet(newCommentRef, replyItem);
+      loadComments();
+    } catch (e) {
+      alert('Gagal membalas komentar: ' + e.message);
+    }
+  }
 
-      if (currentGenres && currentGenres.length > 0) {
-        itemGenres.forEach(g => {
-          if (g && currentGenres.some(cg => cg.toLowerCase() === g.toLowerCase())) {
-            score += 2;
-          }
-        });
-      }
-      score += Math.random() * 0.5;
-      return { item, score };
-    });
+  async function deleteComment(commentId) {
+    if (!confirm('Apakah Anda yakin ingin menghapus komentar ini?')) return;
+    try {
+      const commentRef = window.fbRef(window.db, `comments/${targetSlug}/${commentId}`);
+      await window.fbRemove(commentRef);
+      loadComments();
+    } catch (e) {
+      alert('Gagal menghapus komentar: ' + e.message);
+    }
+  }
 
-    scored.sort((a, b) => b.score - a.score);
-    const topRecs = scored.slice(0, 15).map(s => s.item);
+  function getTimeAgo(timestamp) {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return 'Baru saja';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}j`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}d`;
+    return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+  }
 
-    if (topRecs.length === 0) return;
-
-    row.innerHTML = topRecs.map(item => {
-      const title = sanitizeTitle(item.title);
-      const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
-      const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
-      const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
-      const epText = isMovie ? 'MOVIE' : `Ep ${epNum}`;
-      const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'TAMAT' : 'ONGOING';
-
-      return `
-        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-card-item">
-          <div class="rec-poster-box">
-            <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" />
-            <span class="rec-badge-status">${statusText}</span>
-            <span class="rec-badge-ep">${epText}</span>
-          </div>
-          <div class="rec-card-title">${title}</div>
-        </a>
-      `;
-    }).join('');
-
-    section.style.display = 'block';
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   function hidePlayerLoader() {
@@ -1149,7 +1776,6 @@
 
   function renderPlayer(url) {
     const box = document.getElementById('playerMediaContainer');
-    // Pertahankan loader overlay saat iframe sedang dirender
     box.innerHTML = `
       <div class="player-loader-overlay" id="playerLoaderOverlay">
         <div class="cool-spinner">
