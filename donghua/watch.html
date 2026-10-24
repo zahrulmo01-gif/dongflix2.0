@@ -622,29 +622,23 @@
     return `${year}-${month}-${day}`;
   }
 
-  /* UPDATE METATAG & SEO CARD SHARE DENGAN COVER ASLI DONGHUA */
   function updateSocialMetaTags(title, cover, synopsis, slug) {
     const fullTitle = `Nonton ${title} Sub Indo - Dongflix`;
     const cleanSynopsis = synopsis && synopsis.length > 20 
       ? synopsis.replace(/\s+/g, ' ').slice(0, 160) + '...'
       : `Nonton streaming ${title} subtitle Indonesia gratis dan terlengkap dengan kualitas HD di Dongflix.`;
     const canonicalPageUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(slug)}`;
-    
-    // Gunakan langsung URL cover asli
     const finalCoverUrl = cover || '';
 
-    // Title Tag
     document.title = fullTitle;
     const pageTitleEl = document.getElementById('pageTitle');
     if (pageTitleEl) pageTitleEl.innerText = fullTitle;
 
-    // Meta Standard
     const descEl = document.getElementById('metaDescription');
     if (descEl) descEl.setAttribute('content', cleanSynopsis);
     const canonicalEl = document.getElementById('canonicalUrl');
     if (canonicalEl) canonicalEl.setAttribute('href', canonicalPageUrl);
 
-    // Open Graph (Facebook / WhatsApp / Telegram)
     const ogTitle = document.getElementById('ogTitle');
     if (ogTitle) ogTitle.setAttribute('content', fullTitle);
     const ogDesc = document.getElementById('ogDescription');
@@ -656,7 +650,6 @@
     const ogAlt = document.getElementById('ogImageAlt');
     if (ogAlt) ogAlt.setAttribute('content', `Poster ${title}`);
 
-    // Twitter Card
     const twTitle = document.getElementById('twitterTitle');
     if (twTitle) twTitle.setAttribute('content', fullTitle);
     const twDesc = document.getElementById('twitterDescription');
@@ -954,7 +947,10 @@
   }
 
   async function loadDetail() {
-    if (!targetSlug) return;
+    if (!targetSlug) {
+      window.location.replace('/404.html');
+      return;
+    }
 
     try {
       const catRes = await fetch('/api/donghua?path=donghua.json');
@@ -962,41 +958,46 @@
         const catalog = await catRes.json();
         const info = catalog.find(d => d.slug === targetSlug);
 
-        if (info) {
-          currentMainTitle = sanitizeTitle(info.title);
-          currentPoster = info.cover || info.poster || info.thumbnail || '';
-          const currentSynopsis = info.synopsis || info.description || info.desc || '';
-
-          // Pasang tag meta dan kartu share sosmed dengan URL cover asli
-          updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
-
-          document.getElementById('topHeaderTitle').innerText = currentMainTitle;
-
-          const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
-          const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
-
-          document.getElementById('mediaDetailsGroup').innerHTML = `
-            <div class="media-meta-card">
-              <div class="media-cover-wrapper">
-                <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" alt="${currentMainTitle}" />
-              </div>
-              <div class="media-info-col">
-                <h1 class="media-title">${currentMainTitle}</h1>
-                <div class="genre-badges-row">${genresHtml}</div>
-                <div class="status-release-row">
-                  <span>Status: <strong>${info.status || 'Ongoing'}</strong></span>
-                  <span>Rilis: <strong>${info.released || '-'}</strong></span>
-                </div>
-              </div>
-            </div>
-            <div class="synopsis-block">
-              <div class="synopsis-heading">SINOPSIS</div>
-              <p class="synopsis-text">${currentSynopsis || 'Tidak ada deskripsi sinopsis.'}</p>
-            </div>
-          `;
-
-          renderSmartRecommendations(genresList, targetSlug, catalog);
+        if (!info) {
+          window.location.replace('/404.html');
+          return;
         }
+
+        currentMainTitle = sanitizeTitle(info.title);
+        currentPoster = info.cover || info.poster || info.thumbnail || '';
+        const currentSynopsis = info.synopsis || info.description || info.desc || '';
+
+        updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
+
+        document.getElementById('topHeaderTitle').innerText = currentMainTitle;
+
+        const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
+        const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
+
+        document.getElementById('mediaDetailsGroup').innerHTML = `
+          <div class="media-meta-card">
+            <div class="media-cover-wrapper">
+              <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" alt="${currentMainTitle}" />
+            </div>
+            <div class="media-info-col">
+              <h1 class="media-title">${currentMainTitle}</h1>
+              <div class="genre-badges-row">${genresHtml}</div>
+              <div class="status-release-row">
+                <span>Status: <strong>${info.status || 'Ongoing'}</strong></span>
+                <span>Rilis: <strong>${info.released || '-'}</strong></span>
+              </div>
+            </div>
+          </div>
+          <div class="synopsis-block">
+            <div class="synopsis-heading">SINOPSIS</div>
+            <p class="synopsis-text">${currentSynopsis || 'Tidak ada deskripsi sinopsis.'}</p>
+          </div>
+        `;
+
+        renderSmartRecommendations(genresList, targetSlug, catalog);
+      } else {
+        window.location.replace('/404.html');
+        return;
       }
 
       const epRes = await fetch(`/api/donghua?path=episodes/${encodeURIComponent(targetSlug)}.json`);
@@ -1022,7 +1023,10 @@
           document.getElementById('playerMediaContainer').innerText = 'Episode belum tersedia.';
         }
       }
-    } catch (_) {}
+    } catch (_) {
+      window.location.replace('/404.html');
+      return;
+    }
 
     const hint = document.getElementById('serverHint');
     if (hint) {
