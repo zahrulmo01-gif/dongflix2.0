@@ -247,7 +247,35 @@
     }
     .btn-see-all-ep svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    .ep-scroll-container { position: relative; width: 100%; margin-bottom: 16px; }
+    .ep-scroll-container { 
+      position: relative; 
+      width: 100%; 
+      margin-bottom: 16px; 
+      --ep-fade-left: 0;
+      --ep-fade-right: 0;
+    }
+    .ep-scroll-container::before,
+    .ep-scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 14px;
+      width: 38px;
+      pointer-events: none;
+      z-index: 5;
+      transition: opacity 0.25s ease;
+    }
+    .ep-scroll-container::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.95), transparent);
+      opacity: var(--ep-fade-left, 0);
+    }
+    .ep-scroll-container::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.95), transparent);
+      opacity: var(--ep-fade-right, 0);
+    }
+
     .ep-scroll-grid { 
       display: flex; gap: 10px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
     }
@@ -409,6 +437,9 @@
       width: 36px; height: 36px; border-radius: 50%; background: #0284c7; color: #fff;
       display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; overflow: hidden; flex-shrink: 0;
     }
+    .tiktok-avatar img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
     .comment-content { flex: 1; min-width: 0; text-align: left !important; }
     .comment-user-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
     .tiktok-username { font-size: 13px; font-weight: 700; color: #94a3b8; }
@@ -561,6 +592,7 @@
         </div>
       </div>
       <div class="synopsis-block">
+        <div class="synopsis-heading">SINOPSIS</div>
         <div class="skeleton" style="height: 12px; width: 70px; margin-bottom: 10px;"></div>
         <div class="skeleton" style="height: 13px; width: 100%; margin-bottom: 6px;"></div>
         <div class="skeleton" style="height: 13px; width: 95%; margin-bottom: 6px;"></div>
@@ -654,7 +686,6 @@
     }
   });
 
-  // Begitu modul Firebase siap, langsung jalankan update views dan render komentar
   if (typeof window.triggerViewIncrement === 'function') {
     window.triggerViewIncrement();
   }
@@ -671,6 +702,7 @@
   let episodeSortMode = 'oldest';
   let hasIncrementedView = false;
   let currentSortMode = 'latest';
+  const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
@@ -854,7 +886,7 @@
     const maxScrollLeft = grid.scrollWidth - grid.clientWidth;
 
     const fadeLeft = scrollLeft > 5 ? '1' : '0';
-    const fadeRight = scrollLeft < maxScrollLeft - 5 ? '1' : '0';
+    const fadeRight = (maxScrollLeft - scrollLeft) > 5 ? '1' : '0';
 
     container.style.setProperty('--ep-fade-left', fadeLeft);
     container.style.setProperty('--ep-fade-right', fadeRight);
@@ -988,6 +1020,44 @@
     window.loadComments();
   }
 
+  /* AMBIL PROFILE USER DARI REALTIME DATABASE /users/ */
+  async function fetchUserProfile(email, uid) {
+    const cacheKey = email || uid || '';
+    if (!cacheKey) return { name: 'User', photoURL: '' };
+    if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
+
+    let foundProfile = null;
+
+    if (email && window.db && window.fbRef && window.fbGet) {
+      const sanitizedEmail = String(email).replace(/\./g, ',');
+      try {
+        const userRef = window.fbRef(window.db, `users/${sanitizedEmail}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
+        }
+      } catch (_) {}
+    }
+
+    if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
+      try {
+        const userRef = window.fbRef(window.db, `users/${uid}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
+        }
+      } catch (_) {}
+    }
+
+    const finalData = {
+      name: (foundProfile && foundProfile.name) ? foundProfile.name : (email ? email.split('@')[0] : 'User'),
+      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : ''
+    };
+
+    userProfilesCache[cacheKey] = finalData;
+    return finalData;
+  }
+
   /* LOAD COMMENTS DARI REALTIME DATABASE */
   window.loadComments = async function() {
     const container = document.getElementById('commentsListContainer');
@@ -1042,12 +1112,12 @@
           return;
         }
 
-        mainComments.forEach(item => {
+        for (const item of mainComments) {
           const replies = repliesMap[item.id] || [];
           replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-          const cardEl = renderTikTokCommentCard(item, replies);
+          const cardEl = await renderTikTokCommentCard(item, replies);
           container.appendChild(cardEl);
-        });
+        }
       } else {
         if (countBadge) countBadge.innerText = '(0)';
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
@@ -1057,16 +1127,23 @@
     }
   };
 
-  function renderTikTokCommentCard(item, replies = []) {
+  async function renderTikTokCommentCard(item, replies = []) {
     const card = document.createElement('div');
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
+    const profile = await fetchUserProfile(item.email, item.uid);
+    const currentAuthorName = profile.name || item.author || (item.email ? item.email.split('@')[0] : 'User');
+    const photoURL = profile.photoURL || '';
+
     const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
     const authorEmail = String(item.email || '').toLowerCase();
-    const currentAuthorName = item.author || (item.email ? item.email.split('@')[0] : 'User');
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
     const initial = currentAuthorName.charAt(0).toUpperCase();
+
+    const avatarHtml = photoURL 
+      ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
+      : initial;
 
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
     const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
@@ -1084,9 +1161,9 @@
     let repliesHtml = '';
     if (replies.length > 0) {
       let renderedReplies = '';
-      replies.forEach(reply => {
-        renderedReplies += renderTikTokReplyCard(reply);
-      });
+      for (const reply of replies) {
+        renderedReplies += await renderTikTokReplyCard(reply);
+      }
       repliesHtml = `
         <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
           Lihat ${replies.length} balasan ▾
@@ -1096,7 +1173,7 @@
     }
 
     card.innerHTML = `
-      <div class="tiktok-avatar">${initial}</div>
+      <div class="tiktok-avatar">${avatarHtml}</div>
       <div class="comment-content">
         <div class="comment-user-row">
           <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
@@ -1118,12 +1195,19 @@
     return card;
   }
 
-  function renderTikTokReplyCard(reply) {
+  async function renderTikTokReplyCard(reply) {
+    const profile = await fetchUserProfile(reply.email, reply.uid);
+    const currentAuthorName = profile.name || reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
+    const photoURL = profile.photoURL || '';
+
     const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
     const authorEmail = String(reply.email || '').toLowerCase();
-    const currentAuthorName = reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || reply.isAdmin === true;
     const initial = currentAuthorName.charAt(0).toUpperCase();
+
+    const avatarHtml = photoURL 
+      ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
+      : initial;
 
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
     const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
@@ -1136,7 +1220,7 @@
 
     return `
       <div class="reply-card" id="comment-${reply.id}">
-        <div class="tiktok-avatar">${initial}</div>
+        <div class="tiktok-avatar">${avatarHtml}</div>
         <div class="comment-content">
           <div class="comment-user-row">
             <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
