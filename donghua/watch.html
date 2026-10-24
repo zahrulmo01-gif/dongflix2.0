@@ -3,8 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title id="pageTitle">Dongflix - Detail</title>
+  <title id="pageTitle">Nonton Donghua Sub Indo - Dongflix</title>
   <meta name="referrer" content="no-referrer">
+
+  <!-- Meta Tag Dasar & SEO -->
+  <meta name="description" id="metaDescription" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate dengan kualitas HD di Dongflix.">
+  <meta name="keywords" content="donghua sub indo, streaming donghua, nonton donghua, dongflix, anime china">
+  <meta name="author" content="Dongflix">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" id="canonicalUrl" href="https://dongflix.my.id/">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="video.other">
+  <meta property="og:site_name" content="Dongflix">
+  <meta property="og:title" id="ogTitle" content="Nonton Donghua Sub Indo - Dongflix">
+  <meta property="og:description" id="ogDescription" content="Nonton streaming donghua subtitle Indonesia kualitas terbaik di Dongflix.">
+  <meta property="og:url" id="ogUrl" content="https://dongflix.my.id/">
+  <meta property="og:image" id="ogImage" content="https://dongflix.my.id/image/IMG_6395.png">
+  <meta property="og:image:alt" id="ogImageAlt" content="Cover Donghua Dongflix">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" id="twitterTitle" content="Nonton Donghua Sub Indo - Dongflix">
+  <meta name="twitter:description" id="twitterDescription" content="Nonton streaming donghua subtitle Indonesia kualitas terbaik di Dongflix.">
+  <meta name="twitter:image" id="twitterImage" content="https://dongflix.my.id/image/IMG_6395.png">
+
+  <!-- Favicon / Ikon Web -->
+  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
 
   <script type="module" src="/assets/firebase-config.js"></script>
 
@@ -596,6 +622,47 @@
     return `${year}-${month}-${day}`;
   }
 
+  /* UPDATE METATAG & SEO CARD SHARE SECARA DINAMIS */
+  function updateSocialMetaTags(title, cover, synopsis, slug) {
+    const fullTitle = `Nonton ${title} Sub Indo - Dongflix`;
+    const cleanSynopsis = synopsis && synopsis.length > 20 
+      ? synopsis.replace(/\s+/g, ' ').slice(0, 160) + '...'
+      : `Nonton streaming ${title} subtitle Indonesia gratis dan terlengkap dengan kualitas HD di Dongflix.`;
+    const canonicalPageUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(slug)}`;
+    const finalCoverUrl = cover.startsWith('http') ? cover : `https://dongflix.my.id/${cover.replace(/^\/+/, '')}`;
+
+    // Title Tag
+    document.title = fullTitle;
+    const pageTitleEl = document.getElementById('pageTitle');
+    if (pageTitleEl) pageTitleEl.innerText = fullTitle;
+
+    // Meta Standard
+    const descEl = document.getElementById('metaDescription');
+    if (descEl) descEl.setAttribute('content', cleanSynopsis);
+    const canonicalEl = document.getElementById('canonicalUrl');
+    if (canonicalEl) canonicalEl.setAttribute('href', canonicalPageUrl);
+
+    // Open Graph (Facebook / WhatsApp / Telegram)
+    const ogTitle = document.getElementById('ogTitle');
+    if (ogTitle) ogTitle.setAttribute('content', fullTitle);
+    const ogDesc = document.getElementById('ogDescription');
+    if (ogDesc) ogDesc.setAttribute('content', cleanSynopsis);
+    const ogUrl = document.getElementById('ogUrl');
+    if (ogUrl) ogUrl.setAttribute('content', canonicalPageUrl);
+    const ogImg = document.getElementById('ogImage');
+    if (ogImg) ogImg.setAttribute('content', finalCoverUrl);
+    const ogAlt = document.getElementById('ogImageAlt');
+    if (ogAlt) ogAlt.setAttribute('content', `Poster ${title}`);
+
+    // Twitter Card
+    const twTitle = document.getElementById('twitterTitle');
+    if (twTitle) twTitle.setAttribute('content', fullTitle);
+    const twDesc = document.getElementById('twitterDescription');
+    if (twDesc) twDesc.setAttribute('content', cleanSynopsis);
+    const twImg = document.getElementById('twitterImage');
+    if (twImg) twImg.setAttribute('content', finalCoverUrl);
+  }
+
   function goBack() {
     const referrer = document.referrer;
     if (referrer) {
@@ -713,7 +780,6 @@
 
   function goToHomeLogin() { window.location.href = '/'; }
 
-  /* TAMBAH 1 VIEW ATOMIK KE views_total DAN views_daily SESUAI TANGGAL HARI INI */
   window.triggerViewIncrement = async function() {
     if (!targetSlug || !window.db || !window.fbRef || hasIncrementedView) return;
     hasIncrementedView = true;
@@ -769,11 +835,13 @@
   }
 
   function triggerShare() {
+    const shareTitle = `Nonton ${currentMainTitle || 'Donghua'} Sub Indo - Dongflix`;
+    const shareUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(targetSlug)}`;
     if (navigator.share) {
-      navigator.share({ title: currentMainTitle, url: window.location.href }).catch(() => {});
+      navigator.share({ title: shareTitle, url: shareUrl }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Tautan disalin!');
+      navigator.clipboard.writeText(shareUrl);
+      alert('Tautan berhasil disalin ke clipboard!');
     }
   }
 
@@ -895,9 +963,12 @@
         if (info) {
           currentMainTitle = sanitizeTitle(info.title);
           currentPoster = info.cover || info.poster || info.thumbnail || '';
+          const currentSynopsis = info.synopsis || info.description || info.desc || '';
+
+          // Pasang tag meta dan kartu share sosmed otomatis
+          updateSocialMetaTags(currentMainTitle, currentPoster, currentSynopsis, targetSlug);
 
           document.getElementById('topHeaderTitle').innerText = currentMainTitle;
-          document.getElementById('pageTitle').innerText = `${currentMainTitle} - Dongflix`;
 
           const genresList = Array.isArray(info.genres) ? info.genres : (typeof info.genres === 'string' ? info.genres.split(/[,•/]/).map(g => g.trim()) : []);
           const genresHtml = genresList.map(g => `<span class="genre-pill">${g}</span>`).join('');
@@ -905,7 +976,7 @@
           document.getElementById('mediaDetailsGroup').innerHTML = `
             <div class="media-meta-card">
               <div class="media-cover-wrapper">
-                <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" />
+                <img src="${currentPoster || 'https://via.placeholder.com/150x200?text=No+Cover'}" class="media-cover-img" alt="${currentMainTitle}" />
               </div>
               <div class="media-info-col">
                 <h1 class="media-title">${currentMainTitle}</h1>
@@ -918,7 +989,7 @@
             </div>
             <div class="synopsis-block">
               <div class="synopsis-heading">SINOPSIS</div>
-              <p class="synopsis-text">${info.synopsis || info.description || info.desc || 'Tidak ada deskripsi sinopsis.'}</p>
+              <p class="synopsis-text">${currentSynopsis || 'Tidak ada deskripsi sinopsis.'}</p>
             </div>
           `;
 
