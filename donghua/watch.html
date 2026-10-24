@@ -39,8 +39,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dongflix">
 
-  <script type="module" src="/assets/firebase-config.js"></script>
-
   <style>
     :root {
       --bg-main: #000000;
@@ -131,7 +129,6 @@
       text-overflow: ellipsis;
     }
 
-    /* PLAYER WRAPPER */
     .player-wrapper {
       margin: 0 -16px 18px;
       width: calc(100% + 32px);
@@ -198,7 +195,6 @@
 
     .player-iframe { width: 100%; height: 100%; border: none; display: block; }
 
-    /* NOT FOUND BOX */
     .not-found-box {
       display: none;
       flex-direction: column;
@@ -236,7 +232,6 @@
     .btn-home-notfound:active { transform: scale(0.97); }
     .btn-home-notfound svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    /* SKELETON */
     @keyframes skeletonPulse { 
       0%, 100% { opacity: 0.4; } 
       50% { opacity: 0.8; } 
@@ -247,7 +242,6 @@
       border-radius: 8px; 
     }
 
-    /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center; background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 6px; margin-bottom: 24px; position: relative;
@@ -294,7 +288,6 @@
     }
     .server-tooltip-hint.show { opacity: 1; }
 
-    /* EPISODE LIST */
     .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .ep-header-title { font-size: 16px; font-weight: 800; }
     .episode-sort-wrapper { position: relative; margin-left: auto; }
@@ -334,7 +327,6 @@
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
-    /* MEDIA DETAIL & SINOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
     .media-cover-wrapper {
       width: 105px; min-width: 105px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden;
@@ -351,7 +343,6 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
-    /* REKOMENDASI SERUPA */
     .recommendations-section { 
       margin-top: 32px; 
       margin-bottom: 32px; 
@@ -459,7 +450,6 @@
       }
     }
 
-    /* SHEET & KOMENTAR */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -685,12 +675,6 @@
       flex-shrink: 0;
     }
 
-    .tiktok-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
     .comment-content {
       flex: 1;
       min-width: 0;
@@ -906,6 +890,7 @@
 </header>
 
 <div class="container">
+  <!-- PLAYER WRAPPER -->
   <div class="player-wrapper">
     <div class="detail-player-box" id="playerMediaContainer">
       <div class="player-loader-overlay" id="playerLoaderOverlay">
@@ -917,6 +902,7 @@
     </div>
   </div>
 
+  <!-- NOT FOUND BOX -->
   <div class="not-found-box" id="notFoundBox" style="display: none;">
     <p class="not-found-text">Donghua mungkin sudah dihapus atau cek kembali link yang ada buka.</p>
     <a href="/" class="btn-home-notfound">
@@ -987,7 +973,7 @@
       </button>
     </div>
 
-    <!-- HOLDER COVER POSTER & SINOPSIS -->
+    <!-- HOLDER DETAIL & SINOPSIS -->
     <div id="mediaDetailsGroup">
       <div class="media-meta-card">
         <div class="media-cover-wrapper skeleton"></div>
@@ -1079,7 +1065,6 @@
   window.fbSet = set;
   window.fbRemove = remove;
   window.fbTransaction = transaction;
-
   window.currentUser = null;
 
   onAuthStateChanged(auth, (user) => {
@@ -1089,7 +1074,10 @@
     }
   });
 
-  // Pastikan inisialisasi komentar segera berjalan begitu Firebase siap
+  // Begitu modul Firebase selesai di-import, picu sinkronisasi Views & Komentar
+  if (typeof window.triggerViewIncrement === 'function') {
+    window.triggerViewIncrement();
+  }
   if (typeof window.loadComments === 'function') {
     window.loadComments();
   }
@@ -1313,6 +1301,7 @@
 
   function goToHomeLogin() { window.location.href = '/'; }
 
+  /* SINKRONISASI VIEW FIREBASE */
   window.triggerViewIncrement = async function() {
     if (!targetSlug || !window.db || !window.fbRef || hasIncrementedView) return;
     hasIncrementedView = true;
@@ -1325,7 +1314,7 @@
 
       if (typeof window.fbTransaction === 'function') {
         window.fbTransaction(totalRef, (currentVal) => (currentVal || 0) + 1).then((res) => {
-          if (res && res.snapshot) {
+          if (res && res.snapshot && document.getElementById('viewCountText')) {
             document.getElementById('viewCountText').innerText = String(res.snapshot.val());
           }
         }).catch(() => {});
@@ -1333,7 +1322,7 @@
         window.fbTransaction(dailyRef, (currentVal) => (currentVal || 0) + 1).catch(() => {});
       } else if (typeof window.fbGet === 'function') {
         const snap = await window.fbGet(totalRef);
-        if (snap.exists()) {
+        if (snap.exists() && document.getElementById('viewCountText')) {
           document.getElementById('viewCountText').innerText = String(snap.val());
         }
       }
@@ -1400,17 +1389,17 @@
     document.getElementById('sortOptLatest').classList.toggle('active', mode === 'latest');
     document.getElementById('sortOptTop').classList.toggle('active', mode === 'top');
     document.getElementById('sortDropdownMenu').classList.remove('active');
-    loadComments();
+    window.loadComments();
   }
 
-  /* LOAD COMMENTS LANGSUNG DARI FIREBASE (DENGAN REFRESH AUTO-RETRY) */
+  /* LOAD COMMENTS LANGSUNG DARI FIREBASE */
   window.loadComments = async function() {
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
     if (!container) return;
 
     if (!window.db || !window.fbRef || !window.fbGet) {
-      setTimeout(window.loadComments, 300);
+      setTimeout(window.loadComments, 250);
       return;
     }
 
@@ -1431,7 +1420,6 @@
 
         keys.forEach(key => {
           const item = { id: String(key), ...commentsData[key] };
-          // Pastikan parentId diperlakukan sebagai string murni
           if (item.parentId) {
             const pId = String(item.parentId);
             if (!repliesMap[pId]) repliesMap[pId] = [];
@@ -1468,7 +1456,7 @@
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
-      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar.</p>';
+      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Pastikan koneksi dan izin database dibuka.</p>';
     }
   };
 
@@ -1784,10 +1772,6 @@
       document.getElementById('mainContentGroup').style.display = 'block';
       document.getElementById('notFoundBox').style.display = 'none';
 
-      if (typeof window.triggerViewIncrement === 'function') {
-        window.triggerViewIncrement();
-      }
-
       currentMainTitle = sanitizeTitle(info.title);
       currentPoster = info.cover || info.poster || info.thumbnail || '';
       const currentSynopsis = info.synopsis || info.description || info.desc || '';
@@ -1861,7 +1845,14 @@
     }
 
     checkFavorite();
-    window.loadComments();
+
+    // Jalankan Views & Komentar
+    if (typeof window.triggerViewIncrement === 'function') {
+      window.triggerViewIncrement();
+    }
+    if (typeof window.loadComments === 'function') {
+      window.loadComments();
+    }
   }
 
   function selectEpisodeByNum(epNum) {
