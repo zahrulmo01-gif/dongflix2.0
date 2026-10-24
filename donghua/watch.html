@@ -119,7 +119,7 @@
 
     .player-iframe { width: 100%; height: 100%; border: none; }
 
-    /* EPISODE LIST */
+    /* EPISODE LIST DENGAN EFEK GRADASI DINAMIS KIRI & KANAN */
     .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .ep-header-title { font-size: 16px; font-weight: 800; }
     .episode-sort-wrapper { position: relative; margin-left: auto; }
@@ -146,8 +146,45 @@
     }
     .btn-see-all-ep svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    .ep-scroll-grid { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 14px; margin-bottom: 16px; scrollbar-width: none; }
+    /* Container pembungkus scroll episode dengan gradasi */
+    .ep-scroll-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .ep-scroll-container::before,
+    .ep-scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 14px;
+      width: 32px;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .ep-scroll-container::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.95), transparent);
+      opacity: var(--ep-fade-left, 0);
+    }
+    .ep-scroll-container::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(0,0,0,0.95), transparent);
+      opacity: var(--ep-fade-right, 1);
+    }
+
+    .ep-scroll-grid { 
+      display: flex; 
+      gap: 10px; 
+      overflow-x: auto; 
+      padding-bottom: 14px; 
+      scrollbar-width: none; 
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
+    }
     .ep-scroll-grid::-webkit-scrollbar { display: none; }
+    
     .ep-box {
       flex: 0 0 54px; height: 54px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
@@ -195,7 +232,7 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
-    /* REKOMENDASI SERUPA (GRID 3 VERTIKAL, SCROLL HORIZONTAL TANPA BG, EFEK GRADASI KIRI-KANAN) */
+    /* REKOMENDASI SERUPA (GAYA POSTER VERTIKAL) */
     .recommendations-section {
       margin-top: 32px;
       margin-bottom: 32px;
@@ -212,39 +249,8 @@
       gap: 8px;
     }
 
-    .rec-scroll-container {
-      position: relative;
-      width: 100%;
-    }
-
-    /* Efek Gradasi Tepi Kiri & Kanan */
-    .rec-scroll-container::before,
-    .rec-scroll-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 12px;
-      width: 36px;
-      z-index: 10;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .rec-scroll-container::before {
-      left: 0;
-      background: linear-gradient(to right, rgba(0,0,0,0.95), transparent);
-      opacity: var(--fade-left, 0);
-    }
-    .rec-scroll-container::after {
-      right: 0;
-      background: linear-gradient(to left, rgba(0,0,0,0.95), transparent);
-      opacity: var(--fade-right, 1);
-    }
-
-    .recommendations-horizontal-grid {
-      display: grid;
-      grid-template-rows: repeat(3, auto);
-      grid-auto-flow: column;
-      grid-auto-columns: 140px;
+    .recommendations-scroll-row {
+      display: flex;
       gap: 12px;
       overflow-x: auto;
       padding-bottom: 12px;
@@ -252,46 +258,66 @@
       -webkit-overflow-scrolling: touch;
       transform: translateZ(0);
     }
-    .recommendations-horizontal-grid::-webkit-scrollbar { display: none; }
+    .recommendations-scroll-row::-webkit-scrollbar { display: none; }
 
-    .rec-grid-card {
+    .rec-card-item {
+      flex: 0 0 135px;
+      min-width: 135px;
+      max-width: 135px;
       text-decoration: none !important;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
     }
-    .rec-thumb-wrap {
+    .rec-poster-box {
       position: relative;
       width: 100%;
-      height: 95px;
-      border-radius: 10px;
+      height: 185px;
+      border-radius: 14px;
       overflow: hidden;
       background: var(--bg-card);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
     }
-    .rec-thumb-wrap img {
+    .rec-poster-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+    }
+    .rec-badge-status {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(2, 132, 199, 0.9);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      z-index: 2;
     }
     .rec-badge-ep {
       position: absolute;
-      top: 5px;
-      left: 5px;
-      background: rgba(2, 132, 199, 0.9);
+      bottom: 8px;
+      left: 8px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       color: #fff;
-      font-size: 8px;
+      font-size: 9.5px;
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 3px 9px;
       border-radius: 9999px;
-      text-transform: uppercase;
+      z-index: 2;
     }
     .rec-card-title {
-      font-size: 11.5px;
+      font-size: 13px;
       font-weight: 700;
       color: #ffffff;
-      line-height: 1.25;
+      line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -299,15 +325,13 @@
     }
 
     @media (min-width: 768px) {
-      .recommendations-horizontal-grid {
-        grid-auto-columns: 165px;
-        gap: 16px;
+      .rec-card-item {
+        flex: 0 0 155px;
+        min-width: 155px;
+        max-width: 155px;
       }
-      .rec-thumb-wrap {
-        height: 115px;
-      }
-      .rec-card-title {
-        font-size: 12.5px;
+      .rec-poster-box {
+        height: 215px;
       }
     }
 
@@ -386,7 +410,7 @@
   </div>
 
   <div>
-    <!-- EPISODE LIST -->
+    <!-- EPISODE LIST DENGAN EFEK GRADASI DINAMIS KIRI & KANAN -->
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
@@ -407,11 +431,13 @@
         </button>
       </div>
 
-      <div class="ep-scroll-grid" id="epGrid">
-        <div class="ep-box skeleton"></div>
-        <div class="ep-box skeleton"></div>
-        <div class="ep-box skeleton"></div>
-        <div class="ep-box skeleton"></div>
+      <div class="ep-scroll-container" id="epScrollContainer">
+        <div class="ep-scroll-grid" id="epGrid">
+          <div class="ep-box skeleton"></div>
+          <div class="ep-box skeleton"></div>
+          <div class="ep-box skeleton"></div>
+          <div class="ep-box skeleton"></div>
+        </div>
       </div>
     </div>
 
@@ -450,15 +476,13 @@
       <div class="skeleton" style="height:120px;margin-bottom:20px;"></div>
     </div>
 
-    <!-- REKOMENDASI SERUPA (GRID 3 VERTIKAL, SCROLL HORIZONTAL TANPA BG & GRADASI DINAMIS) -->
+    <!-- REKOMENDASI SERUPA -->
     <section class="recommendations-section" id="recommendationsSection" style="display:none;">
       <h3 class="recommendations-title">
         <svg style="width:18px;height:18px;stroke:var(--color-accent);fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         Rekomendasi Serupa
       </h3>
-      <div class="rec-scroll-container" id="recScrollContainer">
-        <div class="recommendations-horizontal-grid" id="recommendationsGrid"></div>
-      </div>
+      <div class="recommendations-scroll-row" id="recommendationsRow"></div>
     </section>
 
     <!-- COMMENTS SECTION -->
@@ -628,6 +652,22 @@
     });
   }
 
+  /* LOGIKA DINAMIS EFEK GRADASI TEPI SCROLL EPISODE */
+  function updateEpScrollFade() {
+    const grid = document.getElementById('epGrid');
+    const container = document.getElementById('epScrollContainer');
+    if (!grid || !container) return;
+
+    const scrollLeft = grid.scrollLeft;
+    const maxScrollLeft = grid.scrollWidth - grid.clientWidth;
+
+    const fadeLeft = scrollLeft > 5 ? '1' : '0';
+    const fadeRight = scrollLeft < maxScrollLeft - 5 ? '1' : '0';
+
+    container.style.setProperty('--ep-fade-left', fadeLeft);
+    container.style.setProperty('--ep-fade-right', fadeRight);
+  }
+
   function renderEpisodeGrid() {
     const epGrid = document.getElementById('epGrid');
     if (!epGrid) return;
@@ -644,6 +684,10 @@
       box.onclick = () => selectEpisodeByNum(epNum);
       epGrid.appendChild(box);
     });
+
+    epGrid.removeEventListener('scroll', updateEpScrollFade);
+    epGrid.addEventListener('scroll', updateEpScrollFade);
+    setTimeout(updateEpScrollFade, 50);
   }
 
   function goToHomeLogin() { window.location.href = '/'; }
@@ -747,29 +791,10 @@
     }
   }
 
-  /* LOGIKA DINAMIS EFEK GRADASI TEPI SCROLL */
-  function updateScrollFade() {
-    const container = document.getElementById('recommendationsGrid');
-    const wrapper = document.getElementById('recScrollContainer');
-    if (!container || !wrapper) return;
-
-    const scrollLeft = container.scrollLeft;
-    const maxScrollLeft = container.scrollWidth - container.clientWidth;
-
-    // Tampilkan gradasi kiri jika sudah digeser ke kanan (> 5px)
-    const fadeLeft = scrollLeft > 5 ? '1' : '0';
-    // Tampilkan gradasi kanan jika belum sampai ujung kanan (< max - 5px)
-    const fadeRight = scrollLeft < maxScrollLeft - 5 ? '1' : '0';
-
-    wrapper.style.setProperty('--fade-left', fadeLeft);
-    wrapper.style.setProperty('--fade-right', fadeRight);
-  }
-
-  /* RENDER REKOMENDASI (GRID 3 KOTAK VERTIKAL, SCROLL HORIZONTAL TANPA BG) */
   function renderSmartRecommendations(currentGenres, currentSlug, catalog) {
     const section = document.getElementById('recommendationsSection');
-    const grid = document.getElementById('recommendationsGrid');
-    if (!section || !grid || !Array.isArray(catalog)) return;
+    const row = document.getElementById('recommendationsRow');
+    if (!section || !row || !Array.isArray(catalog)) return;
 
     const others = catalog.filter(item => item.slug !== currentSlug);
     if (others.length === 0) return;
@@ -792,22 +817,23 @@
     });
 
     scored.sort((a, b) => b.score - a.score);
-    // Ambil 15-18 item agar grid 3 baris ke samping terisi penuh dan bisa di-scroll
     const topRecs = scored.slice(0, 15).map(s => s.item);
 
     if (topRecs.length === 0) return;
 
-    grid.innerHTML = topRecs.map(item => {
+    row.innerHTML = topRecs.map(item => {
       const title = sanitizeTitle(item.title);
       const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
       const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
       const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
       const epText = isMovie ? 'MOVIE' : `Ep ${epNum}`;
+      const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'TAMAT' : 'ONGOING';
 
       return `
-        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-grid-card">
-          <div class="rec-thumb-wrap">
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="rec-card-item">
+          <div class="rec-poster-box">
             <img src="${poster}" alt="${title}" loading="lazy" referrerpolicy="no-referrer" />
+            <span class="rec-badge-status">${statusText}</span>
             <span class="rec-badge-ep">${epText}</span>
           </div>
           <div class="rec-card-title">${title}</div>
@@ -816,11 +842,6 @@
     }).join('');
 
     section.style.display = 'block';
-    
-    // Inisialisasi pendengar event scroll untuk gradasi
-    grid.removeEventListener('scroll', updateScrollFade);
-    grid.addEventListener('scroll', updateScrollFade);
-    setTimeout(updateScrollFade, 50);
   }
 
   async function loadDetail() {
@@ -923,6 +944,9 @@
       activeBox.classList.add('active');
       activeBox.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
+
+    // Perbarui status gradasi scroll episode setelah perpindahan aktif
+    setTimeout(updateEpScrollFade, 50);
 
     const rawServers = episode.servers || episode.server || [];
     const servers = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
