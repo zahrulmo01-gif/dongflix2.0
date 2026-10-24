@@ -5,10 +5,11 @@ import {
   ref, 
   get, 
   set, 
-  runTransaction 
+  remove, 
+  runTransaction, 
+  increment 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Ganti dengan konfigurasi Firebase Web App milikmu
 const firebaseConfig = {
   apiKey: "AIzaSyC0fPxoN63hX6QsXnCet-xXhLhOLkUnWS4",
   authDomain: "donghu-91808.firebaseapp.com",
@@ -20,12 +21,10 @@ const firebaseConfig = {
   measurementId: "G-QFQ77XRGQ8"
 };
 
-// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// Export agar bisa dibaca oleh watch.html
 export { 
   app, 
   auth, 
@@ -33,6 +32,8 @@ export {
   ref, 
   get, 
   set, 
+  remove, 
   runTransaction, 
+  increment, 
   onAuthStateChanged 
 };
