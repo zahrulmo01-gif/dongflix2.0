@@ -4,10 +4,69 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Dongflix - Streaming Donghua Sub Indo</title>
+  <title>Dongflix - Nonton Streaming Donghua Sub Indo Gratis Kualitas HD</title>
   
+  <!-- Meta Tag Standar & SEO Google -->
+  <meta name="description" content="Dongflix adalah platform streaming donghua subtitle Indonesia terlengkap dan terupdate setiap hari. Nonton anime China sub indo kualitas HD gratis dan lancar tanpa buffering.">
+  <meta name="keywords" content="dongflix, nonton donghua, streaming donghua, donghua sub indo, nonton anime china, donghua batch, download donghua, renegade immortal, soul land, perfect world, btth, anichin, animexin, donghub, donghive, donghua">
+  <meta name="author" content="Dongflix">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+  <link rel="canonical" href="https://dongflix.my.id/">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Dongflix">
+  <meta property="og:title" content="Dongflix - Nonton Streaming Donghua Sub Indo Kualitas HD">
+  <meta property="og:description" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate gratis. Nikmati serial animasi China favoritmu dengan resolusi jernih.">
+  <meta property="og:url" content="https://dongflix.my.id/">
+  <meta property="og:image" content="https://dongflix.my.id/image/IMG_6395.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Logo Dongflix">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dongflix - Nonton Streaming Donghua Sub Indo Kualitas HD">
+  <meta name="twitter:description" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate gratis di Dongflix.">
+  <meta name="twitter:image" content="https://dongflix.my.id/image/IMG_6395.png">
+
+  <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="image/IMG_6395.png">
   <link rel="apple-touch-icon" href="image/IMG_6395.png">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Structured Data JSON-LD (Schema.org untuk Mempercepat Indeks Google) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://dongflix.my.id/#website",
+        "url": "https://dongflix.my.id/",
+        "name": "Dongflix",
+        "description": "Platform streaming donghua subtitle Indonesia terlengkap dan terupdate kualitas HD",
+        "inLanguage": "id-ID",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://dongflix.my.id/donghua/?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://dongflix.my.id/#organization",
+        "name": "Dongflix",
+        "url": "https://dongflix.my.id/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://dongflix.my.id/image/IMG_6395.png"
+        }
+      }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -629,7 +688,7 @@
       <div class="top-light-pip"></div>
       <div class="nav-capsule" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         <a href="/" class="brand-title-capsule">
-          <img src="image/IMG_6395.png" alt="Logo" class="brand-logo-icon">
+          <img src="image/IMG_6395.png" alt="Logo Dongflix" class="brand-logo-icon">
           <span>Dong<span class="brand-accent">flix</span></span>
         </a>
       </div>
@@ -696,7 +755,7 @@
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
-    <!-- POPULER HARI INI (BERDASARKAN views_daily HARI INI) -->
+    <!-- POPULER HARI INI -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -730,6 +789,7 @@
       </div>
     </section>
 
+    <!-- DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -748,6 +808,7 @@
       </div>
     </section>
 
+    <!-- BADGE GENRE -->
     <div class="genre-scroll-wrapper">
       <div class="genre-scroll-row" id="genreBar">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
@@ -765,6 +826,7 @@
       </div>
     </div>
 
+    <!-- MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -780,7 +842,7 @@
       </div>
     </section>
 
-    <!-- DONGHUA POPULER (BERDASARKAN views_total AKUMULASI) -->
+    <!-- DONGHUA POPULER -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">
@@ -849,8 +911,8 @@
     let donghuaList = [];
     let movieList = [];
     let masterList = [];
-    let viewsDataMap = {}; // views_total
-    let dailyViewsMap = {}; // views_daily hari ini
+    let viewsDataMap = {};
+    let dailyViewsMap = {};
 
     function formatViewCount(val) {
       const num = parseInt(val, 10);
@@ -1162,7 +1224,6 @@
       }
     }
 
-    /* PENGURUTAN: Populer Hari Ini (views_daily) & Populer Akumulasi (views_total) */
     function getSortedDailyList() {
       return [...masterList].sort((a, b) => {
         const viewsA = parseInt(dailyViewsMap[a.slug] || 0, 10);
@@ -1183,7 +1244,6 @@
     }
 
     function renderPopularSections() {
-      // 1. Populer Hari Ini -> Diambil dari views_daily hari ini
       const dailySorted = getSortedDailyList();
       const popRow = document.getElementById('todayPopularRow');
       if (popRow) {
@@ -1191,7 +1251,6 @@
         dailySorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
       }
 
-      // 2. Donghua Populer -> Diambil dari views_total
       const totalSorted = getSortedTotalList();
       const popAllGrid = document.getElementById('popularAllGrid');
       if (popAllGrid) {
@@ -1200,7 +1259,6 @@
       }
     }
 
-    /* SINKRONISASI views_total & views_daily DARI FIREBASE */
     window.syncFirebaseViews = async function() {
       if (!window.db || !window.fbRef || !window.fbGet) return;
 
