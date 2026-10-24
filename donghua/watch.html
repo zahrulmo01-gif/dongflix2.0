@@ -673,7 +673,7 @@
   window.fbIncrement = increment;
   window.currentUser = null;
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     window.currentUser = user;
     const formBox = document.getElementById('commentFormBox');
     const noticeBox = document.getElementById('commentLoginNotice');
@@ -683,6 +683,10 @@
     } else {
       if (formBox) formBox.style.display = 'none';
       if (noticeBox) noticeBox.style.display = 'block';
+    }
+
+    if (typeof window.checkFavorite === 'function') {
+      window.checkFavorite();
     }
   });
 
@@ -706,6 +710,15 @@
   const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+
+  function getUserBasePath() {
+    if (!window.currentUser) return null;
+    const userEmail = window.currentUser.email;
+    if (userEmail) {
+      return `users/${userEmail.replace(/\./g, ',')}`;
+    }
+    return `users/${window.currentUser.uid}`;
+  }
 
   function getCleanMainSlug() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -860,27 +873,35 @@
 
   function saveContinueHistory(epNum) {
     if (!targetSlug) return;
+    const historyItem = {
+      slug: targetSlug,
+      mainPath: targetSlug,
+      title: currentMainTitle || initialDisplayTitle,
+      poster: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
+      cover: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
+      episode: `Ep ${epNum}`,
+      progressTime: '00:04',
+      durationTime: '24:02',
+      updatedAt: Date.now()
+    };
+
     try {
       const historyKey = 'rz_continue_history';
       let historyList = JSON.parse(localStorage.getItem(historyKey) || '[]');
-
       historyList = historyList.filter(item => (item.slug !== targetSlug && item.mainPath !== targetSlug));
-
-      historyList.unshift({
-        slug: targetSlug,
-        mainPath: targetSlug,
-        title: currentMainTitle || initialDisplayTitle,
-        poster: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
-        cover: currentPoster || 'https://via.placeholder.com/300x400?text=No+Cover',
-        episode: `Ep ${epNum}`,
-        progressTime: '00:04',
-        durationTime: '24:02',
-        updatedAt: Date.now()
-      });
-
+      historyList.unshift(historyItem);
       if (historyList.length > 15) historyList = historyList.slice(0, 15);
       localStorage.setItem(historyKey, JSON.stringify(historyList));
     } catch (_) {}
+
+    if (window.currentUser && window.db && window.fbRef && window.fbSet) {
+      const basePath = getUserBasePath();
+      if (basePath) {
+        const cleanSlugKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+        const histRef = window.fbRef(window.db, `${basePath}/history/${cleanSlugKey}`);
+        window.fbSet(histRef, historyItem).catch(() => {});
+      }
+    }
   }
 
   function toggleEpisodeSort(e) {
@@ -1007,30 +1028,87 @@
     }
   };
 
-  function toggleFavorite() {
+  async function toggleFavorite() {
     if (!targetSlug) return;
     let favs = JSON.parse(localStorage.getItem('df_favorites') || '[]');
     const exists = favs.some(f => f.slug === targetSlug);
+    const btn = document.getElementById('btnFavorite');
+
+    const cleanSlugKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+    const basePath = getUserBasePath();
 
     if (exists) {
       favs = favs.filter(f => f.slug !== targetSlug);
-      const btn = document.getElementById('btnFavorite');
       if (btn) btn.classList.remove('active');
+
+      if (window.currentUser && basePath && window.fbRef && window.fbRemove) {
+        try {
+          const favRef = window.fbRef(window.db, `${basePath}/favorites/${cleanSlugKey}`);
+          await window.fbRemove(favRef);
+        } catch (_) {}
+      }
     } else {
-      favs.unshift({ slug: targetSlug, title: currentMainTitle || initialDisplayTitle, poster: currentPoster });
-      const btn = document.getElementById('btnFavorite');
+      const favItem = {
+        slug: targetSlug,
+        title: currentMainTitle || initialDisplayTitle,
+        poster: currentPoster,
+        updatedAt: Date.now()
+      };
+      favs.unshift(favItem);
       if (btn) btn.classList.add('active');
+
+      if (window.currentUser && basePath && window.fbRef && window.fbSet) {
+        try {
+          const favRef = window.fbRef(window.db, `${basePath}/favorites/${cleanSlugKey}`);
+          await window.fbSet(favRef, favItem);
+        } catch (_) {}
+      }
     }
+
     localStorage.setItem('df_favorites', JSON.stringify(favs));
   }
 
-  function checkFavorite() {
+  async function checkFavorite() {
+    if (!targetSlug) return;
+    const btn = document.getElementById('btnFavorite');
+    if (!btn) return;
+
+    let isFav = false;
     const favs = JSON.parse(localStorage.getItem('df_favorites') || '[]');
     if (favs.some(f => f.slug === targetSlug)) {
-      const btn = document.getElementById('btnFavorite');
-      if (btn) btn.classList.add('active');
+      isFav = true;
+    }
+
+    if (window.currentUser && window.db && window.fbRef && window.fbGet) {
+      const basePath = getUserBasePath();
+      if (basePath) {
+        const cleanSlugKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+        try {
+          const favRef = window.fbRef(window.db, `${basePath}/favorites/${cleanSlugKey}`);
+          const snap = await window.fbGet(favRef);
+          if (snap.exists()) {
+            isFav = true;
+            if (!favs.some(f => f.slug === targetSlug)) {
+              favs.unshift({
+                slug: targetSlug,
+                title: currentMainTitle || initialDisplayTitle,
+                poster: currentPoster
+              });
+              localStorage.setItem('df_favorites', JSON.stringify(favs));
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    if (isFav) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
     }
   }
+
+  window.checkFavorite = checkFavorite;
 
   function triggerDownload() {
     if (currentServerUrl) window.open(currentServerUrl, '_blank');
@@ -1541,14 +1619,30 @@
         if (globalEpisodes.length > 0) {
           renderEpisodeGrid();
           
+          let initialEp = globalEpisodes[0].episode || globalEpisodes[0].number || extractEpNumber(globalEpisodes[0].title || globalEpisodes[0].slug, 1);
+          
           const historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
           const savedItem = historyList.find(item => item.slug === targetSlug || item.mainPath === targetSlug);
-          
-          let initialEp = globalEpisodes[0].episode || globalEpisodes[0].number || extractEpNumber(globalEpisodes[0].title || globalEpisodes[0].slug, 1);
           if (savedItem && savedItem.episode) {
             const savedEpNum = extractEpNumber(savedItem.episode);
             const exists = globalEpisodes.some(e => String(e.episode || e.number || extractEpNumber(e.title || e.slug, 0)) === String(savedEpNum));
             if (exists) initialEp = savedEpNum;
+          }
+
+          if (window.currentUser && window.db && window.fbRef && window.fbGet) {
+            const basePath = getUserBasePath();
+            if (basePath) {
+              const cleanSlugKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+              try {
+                const histRef = window.fbRef(window.db, `${basePath}/history/${cleanSlugKey}`);
+                const snap = await window.fbGet(histRef);
+                if (snap.exists() && snap.val().episode) {
+                  const fbEpNum = extractEpNumber(snap.val().episode);
+                  const exists = globalEpisodes.some(e => String(e.episode || e.number || extractEpNumber(e.title || e.slug, 0)) === String(fbEpNum));
+                  if (exists) initialEp = fbEpNum;
+                }
+              } catch (_) {}
+            }
           }
 
           selectEpisodeByNum(initialEp);
