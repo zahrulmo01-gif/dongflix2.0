@@ -132,7 +132,7 @@
       margin-bottom: 16px;
       position: relative;
       aspect-ratio: 16/9;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Border tipis di bawah frame */
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .detail-player-box {
@@ -154,7 +154,6 @@
       border: none;
     }
 
-    /* KOTAK PESAN KETIKA DONGHUA TIDAK TERSEDIA */
     .not-found-box {
       display: none;
       flex-direction: column;
@@ -1008,7 +1007,7 @@
 
   <!-- KOTAK PESAN KETIKA DONGHUA TIDAK TERSEDIA -->
   <div class="not-found-box" id="notFoundBox">
-    <p class="not-found-text">Donghua mungkin sudah dihapus atau cek kembali link yang ada buka.</p>
+    <p class="not-found-text">Donghua mungkin sudah dihapus atau cek kembali link yang anda buka.</p>
     <a href="/" class="btn-home-notfound">
       <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       Home
@@ -1201,8 +1200,12 @@
       raw = urlParams.get('slug') || window.location.pathname;
     }
     raw = raw.replace(/^https?:\/\/[^\/]+/i, '').split('?')[0].split('#')[0];
-    raw = raw.replace(/^\/?(detail|anime|movie|episode)\//i, '');
-    return raw.replace(/^\/+|\/+$/g, '').trim();
+    const parts = raw.split('/').filter(Boolean);
+    const donghuaIdx = parts.indexOf('donghua');
+    if (donghuaIdx !== -1 && parts[donghuaIdx + 1]) {
+      return parts[donghuaIdx + 1];
+    }
+    return parts[parts.length - 1] || '';
   }
 
   function getCleanMainSlug(str) {
