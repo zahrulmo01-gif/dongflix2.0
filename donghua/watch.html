@@ -39,6 +39,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dongflix">
 
+  <script type="module" src="/assets/firebase-config.js"></script>
+
   <style>
     :root {
       --bg-main: #000000;
@@ -129,6 +131,7 @@
       text-overflow: ellipsis;
     }
 
+    /* PLAYER WRAPPER */
     .player-wrapper {
       margin: 0 -16px 18px;
       width: calc(100% + 32px);
@@ -195,6 +198,7 @@
 
     .player-iframe { width: 100%; height: 100%; border: none; display: block; }
 
+    /* NOT FOUND BOX */
     .not-found-box {
       display: none;
       flex-direction: column;
@@ -232,6 +236,7 @@
     .btn-home-notfound:active { transform: scale(0.97); }
     .btn-home-notfound svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
+    /* SKELETON */
     @keyframes skeletonPulse { 
       0%, 100% { opacity: 0.4; } 
       50% { opacity: 0.8; } 
@@ -242,6 +247,7 @@
       border-radius: 8px; 
     }
 
+    /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center; background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 6px; margin-bottom: 24px; position: relative;
@@ -288,6 +294,7 @@
     }
     .server-tooltip-hint.show { opacity: 1; }
 
+    /* EPISODE LIST */
     .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .ep-header-title { font-size: 16px; font-weight: 800; }
     .episode-sort-wrapper { position: relative; margin-left: auto; }
@@ -327,6 +334,7 @@
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
+    /* MEDIA DETAIL & SINOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
     .media-cover-wrapper {
       width: 105px; min-width: 105px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden;
@@ -343,6 +351,7 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
+    /* REKOMENDASI SERUPA */
     .recommendations-section { 
       margin-top: 32px; 
       margin-bottom: 32px; 
@@ -450,6 +459,7 @@
       }
     }
 
+    /* SHEET & KOMENTAR */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -1074,7 +1084,7 @@
     }
   });
 
-  // Begitu modul Firebase selesai di-import, picu sinkronisasi Views & Komentar
+  // Begitu modul Firebase siap, langsung jalankan update views dan render komentar
   if (typeof window.triggerViewIncrement === 'function') {
     window.triggerViewIncrement();
   }
@@ -1301,32 +1311,61 @@
 
   function goToHomeLogin() { window.location.href = '/'; }
 
-  /* SINKRONISASI VIEW FIREBASE */
-  window.triggerViewIncrement = async function() {
-    if (!targetSlug || !window.db || !window.fbRef || hasIncrementedView) return;
-    hasIncrementedView = true;
+  function formatViewDisplay(val) {
+    const n = parseInt(val, 10);
+    if (isNaN(n) || n <= 0) return '0';
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(n);
+  }
 
+  /* SINKRONISASI VIEW FIREBASE (DIPERBAIKI) */
+  window.triggerViewIncrement = async function() {
+    if (!targetSlug) return;
+
+    // Retry jika firebase belum siap
+    if (!window.db || !window.fbRef || !window.fbGet) {
+      setTimeout(window.triggerViewIncrement, 300);
+      return;
+    }
+
+    const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
     const todayStr = getLocalDateString();
+    const totalRef = window.fbRef(window.db, `views_total/${cleanKey}`);
+    const dailyRef = window.fbRef(window.db, `views_daily/${todayStr}/${cleanKey}`);
 
     try {
-      const totalRef = window.fbRef(window.db, `views_total/${targetSlug}`);
-      const dailyRef = window.fbRef(window.db, `views_daily/${todayStr}/${targetSlug}`);
+      // 1. Ambil data view saat ini
+      const snap = await window.fbGet(totalRef);
+      let currentVal = 0;
+      if (snap.exists()) {
+        currentVal = parseInt(snap.val(), 10) || 0;
+      }
 
-      if (typeof window.fbTransaction === 'function') {
-        window.fbTransaction(totalRef, (currentVal) => (currentVal || 0) + 1).then((res) => {
-          if (res && res.snapshot && document.getElementById('viewCountText')) {
-            document.getElementById('viewCountText').innerText = String(res.snapshot.val());
-          }
-        }).catch(() => {});
+      // Tampilkan segera ke UI
+      const countEl = document.getElementById('viewCountText');
+      if (countEl) countEl.innerText = formatViewDisplay(hasIncrementedView ? currentVal : currentVal + 1);
 
-        window.fbTransaction(dailyRef, (currentVal) => (currentVal || 0) + 1).catch(() => {});
-      } else if (typeof window.fbGet === 'function') {
-        const snap = await window.fbGet(totalRef);
-        if (snap.exists() && document.getElementById('viewCountText')) {
-          document.getElementById('viewCountText').innerText = String(snap.val());
+      // 2. Tambahkan 1 view jika belum di-increment di sesi ini
+      if (!hasIncrementedView) {
+        hasIncrementedView = true;
+        const nextVal = currentVal + 1;
+
+        if (window.fbSet) {
+          window.fbSet(totalRef, nextVal).catch(() => {});
+        }
+
+        // Simpan view harian
+        if (window.fbGet && window.fbSet) {
+          window.fbGet(dailyRef).then((dailySnap) => {
+            const dailyVal = (dailySnap.exists() ? parseInt(dailySnap.val(), 10) : 0) || 0;
+            window.fbSet(dailyRef, dailyVal + 1).catch(() => {});
+          }).catch(() => {});
         }
       }
-    } catch (_) {}
+    } catch (err) {
+      console.warn("View sync fallback:", err);
+    }
   };
 
   function toggleFavorite() {
@@ -1392,7 +1431,7 @@
     window.loadComments();
   }
 
-  /* LOAD COMMENTS LANGSUNG DARI FIREBASE */
+  /* LOAD COMMENTS DARI REALTIME DATABASE */
   window.loadComments = async function() {
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
@@ -1406,11 +1445,12 @@
     if (!targetSlug) return;
 
     try {
-      const commentsRef = window.fbRef(window.db, `comments/${targetSlug}`);
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const commentsRef = window.fbRef(window.db, `comments/${cleanKey}`);
       const snap = await window.fbGet(commentsRef);
 
       if (snap.exists()) {
-        const commentsData = snap.val();
+        const commentsData = snap.val() || {};
         container.innerHTML = '';
         const mainComments = [];
         const repliesMap = {};
@@ -1456,7 +1496,7 @@
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
-      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Pastikan koneksi dan izin database dibuka.</p>';
+      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Periksa izin baca database.</p>';
     }
   };
 
@@ -1602,7 +1642,8 @@
     };
 
     try {
-      const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, commentItem);
       input.value = '';
       window.loadComments();
@@ -1628,7 +1669,8 @@
     };
 
     try {
-      const newCommentRef = window.fbRef(window.db, `comments/${targetSlug}/${Date.now()}`);
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, replyItem);
       window.loadComments();
     } catch (e) {
@@ -1639,7 +1681,8 @@
   async function deleteComment(commentId) {
     if (!confirm('Apakah Anda yakin ingin menghapus komentar ini?')) return;
     try {
-      const commentRef = window.fbRef(window.db, `comments/${targetSlug}/${commentId}`);
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const commentRef = window.fbRef(window.db, `comments/${cleanKey}/${commentId}`);
       await window.fbRemove(commentRef);
       window.loadComments();
     } catch (e) {
@@ -1846,7 +1889,7 @@
 
     checkFavorite();
 
-    // Jalankan Views & Komentar
+    // Trigger views & comments
     if (typeof window.triggerViewIncrement === 'function') {
       window.triggerViewIncrement();
     }
