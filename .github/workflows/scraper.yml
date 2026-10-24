@@ -55,12 +55,12 @@ jobs:
         if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
         run: node admin/scraper.js --mode=update-all-details
 
-      # 4. Scrape Single Episode (Mode Otomatis Seluruh Episode Baru)
+      # 4. Scrape Single Episode (Seluruh Episode Baru)
       - name: Run Scraper Single Episode
         if: ${{ github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode' }}
         run: node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}"
 
-      # 5. Scrape Episode Parsial (Hanya episode yang dicentang admin)
+      # 5. Scrape Episode Pilihan Parsial
       - name: Run Scraper Selected Episodes
         if: ${{ github.event.action == 'scrape-selected-episodes' || github.event.inputs.action_type == 'selected-episodes' }}
         run: node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug \vert{}\vert{} github.event.inputs.target_slug }}" --episodes="${{ github.event.client_payload.selected_episodes || github.event.inputs.selected_episodes }}"
@@ -70,7 +70,7 @@ jobs:
         if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all' }}
         run: node admin/scrape-all-smart.js
 
-      # 7. Clean JSON Data (Fix Null & Duplikat)
+      # 7. Clean JSON Data
       - name: Clean JSON Data
         if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
         run: node admin/clean-json.js
