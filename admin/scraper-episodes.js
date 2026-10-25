@@ -184,7 +184,8 @@ async function createIsolatedPage(browser) {
   page.on('request', (req) => {
     if (req.isInterceptResolutionHandled()) return;
     const type = req.resourceType();
-    if (['image', 'stylesheet', 'font', 'media', 'other'].includes(type)) {
+    // Jangan abort stylesheet & script agar layout episode dirender sempurna
+    if (['image', 'media', 'font'].includes(type)) {
       req.abort().catch(() => {});
     } else {
       req.continue().catch(() => {});
@@ -228,13 +229,11 @@ function gitPushCheckpoint(slug, count, total) {
     const status = execSync('git status --porcelain').toString().trim();
     if (status) {
       execSync(`git commit -m "Auto: Progres ${slug} (${count}/${total} ep) [skip ci]"`, { stdio: 'ignore' });
-      
       try {
         execSync('git pull --rebase origin main', { stdio: 'ignore' });
       } catch (_) {
         execSync('git pull --rebase', { stdio: 'ignore' });
       }
-
       execSync('git push origin main', { stdio: 'inherit' });
       console.log(`  🚀 [Git Checkpoint] Berhasil push progres ${count}/${total} ke GitHub!\n`);
     }
@@ -303,7 +302,6 @@ if (!rawSlug) {
 
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
-// Parse argumen --episodes= jika ada filter pilihan
 let targetFilterEpisodes = null;
 const epArg = process.argv.find(arg => arg.startsWith('--episodes='));
 if (epArg) {
@@ -338,50 +336,31 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
-  // Kamus alias nama seri
+  // Daftar kemungkinan rute slug di Anichin
   const slugAliases = {
-    'renegade-immortal': ['xian-ni', 'xian-ni-sub-indo', 'renegade-immortal-sub-indo'],
-    'perfect-world': ['wanmei-shijie', 'perfect-world-sub-indo'],
-    'battle-through-the-heavens': ['doupo-cangqiong', 'btth'],
-    'swallowed-star': ['tunshi-xingkong'],
-    'soul-land': ['douluo-dalu'],
-    'soul-land-2': ['douluo-dalu-2'],
-    'against-the-gods': ['nitian-xie-shen'],
-    'shrouding-the-heavens': ['zhetian'],
-    'tales-of-herding-gods': ['mudushenji', 'mu-du-shen-ji'],
-    'beyond-times-gaze': ['guang-yin-zhi-wai', 'guangyin-zhi-wai']
+    'renegade-immortal': ['renegade-immortal', 'xian-ni', 'xian-ni-sub-indo'],
+    'perfect-world': ['perfect-world', 'wanmei-shijie', 'perfect-world-sub-indo'],
+    'battle-through-the-heavens': ['battle-through-the-heavens', 'doupo-cangqiong', 'btth'],
+    'swallowed-star': ['swallowed-star', 'tunshi-xingkong'],
+    'soul-land': ['soul-land', 'douluo-dalu'],
+    'beyond-times-gaze': ['beyond-times-gaze', 'guang-yin-zhi-wai']
   };
 
   const possibleSlugs = [cleanSlug];
-  if (slugAliases[cleanSlug]) possibleSlugs.push(...slugAliases[cleanSlug]);
-  if (!cleanSlug.endsWith('-sub-indo')) possibleSlugs.push(`${cleanSlug}-sub-indo`);
+  if (slugAliases[cleanSlug]) {
+    possibleSlugs.push(...slugAliases[cleanSlug]);
+  }
 
   const indexTargets = [];
   possibleSlugs.forEach(s => {
     indexTargets.push(`${BASE_URL}/${s}/`);
-    indexTargets.push(`${BASE_URL}/donghua/${s}/`);
     indexTargets.push(`${BASE_URL}/anime/${s}/`);
+    indexTargets.push(`${BASE_URL}/donghua/${s}/`);
   });
 
   let indexHtml = null;
-
-  for (const url of indexTargets) {
-    try {
-      const res = await fetch(url, {
-        headers: { 'User-Agent': getRandomUserAgent() },
-        signal: AbortSignal.timeout(10000)
-      });
-      if (res.ok) {
-        const text = await res.text();
-        if (text.includes('eplister') || text.includes('episodelist') || text.includes('bxcl') || text.includes('clstyle')) {
-          indexHtml = text;
-          break;
-        }
-      }
-    } catch (_) {}
-  }
-
   let browser = null;
+
   const launchBrowser = async () => {
     if (!browser) {
       browser = await puppeteer.launch({
@@ -391,14 +370,45 @@ async function run() {
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--blink-settings=imagesEnabled=false'
+          '--disable-gpu'
         ]
       });
     }
     return browser;
   };
 
+  // Cek apakah HTML memiliki container episode
+  function hasEpisodeContainer(html) {
+    if (!html) return false;
+    return html.includes('eplister') || 
+           html.includes('episodelist') || 
+           html.includes('bxcl') || 
+           html.includes('clstyle') ||
+           html.includes('-episode-');
+  }
+
+  // 1. Coba fetch HTTP
+  for (const url of indexTargets) {
+    try {
+      const res = await fetch(url, {
+        headers: { 
+          'User-Agent': getRandomUserAgent(),
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+        },
+        signal: AbortSignal.timeout(10000)
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (hasEpisodeContainer(text)) {
+          indexHtml = text;
+          console.log(`  ✅ Container episode ditemukan di: ${url}`);
+          break;
+        }
+      }
+    } catch (_) {}
+  }
+
+  // 2. Jika fetch gagal, gunakan Puppeteer
   if (!indexHtml) {
     console.log('  ⚠️ HTTP direct fetch tidak menemukan container, mencoba lewat browser engine...');
     const b = await launchBrowser();
@@ -406,31 +416,17 @@ async function run() {
 
     for (const url of indexTargets) {
       try {
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        console.log(`  ➡️ Mencoba rute: ${url}`);
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 35000 });
+        
+        // Tunggu rendering selector
+        await page.waitForSelector('.eplister, .episodelist, .bxcl, ul.clstyle, div[id*="episode"]', { timeout: 6000 }).catch(() => {});
+        
         const html = await page.content();
-        if (html.includes('eplister') || html.includes('episodelist') || html.includes('bxcl') || html.includes('clstyle')) {
+        if (hasEpisodeContainer(html)) {
           indexHtml = html;
+          console.log(`  ✅ Berhasil menemukan daftar episode di: ${url}`);
           break;
-        }
-      } catch (_) {}
-    }
-
-    // Fallback search jika seluruh variasi rute gagal
-    if (!indexHtml) {
-      try {
-        const searchKeyword = cleanSlug.replace(/-/g, ' ');
-        console.log(`  🔍 Mencoba pencarian otomatis dengan kata kunci: "${searchKeyword}"...`);
-        await page.goto(`${BASE_URL}/?s=${encodeURIComponent(searchKeyword)}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-        const searchHtml = await page.content();
-        const $s = cheerio.load(searchHtml);
-        const foundLink = $s('.listupd article a, .animposx a').first().attr('href');
-        if (foundLink) {
-          console.log(`  🎯 Ditemukan URL dari pencarian: ${foundLink}`);
-          await page.goto(foundLink, { waitUntil: 'domcontentloaded', timeout: 30000 });
-          const targetHtml = await page.content();
-          if (targetHtml.includes('eplister') || targetHtml.includes('episodelist') || targetHtml.includes('bxcl') || targetHtml.includes('clstyle')) {
-            indexHtml = targetHtml;
-          }
         }
       } catch (_) {}
     }
@@ -446,6 +442,7 @@ async function run() {
 
   const $ = cheerio.load(indexHtml);
   let latestEpisodeFound = '';
+
   $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
     const txt = $(el).text().trim();
     if (txt.includes('Episode Baru')) {
@@ -455,17 +452,38 @@ async function run() {
   });
 
   const rawEpisodeList = [];
-  $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li').each((_, el) => {
+
+  // Selector menyeluruh untuk episode list Anichin
+  $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li, ul[class*="episode"] li').each((_, el) => {
     const item = $(el);
-    const fullLink = resolveUrl(item.find('a').attr('href') || '');
-    const epNum = item.find('.epl-num, .epx').text().trim() || item.find('a').text().trim();
-    const title = item.find('.epl-title').text().trim() || item.find('a').attr('title') || epNum;
+    const linkEl = item.find('a');
+    const fullLink = resolveUrl(linkEl.attr('href') || '');
+    const epNum = item.find('.epl-num, .epx, .centang').text().trim() || linkEl.text().trim();
+    const title = item.find('.epl-title').text().trim() || linkEl.attr('title') || epNum;
     const date = item.find('.epl-date, .date').text().trim() || '-';
 
-    if (fullLink && fullLink.startsWith('http')) {
+    if (fullLink && fullLink.startsWith('http') && parseEpisodeNumber(epNum) > 0) {
       rawEpisodeList.push({ epNum, title, link: fullLink, date });
     }
   });
+
+  // Jika ul li tidak terbaca, ekstrak semua tag a dengan pola url "-episode-"
+  if (rawEpisodeList.length === 0) {
+    $('a[href*="-episode-"]').each((_, a) => {
+      const linkEl = $(a);
+      const fullLink = resolveUrl(linkEl.attr('href') || '');
+      const rawText = linkEl.text().trim();
+      const num = parseEpisodeNumber(rawText) || parseEpisodeNumber(fullLink);
+      if (fullLink && num > 0 && !rawEpisodeList.some(e => parseEpisodeNumber(e.epNum) === num)) {
+        rawEpisodeList.push({
+          epNum: String(num),
+          title: `Episode ${num}`,
+          link: fullLink,
+          date: '-'
+        });
+      }
+    });
+  }
 
   if (!latestEpisodeFound && rawEpisodeList.length > 0) {
     latestEpisodeFound = rawEpisodeList[0].epNum || '1';
