@@ -170,7 +170,7 @@ async function fetchEpisodeDirect(ep) {
 
 async function launchBrowser() {
   return await puppeteer.launch({
-    headless: 'new',
+    headless: false, // Gunakan non-headless virtual frame di Linux untuk bypass Turnstile otomatis
     protocolTimeout: 240000,
     args: [
       '--no-sandbox',
@@ -178,7 +178,8 @@ async function launchBrowser() {
       '--disable-dev-shm-usage',
       '--disable-gpu',
       '--disable-blink-features=AutomationControlled',
-      '--window-size=1920,1080'
+      '--window-size=1920,1080',
+      '--start-maximized'
     ]
   });
 }
@@ -190,6 +191,9 @@ async function createIsolatedPage(browser) {
 
   await page.evaluateOnNewDocument(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+    window.chrome = { runtime: {} };
+    Object.defineProperty(navigator, 'languages', { get: () => ['id-ID', 'id', 'en-US', 'en'] });
+    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
   });
 
   return page;
@@ -217,30 +221,6 @@ async function scrapeEpisodeWithPage(page, ep) {
       servers: []
     };
   }
-}
-
-// FUNGSI AUTO-SOLVE KLIK CHECKBOX TURNSTILE
-async function trySolveTurnstile(page) {
-  try {
-    for (const frame of page.frames()) {
-      if (frame.url().includes('cloudflare') || frame.url().includes('turnstile')) {
-        const checkbox = await frame.$('input[type="checkbox"], .ctp-checkbox-label, #challenge-stage');
-        if (checkbox) {
-          const box = await checkbox.boundingBox();
-          if (box) {
-            await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-            return true;
-          }
-        }
-      }
-    }
-    const challengeBtn = await page.$('#challenge-stage input, #turnstile-wrapper');
-    if (challengeBtn) {
-      await challengeBtn.click().catch(() => {});
-      return true;
-    }
-  } catch (_) {}
-  return false;
 }
 
 function gitPushCheckpoint(slug, count, total) {
@@ -337,6 +317,49 @@ if (epArg) {
   }
 }
 
+// JALUR BYPASS 1: Ambil episode via feed RSS internal Anichin (Bypass total Turnstile)
+async function fetchEpisodesFromFeed(slug) {
+  try {
+    const feedUrls = [
+      `${BASE_URL}/${slug}/feed/`,
+      `${BASE_URL}/feed/?s=${encodeURIComponent(slug.replace(/-/g, ' '))}`
+    ];
+
+    for (const fUrl of feedUrls) {
+      const res = await fetch(fUrl, {
+        headers: { 'User-Agent': REAL_USER_AGENT },
+        signal: AbortSignal.timeout(8000)
+      });
+      if (res.ok) {
+        const xml = await res.text();
+        const $x = cheerio.load(xml, { xmlMode: true });
+        const list = [];
+
+        $x('item').each((_, item) => {
+          const title = $x(item).find('title').text();
+          const link = $x(item).find('link').text();
+          const num = parseEpisodeNumber(title);
+
+          if (link && num > 0) {
+            list.push({
+              epNum: String(num),
+              title: title,
+              link: link,
+              date: $x(item).find('pubDate').text() || '-'
+            });
+          }
+        });
+
+        if (list.length > 0) {
+          console.log(`  ⚡ Berhasil bypass Cloudflare via Feed! Ditemukan ${list.length} episode.`);
+          return list;
+        }
+      }
+    }
+  } catch (_) {}
+  return null;
+}
+
 async function run() {
   console.log(`=== Memulai High-Speed Scrape: ${cleanSlug} (Workers: ${CONCURRENCY}) ===`);
   if (targetFilterEpisodes && targetFilterEpisodes.size > 0) {
@@ -360,103 +383,74 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
-  const targetUrl = `${BASE_URL}/${cleanSlug}/`;
-  let indexHtml = null;
+  let rawEpisodeList = [];
+  let latestEpisodeFound = '';
+
+  // 1. Coba jalur cepat feed tanpa Turnstile
+  const feedList = await fetchEpisodesFromFeed(cleanSlug);
+  if (feedList && feedList.length > 0) {
+    rawEpisodeList = feedList;
+    latestEpisodeFound = rawEpisodeList[0].epNum || '1';
+  }
+
   let browser = null;
 
-  function hasEpisodeContainer(html) {
-    if (!html) return false;
-    return html.includes('eplister') || 
-           html.includes('episodelist') || 
-           html.includes('bxcl') || 
-           html.includes('clstyle') ||
-           html.includes('-episode-');
-  }
+  // 2. Jika jalur feed tidak cukup, gunakan Puppeteer dengan bypass interaktif
+  if (rawEpisodeList.length === 0) {
+    const targetUrl = `${BASE_URL}/${cleanSlug}/`;
+    console.log(`  🌐 Membuka halaman via Browser Engine: ${targetUrl}`);
+    browser = await launchBrowser();
+    const page = await createIsolatedPage(browser);
 
-  console.log(`  🌐 Membuka halaman via Browser Engine: ${targetUrl}`);
-  browser = await launchBrowser();
-  const page = await createIsolatedPage(browser);
+    try {
+      await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 50000 });
 
-  try {
-    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 50000 });
+      // Cek apakah ada Turnstile / Cloudflare Challenge
+      for (let i = 0; i < 15; i++) {
+        const title = await page.title();
+        const content = await page.content();
 
-    let checks = 0;
-    while (checks < 20) {
-      const pageTitle = await page.title();
-      const pageHtml = await page.content();
+        if (content.includes('eplister') || content.includes('episodelist') || content.includes('-episode-')) {
+          console.log(`  ✅ Berhasil masuk ke halaman donghua!`);
+          const $ = cheerio.load(content);
+          
+          $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li').each((_, el) => {
+            const item = $(el);
+            const linkEl = item.find('a');
+            const fullLink = resolveUrl(linkEl.attr('href') || '');
+            const epNum = item.find('.epl-num, .epx, .centang').text().trim() || linkEl.text().trim();
+            const epTitle = item.find('.epl-title').text().trim() || linkEl.attr('title') || epNum;
+            const date = item.find('.epl-date, .date').text().trim() || '-';
 
-      if (hasEpisodeContainer(pageHtml)) {
-        indexHtml = pageHtml;
-        console.log(`  ✅ Berhasil melewati challenge & container ditemukan.`);
-        break;
+            if (fullLink && fullLink.startsWith('http') && parseEpisodeNumber(epNum) > 0) {
+              rawEpisodeList.push({ epNum, title: epTitle, link: fullLink, date });
+            }
+          });
+          break;
+        }
+
+        if (title.includes('Just a moment') || content.includes('challenge')) {
+          console.log(`  ⏳ Mencoba bypass Turnstile otomatis (${i + 1}/15)...`);
+          // Klik koordinat tengah area challenge secara native
+          try {
+            await page.mouse.click(200, 290);
+          } catch (_) {}
+          await new Promise(r => setTimeout(r, 2000));
+        } else {
+          await new Promise(r => setTimeout(r, 1000));
+        }
       }
-
-      if (pageTitle.includes('Just a moment') || pageHtml.includes('cf-browser-verification') || pageHtml.includes('challenge-platform')) {
-        console.log(`  ⏳ Menemukan Turnstile (${checks + 1}/20), mencoba auto-click checkbox...`);
-        await trySolveTurnstile(page);
-        await new Promise(r => setTimeout(r, 2500));
-      } else {
-        await new Promise(r => setTimeout(r, 1500));
-      }
-      checks++;
+    } catch (err) {
+      console.warn(`  ⚠️ Browser fetch error: ${err.message}`);
     }
 
-    if (!indexHtml) {
-      indexHtml = await page.content();
-    }
-  } catch (err) {
-    console.warn(`  ⚠️ Gagal membuka ${targetUrl}: ${err.message}`);
+    await page.close().catch(() => {});
   }
 
-  await page.close().catch(() => {});
-
-  if (!hasEpisodeContainer(indexHtml)) {
+  if (rawEpisodeList.length === 0) {
     console.error('Container list episode tidak ditemukan.');
     if (browser) await browser.close().catch(() => {});
     process.exit(1);
-  }
-
-  const $ = cheerio.load(indexHtml);
-  let latestEpisodeFound = '';
-
-  $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
-    const txt = $(el).text().trim();
-    if (txt.includes('Episode Baru')) {
-      const match = txt.match(/Episode\s*Baru[\s\S]*?(?:Episode\s*)?(\d+[\w.-]*)/i);
-      if (match && match[1]) latestEpisodeFound = match[1].trim();
-    }
-  });
-
-  const rawEpisodeList = [];
-
-  $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li, ul[class*="episode"] li').each((_, el) => {
-    const item = $(el);
-    const linkEl = item.find('a');
-    const fullLink = resolveUrl(linkEl.attr('href') || '');
-    const epNum = item.find('.epl-num, .epx, .centang').text().trim() || linkEl.text().trim();
-    const title = item.find('.epl-title').text().trim() || linkEl.attr('title') || epNum;
-    const date = item.find('.epl-date, .date').text().trim() || '-';
-
-    if (fullLink && fullLink.startsWith('http') && parseEpisodeNumber(epNum) > 0) {
-      rawEpisodeList.push({ epNum, title, link: fullLink, date });
-    }
-  });
-
-  if (rawEpisodeList.length === 0) {
-    $('a[href*="-episode-"]').each((_, a) => {
-      const linkEl = $(a);
-      const fullLink = resolveUrl(linkEl.attr('href') || '');
-      const rawText = linkEl.text().trim();
-      const num = parseEpisodeNumber(rawText) || parseEpisodeNumber(fullLink);
-      if (fullLink && num > 0 && !rawEpisodeList.some(e => parseEpisodeNumber(e.epNum) === num)) {
-        rawEpisodeList.push({
-          epNum: String(num),
-          title: `Episode ${num}`,
-          link: fullLink,
-          date: '-'
-        });
-      }
-    });
   }
 
   if (!latestEpisodeFound && rawEpisodeList.length > 0) {
@@ -512,6 +506,9 @@ async function run() {
       let result = await fetchEpisodeDirect(ep);
 
       if (!result || !result.servers || result.servers.length === 0) {
+        if (!browser) {
+          browser = await launchBrowser();
+        }
         if (!workerPage) {
           workerPage = await createIsolatedPage(browser);
         }
@@ -551,7 +548,7 @@ async function run() {
     gitPushCheckpoint(cleanSlug, processedCount, newEpisodesToScrape.length);
   }
 
-  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode baru untuk ${cleanSlug}.json`);
+  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode untuk ${cleanSlug}.json`);
 }
 
 run();
