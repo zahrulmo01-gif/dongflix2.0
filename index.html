@@ -1101,6 +1101,9 @@
     let viewsDataMap = {};
     let dailyViewsMap = {};
 
+    // SVG Standar No Cover Minimalis
+    const DEFAULT_NO_COVER = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='%23111622'/%3E%3Cpath d='M110 150l40 50 30-35 50 65H70z' fill='%23222d42'/%3E%3Ccircle cx='115' cy='120' r='16' fill='%23222d42'/%3E%3Ctext x='50%25' y='72%25' font-family='sans-serif' font-size='15' font-weight='700' fill='%2364748b' text-anchor='middle' letter-spacing='1'%3ENO COVER%3C/text%3E%3C/svg%3E";
+
     function formatViewCount(val) {
       const num = parseInt(val, 10);
       if (isNaN(num) || num <= 0) return '0';
@@ -1144,7 +1147,11 @@
     }
 
     function getImageUrl(item) {
-      return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
+      const cover = item.cover || item.thumbnail || item.image || item.poster;
+      if (!cover || typeof cover !== 'string' || cover.trim() === '' || cover.includes('null') || cover.includes('undefined')) {
+        return DEFAULT_NO_COVER;
+      }
+      return cover;
     }
 
     function togglePopoverMenu() {
@@ -1204,7 +1211,7 @@
             card.href = `/donghua/${encodeURIComponent(item.slug)}`;
             card.innerHTML = `
               <div class="search-item-thumb">
-                <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
+                <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
                 <span class="badge-cover-ep">${parseEpisodeText(item)}</span>
               </div>
               <div class="search-item-info">
@@ -1234,7 +1241,7 @@
         const slide = document.createElement('div');
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         slide.innerHTML = `
-          <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
+          <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
           <div class="hero-overlay"></div>
           <div class="hero-content">
             <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
@@ -1310,7 +1317,8 @@
         card.className = 'continue-card-item';
         card.href = `/donghua/${encodeURIComponent(item.slug || item.mainPath)}`;
         
-        const posterUrl = item.poster || item.cover || 'https://via.placeholder.com/300x200?text=No+Cover';
+        const rawCover = item.poster || item.cover;
+        const posterUrl = (rawCover && typeof rawCover === 'string' && rawCover.trim() !== '') ? rawCover : DEFAULT_NO_COVER;
         const rawEp = String(item.episode || 'Ep 1').replace(/[^0-9]/g, '');
         const displayEps = `Eps ${rawEp || '1'}`;
         const progressTime = item.progressTime || '00:04';
@@ -1318,7 +1326,7 @@
 
         card.innerHTML = `
           <div class="continue-thumb-box">
-            <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" />
+            <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
             <span class="continue-eps-text">${displayEps}</span>
           </div>
           <div class="continue-item-title" title="${item.title}">${item.title}</div>
@@ -1348,7 +1356,7 @@
 
       card.innerHTML = `
         <div class="featured-thumb-box">
-          <img src="${getImageUrl(item)}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" />
+          <img src="${getImageUrl(item)}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
           <div class="badge-view-count">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
@@ -1377,7 +1385,7 @@
 
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
-          <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
+          <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
           <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           ${isMovie ? `
             <div class="badge-view-count badge-view-top">
@@ -1389,7 +1397,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
