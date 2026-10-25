@@ -1,28 +1,42 @@
 name: Dongflix Automation Scraper
 
 on:
-  repository_dispatch:
-    types: [scrape-list, sync-order, scrape-episode, scrape-selected-donghua, scrape-all-episodes, clean-json, update-all-details]
+  schedule:
+    # Berjalan otomatis setiap 3 jam
+    - cron: '0 */3 * * *'
   workflow_dispatch:
     inputs:
       action_type:
-        description: 'Pilih aksi: list, sync-order, episode, selected-donghua, all, clean-json, atau update-all-details'
+        description: 'Pilih jenis aksi scraper'
         required: true
         default: 'sync-order'
-      target_slug:
-        description: 'Slug Donghua (untuk single episode)'
-        required: false
-      selected_slugs:
-        description: 'Daftar slug donghua (dipisah koma)'
-        required: false
+        type: choice
+        options:
+          - 'sync-order'
+          - 'scrape-list'
+          - 'clean-json'
+          - 'update-all-details'
+          - 'scrape-all-episodes'
+          - 'sync-covers'
+  repository_dispatch:
+    types:
+      - scrape-list
+      - sync-order
+      - clean-json
+      - update-all-details
+      - scrape-all-episodes
+      - scrape-episode
+      - scrape-selected-donghua
+      - sync-covers
 
 permissions:
   contents: write
-  actions: write
 
 jobs:
-  run-scraper:
+  automation-runner:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -33,63 +47,85 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Install System Dependencies & Xvfb (Virtual Screen)
+      - name: Install System Dependencies for Puppeteer & Sharp
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb
+          sudo apt-get install -y \
+            libnss3 \
+            libnspr4 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libgbm1 \
+            libasound2 \
+            libpango-1.0-0 \
+            libcairo2 \
+            libvips-dev
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Node Modules
+        run: npm ci || npm install
 
-      - name: Install Chrome for Puppeteer
-        run: npx puppeteer browsers install chrome
-
-      # 1. Scrape Donghua Baru Saja
-      - name: Scrape New Donghua Only
-        if: ${{ github.event.action == 'scrape-list' || github.event.inputs.action_type == 'list' }}
-        run: node admin/scraper.js --mode=new-only
-
-      # 2. Perbaiki Urutan List Mengikuti Anichin
-      - name: Sync Order with Anichin
-        if: ${{ github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
-        run: node admin/scraper.js --mode=sync-order
-
-      # 3. Update Detail Seluruh Donghua ke donghua.json
-      - name: Update All Donghua Details
-        if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
-        run: node admin/scraper.js --mode=update-all-details
-
-      # 4. Scrape Single Episode (Menggunakan Xvfb Display Nyata)
-      - name: Run Scraper Single Episode
-        if: ${{ github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode' }}
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}"
-
-      # 5. Scrape Donghua Terpilih (Batch Checklist)
-      - name: Run Scraper Selected Donghua
-        if: ${{ github.event.action == 'scrape-selected-donghua' || github.event.inputs.action_type == 'selected-donghua' }}
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scrape-all-smart.js --slugs="${{ github.event.client_payload.selected_slugs || github.event.inputs.selected_slugs }}"
-
-      # 6. Smart Scrape All Episodes
-      - name: Run Smart Scrape All Episodes
-        if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all' }}
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scrape-all-smart.js
-
-      # 7. Clean JSON Data (Fix Null & Duplikat)
-      - name: Clean JSON Data
-        if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
-        run: node admin/clean-json.js
-
-      # Final Commit & Push Safety
-      - name: Commit & Push Changes
+      - name: Configure Git Bot
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action Bot"
-          git add donghua/donghua.json donghua/episodes/*.json
-          if ! git diff --staged --quiet; then
-            git commit -m "Auto: Update database katalog [skip ci]"
-            git pull --rebase origin main
+
+      # 1. Scrape List Baru Saja
+      - name: Scrape List Baru Saja
+        if: ${{ github.event.action == 'scrape-list' || github.event.inputs.action_type == 'scrape-list' }}
+        run: node admin/scraper.js --mode=new-only
+
+      # 2. Perbaiki Urutan List / Default Cron
+      - name: Sync Order Katalog
+        if: ${{ github.event_name == 'schedule' || github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
+        run: node admin/scraper.js --mode=sync-order
+
+      # 3. Update Semua Detail (Movie, Sinopsis, Genre)
+      - name: Update Semua Detail Donghua
+        if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
+        run: node admin/scraper.js --mode=update-all-details
+
+      # 4. Clean JSON (Fix Null & Duplikat)
+      - name: Bersihkan JSON
+        if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
+        run: node admin/clean-json.js
+
+      # 5. Smart Scrape Semua Episode
+      - name: Smart Scrape Semua Episode
+        if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'scrape-all-episodes' }}
+        run: node admin/smart-scrape.js
+
+      # 6. Scrape Single Episode Spesifik
+      - name: Scrape Single Episode
+        if: ${{ github.event.action == 'scrape-episode' }}
+        run: node admin/scrape-episode.js "${{ github.event.client_payload.target_slug }}"
+
+      # 7. Scrape Batch Judul Terpilih
+      - name: Scrape Selected Donghua
+        if: ${{ github.event.action == 'scrape-selected-donghua' }}
+        run: node admin/scrape-selected.js "${{ github.event.client_payload.selected_slugs }}"
+
+      # 8. Sinkronisasi Cover ke ImgBB (.webp)
+      - name: Sync Covers to ImgBB
+        if: ${{ github.event.action == 'sync-covers' || github.event.inputs.action_type == 'sync-covers' }}
+        env:
+          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+        run: node admin/sync-covers-imgbb.js
+
+      # Final Safe Commit & Push
+      - name: Push Perubahan Tersisa
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git add donghua/
+            git commit -m "Auto: Update database catalog & episodes [skip ci]" || exit 0
+            git pull --rebase origin main || true
             git push origin main
-          else
-            echo "Tidak ada perubahan data katalog."
           fi
