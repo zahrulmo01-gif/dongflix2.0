@@ -287,7 +287,7 @@
     </div>
   </div>
 
-  <!-- MODAL EDIT MANUAL DONGHUA METADATA DENGAN UPLOAD IMGBB (AUTO SLUG.WEBP) -->
+  <!-- MODAL EDIT MANUAL DONGHUA METADATA DENGAN UPLOAD IMGBB (NAMA EKSPLISIT SLUG.WEBP) -->
   <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" style="display: none;">
     <div class="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-4 border border-sky-500/30">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -493,7 +493,7 @@
       return { token, repo, imgbbKey };
     }
 
-    // UPLOAD GAMBAR KE IMGBB DENGAN KONVERSI KE FORMAT & NAMA SLUG.WEBP
+    // UPLOAD GAMBAR KE IMGBB DENGAN FORMAT & NAMA EKSPLISIT SLUG.WEBP
     async function handleCoverUpload(inputEl) {
       if (!inputEl.files || !inputEl.files[0]) return;
 
@@ -507,8 +507,8 @@
       }
 
       const slugInput = document.getElementById('editSlug').value.trim() || document.getElementById('editOriginalSlug').value.trim();
-      const targetSlug = slugInput ? slugInput.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : `cover-${Date.now()}`;
-      const finalFileName = `${targetSlug}.webp`;
+      const baseSlug = slugInput ? slugInput.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : `cover-${Date.now()}`;
+      const finalFileName = `${baseSlug}.webp`;
 
       const rawFile = inputEl.files[0];
       statusText.className = 'text-[10px] text-sky-400 mt-0.5 block font-semibold';
@@ -535,7 +535,7 @@
 
         const formData = new FormData();
         formData.append('image', webpBlob, finalFileName);
-        formData.append('name', targetSlug);
+        formData.append('name', finalFileName); // ImgBB menyimpan title/nama langsung sebagai slug.webp
 
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
           method: 'POST',
