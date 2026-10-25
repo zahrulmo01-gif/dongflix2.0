@@ -12,15 +12,7 @@ const CONCURRENCY = 4;
 const PUSH_INTERVAL = 50;
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
-const USER_AGENTS = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-];
-
-function getRandomUserAgent() {
-  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-}
+const REAL_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 function resolveUrl(url) {
   if (!url) return '';
@@ -146,7 +138,7 @@ async function fetchEpisodeDirect(ep) {
     const res = await fetch(ep.link, {
       signal: controller.signal,
       headers: {
-        'User-Agent': getRandomUserAgent(),
+        'User-Agent': REAL_USER_AGENT,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8'
       }
@@ -176,20 +168,32 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
+// Browser bypass konfigurasi stealth
+async function launchBrowser() {
+  return await puppeteer.launch({
+    headless: 'new',
+    protocolTimeout: 240000,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-blink-features=AutomationControlled',
+      '--window-size=1920,1080'
+    ]
+  });
+}
+
 async function createIsolatedPage(browser) {
   const page = await browser.newPage();
-  await page.setUserAgent(getRandomUserAgent());
-  await page.setRequestInterception(true);
-
-  page.on('request', (req) => {
-    if (req.isInterceptResolutionHandled()) return;
-    const type = req.resourceType();
-    // Jangan abort stylesheet & script agar layout episode dirender sempurna
-    if (['image', 'media', 'font'].includes(type)) {
-      req.abort().catch(() => {});
-    } else {
-      req.continue().catch(() => {});
-    }
+  await page.setViewport({ width: 1920, height: 1080 });
+  await page.setUserAgent(REAL_USER_AGENT);
+  
+  await page.setExtraHTTPHeaders({
+    'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Sec-Ch-Ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"Windows"'
   });
 
   return page;
@@ -336,48 +340,10 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
-  // Daftar kemungkinan rute slug di Anichin
-  const slugAliases = {
-    'renegade-immortal': ['renegade-immortal', 'xian-ni', 'xian-ni-sub-indo'],
-    'perfect-world': ['perfect-world', 'wanmei-shijie', 'perfect-world-sub-indo'],
-    'battle-through-the-heavens': ['battle-through-the-heavens', 'doupo-cangqiong', 'btth'],
-    'swallowed-star': ['swallowed-star', 'tunshi-xingkong'],
-    'soul-land': ['soul-land', 'douluo-dalu'],
-    'beyond-times-gaze': ['beyond-times-gaze', 'guang-yin-zhi-wai']
-  };
-
-  const possibleSlugs = [cleanSlug];
-  if (slugAliases[cleanSlug]) {
-    possibleSlugs.push(...slugAliases[cleanSlug]);
-  }
-
-  const indexTargets = [];
-  possibleSlugs.forEach(s => {
-    indexTargets.push(`${BASE_URL}/${s}/`);
-    indexTargets.push(`${BASE_URL}/anime/${s}/`);
-    indexTargets.push(`${BASE_URL}/donghua/${s}/`);
-  });
-
+  const targetUrl = `${BASE_URL}/${cleanSlug}/`;
   let indexHtml = null;
   let browser = null;
 
-  const launchBrowser = async () => {
-    if (!browser) {
-      browser = await puppeteer.launch({
-        headless: 'new',
-        protocolTimeout: 180000,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu'
-        ]
-      });
-    }
-    return browser;
-  };
-
-  // Cek apakah HTML memiliki container episode
   function hasEpisodeContainer(html) {
     if (!html) return false;
     return html.includes('eplister') || 
@@ -387,54 +353,45 @@ async function run() {
            html.includes('-episode-');
   }
 
-  // 1. Coba fetch HTTP
-  for (const url of indexTargets) {
-    try {
-      const res = await fetch(url, {
-        headers: { 
-          'User-Agent': getRandomUserAgent(),
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-        },
-        signal: AbortSignal.timeout(10000)
-      });
-      if (res.ok) {
-        const text = await res.text();
-        if (hasEpisodeContainer(text)) {
-          indexHtml = text;
-          console.log(`  ✅ Container episode ditemukan di: ${url}`);
-          break;
-        }
+  // Buka langsung via Puppeteer dengan bypass delay
+  console.log(`  🌐 Membuka halaman via Browser Engine: ${targetUrl}`);
+  browser = await launchBrowser();
+  const page = await createIsolatedPage(browser);
+
+  try {
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    
+    // Tunggu jika ada Cloudflare challenge
+    let checks = 0;
+    while (checks < 15) {
+      const pageTitle = await page.title();
+      const pageHtml = await page.content();
+
+      if (hasEpisodeContainer(pageHtml)) {
+        indexHtml = pageHtml;
+        console.log(`  ✅ Berhasil melewati challenge & container ditemukan.`);
+        break;
       }
-    } catch (_) {}
-  }
 
-  // 2. Jika fetch gagal, gunakan Puppeteer
-  if (!indexHtml) {
-    console.log('  ⚠️ HTTP direct fetch tidak menemukan container, mencoba lewat browser engine...');
-    const b = await launchBrowser();
-    const page = await createIsolatedPage(b);
-
-    for (const url of indexTargets) {
-      try {
-        console.log(`  ➡️ Mencoba rute: ${url}`);
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 35000 });
-        
-        // Tunggu rendering selector
-        await page.waitForSelector('.eplister, .episodelist, .bxcl, ul.clstyle, div[id*="episode"]', { timeout: 6000 }).catch(() => {});
-        
-        const html = await page.content();
-        if (hasEpisodeContainer(html)) {
-          indexHtml = html;
-          console.log(`  ✅ Berhasil menemukan daftar episode di: ${url}`);
-          break;
-        }
-      } catch (_) {}
+      if (pageTitle.includes('Just a moment') || pageHtml.includes('cf-browser-verification') || pageHtml.includes('challenge-platform')) {
+        console.log(`  ⏳ Menunggu Cloudflare Turnstile (${checks + 1}/15)...`);
+        await new Promise(r => setTimeout(r, 2000));
+      } else {
+        await new Promise(r => setTimeout(r, 1000));
+      }
+      checks++;
     }
 
-    await page.close().catch(() => {});
+    if (!indexHtml) {
+      indexHtml = await page.content();
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Gagal membuka ${targetUrl}: ${err.message}`);
   }
 
-  if (!indexHtml) {
+  await page.close().catch(() => {});
+
+  if (!hasEpisodeContainer(indexHtml)) {
     console.error('Container list episode tidak ditemukan.');
     if (browser) await browser.close().catch(() => {});
     process.exit(1);
@@ -453,7 +410,6 @@ async function run() {
 
   const rawEpisodeList = [];
 
-  // Selector menyeluruh untuk episode list Anichin
   $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li, ul[class*="episode"] li').each((_, el) => {
     const item = $(el);
     const linkEl = item.find('a');
@@ -467,7 +423,6 @@ async function run() {
     }
   });
 
-  // Jika ul li tidak terbaca, ekstrak semua tag a dengan pola url "-episode-"
   if (rawEpisodeList.length === 0) {
     $('a[href*="-episode-"]').each((_, a) => {
       const linkEl = $(a);
@@ -539,8 +494,7 @@ async function run() {
 
       if (!result || !result.servers || result.servers.length === 0) {
         if (!workerPage) {
-          const b = await launchBrowser();
-          workerPage = await createIsolatedPage(b);
+          workerPage = await createIsolatedPage(browser);
         }
         result = await scrapeEpisodeWithPage(workerPage, ep);
       }
@@ -578,7 +532,7 @@ async function run() {
     gitPushCheckpoint(cleanSlug, processedCount, newEpisodesToScrape.length);
   }
 
-  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode untuk ${cleanSlug}.json`);
+  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode baru untuk ${cleanSlug}.json`);
 }
 
 run();
