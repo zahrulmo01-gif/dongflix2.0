@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install System Dependencies for Puppeteer & Sharp
+      - name: Install System Dependencies for Puppeteer & Chrome
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -61,13 +61,15 @@ jobs:
             libxfixes3 \
             libxrandr2 \
             libgbm1 \
-            libasound2 \
             libpango-1.0-0 \
             libcairo2 \
-            libvips-dev
+            libasound2t64 || sudo apt-get install -y libasound2 || true
 
       - name: Install Node Modules
         run: npm install
+
+      - name: Install Puppeteer Browsers
+        run: npx puppeteer browsers install chrome || true
 
       - name: Configure Git Bot
         run: |
