@@ -8,15 +8,14 @@ import { execSync } from 'child_process';
 puppeteer.use(StealthPlugin());
 
 const BASE_URL = 'https://anichin.moe';
-const CONCURRENCY = 4; // 4 worker paralel stabil untuk HTTP + browser fallback
+const CONCURRENCY = 4;
 const PUSH_INTERVAL = 50;
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 ];
 
 function getRandomUserAgent() {
@@ -38,7 +37,6 @@ function parseEpisodeNumber(epString) {
 
 function extractCleanUrl(rawVal) {
   if (!rawVal || rawVal === '0') return '';
-
   let processed = rawVal.trim();
 
   const directIframeMatch = processed.match(/src=["'](.*?)["']/i);
@@ -77,7 +75,6 @@ function parseServersFromHtml(html) {
   const $$ = cheerio.load(html);
   const rawServers = [];
 
-  // Dropdown select server
   $$('select.mirror option, select[name="server"] option, .server-select option').each((_, opt) => {
     const o = $$(opt);
     let name = o.text().trim();
@@ -91,7 +88,6 @@ function parseServersFromHtml(html) {
     }
   });
 
-  // Mirror tabs
   $$('.mirror a, .mobius a, ul.post-servers li a').each((_, a) => {
     const el = $$(a);
     let name = el.text().trim();
@@ -105,7 +101,6 @@ function parseServersFromHtml(html) {
     }
   });
 
-  // Default iframe
   const defaultIframe = $$('.player-embed iframe, #pembed iframe, .responsive-embed-stream iframe').attr('src');
   if (defaultIframe) {
     const cleanIframe = extractCleanUrl(defaultIframe);
@@ -143,7 +138,6 @@ function parseServersFromHtml(html) {
   return [...okruServers, ...dtubeServers, ...dailyServers, ...otherServers];
 }
 
-// 1. Eksekusi cepat lewat fetch HTTP
 async function fetchEpisodeDirect(ep) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 9000);
@@ -182,7 +176,6 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
-// 2. Setup tab page yang aman dari race condition
 async function createIsolatedPage(browser) {
   const page = await browser.newPage();
   await page.setUserAgent(getRandomUserAgent());
@@ -190,7 +183,6 @@ async function createIsolatedPage(browser) {
 
   page.on('request', (req) => {
     if (req.isInterceptResolutionHandled()) return;
-
     const type = req.resourceType();
     if (['image', 'stylesheet', 'font', 'media', 'other'].includes(type)) {
       req.abort().catch(() => {});
@@ -226,7 +218,6 @@ async function scrapeEpisodeWithPage(page, ep) {
   }
 }
 
-// Push checkpoint ke GitHub dengan auto rebase
 function gitPushCheckpoint(slug, count, total) {
   try {
     console.log(`\n  💾 [Git Checkpoint] Mendorong progres ${count}/${total} episode ke GitHub...`);
@@ -255,7 +246,6 @@ function gitPushCheckpoint(slug, count, total) {
   }
 }
 
-// Memperbarui donghua.json: cegah null, fallback ke episode lama, dan unshift ke urutan teratas
 function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) return;
@@ -263,16 +253,12 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
   try {
     const rawData = fs.readFileSync(masterPath, 'utf-8');
     const donghuaList = JSON.parse(rawData);
-
     const targetIndex = donghuaList.findIndex((item) => item.slug === slug);
 
     if (targetIndex !== -1) {
       const [updatedItem] = donghuaList.splice(targetIndex, 1);
-
-      // 1. Semak nilai dari parameter fungsi
       let safeEp = parseEpisodeNumber(latestEpisodeValue);
 
-      // 2. Jika 0 / null, periksa fail episode JSON yang baharu disimpan
       if (!safeEp) {
         const epFile = path.resolve(`donghua/episodes/${slug}.json`);
         if (fs.existsSync(epFile)) {
@@ -286,7 +272,6 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
         }
       }
 
-      // 3. Jika masih null, ambil daripada latest-episode lama atau episode lama
       if (!safeEp) {
         if (updatedItem['latest-episode'] && updatedItem['latest-episode'] !== 'null') {
           safeEp = parseEpisodeNumber(updatedItem['latest-episode']);
@@ -295,16 +280,13 @@ function updateMasterDonghuaJson(slug, latestEpisodeValue) {
         }
       }
 
-      // 4. Fallback mutlak jika tiada rekod angka sama sekali
       const finalEpString = (safeEp && safeEp > 0) ? String(safeEp) : '1';
 
       updatedItem['latest-episode'] = finalEpString;
       updatedItem.episode = `Ep ${finalEpString}`;
       updatedItem.updated_at = new Date().toISOString();
 
-      // Pindahkan ke kedudukan paling atas
       donghuaList.unshift(updatedItem);
-
       fs.writeFileSync(masterPath, JSON.stringify(donghuaList, null, 2), 'utf-8');
       console.log(`  🔝 Berhasil memindahkan ${slug} (Ep ${finalEpString}) ke urutan teratas di donghua.json!`);
     }
@@ -321,8 +303,23 @@ if (!rawSlug) {
 
 const cleanSlug = rawSlug.replace(/^\/+|\/+$/g, '');
 
+// Parse argumen --episodes= jika ada filter pilihan
+let targetFilterEpisodes = null;
+const epArg = process.argv.find(arg => arg.startsWith('--episodes='));
+if (epArg) {
+  const epStr = epArg.split('=')[1];
+  if (epStr) {
+    targetFilterEpisodes = new Set(
+      epStr.split(',').map(s => parseEpisodeNumber(s.trim())).filter(n => n > 0)
+    );
+  }
+}
+
 async function run() {
   console.log(`=== Memulai High-Speed Scrape: ${cleanSlug} (Workers: ${CONCURRENCY}) ===`);
+  if (targetFilterEpisodes && targetFilterEpisodes.size > 0) {
+    console.log(`🎯 Mode Parsial Aktif: Memproses episode [${Array.from(targetFilterEpisodes).join(', ')}]`);
+  }
 
   const outDir = path.resolve('donghua/episodes');
   const targetJsonPath = path.join(outDir, `${cleanSlug}.json`);
@@ -341,12 +338,32 @@ async function run() {
     existingEpisodes.map((ep) => parseEpisodeNumber(ep.episode))
   );
 
+  // Kamus alias nama seri
+  const slugAliases = {
+    'renegade-immortal': ['xian-ni', 'xian-ni-sub-indo', 'renegade-immortal-sub-indo'],
+    'perfect-world': ['wanmei-shijie', 'perfect-world-sub-indo'],
+    'battle-through-the-heavens': ['doupo-cangqiong', 'btth'],
+    'swallowed-star': ['tunshi-xingkong'],
+    'soul-land': ['douluo-dalu'],
+    'soul-land-2': ['douluo-dalu-2'],
+    'against-the-gods': ['nitian-xie-shen'],
+    'shrouding-the-heavens': ['zhetian'],
+    'tales-of-herding-gods': ['mudushenji', 'mu-du-shen-ji'],
+    'beyond-times-gaze': ['guang-yin-zhi-wai', 'guangyin-zhi-wai']
+  };
+
+  const possibleSlugs = [cleanSlug];
+  if (slugAliases[cleanSlug]) possibleSlugs.push(...slugAliases[cleanSlug]);
+  if (!cleanSlug.endsWith('-sub-indo')) possibleSlugs.push(`${cleanSlug}-sub-indo`);
+
+  const indexTargets = [];
+  possibleSlugs.forEach(s => {
+    indexTargets.push(`${BASE_URL}/${s}/`);
+    indexTargets.push(`${BASE_URL}/donghua/${s}/`);
+    indexTargets.push(`${BASE_URL}/anime/${s}/`);
+  });
+
   let indexHtml = null;
-  const indexTargets = [
-    `${BASE_URL}/${cleanSlug}/`,
-    `${BASE_URL}/anime/${cleanSlug}/`,
-    `${BASE_URL}/donghua/${cleanSlug}/`
-  ];
 
   for (const url of indexTargets) {
     try {
@@ -356,7 +373,7 @@ async function run() {
       });
       if (res.ok) {
         const text = await res.text();
-        if (text.includes('eplister') || text.includes('episodelist')) {
+        if (text.includes('eplister') || text.includes('episodelist') || text.includes('bxcl') || text.includes('clstyle')) {
           indexHtml = text;
           break;
         }
@@ -383,18 +400,41 @@ async function run() {
   };
 
   if (!indexHtml) {
+    console.log('  ⚠️ HTTP direct fetch tidak menemukan container, mencoba lewat browser engine...');
     const b = await launchBrowser();
     const page = await createIsolatedPage(b);
+
     for (const url of indexTargets) {
       try {
         await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
         const html = await page.content();
-        if (html.includes('eplister') || html.includes('episodelist')) {
+        if (html.includes('eplister') || html.includes('episodelist') || html.includes('bxcl') || html.includes('clstyle')) {
           indexHtml = html;
           break;
         }
       } catch (_) {}
     }
+
+    // Fallback search jika seluruh variasi rute gagal
+    if (!indexHtml) {
+      try {
+        const searchKeyword = cleanSlug.replace(/-/g, ' ');
+        console.log(`  🔍 Mencoba pencarian otomatis dengan kata kunci: "${searchKeyword}"...`);
+        await page.goto(`${BASE_URL}/?s=${encodeURIComponent(searchKeyword)}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        const searchHtml = await page.content();
+        const $s = cheerio.load(searchHtml);
+        const foundLink = $s('.listupd article a, .animposx a').first().attr('href');
+        if (foundLink) {
+          console.log(`  🎯 Ditemukan URL dari pencarian: ${foundLink}`);
+          await page.goto(foundLink, { waitUntil: 'domcontentloaded', timeout: 30000 });
+          const targetHtml = await page.content();
+          if (targetHtml.includes('eplister') || targetHtml.includes('episodelist') || targetHtml.includes('bxcl') || targetHtml.includes('clstyle')) {
+            indexHtml = targetHtml;
+          }
+        }
+      } catch (_) {}
+    }
+
     await page.close().catch(() => {});
   }
 
@@ -415,7 +455,7 @@ async function run() {
   });
 
   const rawEpisodeList = [];
-  $('.eplister ul li, .episodelist ul li, ul.clstyle li').each((_, el) => {
+  $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li').each((_, el) => {
     const item = $(el);
     const fullLink = resolveUrl(item.find('a').attr('href') || '');
     const epNum = item.find('.epl-num, .epx').text().trim() || item.find('a').text().trim();
@@ -433,6 +473,9 @@ async function run() {
 
   const newEpisodesToScrape = rawEpisodeList.filter((ep) => {
     const num = parseEpisodeNumber(ep.epNum);
+    if (targetFilterEpisodes && targetFilterEpisodes.size > 0) {
+      return targetFilterEpisodes.has(num);
+    }
     return !existingEpNumbers.has(num);
   });
 
@@ -454,8 +497,15 @@ async function run() {
   let lastPushedCount = 0;
 
   const saveProgress = () => {
-    const combined = [...newlyScrapedResults, ...existingEpisodes];
-    fs.writeFileSync(targetJsonPath, JSON.stringify(combined, null, 2), 'utf-8');
+    const combinedMap = new Map();
+    existingEpisodes.forEach(ep => combinedMap.set(parseEpisodeNumber(ep.episode), ep));
+    newlyScrapedResults.forEach(ep => combinedMap.set(parseEpisodeNumber(ep.episode), ep));
+
+    const finalSorted = Array.from(combinedMap.values()).sort((a, b) => {
+      return parseEpisodeNumber(b.episode) - parseEpisodeNumber(a.episode);
+    });
+
+    fs.writeFileSync(targetJsonPath, JSON.stringify(finalSorted, null, 2), 'utf-8');
   };
 
   let queueIndex = 0;
@@ -510,7 +560,7 @@ async function run() {
     gitPushCheckpoint(cleanSlug, processedCount, newEpisodesToScrape.length);
   }
 
-  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode baru untuk ${cleanSlug}.json`);
+  console.log(`\nSelesai! Berhasil memproses ${processedCount} episode untuk ${cleanSlug}.json`);
 }
 
 run();
