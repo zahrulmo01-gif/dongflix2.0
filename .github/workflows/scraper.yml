@@ -34,6 +34,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install System Dependencies & Xvfb (Virtual Screen)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 libpangocairo-1.0-0 libpango-1.0-0
+
       - name: Install Dependencies
         run: npm install
 
@@ -55,20 +60,20 @@ jobs:
         if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
         run: node admin/scraper.js --mode=update-all-details
 
-      # 4. Scrape Single Episode
+      # 4. Scrape Single Episode (Menggunakan Xvfb Display Nyata)
       - name: Run Scraper Single Episode
         if: ${{ github.event.action == 'scrape-episode' || github.event.inputs.action_type == 'episode' }}
-        run: node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}"
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scraper-episodes.js "${{ github.event.client_payload.target_slug || github.event.inputs.target_slug }}"
 
       # 5. Scrape Donghua Terpilih (Batch Checklist)
       - name: Run Scraper Selected Donghua
         if: ${{ github.event.action == 'scrape-selected-donghua' || github.event.inputs.action_type == 'selected-donghua' }}
-        run: node admin/scrape-all-smart.js --slugs="${{ github.event.client_payload.selected_slugs || github.event.inputs.selected_slugs }}"
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scrape-all-smart.js --slugs="${{ github.event.client_payload.selected_slugs || github.event.inputs.selected_slugs }}"
 
       # 6. Smart Scrape All Episodes
       - name: Run Smart Scrape All Episodes
         if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'all' }}
-        run: node admin/scrape-all-smart.js
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node admin/scrape-all-smart.js
 
       # 7. Clean JSON Data (Fix Null & Duplikat)
       - name: Clean JSON Data
