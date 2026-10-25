@@ -45,31 +45,24 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install System Dependencies for Puppeteer & Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 \
-            libnspr4 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libdrm2 \
-            libxkbcommon0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxfixes3 \
-            libxrandr2 \
-            libgbm1 \
-            libpango-1.0-0 \
-            libcairo2 \
-            libasound2t64 || sudo apt-get install -y libasound2 || true
+      # 1. Caching folder node_modules & binary Puppeteer
+      - name: Cache Node Modules & Puppeteer
+        id: cache-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/puppeteer
+          key: ${{ runner.os }}-dongflix-modules-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dongflix-modules-
 
+      # 2. Hanya install modul jika cache tidak ditemukan (pertama kali saja)
       - name: Install Node Modules
-        run: npm install
-
-      - name: Install Puppeteer Browsers
-        run: npx puppeteer browsers install chrome || true
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          npm install
+          npx puppeteer browsers install chrome || true
 
       - name: Configure Git Bot
         run: |
@@ -114,8 +107,6 @@ jobs:
       # 8. Sinkronisasi Cover ke ImgBB (.webp)
       - name: Sync Covers to ImgBB
         if: ${{ github.event.action == 'sync-covers' || github.event.inputs.action_type == 'sync-covers' }}
-        env:
-          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
         run: node admin/sync-covers-imgbb.js
 
       # Final Safe Commit & Push
