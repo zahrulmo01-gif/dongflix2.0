@@ -3,13 +3,13 @@ import path from 'path';
 import sharp from 'sharp';
 import { execSync } from 'child_process';
 
-const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
+const IMGBB_API_KEY = '885deff423c3a1c6f97f7b9c2982f1a2';
 const masterPath = path.resolve('donghua/donghua.json');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 if (!IMGBB_API_KEY) {
-  console.error('❌ IMGBB_API_KEY belum disetel! Harap jalankan dengan environment variable IMGBB_API_KEY.');
+  console.error('❌ IMGBB_API_KEY belum disetel!');
   process.exit(1);
 }
 
@@ -70,10 +70,10 @@ async function fetchAndConvertToWebp(imageUrl) {
 
 // Upload buffer Base64 ke ImgBB API
 async function uploadToImgBB(base64Data, slug) {
-  const finalName = `${slug}.webp`;
+  const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
   const formData = new FormData();
   formData.append('image', base64Data);
-  formData.append('name', finalName);
+  formData.append('name', cleanSlug); // Gunakan slug murni agar tidak terduplikasi menjadi .webp.png
 
   try {
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
@@ -160,7 +160,7 @@ async function run() {
       }
     }
 
-    // Delay ramah agar tidak terkena rate limit API ImgBB
+    // Delay ramah agar aman dari rate limit API ImgBB
     await new Promise(r => setTimeout(r, 1200));
   }
 
