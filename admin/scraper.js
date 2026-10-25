@@ -7,13 +7,19 @@ import { execSync } from 'child_process';
 
 puppeteer.use(StealthPlugin());
 
-const BASE_URL = 'https://anichin.moe';
+// Daftar mirror yang dicoba berurutan jika domain utama diblokir
+const MIRROR_DOMAINS = [
+  'https://anichin.my',
+  'https://anichin.co',
+  'https://anichin.moe'
+];
+
+let ACTIVE_BASE_URL = MIRROR_DOMAINS[0];
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0'
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 ];
 
 function getRandomUserAgent() {
@@ -24,12 +30,16 @@ function resolveUrl(url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('//')) return `https:${url}`;
-  return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  return `${ACTIVE_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
 function extractSlug(url) {
   if (!url) return '';
-  const clean = url.replace(BASE_URL, '').replace(/^\/+|\/+$/g, '');
+  let clean = url;
+  for (const domain of MIRROR_DOMAINS) {
+    clean = clean.replace(domain, '');
+  }
+  clean = clean.replace(/^\/+|\/+$/g, '');
   const segments = clean.split('/').filter(Boolean);
   return segments.pop() || '';
 }
@@ -73,10 +83,22 @@ function gitPushCheckpoint(commitMsg) {
   }
 }
 
-// Ambil detail lengkap jika judul belum pernah ada di database
+async function createStealthPage(browser) {
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1920, height: 1080 });
+  await page.setUserAgent(getRandomUserAgent());
+
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+  });
+
+  return page;
+}
+
+// Ambil detail lengkap donghua jika belum ada di database
 async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackSlug = '') {
   try {
-    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
     const html = await page.content();
     const $ = cheerio.load(html);
 
@@ -159,7 +181,7 @@ async function main() {
   const isNewOnly = process.argv.includes('--mode=new-only');
   const isUpdateAllDetails = process.argv.includes('--mode=update-all-details');
 
-  console.log(`=== Menjalankan Scraper: ${isUpdateAllDetails ? 'UPDATE-ALL-DETAILS' : (isSyncOrder ? 'SYNC-ORDER' : (isNewOnly ? 'NEW-ONLY' : 'DEFAULT'))} ===`);
+  console.log(`=== Menjalankan Scraper Katalog: ${isUpdateAllDetails ? 'UPDATE-ALL-DETAILS' : (isSyncOrder ? 'SYNC-ORDER' : (isNewOnly ? 'NEW-ONLY' : 'DEFAULT'))} ===`);
 
   const masterPath = path.resolve('donghua/donghua.json');
   if (!fs.existsSync(masterPath)) {
@@ -176,18 +198,19 @@ async function main() {
   }
 
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: false,
+    protocolTimeout: 240000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
-      '--blink-settings=imagesEnabled=false'
+      '--disable-blink-features=AutomationControlled',
+      '--window-size=1920,1080'
     ]
   });
 
-  const page = await browser.newPage();
-  await page.setUserAgent(getRandomUserAgent());
+  const page = await createStealthPage(browser);
 
   try {
     // ==========================================
@@ -199,7 +222,7 @@ async function main() {
       for (let i = 0; i < masterList.length; i++) {
         const item = masterList[i];
         item.title = sanitizeTitle(item.title);
-        const detailUrl = item.link || `${BASE_URL}/${item.slug}/`;
+        const detailUrl = `${ACTIVE_BASE_URL}/${item.slug}/`;
 
         console.log(`[${i + 1}/${masterList.length}] Scraping detail: ${item.title}...`);
         const detail = await fetchDonghuaDetail(page, detailUrl, item.title, item.slug);
@@ -236,65 +259,79 @@ async function main() {
     // ==========================================
     // 2. MODE SYNC-ORDER / NEW-ONLY (ARSIP ANIME)
     // ==========================================
-    // Scrape 2 halaman pertama dari arsip update untuk mendapatkan list terupdate yang akurat
     const pagesToScrape = isSyncOrder ? [1, 2] : [1];
     const scrapedCards = [];
 
+    // Tentukan domain yang merespons normal tanpa captcha
+    for (const domain of MIRROR_DOMAINS) {
+      try {
+        console.log(`Menguji domain katalog: ${domain}...`);
+        await page.goto(`${domain}/anime/?status=&type=&order=update`, { waitUntil: 'domcontentloaded', timeout: 25000 });
+        const testHtml = await page.content();
+        if (testHtml.includes('listupd') || testHtml.includes('animepost')) {
+          ACTIVE_BASE_URL = domain;
+          console.log(`✅ Menggunakan domain aktif: ${ACTIVE_BASE_URL}`);
+          break;
+        }
+      } catch (_) {}
+    }
+
     for (const pageNum of pagesToScrape) {
       const targetUrl = pageNum === 1
-        ? `${BASE_URL}/anime/?status=&type=&order=update`
-        : `${BASE_URL}/anime/?page=${pageNum}&status=&type=&order=update`;
+        ? `${ACTIVE_BASE_URL}/anime/?status=&type=&order=update`
+        : `${ACTIVE_BASE_URL}/anime/?page=${pageNum}&status=&type=&order=update`;
 
       console.log(`Membaca katalog dari halaman ${pageNum}: ${targetUrl}`);
 
-      await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
-      const html = await page.content();
-      const $ = cheerio.load(html);
+      try {
+        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
+        await new Promise(r => setTimeout(r, 1500));
+        const html = await page.content();
+        const $ = cheerio.load(html);
 
-      const items = $('.listupd article, .animepost, .bsx, .animpost');
+        const items = $('.listupd article, .animepost, .bsx, .animpost');
 
-      items.each((_, el) => {
-        const card = $(el);
-        const linkEl = card.find('a').first();
-        const rawLink = resolveUrl(linkEl.attr('href') || '');
-        const slug = extractSlug(rawLink);
+        items.each((_, el) => {
+          const card = $(el);
+          const linkEl = card.find('a').first();
+          const rawLink = resolveUrl(linkEl.attr('href') || '');
+          const slug = extractSlug(rawLink);
 
-        if (!slug || slug === 'anime' || slug === 'donghua') return;
+          if (!slug || slug === 'anime' || slug === 'donghua') return;
 
-        const rawTitle = linkEl.attr('title') || 
-                         card.find('.tt h2, .entry-title, .title').first().text() || 
-                         card.find('.tt').first().text() || '';
+          const rawTitle = linkEl.attr('title') || 
+                           card.find('.tt h2, .entry-title, .title').first().text() || 
+                           card.find('.tt').first().text() || '';
 
-        const title = sanitizeTitle(rawTitle);
+          const title = sanitizeTitle(rawTitle);
 
-        let cover = card.find('img').attr('src') || card.find('img').attr('data-src') || '';
-        if (cover.startsWith('//')) cover = `https:${cover}`;
+          let cover = card.find('img').attr('src') || card.find('img').attr('data-src') || '';
+          if (cover.startsWith('//')) cover = `https:${cover}`;
 
-        const epRaw = card.find('.epx, .bt .ep, .sb').first().text().trim();
-        const epNum = parseEpisodeNumber(epRaw);
+          const epRaw = card.find('.epx, .bt .ep, .sb').first().text().trim();
+          const epNum = parseEpisodeNumber(epRaw);
 
-        // Cek tipe dari badge kartu jika tersedia
-        const typeBadge = card.find('.typez').text().trim().toLowerCase();
-        const isMovie = typeBadge.includes('movie') || `${title} ${slug}`.toLowerCase().includes('movie');
+          const typeBadge = card.find('.typez').text().trim().toLowerCase();
+          const isMovie = typeBadge.includes('movie') || `${title} ${slug}`.toLowerCase().includes('movie');
 
-        scrapedCards.push({
-          slug,
-          title,
-          link: rawLink,
-          cover,
-          type: isMovie ? 'Movie' : 'Donghua',
-          epRaw: epNum > 0 ? String(epNum) : '1'
+          scrapedCards.push({
+            slug,
+            title,
+            link: rawLink,
+            cover,
+            type: isMovie ? 'Movie' : 'Donghua',
+            epRaw: epNum > 0 ? String(epNum) : '1'
+          });
         });
-      });
-
-      await new Promise(r => setTimeout(r, 1000));
+      } catch (err) {
+        console.warn(`Gagal memuat halaman ${pageNum}: ${err.message}`);
+      }
     }
 
     console.log(`Total judul yang didapat dari halaman arsip: ${scrapedCards.length}`);
 
     let updatedCount = 0;
 
-    // Iterasi terbalik agar entri halaman 1 urutan nomor 1 tetap menempati urutan index 0 (teratas)
     for (let i = scrapedCards.length - 1; i >= 0; i--) {
       const card = scrapedCards[i];
       const existingIdx = masterList.findIndex(d => d.slug === card.slug);
@@ -302,7 +339,6 @@ async function main() {
       if (existingIdx > -1) {
         if (isNewOnly) continue;
 
-        // Pindahkan judul yang ada ke posisi paling atas
         const [item] = masterList.splice(existingIdx, 1);
         item.title = sanitizeTitle(item.title) || card.title;
         if (card.cover && !item.cover) item.cover = card.cover;
@@ -316,7 +352,6 @@ async function main() {
         masterList.unshift(item);
         updatedCount++;
       } else {
-        // Judul baru: ambil detail lengkapnya
         console.log(`✨ Menemukan judul baru di arsip: ${card.title} (${card.slug})`);
         const detail = await fetchDonghuaDetail(page, card.link, card.title, card.slug);
         const finalEp = detail.totalEp > 0 ? String(detail.totalEp) : card.epRaw;
