@@ -123,31 +123,35 @@
       </div>
     </header>
 
-    <!-- Konfigurasi GitHub Target -->
+    <!-- Konfigurasi GitHub & ImgBB Target -->
     <section class="glass-card space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
         <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
           <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="text-sky-400 shrink-0">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
           </svg>
-          Konfigurasi GitHub Target
+          Konfigurasi Kredensial API
         </h2>
-        <span class="text-[11px] text-slate-400">Tersimpan otomatis di browser lokal Anda</span>
+        <span class="text-[11px] text-slate-400">Tersimpan aman di browser lokal Anda</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">GitHub Personal Access Token (PAT)</label>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">GitHub PAT</label>
           <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 font-mono transition">
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">Repository (username/repo)</label>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">Repository</label>
           <input type="text" id="ghRepo" placeholder="zahrulmo01-gif/dongflix2.0" class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 font-mono transition">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1.5 uppercase tracking-wider">ImgBB API Key</label>
+          <input type="password" id="imgbbKey" placeholder="API Key ImgBB..." class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 font-mono transition">
         </div>
       </div>
       <div class="flex justify-end gap-2 pt-1">
         <button onclick="saveGitHubConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow">
           <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-          Simpan Kredensial GitHub
+          Simpan Kredensial
         </button>
       </div>
     </section>
@@ -221,7 +225,7 @@
             </svg>
             Daftar Katalog Donghua
           </h2>
-          <p class="text-xs text-slate-400 mt-1">Klik pada item list untuk membuka popup detail & edit episode, atau centang untuk scrape batch.</p>
+          <p class="text-xs text-slate-400 mt-1">Klik baris donghua untuk membuka detail & edit episode. Gunakan tombol centang untuk scrape batch.</p>
         </div>
         <div class="w-full sm:w-64">
           <input type="text" id="searchInput" oninput="filterDonghuaList()" placeholder="Cari judul / slug..." class="w-full bg-slate-950/80 border border-slate-700/70 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-sky-500 transition">
@@ -263,7 +267,7 @@
         </div>
       </div>
       <div id="terminal" class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-slate-300 h-64 overflow-y-auto space-y-1 select-text">
-        <div class="text-slate-500">[Info] Sistem siap. Token & repository langsung terhubung ke GitHub API.</div>
+        <div class="text-slate-500">[Info] Sistem siap. Terhubung ke API.</div>
       </div>
     </section>
   </div>
@@ -283,12 +287,12 @@
     </div>
   </div>
 
-  <!-- MODAL EDIT MANUAL DONGHUA METADATA -->
+  <!-- MODAL EDIT MANUAL DONGHUA METADATA DENGAN UPLOAD IMGBB -->
   <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" style="display: none;">
     <div class="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-4 border border-sky-500/30">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-sky-400"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-sky-400"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Edit Detail Donghua Manual
         </h3>
         <button onclick="closeEditModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
@@ -315,8 +319,16 @@
           </div>
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">URL Cover / Poster</label>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-[11px] font-semibold text-slate-400">URL Cover / Poster</label>
+            <label class="text-[10px] text-sky-400 hover:text-sky-300 font-bold cursor-pointer flex items-center gap-1">
+              <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              Upload ke ImgBB
+              <input type="file" id="coverFileInput" accept="image/*" class="hidden" onchange="handleCoverUpload(this)">
+            </label>
+          </div>
           <input type="url" id="editCover" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500 font-mono">
+          <span id="uploadStatusText" class="text-[10px] text-slate-500 mt-0.5 block"></span>
         </div>
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Genre (Pisahkan dengan koma)</label>
@@ -337,7 +349,6 @@
   <!-- MODAL POPUP DETAIL & EDIT EPISODE LENGKAP -->
   <div id="episodesModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" style="display: none;">
     <div class="glass-card w-full max-w-3xl max-h-[92vh] flex flex-col space-y-4 border border-sky-500/30">
-      <!-- Header Modal -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 shrink-0">
         <div class="min-w-0 pr-4">
           <h3 class="text-sm font-bold text-white truncate flex items-center gap-2">
@@ -384,7 +395,6 @@
             </div>
           </div>
 
-          <!-- Video Servers Container -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label class="text-[10px] font-semibold text-slate-400">Daftar Server Streaming / Embed Video</label>
@@ -427,7 +437,6 @@
     let allDonghuaData = [];
     const selectedDonghuaSlugs = new Set();
 
-    // Data episode yang sedang diedit di modal
     let activeEpisodeSlug = '';
     let currentEpisodesList = [];
     let currentEpisodesSha = null;
@@ -435,11 +444,15 @@
     window.addEventListener('DOMContentLoaded', () => {
       const savedToken = localStorage.getItem('df_gh_token') || '';
       const savedRepo = localStorage.getItem('df_gh_repo') || 'zahrulmo01-gif/dongflix2.0';
+      const savedImgbb = localStorage.getItem('df_imgbb_key') || '';
       
       const tokenInput = document.getElementById('ghToken');
       const repoInput = document.getElementById('ghRepo');
+      const imgbbInput = document.getElementById('imgbbKey');
+
       if (tokenInput) tokenInput.value = savedToken;
       if (repoInput) repoInput.value = savedRepo;
+      if (imgbbInput) imgbbInput.value = savedImgbb;
 
       const isAuth = sessionStorage.getItem('df_admin_auth');
       if (isAuth === 'true') {
@@ -458,6 +471,7 @@
     function saveGitHubConfig() {
       const token = document.getElementById('ghToken').value.trim();
       const repo = document.getElementById('ghRepo').value.trim();
+      const imgbb = document.getElementById('imgbbKey').value.trim();
 
       if (!token || !repo) {
         logTerminal('Token dan nama Repository wajib diisi!', 'warn');
@@ -467,14 +481,63 @@
 
       localStorage.setItem('df_gh_token', token);
       localStorage.setItem('df_gh_repo', repo);
-      logTerminal(`Konfigurasi GitHub tersimpan untuk repo: ${repo}`, 'success');
-      alert('Kredensial GitHub berhasil disimpan di browser!');
+      localStorage.setItem('df_imgbb_key', imgbb);
+      logTerminal(`Konfigurasi tersimpan untuk repo: ${repo}`, 'success');
+      alert('Kredensial berhasil disimpan di browser!');
     }
 
     function getGitHubCredentials() {
       const token = (document.getElementById('ghToken').value || localStorage.getItem('df_gh_token') || '').trim();
       const repo = (document.getElementById('ghRepo').value || localStorage.getItem('df_gh_repo') || '').trim();
-      return { token, repo };
+      const imgbbKey = (document.getElementById('imgbbKey').value || localStorage.getItem('df_imgbb_key') || '').trim();
+      return { token, repo, imgbbKey };
+    }
+
+    // UPLOAD GAMBAR KE IMGBB API
+    async function handleCoverUpload(inputEl) {
+      if (!inputEl.files || !inputEl.files[0]) return;
+
+      const { imgbbKey } = getGitHubCredentials();
+      const statusText = document.getElementById('uploadStatusText');
+
+      if (!imgbbKey) {
+        alert('Mohon isi ImgBB API Key pada bagian Konfigurasi di panel atas terlebih dahulu!');
+        inputEl.value = '';
+        return;
+      }
+
+      const file = inputEl.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+
+      statusText.className = 'text-[10px] text-sky-400 mt-0.5 block font-semibold';
+      statusText.innerText = 'Mengunggah poster ke ImgBB...';
+      logTerminal(`[ImgBB] Mengunggah file cover: ${file.name}...`, 'info');
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data && data.success) {
+          const directUrl = data.data.url;
+          document.getElementById('editCover').value = directUrl;
+          statusText.className = 'text-[10px] text-emerald-400 mt-0.5 block font-semibold';
+          statusText.innerText = `✓ Berhasil diunggah: ${directUrl}`;
+          logTerminal(`[ImgBB Sukses] URL poster: ${directUrl}`, 'success');
+        } else {
+          throw new Error((data && data.error && data.error.message) || 'Upload gagal');
+        }
+      } catch (err) {
+        statusText.className = 'text-[10px] text-rose-400 mt-0.5 block font-semibold';
+        statusText.innerText = `Gagal upload: ${err.message}`;
+        logTerminal(`[ImgBB Error] ${err.message}`, 'error');
+        alert(`Gagal upload poster ke ImgBB: ${err.message}`);
+      } finally {
+        inputEl.value = '';
+      }
     }
 
     function handleAdminLogin(e) {
@@ -735,6 +798,7 @@
       document.getElementById('editCover').value = item.cover || item.thumbnail || item.poster || '';
       document.getElementById('editGenres').value = Array.isArray(item.genres) ? item.genres.join(', ') : (item.genres || '');
       document.getElementById('editSynopsis').value = item.synopsis || item.description || item.desc || '';
+      document.getElementById('uploadStatusText').innerText = '';
 
       document.getElementById('editModal').style.display = 'flex';
     }
@@ -743,7 +807,6 @@
       document.getElementById('editModal').style.display = 'none';
     }
 
-    // Simpan Perubahan Metadata Manual Langsung ke GitHub API
     async function saveManualEdit(e) {
       e.preventDefault();
       const { token, repo } = getGitHubCredentials();
@@ -868,7 +931,6 @@
           }
         }
 
-        // Fallback coba baca via API lokal jika token belum terisi
         if (episodes.length === 0) {
           const localRes = await fetch(`/api/donghua?path=episodes/${slug}.json`, { cache: 'no-store' });
           if (localRes.ok) {
@@ -1038,7 +1100,6 @@
         currentEpisodesList.unshift(epData);
       }
 
-      // Urutkan episode dari yang terbesar ke yang terkecil
       currentEpisodesList.sort((a, b) => parseEpisodeNumber(b.episode) - parseEpisodeNumber(a.episode));
 
       closeSingleEpForm();
@@ -1070,7 +1131,6 @@
       logTerminal(`[GitHub API] Menyimpan data ${currentEpisodesList.length} episode ke ${filePath}...`, 'info');
 
       try {
-        // 1. Dapatkan SHA terbaru file jika belum ada
         if (!currentEpisodesSha) {
           const checkRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
             headers: {
@@ -1084,7 +1144,6 @@
           }
         }
 
-        // 2. Encode isi episode ke Base64 UTF-8
         const jsonString = JSON.stringify(currentEpisodesList, null, 2);
         const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
 
@@ -1115,7 +1174,6 @@
 
         logTerminal(`[Sukses] Episode untuk ${activeEpisodeSlug} berhasil disimpan ke GitHub!`, 'success');
 
-        // 3. Update otomatis latest-episode pada donghua.json utama
         if (currentEpisodesList.length > 0) {
           const nums = currentEpisodesList.map(e => parseEpisodeNumber(e.episode)).filter(n => n > 0);
           if (nums.length > 0) {
