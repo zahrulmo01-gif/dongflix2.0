@@ -287,7 +287,7 @@
     </div>
   </div>
 
-  <!-- MODAL EDIT MANUAL DONGHUA METADATA DENGAN UPLOAD IMGBB (NAMA EKSPLISIT SLUG.WEBP) -->
+  <!-- MODAL EDIT MANUAL DONGHUA METADATA DENGAN UPLOAD IMGBB BASE64 WEBP -->
   <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" style="display: none;">
     <div class="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-4 border border-sky-500/30">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -493,7 +493,7 @@
       return { token, repo, imgbbKey };
     }
 
-    // UPLOAD GAMBAR KE IMGBB DENGAN FORMAT & NAMA EKSPLISIT SLUG.WEBP
+    // UPLOAD GAMBAR KE IMGBB VIA BASE64 WEBP MURNI
     async function handleCoverUpload(inputEl) {
       if (!inputEl.files || !inputEl.files[0]) return;
 
@@ -507,16 +507,15 @@
       }
 
       const slugInput = document.getElementById('editSlug').value.trim() || document.getElementById('editOriginalSlug').value.trim();
-      const baseSlug = slugInput ? slugInput.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : `cover-${Date.now()}`;
-      const finalFileName = `${baseSlug}.webp`;
+      const targetSlug = slugInput ? slugInput.toLowerCase().replace(/[^a-z0-9_-]/g, '-') : `cover-${Date.now()}`;
 
       const rawFile = inputEl.files[0];
       statusText.className = 'text-[10px] text-sky-400 mt-0.5 block font-semibold';
-      statusText.innerText = `Mengonversi & mengunggah ${finalFileName}...`;
-      logTerminal(`[ImgBB] Memproses cover ke format WebP (${finalFileName})...`, 'info');
+      statusText.innerText = `Mengonversi ke WebP & mengunggah...`;
+      logTerminal(`[ImgBB] Memproses cover ${targetSlug} ke format WebP Base64...`, 'info');
 
       try {
-        const webpBlob = await new Promise((resolve, reject) => {
+        const base64WebP = await new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
@@ -524,18 +523,18 @@
             canvas.height = img.naturalHeight || img.height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
-            canvas.toBlob(blob => {
-              if (blob) resolve(blob);
-              else reject(new Error('Gagal mengonversi gambar ke WebP'));
-            }, 'image/webp', 0.9);
+            
+            const dataUrl = canvas.toDataURL('image/webp', 0.9);
+            const base64Clean = dataUrl.split(',')[1];
+            resolve(base64Clean);
           };
           img.onerror = () => reject(new Error('Gagal memuat gambar untuk dikonversi'));
           img.src = URL.createObjectURL(rawFile);
         });
 
         const formData = new FormData();
-        formData.append('image', webpBlob, finalFileName);
-        formData.append('name', finalFileName); // ImgBB menyimpan title/nama langsung sebagai slug.webp
+        formData.append('image', base64WebP);
+        formData.append('name', targetSlug);
 
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
           method: 'POST',
@@ -544,11 +543,11 @@
 
         const data = await res.json();
         if (data && data.success) {
-          const directUrl = data.data.url;
+          const directUrl = data.data.image ? data.data.image.url : data.data.url;
           document.getElementById('editCover').value = directUrl;
           statusText.className = 'text-[10px] text-emerald-400 mt-0.5 block font-semibold';
-          statusText.innerText = `✓ Berhasil diunggah sebagai ${finalFileName}: ${directUrl}`;
-          logTerminal(`[ImgBB Sukses] File ${finalFileName} terunggah: ${directUrl}`, 'success');
+          statusText.innerText = `✓ Berhasil diunggah: ${directUrl}`;
+          logTerminal(`[ImgBB Sukses] File terunggah: ${directUrl}`, 'success');
         } else {
           throw new Error((data && data.error && data.error.message) || 'Upload gagal');
         }
