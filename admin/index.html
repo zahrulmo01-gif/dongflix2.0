@@ -288,7 +288,7 @@
     <div class="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-4 border border-sky-500/30">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-sky-400"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="text-sky-400"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
           Edit Detail Donghua Manual
         </h3>
         <button onclick="closeEditModal()" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
@@ -529,7 +529,7 @@
               <button 
                 onclick="openEditModal('${item.slug}')" 
                 class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition flex items-center gap-1 border border-slate-700">
-                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 Edit
               </button>
               <button 
@@ -635,22 +635,96 @@
       document.getElementById('editModal').style.display = 'none';
     }
 
+    // Simpan Perubahan Manual Langsung ke GitHub API (Tanpa Workflow Action)
     async function saveManualEdit(e) {
       e.preventDefault();
+      const { token, repo } = getGitHubCredentials();
+
+      if (!token || !repo) {
+        alert('Mohon isi dan simpan GitHub Token serta Repository di panel atas terlebih dahulu!');
+        return;
+      }
+
       const originalSlug = document.getElementById('editOriginalSlug').value;
       const updatedData = {
         title: document.getElementById('editTitle').value.trim(),
         slug: document.getElementById('editSlug').value.trim(),
         status: document.getElementById('editStatus').value.trim(),
         'latest-episode': document.getElementById('editLatestEp').value.trim(),
+        episode: `Ep ${document.getElementById('editLatestEp').value.trim()}`,
         cover: document.getElementById('editCover').value.trim(),
         genres: document.getElementById('editGenres').value.split(',').map(g => g.trim()).filter(Boolean),
-        synopsis: document.getElementById('editSynopsis').value.trim()
+        synopsis: document.getElementById('editSynopsis').value.trim(),
+        updated_at: new Date().toISOString()
       };
 
       closeEditModal();
-      logTerminal(`Menyimpan perubahan manual untuk: ${updatedData.title}...`, 'info');
-      triggerWorkflow('update-manual-item', { original_slug: originalSlug, updated_item: updatedData });
+      logTerminal(`[GitHub API] Mengambil data donghua/donghua.json dari ${repo}...`, 'info');
+
+      try {
+        const filePath = 'donghua/donghua.json';
+        const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (!fileRes.ok) {
+          throw new Error(`Gagal membaca file di GitHub (Status ${fileRes.status})`);
+        }
+
+        const fileData = await fileRes.json();
+        const fileSha = fileData.sha;
+        
+        // Decode base64 UTF-8
+        const rawContent = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+        let list = JSON.parse(rawContent);
+
+        // Cari item berdasarkan slug lama lalu perbarui
+        const targetIndex = list.findIndex(d => d.slug === originalSlug);
+        if (targetIndex !== -1) {
+          list[targetIndex] = { ...list[targetIndex], ...updatedData };
+        } else {
+          list.unshift(updatedData);
+        }
+
+        // Encode kembali ke base64 UTF-8
+        const newJsonStr = JSON.stringify(list, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(newJsonStr)));
+
+        logTerminal(`[GitHub API] Mendorong commit langsung ke branch main...`, 'info');
+
+        const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Manual Edit: Update ${updatedData.title} (${updatedData.slug}) [skip ci]`,
+            content: encodedContent,
+            sha: fileSha,
+            branch: 'main'
+          })
+        });
+
+        if (putRes.ok) {
+          logTerminal(`[Sukses] File donghua.json berhasil diperbarui secara instan!`, 'success');
+          alert(`Perubahan untuk "${updatedData.title}" berhasil langsung di-commit ke GitHub!`);
+          
+          allDonghuaData = list;
+          renderDonghuaItems(allDonghuaData);
+        } else {
+          const errBody = await putRes.json();
+          throw new Error(errBody.message || 'Gagal menyimpan perubahan ke GitHub');
+        }
+
+      } catch (err) {
+        logTerminal(`[Gagal Simpan Manual] ${err.message}`, 'error');
+        alert(`Gagal menyimpan ke GitHub: ${err.message}`);
+      }
     }
 
     // Mengirim Trigger Repository Dispatch Langsung ke GitHub API
