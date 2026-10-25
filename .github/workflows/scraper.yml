@@ -1,9 +1,6 @@
 name: Dongflix Automation Scraper
 
 on:
-  schedule:
-    # Berjalan otomatis setiap 3 jam
-    - cron: '0 */3 * * *'
   workflow_dispatch:
     inputs:
       action_type:
@@ -47,7 +44,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install System Dependencies for Puppeteer & Sharp
         run: |
@@ -71,7 +67,7 @@ jobs:
             libvips-dev
 
       - name: Install Node Modules
-        run: npm ci || npm install
+        run: npm install
 
       - name: Configure Git Bot
         run: |
@@ -83,9 +79,9 @@ jobs:
         if: ${{ github.event.action == 'scrape-list' || github.event.inputs.action_type == 'scrape-list' }}
         run: node admin/scraper.js --mode=new-only
 
-      # 2. Perbaiki Urutan List / Default Cron
+      # 2. Perbaiki Urutan List
       - name: Sync Order Katalog
-        if: ${{ github.event_name == 'schedule' || github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
+        if: ${{ github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
         run: node admin/scraper.js --mode=sync-order
 
       # 3. Update Semua Detail (Movie, Sinopsis, Genre)
