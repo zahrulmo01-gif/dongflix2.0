@@ -227,7 +227,6 @@
 
     .action-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    /* GAYA AVATAR BULAT DENGAN RING BIRU DAN PUSAT ORANYE */
     .user-avatar-custom-btn {
       width: 44px;
       height: 44px;
@@ -297,7 +296,7 @@
     }
     .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-    /* SEARCH MODAL ELEGAN & RAPI */
+    /* SEARCH MODAL */
     .modal-overlay { 
       display: none; 
       position: fixed; 
@@ -690,7 +689,6 @@
       padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
     }
 
-    /* BADGE VIEW ATAS KHUSUS MOVIE */
     .badge-view-top {
       position: absolute;
       top: 8px;
@@ -1101,8 +1099,8 @@
     let viewsDataMap = {};
     let dailyViewsMap = {};
 
-    // SVG Standar No Cover Minimalis
-    const DEFAULT_NO_COVER = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='%23111622'/%3E%3Cpath d='M110 150l40 50 30-35 50 65H70z' fill='%23222d42'/%3E%3Ccircle cx='115' cy='120' r='16' fill='%23222d42'/%3E%3Ctext x='50%25' y='72%25' font-family='sans-serif' font-size='15' font-weight='700' fill='%2364748b' text-anchor='middle' letter-spacing='1'%3ENO COVER%3C/text%3E%3C/svg%3E";
+    // SVG Standar No Cover Rasio 3:4 Presisi Bebas Broken Image Safari
+    const DEFAULT_NO_COVER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400' viewBox='0 0 300 400'><rect width='100%25' height='100%25' fill='%230f141f'/><g fill='%2325334d'><path d='M110 160l40 50 30-35 50 65H70z'/><circle cx='115' cy='130' r='16'/></g><text x='50%25' y='75%25' fill='%2364748b' font-family='sans-serif' font-size='16' font-weight='700' text-anchor='middle' letter-spacing='1'>NO COVER</text></svg>";
 
     function formatViewCount(val) {
       const num = parseInt(val, 10);
@@ -1211,7 +1209,7 @@
             card.href = `/donghua/${encodeURIComponent(item.slug)}`;
             card.innerHTML = `
               <div class="search-item-thumb">
-                <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
+                <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
                 <span class="badge-cover-ep">${parseEpisodeText(item)}</span>
               </div>
               <div class="search-item-info">
@@ -1241,7 +1239,7 @@
         const slide = document.createElement('div');
         slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
         slide.innerHTML = `
-          <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
+          <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
           <div class="hero-overlay"></div>
           <div class="hero-content">
             <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
@@ -1326,7 +1324,7 @@
 
         card.innerHTML = `
           <div class="continue-thumb-box">
-            <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
+            <img src="${posterUrl}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
             <span class="continue-eps-text">${displayEps}</span>
           </div>
           <div class="continue-item-title" title="${item.title}">${item.title}</div>
@@ -1356,7 +1354,7 @@
 
       card.innerHTML = `
         <div class="featured-thumb-box">
-          <img src="${getImageUrl(item)}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
+          <img src="${getImageUrl(item)}" alt="${titleText}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
           <div class="badge-view-count">
             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
@@ -1382,10 +1380,11 @@
       card.href = `/donghua/${encodeURIComponent(item.slug)}`;
       const isMovie = isMovieItem(item);
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
+      const coverSrc = getImageUrl(item);
 
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
-          <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_NO_COVER}';" />
+          <img src="${coverSrc}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
           <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
           ${isMovie ? `
             <div class="badge-view-count badge-view-top">
@@ -1397,7 +1396,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
