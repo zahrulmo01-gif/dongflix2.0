@@ -7,18 +7,24 @@ import { execSync } from 'child_process';
 
 puppeteer.use(StealthPlugin());
 
-const BASE_URL = 'https://anichin.moe';
+// Daftar domain mirror yang akan dicoba berurutan
+const MIRROR_DOMAINS = [
+  'https://anichin.my',
+  'https://anichin.co',
+  'https://anichin.moe'
+];
+
 const CONCURRENCY = 4;
 const PUSH_INTERVAL = 50;
 const DM_WORKER_URL = 'https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=';
 
 const REAL_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-function resolveUrl(url) {
+function resolveUrl(baseUrl, url) {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   if (url.startsWith('//')) return `https:${url}`;
-  return `${BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
 }
 
 function parseEpisodeNumber(epString) {
@@ -132,7 +138,7 @@ function parseServersFromHtml(html) {
 
 async function fetchEpisodeDirect(ep) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 9000);
+  const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
     const res = await fetch(ep.link, {
@@ -170,7 +176,7 @@ async function fetchEpisodeDirect(ep) {
 
 async function launchBrowser() {
   return await puppeteer.launch({
-    headless: false, // Gunakan non-headless virtual frame di Linux untuk bypass Turnstile otomatis
+    headless: false,
     protocolTimeout: 240000,
     args: [
       '--no-sandbox',
@@ -178,8 +184,7 @@ async function launchBrowser() {
       '--disable-dev-shm-usage',
       '--disable-gpu',
       '--disable-blink-features=AutomationControlled',
-      '--window-size=1920,1080',
-      '--start-maximized'
+      '--window-size=1920,1080'
     ]
   });
 }
@@ -191,9 +196,6 @@ async function createIsolatedPage(browser) {
 
   await page.evaluateOnNewDocument(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-    window.chrome = { runtime: {} };
-    Object.defineProperty(navigator, 'languages', { get: () => ['id-ID', 'id', 'en-US', 'en'] });
-    Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
   });
 
   return page;
@@ -201,7 +203,7 @@ async function createIsolatedPage(browser) {
 
 async function scrapeEpisodeWithPage(page, ep) {
   try {
-    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 25000 });
+    await page.goto(ep.link, { waitUntil: 'domcontentloaded', timeout: 30000 });
     const content = await page.content();
     const servers = parseServersFromHtml(content);
 
@@ -317,51 +319,18 @@ if (epArg) {
   }
 }
 
-// JALUR BYPASS 1: Ambil episode via feed RSS internal Anichin (Bypass total Turnstile)
-async function fetchEpisodesFromFeed(slug) {
-  try {
-    const feedUrls = [
-      `${BASE_URL}/${slug}/feed/`,
-      `${BASE_URL}/feed/?s=${encodeURIComponent(slug.replace(/-/g, ' '))}`
-    ];
-
-    for (const fUrl of feedUrls) {
-      const res = await fetch(fUrl, {
-        headers: { 'User-Agent': REAL_USER_AGENT },
-        signal: AbortSignal.timeout(8000)
-      });
-      if (res.ok) {
-        const xml = await res.text();
-        const $x = cheerio.load(xml, { xmlMode: true });
-        const list = [];
-
-        $x('item').each((_, item) => {
-          const title = $x(item).find('title').text();
-          const link = $x(item).find('link').text();
-          const num = parseEpisodeNumber(title);
-
-          if (link && num > 0) {
-            list.push({
-              epNum: String(num),
-              title: title,
-              link: link,
-              date: $x(item).find('pubDate').text() || '-'
-            });
-          }
-        });
-
-        if (list.length > 0) {
-          console.log(`  ⚡ Berhasil bypass Cloudflare via Feed! Ditemukan ${list.length} episode.`);
-          return list;
-        }
-      }
-    }
-  } catch (_) {}
-  return null;
+// Cek apakah halaman memiliki container episode
+function hasEpisodeContainer(html) {
+  if (!html) return false;
+  return html.includes('eplister') || 
+         html.includes('episodelist') || 
+         html.includes('bxcl') || 
+         html.includes('clstyle') ||
+         html.includes('-episode-');
 }
 
 async function run() {
-  console.log(`=== Memulai High-Speed Scrape: ${cleanSlug} (Workers: ${CONCURRENCY}) ===`);
+  console.log(`=== Memulai High-Speed Scrape Multi-Mirror: ${cleanSlug} (Workers: ${CONCURRENCY}) ===`);
   if (targetFilterEpisodes && targetFilterEpisodes.size > 0) {
     console.log(`🎯 Mode Parsial Aktif: Memproses episode [${Array.from(targetFilterEpisodes).join(', ')}]`);
   }
@@ -385,72 +354,114 @@ async function run() {
 
   let rawEpisodeList = [];
   let latestEpisodeFound = '';
+  let activeBaseUrl = MIRROR_DOMAINS[0];
 
-  // 1. Coba jalur cepat feed tanpa Turnstile
-  const feedList = await fetchEpisodesFromFeed(cleanSlug);
-  if (feedList && feedList.length > 0) {
-    rawEpisodeList = feedList;
-    latestEpisodeFound = rawEpisodeList[0].epNum || '1';
+  // Susun semua target URL yang akan diuji dari semua mirror
+  const testUrls = [];
+  for (const domain of MIRROR_DOMAINS) {
+    testUrls.push({ domain, url: `${domain}/series/${cleanSlug}/` });
+    testUrls.push({ domain, url: `${domain}/donghua/${cleanSlug}/` });
+    testUrls.push({ domain, url: `${domain}/${cleanSlug}/` });
+    testUrls.push({ domain, url: `${domain}/anime/${cleanSlug}/` });
+  }
+
+  let indexHtml = null;
+
+  // 1. Coba Direct HTTP Fetch ke semua mirror (anichin.my / anichin.co / anichin.moe)
+  console.log('  🔍 Menguji mirror HTTP langsung...');
+  for (const target of testUrls) {
+    try {
+      const res = await fetch(target.url, {
+        headers: { 
+          'User-Agent': REAL_USER_AGENT,
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+        },
+        signal: AbortSignal.timeout(9000)
+      });
+
+      if (res.ok) {
+        const text = await res.text();
+        if (hasEpisodeContainer(text)) {
+          indexHtml = text;
+          activeBaseUrl = target.domain;
+          console.log(`  ⚡ Berhasil menemukan container via HTTP di: ${target.url}`);
+          break;
+        }
+      }
+    } catch (_) {}
   }
 
   let browser = null;
 
-  // 2. Jika jalur feed tidak cukup, gunakan Puppeteer dengan bypass interaktif
-  if (rawEpisodeList.length === 0) {
-    const targetUrl = `${BASE_URL}/${cleanSlug}/`;
-    console.log(`  🌐 Membuka halaman via Browser Engine: ${targetUrl}`);
+  // 2. Jika HTTP terblokir, coba via Puppeteer
+  if (!indexHtml) {
+    console.log('  🌐 HTTP gagal, mencoba buka via Browser Engine ke mirror...');
     browser = await launchBrowser();
     const page = await createIsolatedPage(browser);
 
-    try {
-      await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 50000 });
-
-      // Cek apakah ada Turnstile / Cloudflare Challenge
-      for (let i = 0; i < 15; i++) {
-        const title = await page.title();
+    for (const target of testUrls) {
+      try {
+        console.log(`  ➡️ Mencoba rute: ${target.url}`);
+        await page.goto(target.url, { waitUntil: 'domcontentloaded', timeout: 35000 });
+        await new Promise(r => setTimeout(r, 2000));
         const content = await page.content();
 
-        if (content.includes('eplister') || content.includes('episodelist') || content.includes('-episode-')) {
-          console.log(`  ✅ Berhasil masuk ke halaman donghua!`);
-          const $ = cheerio.load(content);
-          
-          $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li').each((_, el) => {
-            const item = $(el);
-            const linkEl = item.find('a');
-            const fullLink = resolveUrl(linkEl.attr('href') || '');
-            const epNum = item.find('.epl-num, .epx, .centang').text().trim() || linkEl.text().trim();
-            const epTitle = item.find('.epl-title').text().trim() || linkEl.attr('title') || epNum;
-            const date = item.find('.epl-date, .date').text().trim() || '-';
-
-            if (fullLink && fullLink.startsWith('http') && parseEpisodeNumber(epNum) > 0) {
-              rawEpisodeList.push({ epNum, title: epTitle, link: fullLink, date });
-            }
-          });
+        if (hasEpisodeContainer(content)) {
+          indexHtml = content;
+          activeBaseUrl = target.domain;
+          console.log(`  ✅ Berhasil membuka via browser di: ${target.url}`);
           break;
         }
-
-        if (title.includes('Just a moment') || content.includes('challenge')) {
-          console.log(`  ⏳ Mencoba bypass Turnstile otomatis (${i + 1}/15)...`);
-          // Klik koordinat tengah area challenge secara native
-          try {
-            await page.mouse.click(200, 290);
-          } catch (_) {}
-          await new Promise(r => setTimeout(r, 2000));
-        } else {
-          await new Promise(r => setTimeout(r, 1000));
-        }
-      }
-    } catch (err) {
-      console.warn(`  ⚠️ Browser fetch error: ${err.message}`);
+      } catch (_) {}
     }
 
     await page.close().catch(() => {});
   }
 
-  if (rawEpisodeList.length === 0) {
-    console.error('Container list episode tidak ditemukan.');
+  if (!indexHtml) {
+    console.error('Container list episode tidak ditemukan di semua domain mirror.');
     if (browser) await browser.close().catch(() => {});
     process.exit(1);
+  }
+
+  const $ = cheerio.load(indexHtml);
+
+  $('.lastend .inep, .episodegap, .epcur, .epcurlast, div').each((_, el) => {
+    const txt = $(el).text().trim();
+    if (txt.includes('Episode Baru')) {
+      const match = txt.match(/Episode\s*Baru[\s\S]*?(?:Episode\s*)?(\d+[\w.-]*)/i);
+      if (match && match[1]) latestEpisodeFound = match[1].trim();
+    }
+  });
+
+  $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li, ul[class*="episode"] li').each((_, el) => {
+    const item = $(el);
+    const linkEl = item.find('a');
+    const fullLink = resolveUrl(activeBaseUrl, linkEl.attr('href') || '');
+    const epNum = item.find('.epl-num, .epx, .centang').text().trim() || linkEl.text().trim();
+    const epTitle = item.find('.epl-title').text().trim() || linkEl.attr('title') || epNum;
+    const date = item.find('.epl-date, .date').text().trim() || '-';
+
+    if (fullLink && fullLink.startsWith('http') && parseEpisodeNumber(epNum) > 0) {
+      rawEpisodeList.push({ epNum, title: epTitle, link: fullLink, date });
+    }
+  });
+
+  if (rawEpisodeList.length === 0) {
+    $('a[href*="-episode-"]').each((_, a) => {
+      const linkEl = $(a);
+      const fullLink = resolveUrl(activeBaseUrl, linkEl.attr('href') || '');
+      const rawText = linkEl.text().trim();
+      const num = parseEpisodeNumber(rawText) || parseEpisodeNumber(fullLink);
+      if (fullLink && num > 0 && !rawEpisodeList.some(e => parseEpisodeNumber(e.epNum) === num)) {
+        rawEpisodeList.push({
+          epNum: String(num),
+          title: `Episode ${num}`,
+          link: fullLink,
+          date: '-'
+        });
+      }
+    });
   }
 
   if (!latestEpisodeFound && rawEpisodeList.length > 0) {
