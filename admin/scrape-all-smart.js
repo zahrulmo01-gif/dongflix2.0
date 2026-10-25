@@ -53,7 +53,8 @@ async function fetchHtmlWithTimeout(url, timeoutMs = 15000) {
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
       }
     });
     clearTimeout(timeout);
@@ -66,10 +67,29 @@ async function fetchHtmlWithTimeout(url, timeoutMs = 15000) {
 }
 
 async function getWebLatestEpisode(slug) {
-  const urls = [
-    `${BASE_URL}/${slug}/`,
-    `${BASE_URL}/anime/${slug}/`
-  ];
+  const slugAliases = {
+    'renegade-immortal': ['xian-ni', 'xian-ni-sub-indo', 'renegade-immortal-sub-indo'],
+    'perfect-world': ['wanmei-shijie', 'perfect-world-sub-indo'],
+    'battle-through-the-heavens': ['doupo-cangqiong', 'btth'],
+    'swallowed-star': ['tunshi-xingkong'],
+    'soul-land': ['douluo-dalu'],
+    'soul-land-2': ['douluo-dalu-2'],
+    'against-the-gods': ['nitian-xie-shen'],
+    'shrouding-the-heavens': ['zhetian'],
+    'tales-of-herding-gods': ['mudushenji', 'mu-du-shen-ji'],
+    'beyond-times-gaze': ['guang-yin-zhi-wai', 'guangyin-zhi-wai']
+  };
+
+  const possible = [slug];
+  if (slugAliases[slug]) possible.push(...slugAliases[slug]);
+  if (!slug.endsWith('-sub-indo')) possible.push(`${slug}-sub-indo`);
+
+  const urls = [];
+  possible.forEach(s => {
+    urls.push(`${BASE_URL}/${s}/`);
+    urls.push(`${BASE_URL}/donghua/${s}/`);
+    urls.push(`${BASE_URL}/anime/${s}/`);
+  });
 
   for (const url of urls) {
     const html = await fetchHtmlWithTimeout(url);
@@ -87,7 +107,7 @@ async function getWebLatestEpisode(slug) {
     });
 
     if (!epFound) {
-      const firstEpItem = $('.eplister ul li, .episodelist ul li, ul.clstyle li').first();
+      const firstEpItem = $('.eplister ul li, .episodelist ul li, ul.clstyle li, .bxcl ul li').first();
       const num = firstEpItem.find('.epl-num, .epx').text().trim() || firstEpItem.find('a').text().trim();
       if (num) epFound = num;
     }
