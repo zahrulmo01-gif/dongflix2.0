@@ -168,7 +168,6 @@ async function fetchEpisodeDirect(ep) {
   }
 }
 
-// Browser bypass konfigurasi stealth
 async function launchBrowser() {
   return await puppeteer.launch({
     headless: 'new',
@@ -188,12 +187,9 @@ async function createIsolatedPage(browser) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
   await page.setUserAgent(REAL_USER_AGENT);
-  
-  await page.setExtraHTTPHeaders({
-    'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
-    'Sec-Ch-Ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-    'Sec-Ch-Ua-Mobile': '?0',
-    'Sec-Ch-Ua-Platform': '"Windows"'
+
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
   });
 
   return page;
@@ -221,6 +217,30 @@ async function scrapeEpisodeWithPage(page, ep) {
       servers: []
     };
   }
+}
+
+// FUNGSI AUTO-SOLVE KLIK CHECKBOX TURNSTILE
+async function trySolveTurnstile(page) {
+  try {
+    for (const frame of page.frames()) {
+      if (frame.url().includes('cloudflare') || frame.url().includes('turnstile')) {
+        const checkbox = await frame.$('input[type="checkbox"], .ctp-checkbox-label, #challenge-stage');
+        if (checkbox) {
+          const box = await checkbox.boundingBox();
+          if (box) {
+            await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+            return true;
+          }
+        }
+      }
+    }
+    const challengeBtn = await page.$('#challenge-stage input, #turnstile-wrapper');
+    if (challengeBtn) {
+      await challengeBtn.click().catch(() => {});
+      return true;
+    }
+  } catch (_) {}
+  return false;
 }
 
 function gitPushCheckpoint(slug, count, total) {
@@ -353,17 +373,15 @@ async function run() {
            html.includes('-episode-');
   }
 
-  // Buka langsung via Puppeteer dengan bypass delay
   console.log(`  🌐 Membuka halaman via Browser Engine: ${targetUrl}`);
   browser = await launchBrowser();
   const page = await createIsolatedPage(browser);
 
   try {
-    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    
-    // Tunggu jika ada Cloudflare challenge
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 50000 });
+
     let checks = 0;
-    while (checks < 15) {
+    while (checks < 20) {
       const pageTitle = await page.title();
       const pageHtml = await page.content();
 
@@ -374,10 +392,11 @@ async function run() {
       }
 
       if (pageTitle.includes('Just a moment') || pageHtml.includes('cf-browser-verification') || pageHtml.includes('challenge-platform')) {
-        console.log(`  ⏳ Menunggu Cloudflare Turnstile (${checks + 1}/15)...`);
-        await new Promise(r => setTimeout(r, 2000));
+        console.log(`  ⏳ Menemukan Turnstile (${checks + 1}/20), mencoba auto-click checkbox...`);
+        await trySolveTurnstile(page);
+        await new Promise(r => setTimeout(r, 2500));
       } else {
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 1500));
       }
       checks++;
     }
