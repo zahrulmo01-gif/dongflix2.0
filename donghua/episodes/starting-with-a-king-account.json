@@ -1,33 +1,109 @@
 [
   {
-    "episode": "04",
-    "title": "Starting With a King Account Episode 04 Subtitle Indonesia",
-    "link": "https://anichin.moe/starting-with-a-king-account-episode-04-subtitle-indonesia/",
-    "date": "February 21, 2026",
+    "episode": "10",
+    "title": "Starting With a King Account Episode 10 Subtitle Indonesia",
+    "link": "https://anichin.my/starting-with-a-king-account-episode-10-subtitle-indonesia/",
+    "date": "October 25, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/11701036649212"
+        "link": "https://ok.ru/videoembed/17062657329916"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=4b1ecfe6-c304-4492-a1c6-b0a12fd1496b"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://embedorigin.cc/e/6h4usr6lcyn6"
+      },
+      {
+        "name": "Drive 1 [Ads]",
+        "link": "https://morencius.com/embed/3wg6oi48svab"
+      }
+    ]
+  },
+  {
+    "episode": "08",
+    "title": "Starting With a King Account Episode 09 Subtitle Indonesia",
+    "link": "https://anichin.my/starting-with-a-king-account-episode-09-subtitle-indonesia/",
+    "date": "October 25, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/17064347306748"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=a96ee51f-71f8-41c4-8ed6-d6131f14826f"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://embedorigin.cc/e/hu6emvf6cj6u"
+      },
+      {
+        "name": "Drive 1 [Ads]",
+        "link": "https://morencius.com/embed/ufr2w7oqzsr0"
+      }
+    ]
+  },
+  {
+    "episode": "07",
+    "title": "Starting With a King Account Episode 07 Subtitle Indonesia",
+    "link": "https://anichin.my/starting-with-a-king-account-episode-07-subtitle-indonesia/",
+    "date": "October 25, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/17062644812540"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=b692f2d4-7bfe-40fc-8a59-a93da6989591"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://embedorigin.cc/e/nhummr9hgj0c"
+      },
+      {
+        "name": "Drive 1 [Ads]",
+        "link": "https://morencius.com/embed/ud5bsjr4hiym"
+      }
+    ]
+  },
+  {
+    "episode": "06",
+    "title": "Starting With a King Account Episode 06 Subtitle Indonesia",
+    "link": "https://anichin.moe/starting-with-a-king-account-episode-06-subtitle-indonesia/",
+    "date": "May 11, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/14625835584252"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3ZZngEPoZ9K4mFXzm4"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://endstar.rpmplay.me/#mo6ami"
+        "link": "https://endstar.rpmplay.me/#jbb6wj"
       },
       {
         "name": "Earnvids [ADS]",
-        "link": "https://minochinos.com/embed/ator684cjt97"
+        "link": "https://minochinos.com/embed/5aw3asymestl"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/ekDqsuIgc"
+        "link": "https://short.icu/Y0fsNmPXj"
       },
       {
         "name": "Player4Me [ADS]",
-        "link": "https://endstar.embed4me.com/#kbdle"
+        "link": "https://endstar.embed4me.com/#j5yrt"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-897mioqd6yie.html"
+        "link": "https://rubyvidhub.com/embed-owq4v49cv685.html"
       }
     ]
   },
@@ -68,38 +144,34 @@
     ]
   },
   {
-    "episode": "06",
-    "title": "Starting With a King Account Episode 06 Subtitle Indonesia",
-    "link": "https://anichin.moe/starting-with-a-king-account-episode-06-subtitle-indonesia/",
-    "date": "May 11, 2026",
+    "episode": "04",
+    "title": "Starting With a King Account Episode 04 Subtitle Indonesia",
+    "link": "https://anichin.moe/starting-with-a-king-account-episode-04-subtitle-indonesia/",
+    "date": "February 21, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14625835584252"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3ZZngEPoZ9K4mFXzm4"
+        "link": "https://ok.ru/videoembed/11701036649212"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://endstar.rpmplay.me/#jbb6wj"
+        "link": "https://endstar.rpmplay.me/#mo6ami"
       },
       {
         "name": "Earnvids [ADS]",
-        "link": "https://minochinos.com/embed/5aw3asymestl"
+        "link": "https://minochinos.com/embed/ator684cjt97"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/Y0fsNmPXj"
+        "link": "https://short.icu/ekDqsuIgc"
       },
       {
         "name": "Player4Me [ADS]",
-        "link": "https://endstar.embed4me.com/#j5yrt"
+        "link": "https://endstar.embed4me.com/#kbdle"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-owq4v49cv685.html"
+        "link": "https://rubyvidhub.com/embed-897mioqd6yie.html"
       }
     ]
   },
