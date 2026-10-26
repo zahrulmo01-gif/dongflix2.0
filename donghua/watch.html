@@ -68,7 +68,7 @@
       background-color: var(--bg-main);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding-top: 60px;
+      padding-top: 68px;
       padding-bottom: 50px;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
@@ -80,19 +80,14 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 8px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      height: 60px;
-      display: flex;
-      align-items: center;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0) 100%);
+      padding: 10px 16px 16px;
+      transform: translateZ(0);
     }
 
     .header-content {
-      width: 100%; max-width: 1000px; margin: 0 auto;
-      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1000px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; height: 44px;
     }
 
     .header-left-group {
@@ -105,7 +100,7 @@
       -webkit-backdrop-filter: blur(12px);
       color: #ffffff;
       border-radius: 50%;
-      width: 40px; height: 40px;
+      width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
       border: 1px solid rgba(255, 255, 255, 0.15);
       cursor: pointer; flex-shrink: 0;
@@ -118,19 +113,16 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* PLAYER WRAPPER - STICKY DI BAWAH HEADER */
+    /* PLAYER WRAPPER - POSISI NORMAL (IKUT SCROLL) */
     .player-wrapper {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 60px;
-      z-index: 90;
-      margin: 0 -16px 14px;
+      margin: 0 -16px 18px;
       width: calc(100% + 32px);
       background: #000;
       aspect-ratio: 16/9;
+      position: relative;
       overflow: hidden;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      transform: translateZ(0);
     }
 
     .detail-player-box {
@@ -195,101 +187,6 @@
       border-radius: 8px; 
     }
 
-    /* EPISODE LIST & STICKY HORIZONTAL BOX */
-    .ep-header-row { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 10px; 
-      gap: 10px; 
-    }
-    .ep-header-title { font-size: 16px; font-weight: 800; }
-    .episode-sort-wrapper { position: relative; margin-left: auto; }
-    .episode-sort-button {
-      height: 32px; min-width: 92px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: space-between;
-      gap: 6px; background: var(--glass-bg); color: var(--text-sub); border: 1px solid var(--glass-border);
-      border-radius: 9999px; font-size: 11.5px; font-weight: 700; cursor: pointer;
-    }
-    .episode-sort-button svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
-    .episode-sort-menu {
-      display: none; position: absolute; top: 38px; right: 0; min-width: 125px; padding: 6px;
-      background: rgba(22, 22, 26, 0.94); border: 1px solid var(--glass-border); border-radius: 14px; z-index: 150;
-    }
-    .episode-sort-menu.active { display: block; }
-    .episode-sort-option {
-      width: 100%; padding: 8px 10px; display: flex; align-items: center; background: transparent;
-      color: var(--text-muted); border: none; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
-    }
-    .episode-sort-option.active { background: rgba(56, 189, 248, 0.16); color: var(--color-accent); }
-
-    .btn-see-all-ep {
-      display: inline-flex; align-items: center; gap: 6px; background: var(--glass-bg); color: var(--color-accent);
-      border: 1px solid var(--glass-border); padding: 6px 14px; border-radius: 9999px; font-size: 11.5px; font-weight: 700; cursor: pointer;
-    }
-    .btn-see-all-ep svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
-
-    /* WADAH EPISODE HORIZONTAL YANG NYANGKUT DI BAWAH PLAYER SAAT JUDUL HILANG */
-    .ep-scroll-container { 
-      position: -webkit-sticky;
-      position: sticky;
-      top: calc(60px + (100vw * 9 / 16));
-      z-index: 80;
-      width: calc(100% + 32px);
-      margin: 0 -16px 16px;
-      padding: 10px 16px;
-      background: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      --ep-fade-left: 0;
-      --ep-fade-right: 0;
-    }
-
-    @media (min-width: 1000px) {
-      .ep-scroll-container {
-        top: calc(60px + (1000px * 9 / 16));
-      }
-    }
-
-    .ep-scroll-container::before,
-    .ep-scroll-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 32px;
-      pointer-events: none;
-      z-index: 5;
-      transition: opacity 0.25s ease;
-    }
-    .ep-scroll-container::before {
-      left: 0;
-      background: linear-gradient(to right, rgba(0, 0, 0, 0.95), transparent);
-      opacity: var(--ep-fade-left, 0);
-    }
-    .ep-scroll-container::after {
-      right: 0;
-      background: linear-gradient(to left, rgba(0, 0, 0, 0.95), transparent);
-      opacity: var(--ep-fade-right, 0);
-    }
-
-    .ep-scroll-grid { 
-      display: flex; 
-      gap: 10px; 
-      overflow-x: auto; 
-      padding-bottom: 2px; 
-      scrollbar-width: none; 
-      -webkit-overflow-scrolling: touch;
-    }
-    .ep-scroll-grid::-webkit-scrollbar { display: none; }
-    
-    .ep-box {
-      flex: 0 0 54px; height: 54px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
-      cursor: pointer; color: var(--text-sub); transition: all 0.2s ease;
-    }
-    .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
-
     /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center;
@@ -327,6 +224,74 @@
       display: block; width: 0;
     }
     .server-tooltip-hint.show { opacity: 1; }
+
+    /* EPISODE LIST - POSISI NORMAL */
+    .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+    .ep-header-title { font-size: 16px; font-weight: 800; }
+    .episode-sort-wrapper { position: relative; margin-left: auto; }
+    .episode-sort-button {
+      height: 32px; min-width: 92px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: space-between;
+      gap: 6px; background: var(--glass-bg); color: var(--text-sub); border: 1px solid var(--glass-border);
+      border-radius: 9999px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    }
+    .episode-sort-button svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+    .episode-sort-menu {
+      display: none; position: absolute; top: 38px; right: 0; min-width: 125px; padding: 6px;
+      background: rgba(22, 22, 26, 0.94); border: 1px solid var(--glass-border); border-radius: 14px; z-index: 150;
+    }
+    .episode-sort-menu.active { display: block; }
+    .episode-sort-option {
+      width: 100%; padding: 8px 10px; display: flex; align-items: center; background: transparent;
+      color: var(--text-muted); border: none; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    }
+    .episode-sort-option.active { background: rgba(56, 189, 248, 0.16); color: var(--color-accent); }
+
+    .btn-see-all-ep {
+      display: inline-flex; align-items: center; gap: 6px; background: var(--glass-bg); color: var(--color-accent);
+      border: 1px solid var(--glass-border); padding: 6px 14px; border-radius: 9999px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    }
+    .btn-see-all-ep svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+
+    .ep-scroll-container { 
+      position: relative; 
+      width: 100%; 
+      margin-bottom: 16px; 
+      --ep-fade-left: 0;
+      --ep-fade-right: 0;
+    }
+    .ep-scroll-container::before,
+    .ep-scroll-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 14px;
+      width: 38px;
+      pointer-events: none;
+      z-index: 5;
+      transition: opacity 0.25s ease;
+    }
+    .ep-scroll-container::before {
+      left: 0;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.95), transparent);
+      opacity: var(--ep-fade-left, 0);
+    }
+    .ep-scroll-container::after {
+      right: 0;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.95), transparent);
+      opacity: var(--ep-fade-right, 0);
+    }
+
+    .ep-scroll-grid { 
+      display: flex; gap: 10px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    }
+    .ep-scroll-grid::-webkit-scrollbar { display: none; }
+    
+    .ep-box {
+      flex: 0 0 54px; height: 54px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
+      cursor: pointer; color: var(--text-sub); transition: all 0.2s ease;
+    }
+    .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
     /* DETAIL & SINOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
@@ -540,7 +505,7 @@
 </header>
 
 <div class="container">
-  <!-- PLAYER WRAPPER - STICKY MENEMPEL DI BAWAH HEADER -->
+  <!-- PLAYER WRAPPER (POSISI BIASA) -->
   <div class="player-wrapper">
     <div class="detail-player-box" id="playerMediaContainer">
       <div class="player-loader-overlay" id="playerLoaderOverlay">
@@ -560,9 +525,8 @@
   </div>
 
   <div id="mainContentGroup">
-    <!-- EPISODE LIST -->
+    <!-- EPISODE LIST (POSISI BIASA) -->
     <div id="epContainer">
-      <!-- Judul & Filter (Akan ter-scroll ke atas sampai hilang) -->
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
         <div class="episode-sort-wrapper">
@@ -582,7 +546,6 @@
         </button>
       </div>
 
-      <!-- Kotak Scroll Episode (Sticky di bawah video saat judul di atas sudah hilang) -->
       <div class="ep-scroll-container" id="epScrollContainer">
         <div class="ep-scroll-grid" id="epGrid">
           <div class="ep-box skeleton"></div>
@@ -1747,7 +1710,8 @@
       if (/ok\.ru\/(video|videoembed)\//i.test(srv.url)) {
         const matchId = srv.url.match(/(?:videoembed\/|video\/)(\d+)/i);
         if (matchId && matchId[1]) {
-          dongflixServerUrl = `https://video-extractor-eight.vercel.app/?id=${matchId[1]}`;
+          // Menggunakan pemutar mandiri Cloudflare Pages kamu yang baru
+          dongflixServerUrl = `https://api-extract-player.pages.dev/?id=${matchId[1]}`;
         }
       }
     });
