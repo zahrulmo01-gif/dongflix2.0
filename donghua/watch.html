@@ -113,7 +113,6 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* PLAYER WRAPPER - POSISI NORMAL (IKUT SCROLL) */
     .player-wrapper {
       margin: 0 -16px 18px;
       width: calc(100% + 32px);
@@ -159,7 +158,6 @@
 
     .player-iframe { width: 100%; height: 100%; border: none; display: block; }
 
-    /* NOT FOUND BOX */
     .not-found-box {
       display: none; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; padding: 30px 16px; gap: 16px;
@@ -179,7 +177,6 @@
     .btn-home-notfound:active { transform: scale(0.97); }
     .btn-home-notfound svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    /* SKELETON */
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
     .skeleton { 
       background-color: var(--bg-skeleton); 
@@ -187,7 +184,6 @@
       border-radius: 8px; 
     }
 
-    /* ACTION BAR */
     .action-bar {
       display: flex; justify-content: space-around; align-items: center;
       background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
@@ -225,7 +221,6 @@
     }
     .server-tooltip-hint.show { opacity: 1; }
 
-    /* EPISODE LIST - POSISI NORMAL */
     .ep-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .ep-header-title { font-size: 16px; font-weight: 800; }
     .episode-sort-wrapper { position: relative; margin-left: auto; }
@@ -293,7 +288,6 @@
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
-    /* DETAIL & SINOPSIS */
     .media-meta-card { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
     .media-cover-wrapper {
       width: 105px; min-width: 105px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden;
@@ -310,7 +304,6 @@
     .synopsis-heading { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
     .synopsis-text { font-size: 13px; line-height: 1.6; color: var(--text-sub); margin-bottom: 24px; text-align: justify; }
 
-    /* REKOMENDASI SERUPA */
     .recommendations-section { 
       margin-top: 32px; margin-bottom: 32px; border-top: 1px solid var(--border-color); padding-top: 22px; width: 100%;
     }
@@ -357,7 +350,6 @@
       .rec-poster-box { height: 215px; }
     }
 
-    /* SHEET & KOMENTAR ALA TIKTOK */
     .sheet-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 200; backdrop-filter: blur(14px); }
     .sheet-overlay.active { display: block; }
     .bottom-sheet {
@@ -505,7 +497,6 @@
 </header>
 
 <div class="container">
-  <!-- PLAYER WRAPPER (POSISI BIASA) -->
   <div class="player-wrapper">
     <div class="detail-player-box" id="playerMediaContainer">
       <div class="player-loader-overlay" id="playerLoaderOverlay">
@@ -515,7 +506,6 @@
     </div>
   </div>
 
-  <!-- NOT FOUND BOX -->
   <div class="not-found-box" id="notFoundBox">
     <p class="not-found-text">Donghua mungkin sudah dihapus atau cek kembali link yang anda buka.</p>
     <a href="/" class="btn-home-notfound">
@@ -525,7 +515,6 @@
   </div>
 
   <div id="mainContentGroup">
-    <!-- EPISODE LIST (POSISI BIASA) -->
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
@@ -556,7 +545,6 @@
       </div>
     </div>
 
-    <!-- ACTION BAR -->
     <div class="action-bar" id="actionBarContainer">
       <div class="action-holder-item">
         <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
@@ -580,7 +568,6 @@
       </div>
     </div>
 
-    <!-- DETAIL & SINOPSIS -->
     <div id="mediaDetailsGroup">
       <div class="media-meta-card">
         <div class="media-cover-wrapper skeleton"></div>
@@ -599,7 +586,6 @@
       </div>
     </div>
 
-    <!-- REKOMENDASI SERUPA -->
     <section class="recommendations-section" id="recommendationsSection" style="display:none;">
       <h3 class="recommendations-title">
         <svg style="width:18px;height:18px;stroke:var(--color-accent);fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -608,7 +594,6 @@
       <div class="recommendations-scroll-row" id="recommendationsRow"></div>
     </section>
 
-    <!-- KOMENTAR ALA TIKTOK -->
     <section class="comments-section" id="commentsSection">
       <div class="comments-header-wrapper">
         <h3 class="comments-header-title">
@@ -655,7 +640,7 @@
       <span class="sheet-title">Semua Episode</span>
       <button class="sheet-close" onclick="closeEpisodeSheet()">✕</button>
     </div>
-    <div class="sheet-grid" id="sheetEpGrid"></div>
+    <div class="sheet-grid" id="sheetEvGrid"></div>
   </div>
 </div>
 
@@ -689,12 +674,14 @@
     }
   });
 
-  if (typeof window.triggerViewIncrement === 'function') {
-    window.triggerViewIncrement();
-  }
-  if (typeof window.loadComments === 'function') {
-    window.loadComments();
-  }
+  // Tunggu objek database siap, lalu picu view & komentar
+  const checkFirebaseReady = setInterval(() => {
+    if (window.db && window.fbRef) {
+      clearInterval(checkFirebaseReady);
+      if (typeof window.triggerViewIncrement === 'function') window.triggerViewIncrement();
+      if (typeof window.loadComments === 'function') window.loadComments();
+    }
+  }, 100);
 </script>
 
 <script>
@@ -970,10 +957,8 @@
   }
 
   window.triggerViewIncrement = async function() {
-    if (!targetSlug || !window.db || !window.fbRef) {
-      setTimeout(window.triggerViewIncrement, 250);
-      return;
-    }
+    targetSlug = getCleanMainSlug(); // Pastikan slug selalu segar
+    if (!targetSlug || !window.db || !window.fbRef) return;
 
     if (hasIncrementedView) return;
     hasIncrementedView = true;
@@ -1015,18 +1000,11 @@
       }
     } catch (e) {
       console.warn("View Increment Error:", e);
-      try {
-        const snap = await window.fbGet(totalRef);
-        if (snap.exists()) {
-          currentViewCount = formatViewDisplay(snap.val());
-          const countEl = document.getElementById('viewCountText');
-          if (countEl) countEl.innerText = currentViewCount;
-        }
-      } catch (_) {}
     }
   };
 
   async function toggleFavorite() {
+    targetSlug = getCleanMainSlug();
     if (!targetSlug) return;
     let favs = JSON.parse(localStorage.getItem('df_favorites') || '[]');
     const exists = favs.some(f => f.slug === targetSlug);
@@ -1067,6 +1045,7 @@
   }
 
   async function checkFavorite() {
+    targetSlug = getCleanMainSlug();
     if (!targetSlug) return;
     const btn = document.getElementById('btnFavorite');
     if (!btn) return;
@@ -1114,6 +1093,7 @@
   }
 
   function triggerShare() {
+    targetSlug = getCleanMainSlug();
     const shareTitle = `Nonton ${currentMainTitle || initialDisplayTitle} Sub Indo - Dongflix`;
     const shareUrl = `https://dongflix.my.id/donghua/${encodeURIComponent(targetSlug)}`;
     if (navigator.share) {
@@ -1175,15 +1155,12 @@
   }
 
   window.loadComments = async function() {
+    targetSlug = getCleanMainSlug(); // Ambil slug terbaru
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
     if (!container) return;
 
-    if (!window.db || !window.fbRef || !window.fbGet) {
-      setTimeout(window.loadComments, 250);
-      return;
-    }
-
+    if (!window.db || !window.fbRef || !window.fbGet) return;
     if (!targetSlug) return;
 
     try {
@@ -1383,10 +1360,11 @@
   }
 
   async function submitComment() {
+    targetSlug = getCleanMainSlug();
     if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById('commentInput');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const commentItem = { 
@@ -1409,10 +1387,11 @@
   }
 
   async function submitReply(parentId) {
+    targetSlug = getCleanMainSlug();
     if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById(`replyInput-${parentId}`);
     const text = input ? input.value.trim() : '';
-    if (!text) return;
+    if (!text || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const replyItem = { 
@@ -1437,6 +1416,7 @@
   async function deleteComment(commentId) {
     if (!confirm('Apakah Anda yakin ingin menghapus komentar ini?')) return;
     try {
+      targetSlug = getCleanMainSlug();
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
       const commentRef = window.fbRef(window.db, `comments/${cleanKey}/${commentId}`);
       await window.fbRemove(commentRef);
@@ -1451,7 +1431,7 @@
     if (seconds < 60) return 'Baru saja';
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;
-    const hours = Math.floor(hours / 60);
+    const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}j`;
     const days = Math.floor(hours / 24);
     if (days < 30) return `${days}d`;
@@ -1710,7 +1690,6 @@
       if (/ok\.ru\/(video|videoembed)\//i.test(srv.url)) {
         const matchId = srv.url.match(/(?:videoembed\/|video\/)(\d+)/i);
         if (matchId && matchId[1]) {
-          // Menggunakan pemutar mandiri Cloudflare Pages kamu yang baru
           dongflixServerUrl = `https://api-extract-player.pages.dev/?id=${matchId[1]}`;
         }
       }
@@ -1756,8 +1735,8 @@
   }
 
   function renderPlayer(url) {
-    const box = document.getElementById('playerMediaContainer');
-    box.innerHTML = `
+    TheBox = document.getElementById('playerMediaContainer');
+    document.getElementById('playerMediaContainer').innerHTML = `
       <div class="player-loader-overlay" id="playerLoaderOverlay">
         <div class="cool-spinner">
           <div class="spinner-ring"></div>
