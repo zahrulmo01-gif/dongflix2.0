@@ -41,7 +41,8 @@
         "name": "Doodstream",
         "link": "https://playmogo.com/e/92yod4qpmm9h"
       }
-    ]
+    ],
+    "op": "02:33"
   },
   {
     "episode": "14",
@@ -89,7 +90,8 @@
         "name": "Doodstream",
         "link": "https://playmogo.com/e/ydc39ikwtmnv"
       }
-    ]
+    ],
+    "op": "02:33"
   },
   {
     "episode": "13",
@@ -133,47 +135,8 @@
         "name": "Doodstream",
         "link": "https://playmogo.com/e/yl9i10kql4g7"
       }
-    ]
-  },
-  {
-    "episode": "06",
-    "title": "Oriental Martial Academy Episode 12 Subtitle Indonesia",
-    "link": "https://anichin.moe/oriental-martial-academy-episode-12-subtitle-indonesia/",
-    "date": "October 1, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/16000229051058"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2r0A8kCGhHCPBKN91I"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c"
-      },
-      {
-        "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#6wpfu8"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/B9tKWUu--"
-      },
-      {
-        "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/0m89a9jzjwjm"
-      },
-      {
-        "name": "Doodstream",
-        "link": "https://playmogo.com/e/edqq44p3i3gs"
-      }
-    ]
+    ],
+    "op": "02:31"
   },
   {
     "episode": "11",
@@ -420,6 +383,46 @@
       {
         "name": "Turbo VIPlay",
         "link": "https://turbovidhls.com/t/6a868a6621d35"
+      }
+    ]
+  },
+  {
+    "episode": "06",
+    "title": "Oriental Martial Academy Episode 12 Subtitle Indonesia",
+    "link": "https://anichin.moe/oriental-martial-academy-episode-12-subtitle-indonesia/",
+    "date": "October 1, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16000229051058"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=f48f4c40-82fc-4aa9-8890-fc4a1a3616fa"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2r0A8kCGhHCPBKN91I"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7e1nuk/?pub=2li51c"
+      },
+      {
+        "name": "RPM Share [ADS]",
+        "link": "https://anichin.rpmvid.com/#6wpfu8"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://player.abyssplayer.com/B9tKWUu--"
+      },
+      {
+        "name": "VidHide [ADS]",
+        "link": "https://morencius.com/embed/0m89a9jzjwjm"
+      },
+      {
+        "name": "Doodstream",
+        "link": "https://playmogo.com/e/edqq44p3i3gs"
       }
     ]
   },
