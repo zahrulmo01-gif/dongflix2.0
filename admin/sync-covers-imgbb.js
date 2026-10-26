@@ -6,6 +6,7 @@ import { execSync } from 'child_process';
 const IMGBB_API_KEY = '885deff423c3a1c6f97f7b9c2982f1a2';
 const masterPath = path.resolve('donghua/donghua.json');
 
+const TARGET_IMAGE_HOST = 'https://anichin.my';
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 if (!IMGBB_API_KEY) {
@@ -37,13 +38,31 @@ function gitPushCheckpoint(count, total) {
   }
 }
 
-// Download cover dari URL sumber dan ubah ke Buffer WebP
+// Format ulang link agar selalu diarahkan ke anichin.my
+function normalizeToAnichinMy(rawUrl) {
+  if (!rawUrl) return '';
+  let url = rawUrl.trim();
+  
+  // Ubah domain mirror lain ke anichin.my
+  url = url.replace(/https?:\/\/(www\.)?anichin\.(moe|co|site|vip)/gi, TARGET_IMAGE_HOST);
+  
+  if (url.startsWith('//')) {
+    url = `https:${url}`;
+  } else if (url.startsWith('/')) {
+    url = `${TARGET_IMAGE_HOST}${url}`;
+  }
+  
+  return url;
+}
+
+// Download cover dari anichin.my dan convert ke Buffer WebP
 async function fetchAndConvertToWebp(imageUrl) {
+  const finalUrl = normalizeToAnichinMy(imageUrl);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
 
   try {
-    const res = await fetch(imageUrl, {
+    const res = await fetch(finalUrl, {
       signal: controller.signal,
       headers: {
         'User-Agent': USER_AGENT,
@@ -56,7 +75,7 @@ async function fetchAndConvertToWebp(imageUrl) {
     const arrayBuffer = await res.arrayBuffer();
     const inputBuffer = Buffer.from(arrayBuffer);
 
-    // Kompresi dan convert ke WebP menggunakan sharp
+    // Kompresi dan ubah ke format WebP via sharp
     const webpBuffer = await sharp(inputBuffer)
       .webp({ quality: 85 })
       .toBuffer();
@@ -73,7 +92,7 @@ async function uploadToImgBB(base64Data, slug) {
   const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
   const formData = new FormData();
   formData.append('image', base64Data);
-  formData.append('name', cleanSlug); // Gunakan slug murni agar tidak terduplikasi menjadi .webp.png
+  formData.append('name', cleanSlug);
 
   try {
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
@@ -95,7 +114,7 @@ async function uploadToImgBB(base64Data, slug) {
 }
 
 async function run() {
-  console.log('=== Memulai Otomatisasi Sinkronisasi Cover ke ImgBB ===');
+  console.log('=== Memulai Sinkronisasi Cover via anichin.my ke ImgBB ===');
 
   if (!fs.existsSync(masterPath)) {
     console.error('File donghua/donghua.json tidak ditemukan!');
@@ -110,7 +129,7 @@ async function run() {
     process.exit(1);
   }
 
-  // Filter judul yang cover-nya BELUM di-host di ImgBB (tidak mengandung i.ibb.co)
+  // Ambil judul yang belum di-host di ImgBB
   const targets = list.filter(item => {
     const c = String(item.cover || '');
     return c && !c.includes('i.ibb.co') && !c.includes('ibb.co');
@@ -130,14 +149,16 @@ async function run() {
   for (const item of targets) {
     processed++;
     const slug = item.slug;
-    const oldCover = item.cover;
+    const originalCover = item.cover;
+    const targetSourceUrl = normalizeToAnichinMy(originalCover);
 
-    console.log(`\n[${processed}/${targets.length}] Memproses cover: ${item.title} (${slug})`);
+    console.log(`\n[${processed}/${targets.length}] Memproses: ${item.title}`);
+    console.log(`  Source: ${targetSourceUrl}`);
 
-    // 1. Download & ubah ke WebP
-    const webpBuffer = await fetchAndConvertToWebp(oldCover);
+    // 1. Download dari anichin.my & convert ke WebP
+    const webpBuffer = await fetchAndConvertToWebp(targetSourceUrl);
     if (!webpBuffer) {
-      console.log(`  ❌ Gagal mengunduh cover dari: ${oldCover}`);
+      console.log(`  ❌ Gagal mengunduh cover dari: ${targetSourceUrl}`);
       continue;
     }
 
@@ -146,29 +167,27 @@ async function run() {
     const newCoverUrl = await uploadToImgBB(base64Str, slug);
 
     if (newCoverUrl) {
-      console.log(`  ✨ Berhasil! URL baru: ${newCoverUrl}`);
+      console.log(`  ✨ Berhasil! URL baru ImgBB: ${newCoverUrl}`);
       item.cover = newCoverUrl;
       item.updated_at = new Date().toISOString();
       successCount++;
 
-      // Simpan langsung ke file lokal
       fs.writeFileSync(masterPath, JSON.stringify(list, null, 2), 'utf-8');
 
-      // Commit bertahap setiap 25 judul agar aman
+      // Commit bertahap tiap 25 judul
       if (successCount % 25 === 0) {
         gitPushCheckpoint(successCount, targets.length);
       }
     }
 
-    // Delay ramah agar aman dari rate limit API ImgBB
+    // Delay 1.2 detik agar aman dari rate limit
     await new Promise(r => setTimeout(r, 1200));
   }
 
-  // Push hasil akhir
   fs.writeFileSync(masterPath, JSON.stringify(list, null, 2), 'utf-8');
   gitPushCheckpoint(successCount, targets.length);
 
-  console.log(`\n🎉 Selesai! Sebanyak ${successCount} cover berhasil dipindahkan ke ImgBB.`);
+  console.log(`\n🎉 Selesai! Sebanyak ${successCount} cover dari anichin.my berhasil diunggah ke ImgBB.`);
 }
 
 run();
