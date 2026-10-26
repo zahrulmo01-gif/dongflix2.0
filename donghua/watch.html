@@ -1087,19 +1087,51 @@
   window.checkFavorite = checkFavorite;
 
   function triggerDownload() {
-    if (!currentServerUrl) {
-      alert('Video belum siap.');
+    if (!globalEpisodes || globalEpisodes.length === 0 || !window.currentPlayingEpisodeNum) {
+      if (currentServerUrl) {
+        window.open(currentServerUrl, '_blank');
+      } else {
+        alert('Video belum siap.');
+      }
       return;
     }
 
-    const matchId = currentServerUrl.match(/(?:videoembed\/|video\/)(\d+)/i);
-    
-    if (matchId && matchId[1]) {
-      const okRuId = matchId[1];
+    const currentEp = globalEpisodes.find(e => {
+      const num = e.episode || e.number || extractEpNumber(e.title || e.slug, 0);
+      return String(num) === String(window.currentPlayingEpisodeNum);
+    });
+
+    let okRuId = null;
+
+    if (currentEp) {
+      const rawServers = currentEp.servers || currentEp.server || [];
+      const serversList = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
+        .map(s => s.link || s.url || (typeof s === 'string' ? s : ''))
+        .filter(url => /^https?:\/\//i.test(url));
+
+      for (const srvUrl of serversList) {
+        const matchId = srvUrl.match(/(?:videoembed\/|video\/)(\d+)/i);
+        if (matchId && matchId[1]) {
+          okRuId = matchId[1];
+          break;
+        }
+      }
+    }
+
+    if (!okRuId && currentServerUrl) {
+      const activeMatch = currentServerUrl.match(/(?:videoembed\/|video\/)(\d+)/i);
+      if (activeMatch && activeMatch[1]) {
+        okRuId = activeMatch[1];
+      }
+    }
+
+    if (okRuId) {
       const downloadUrl = `https://api-extract-player.pages.dev/download?id=${okRuId}`;
       window.open(downloadUrl, '_blank');
-    } else {
+    } else if (currentServerUrl) {
       window.open(currentServerUrl, '_blank');
+    } else {
+      alert('Video belum siap.');
     }
   }
 
