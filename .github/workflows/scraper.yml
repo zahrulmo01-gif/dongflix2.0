@@ -92,17 +92,17 @@ jobs:
       # 5. Smart Scrape Semua Episode
       - name: Smart Scrape Semua Episode
         if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'scrape-all-episodes' }}
-        run: node admin/smart-scrape.js
+        run: node admin/Scrape-all-smart.js
 
       # 6. Scrape Single Episode Spesifik
       - name: Scrape Single Episode
         if: ${{ github.event.action == 'scrape-episode' }}
-        run: node admin/scrape-episode.js "${{ github.event.client_payload.target_slug }}"
+        run: node admin/Scrape-all-smart.js --slugs="${{ github.event.client_payload.target_slug }}"
 
-      # 7. Scrape Batch Judul Terpilih
+      # 7. Scrape Batch Judul Terpilih (Langsung memanggil Scrape-all-smart.js)
       - name: Scrape Selected Donghua
         if: ${{ github.event.action == 'scrape-selected-donghua' }}
-        run: node admin/scrape-selected.js "${{ github.event.client_payload.selected_slugs }}"
+        run: node admin/Scrape-all-smart.js --slugs="${{ github.event.client_payload.selected_slugs }}"
 
       # 8. Sinkronisasi Cover ke ImgBB (.webp)
       - name: Sync Covers to ImgBB
