@@ -640,7 +640,7 @@
       <span class="sheet-title">Semua Episode</span>
       <button class="sheet-close" onclick="closeEpisodeSheet()">✕</button>
     </div>
-    <div class="sheet-grid" id="sheetEvGrid"></div>
+    <div class="sheet-grid" id="sheetEpGrid"></div>
   </div>
 </div>
 
@@ -674,7 +674,6 @@
     }
   });
 
-  // Tunggu objek database siap, lalu picu view & komentar
   const checkFirebaseReady = setInterval(() => {
     if (window.db && window.fbRef) {
       clearInterval(checkFirebaseReady);
@@ -957,7 +956,7 @@
   }
 
   window.triggerViewIncrement = async function() {
-    targetSlug = getCleanMainSlug(); // Pastikan slug selalu segar
+    targetSlug = getCleanMainSlug();
     if (!targetSlug || !window.db || !window.fbRef) return;
 
     if (hasIncrementedView) return;
@@ -1088,8 +1087,20 @@
   window.checkFavorite = checkFavorite;
 
   function triggerDownload() {
-    if (currentServerUrl) window.open(currentServerUrl, '_blank');
-    else alert('Video belum siap.');
+    if (!currentServerUrl) {
+      alert('Video belum siap.');
+      return;
+    }
+
+    const matchId = currentServerUrl.match(/(?:videoembed\/|video\/)(\d+)/i);
+    
+    if (matchId && matchId[1]) {
+      const okRuId = matchId[1];
+      const downloadUrl = `https://api-extract-player.pages.dev/download?id=${okRuId}`;
+      window.open(downloadUrl, '_blank');
+    } else {
+      window.open(currentServerUrl, '_blank');
+    }
   }
 
   function triggerShare() {
@@ -1155,7 +1166,7 @@
   }
 
   window.loadComments = async function() {
-    targetSlug = getCleanMainSlug(); // Ambil slug terbaru
+    targetSlug = getCleanMainSlug();
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
     if (!container) return;
@@ -1735,8 +1746,8 @@
   }
 
   function renderPlayer(url) {
-    TheBox = document.getElementById('playerMediaContainer');
-    document.getElementById('playerMediaContainer').innerHTML = `
+    const box = document.getElementById('playerMediaContainer');
+    box.innerHTML = `
       <div class="player-loader-overlay" id="playerLoaderOverlay">
         <div class="cool-spinner">
           <div class="spinner-ring"></div>
