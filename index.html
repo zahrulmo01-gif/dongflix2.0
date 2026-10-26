@@ -314,29 +314,30 @@
     }
     .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-    /* SEARCH MODAL */
+        /* SEARCH MODAL DIOPTIMALKAN SUPAYA TIDAK TEMBUS PANDANG */
     .modal-overlay { 
       display: none; 
       position: fixed; 
       inset: 0; 
-      background: rgba(0, 0, 0, 0.92); 
+      background: #000000 !important; /* Hitam pekat agar tidak transparan */
       z-index: 999; 
       padding: 16px; 
       overflow-y: auto; 
+      -webkit-overflow-scrolling: touch;
     }
     .modal-overlay.active { display: block; }
-    .search-modal-container { max-width: 720px; margin: 0 auto; }
+    .search-modal-container { max-width: 720px; margin: 0 auto; padding-bottom: 60px; }
     .search-modal-header { display: flex; align-items: center; gap: 10px; height: 46px; margin-bottom: 14px; }
     .search-input-box { flex: 1; position: relative; display: flex; align-items: center; height: 46px; }
     .search-input-box svg { position: absolute; left: 16px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; pointer-events: none; }
     .search-input-field { 
-      width: 100%; height: 46px;
+      width: 100%; height: 46px; background: #121215; 
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 9999px; padding: 0 18px 0 44px; color: #ffffff; font-size: 14.5px; outline: none;
     }
     .search-input-field:focus { border-color: var(--color-accent); }
     .modal-close-btn { 
-      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-main); 
+      background: #121215; border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-main); 
       cursor: pointer; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
@@ -344,7 +345,7 @@
     
     .search-nav-pills { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
     .search-pill-btn {
-      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-sub);
+      background: #121215; border: 1px solid rgba(255, 255, 255, 0.12); color: var(--text-sub);
       font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 9999px; cursor: pointer; transition: all 0.2s ease;
     }
     .search-pill-btn.active { background: rgba(56, 189, 248, 0.25); color: #fff; border-color: rgba(56, 189, 248, 0.5); }
@@ -355,14 +356,15 @@
       display: flex; 
       gap: 14px; 
       align-items: center;
-      background: rgba(15, 15, 18, 0.95); 
-      border: 1px solid rgba(255, 255, 255, 0.08); 
+      background: #101014; /* Warna solid gelap pekat */
+      border: 1px solid rgba(255, 255, 255, 0.1); 
       border-radius: 18px; 
       padding: 10px; 
       cursor: pointer; 
       text-decoration: none !important;
       color: #ffffff !important;
     }
+
     .search-item-thumb { 
       width: 70px; 
       height: 94px; 
