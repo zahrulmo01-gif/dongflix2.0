@@ -1,5 +1,24 @@
 [
   {
+    "title": "Oriental Martial Academy",
+    "slug": "oriental-martial-academy",
+    "link": "https://anichin.moe/oriental-martial-academy/",
+    "cover": "https://i.ibb.co.com/R4GHtzPP/IMG-6491.webp",
+    "type": "Donghua",
+    "status": "Ongoing",
+    "episode": "Ep 15",
+    "released": "Tanggal  Jul 16, 2026",
+    "genres": [
+      "Action",
+      "Fantasy",
+      "Super Power",
+      "Urban Fantasy"
+    ],
+    "synopsis": "Oriental Martial Academy – 东大高武学院Qin Yu, seorang yatim piatu, diterima secara khusus di akademi kultivasi terkemuka, Akademi Bela Diri Dongda.Di balik ketenangan kota, ancaman iblis diam-diam mulai mendekat. Qin Yu bertekad untuk memimpin rekan-rekan sesama murid dalam melawan serbuan iblis tersebut.",
+    "latest-episode": "15",
+    "updated_at": "2026-10-26T21:22:25.106Z"
+  },
+  {
     "title": "Against the Sky Supreme",
     "slug": "against-the-sky-supreme",
     "link": "https://anichin.moe/against-the-sky-supreme/",
@@ -558,25 +577,6 @@
     "synopsis": "My Senior Brother Is Too Steady – Setelah terlahir kembali di zaman kuno sebelum Perang Fengshen, Li Changshou menjadi seorang kultivator kecil-kecilan.Untuk bertahan hidup di Zaman Purba yang kejam, Li Changshou berusaha sebaik mungkin untuk tidak terlibat dalam konflik apa pun dan tidak pernah membiarkan dirinya masuk ke dalam situasi berbahaya. Rencananya adalah bersembunyi di pegunungan dan diam-diam mengembangkan jalannya menuju keabadian. Namun, semuanya berubah suatu hari ketika gurunya membawa kembali seorang gadis muda untuk menjadi murid baru di bawah ajarannya…",
     "latest-episode": "164",
     "updated_at": "2026-10-25T23:29:03.015Z"
-  },
-  {
-    "title": "Oriental Martial Academy",
-    "slug": "oriental-martial-academy",
-    "link": "https://anichin.moe/oriental-martial-academy/",
-    "cover": "https://i.ibb.co.com/R4GHtzPP/IMG-6491.webp",
-    "type": "Donghua",
-    "status": "Ongoing",
-    "episode": "Ep 15",
-    "released": "Tanggal  Jul 16, 2026",
-    "genres": [
-      "Action",
-      "Fantasy",
-      "Super Power",
-      "Urban Fantasy"
-    ],
-    "synopsis": "Oriental Martial Academy – 东大高武学院Qin Yu, seorang yatim piatu, diterima secara khusus di akademi kultivasi terkemuka, Akademi Bela Diri Dongda.Di balik ketenangan kota, ancaman iblis diam-diam mulai mendekat. Qin Yu bertekad untuk memimpin rekan-rekan sesama murid dalam melawan serbuan iblis tersebut.",
-    "latest-episode": "15",
-    "updated_at": "2026-10-26T21:21:14.961Z"
   },
   {
     "title": "The Guardian of Daxia",
