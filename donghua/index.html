@@ -79,7 +79,6 @@
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
       
-      /* Token Standar */
       --glass-bg: rgba(20, 20, 24, 0.85);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
@@ -87,9 +86,9 @@
       --glass-blur: blur(16px);
     }
 
-    /* KONDISIONAL BERDASARKAN PLATFORM (IOS vs ANDROID) */
+    /* === ATURAN PLATFORM: IOS FULL GLASS VS ANDROID OPTIMIZED === */
     @supports (-webkit-touch-callout: none) {
-      /* Rule Khusus iOS (iPhone/iPad): Full Glassmorphic */
+      /* PENGATURAN KHUSUS iOS (iPhone / iPad): SEMUANYA FULL GLASS */
       :root {
         --glass-bg: rgba(20, 20, 24, 0.58);
       }
@@ -100,10 +99,14 @@
     }
 
     @supports not (-webkit-touch-callout: none) {
-      /* Rule Khusus Android / Non-iOS: Blur HANYA pada header atas (Pill & Ontop) */
+      /* PENGATURAN KHUSUS ANDROID / NON-IOS: BLUR HANYA PADA PILL HEADER & ONTOP (FLOATING) */
       .nav-capsule, .action-btn-home, .floating-circle-btn {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
+      }
+      /* Komponen lain menggunakan warna solid transparan murni tanpa blur */
+      .search-input-field, .filter-pill, .badge-bottom, .btn-load-more {
+        background: #141418;
       }
     }
 
@@ -255,8 +258,7 @@
     .search-input-field { 
       width: 100%; 
       height: 46px; 
-      background: #141418; 
-      border: 1px solid rgba(255, 255, 255, 0.12); 
+      border: 1px solid rgba(255, 255, 255, 0.15); 
       border-radius: 9999px; 
       padding: 0 18px 0 46px; 
       color: #ffffff; 
@@ -279,7 +281,6 @@
     .filter-scroll-row::-webkit-scrollbar { display: none; }
 
     .filter-pill {
-      background: #141418;
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: var(--text-sub);
       font-size: 12px;
@@ -292,9 +293,9 @@
       flex-shrink: 0;
     }
     .filter-pill.active {
-      background: rgba(56, 189, 248, 0.25);
-      border-color: rgba(56, 189, 248, 0.5);
-      color: #ffffff;
+      background: rgba(56, 189, 248, 0.25) !important;
+      border-color: rgba(56, 189, 248, 0.5) !important;
+      color: #ffffff !important;
     }
 
     .catalog-status-bar {
@@ -354,7 +355,6 @@
     }
 
     .badge-bottom { 
-      background: #121215; 
       border: 1px solid rgba(255, 255, 255, 0.12); 
       color: #ffffff; 
       font-size: 9.5px; 
@@ -392,7 +392,6 @@
     /* LOAD MORE */
     .load-more-container { text-align: center; margin-top: 36px; }
     .btn-load-more {
-      background: #141418;
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: var(--color-accent);
       padding: 12px 32px;
@@ -414,8 +413,10 @@
     /* BACK TO TOP */
     .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
     .floating-circle-btn {
-      width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg);
-      border: 1px solid var(--glass-border); color: var(--text-main); display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border); 
+      color: var(--text-main); display: flex; align-items: center; justify-content: center;
       cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
       transform: translateZ(0);
     }
