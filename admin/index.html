@@ -173,28 +173,27 @@
         </div>
         <div class="space-y-2 pt-2">
           <div class="flex flex-col sm:flex-row gap-2.5">
-            <button onclick="triggerWorkflow('scrape-list')" class="flex-1 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-sky-900/30">
+            <button onclick="confirmAndTrigger('scrape-list', {}, 'Jalankan Scrape Baru Saja?\nSistem akan mengambil judul donghua terbaru yang belum ada di katalog.')" class="flex-1 px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-sky-900/30">
               <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
               Scrape Baru Saja
             </button>
-            <button onclick="triggerWorkflow('sync-order')" class="flex-1 px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-amber-900/30">
+            <button onclick="confirmAndTrigger('sync-order', {}, 'Jalankan Perbaiki Urutan List?\nSistem akan memeriksa update episode dan menggeser donghua yang baru rilis ke urutan teratas.')" class="flex-1 px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-amber-900/30">
               <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
               Perbaiki Urutan List
             </button>
           </div>
-          <button onclick="triggerWorkflow('clean-json')" class="w-full px-4 py-2 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-emerald-400 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+          <button onclick="confirmAndTrigger('clean-json', {}, 'Jalankan Pembersihan Database?\nSistem akan menghapus entri duplikat dan memperbaiki nilai null pada donghua.json.')" class="w-full px-4 py-2 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 text-emerald-400 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0Z" /></svg>
             Bersihkan JSON (Fix Null & Duplikat)
           </button>
-          <button onclick="triggerWorkflow('update-all-details')" class="w-full px-4 py-2 bg-sky-950/40 hover:bg-sky-900/50 border border-sky-800/50 text-sky-300 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+          <button onclick="confirmAndTrigger('update-all-details', {}, 'Update SEMUA detail donghua?\nProses ini akan memakan waktu cukup lama karena men-scrape ulang tipe movie, genre, dan sinopsis seluruh judul!')" class="w-full px-4 py-2 bg-sky-950/40 hover:bg-sky-900/50 border border-sky-800/50 text-sky-300 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
             Update Semua Detail (Tipe Movie, Sinopsis, Genre)
           </button>
-          <button onclick="triggerWorkflow('sync-covers')" class="w-full px-4 py-2 bg-purple-950/40 hover:bg-purple-900/50 border border-purple-800/50 text-purple-300 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
-  <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-  Auto Upload Semua Cover ke ImgBB (.webp)
-</button>
-
+          <button onclick="confirmAndTrigger('sync-covers', {}, 'Sinkronisasi semua cover ke ImgBB?\nSistem akan mengunduh seluruh cover katalog yang belum ada di ImgBB dan mengonversinya menjadi .webp!')" class="w-full px-4 py-2 bg-purple-950/40 hover:bg-purple-900/50 border border-purple-800/50 text-purple-300 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+            Auto Upload Semua Cover ke ImgBB (.webp)
+          </button>
         </div>
       </section>
 
@@ -212,7 +211,7 @@
           </p>
         </div>
         <div class="pt-2">
-          <button onclick="triggerWorkflow('scrape-all-episodes')" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30">
+          <button onclick="confirmAndTrigger('scrape-all-episodes', {}, 'Jalankan Smart Scraper untuk SEMUA episode?\nRunner GitHub Actions akan memeriksa kelengkapan episode tiap judul secara otomatis.')" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30">
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0Z"/></svg>
             Jalankan Smart Scrape Semua
           </button>
@@ -792,14 +791,28 @@
       }
     }
 
+    // POPUP KONFIRMASI UMUM UNTUK SETIAP AKSI SCRAPING
+    function confirmAndTrigger(eventType, payload = {}, confirmMessage = '') {
+      const msg = confirmMessage || `Apakah Anda yakin ingin menjalankan aksi [${eventType}]?`;
+      if (!confirm(msg)) {
+        logTerminal(`[Batal] Tindakan [${eventType}] dibatalkan oleh pengguna.`);
+        return;
+      }
+      triggerWorkflow(eventType, payload);
+    }
+
     function submitBatchScrapeSelected() {
       if (selectedDonghuaSlugs.size === 0) {
         alert('Centang minimal satu judul donghua!');
         return;
       }
 
+      const count = selectedDonghuaSlugs.size;
+      const confirmMsg = `Yakin ingin men-scrape batch untuk ${count} donghua terpilih?`;
+      if (!confirm(confirmMsg)) return;
+
       const slugList = Array.from(selectedDonghuaSlugs).join(',');
-      logTerminal(`[Trigger] Menjalankan scrape batch untuk ${selectedDonghuaSlugs.size} donghua terpilih: [${slugList}]`);
+      logTerminal(`[Trigger] Menjalankan scrape batch untuk ${count} donghua terpilih: [${slugList}]`);
       triggerWorkflow('scrape-selected-donghua', { selected_slugs: slugList });
       
       toggleSelectAllDonghua(false);
@@ -807,7 +820,11 @@
 
     function triggerSingleEpisode(slug, title) {
       if (!slug) return;
-      logTerminal(`Mempersiapkan scrape episode untuk: ${title || slug}`);
+      const displayName = title || slug;
+      if (!confirm(`Yakin ingin men-scrape episode untuk "${displayName}"?`)) {
+        return;
+      }
+      logTerminal(`Mempersiapkan scrape episode untuk: ${displayName}`);
       triggerWorkflow('scrape-episode', { target_slug: slug });
     }
 
@@ -1148,6 +1165,10 @@
       }
 
       if (!activeEpisodeSlug) return;
+
+      if (!confirm(`Simpan dan commit ${currentEpisodesList.length} episode untuk "${activeEpisodeSlug}" ke GitHub?`)) {
+        return;
+      }
 
       const btn = document.getElementById('btnCommitEpisodes');
       btn.disabled = true;
