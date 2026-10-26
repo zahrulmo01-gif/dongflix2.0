@@ -94,7 +94,6 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
-      /* iOS Glass Tokens */
       --glass-bg: rgba(20, 20, 24, 0.58);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
@@ -1099,7 +1098,6 @@
     let viewsDataMap = {};
     let dailyViewsMap = {};
 
-    // SVG Standar No Cover Rasio 3:4 Presisi Bebas Broken Image Safari
     const DEFAULT_NO_COVER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400' viewBox='0 0 300 400'><rect width='100%25' height='100%25' fill='%230f141f'/><g fill='%2325334d'><path d='M110 160l40 50 30-35 50 65H70z'/><circle cx='115' cy='130' r='16'/></g><text x='50%25' y='75%25' fill='%2364748b' font-family='sans-serif' font-size='16' font-weight='700' text-anchor='middle' letter-spacing='1'>NO COVER</text></svg>";
 
     function formatViewCount(val) {
@@ -1396,7 +1394,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
