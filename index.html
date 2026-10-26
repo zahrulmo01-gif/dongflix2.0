@@ -94,10 +94,12 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
-      --glass-bg: rgba(20, 20, 24, 0.58);
-      --glass-border: rgba(255, 255, 255, 0.16);
-      --glass-border-top: rgba(255, 255, 255, 0.28);
-      --glass-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      
+      /* Glass khusus untuk Pill Header atas */
+      --glass-bg: rgba(20, 20, 24, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-border-top: rgba(255, 255, 255, 0.3);
+      --glass-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       --glass-blur: blur(16px);
     }
 
@@ -111,11 +113,13 @@
       padding-bottom: 50px; 
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      -webkit-overflow-scrolling: touch;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
     .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
+    /* --- HANYA PILL HEADER INI YANG MENGGUNAKAN EFEK GLASS --- */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -268,9 +272,9 @@
       position: fixed;
       top: 72px;
       right: 16px;
-      background: rgba(22, 22, 26, 0.78);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(22, 22, 26, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
       border-radius: 18px;
@@ -295,14 +299,14 @@
     }
     .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
+    /* --- ELEMEN DI BAWAHNYA MENGGUNAKAN WARNA SOLID TRANSPARAN TANPA BLUR --- */
+
     /* SEARCH MODAL */
     .modal-overlay { 
       display: none; 
       position: fixed; 
       inset: 0; 
-      background: rgba(0, 0, 0, 0.85); 
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.92); 
       z-index: 999; 
       padding: 16px; 
       overflow-y: auto; 
@@ -313,13 +317,13 @@
     .search-input-box { flex: 1; position: relative; display: flex; align-items: center; height: 46px; }
     .search-input-box svg { position: absolute; left: 16px; width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; pointer-events: none; }
     .search-input-field { 
-      width: 100%; height: 46px; background: rgba(255, 255, 255, 0.08); backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border); border-top: 1px solid var(--glass-border-top);
+      width: 100%; height: 46px; background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 9999px; padding: 0 18px 0 44px; color: #ffffff; font-size: 14.5px; outline: none;
     }
     .search-input-field:focus { border-color: var(--color-accent); }
     .modal-close-btn { 
-      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); color: var(--text-main); 
+      background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-main); 
       cursor: pointer; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
@@ -338,18 +342,13 @@
       display: flex; 
       gap: 14px; 
       align-items: center;
-      background: rgba(22, 22, 26, 0.7); 
-      border: 1px solid rgba(255, 255, 255, 0.1); 
+      background: rgba(15, 15, 18, 0.95); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
       border-radius: 18px; 
       padding: 10px; 
       cursor: pointer; 
       text-decoration: none !important;
       color: #ffffff !important;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-    .search-item-card:hover {
-      background: rgba(255, 255, 255, 0.07);
-      border-color: rgba(56, 189, 248, 0.35);
     }
     .search-item-thumb { 
       width: 70px; 
@@ -363,8 +362,8 @@
     }
     .search-item-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .search-item-thumb .badge-cover-ep {
-      position: absolute; bottom: 5px; left: 5px; background: rgba(0, 0, 0, 0.75); 
-      backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.15);
+      position: absolute; bottom: 5px; left: 5px; background: rgba(0, 0, 0, 0.85); 
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #ffffff; font-size: 8.5px; font-weight: 800; padding: 2px 6px; border-radius: 9999px;
     }
     .search-item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -417,13 +416,12 @@
       overflow: hidden; 
       background: #000; 
       transform: translateZ(0); 
-      contain: paint;
     }
     .hero-slide { 
       position: absolute; 
       inset: 0; 
       opacity: 0; 
-      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+      transition: opacity 0.6s ease; 
       display: flex; 
       align-items: flex-end; 
     }
@@ -435,16 +433,12 @@
       height: 100%; 
       object-fit: cover; 
       filter: brightness(0.95);
-      transform: scale(1.02);
-      transition: transform 6s ease-out;
     }
-    .hero-slide.active .hero-bg-img { transform: scale(1); }
     
     .hero-overlay { 
       position: absolute; 
       inset: 0; 
-      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.92) 28%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.15) 80%, transparent 100%),
-                  radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.45) 90%); 
+      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.92) 28%, rgba(0, 0, 0, 0.55) 55%, transparent 100%); 
       z-index: 2; 
       pointer-events: none; 
     }
@@ -460,8 +454,6 @@
     .badge-tag { 
       display: inline-block; 
       background: rgba(2, 132, 199, 0.85); 
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: var(--text-main); 
       font-size: 10px; 
@@ -471,7 +463,6 @@
       letter-spacing: 0.5px;
       text-transform: uppercase; 
       margin-bottom: 10px; 
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
     .hero-title { 
       font-size: 27px; 
@@ -517,9 +508,7 @@
       cursor: pointer; 
       text-decoration: none;
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
-    .btn-watch:active { transform: scale(0.97); }
     .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
     
     .slider-dots { 
@@ -538,13 +527,11 @@
       background: rgba(255, 255, 255, 0.35); 
       border-radius: 50%; 
       cursor: pointer; 
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     }
     .dot.active { 
       width: 26px; 
       background: var(--color-accent); 
       border-radius: 9999px; 
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6); 
     }
 
     .section-block { margin-top: 40px; }
@@ -595,7 +582,7 @@
       font-size: 13px;
       font-weight: 800;
       color: #ffffff;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
       z-index: 2;
       pointer-events: none;
     }
@@ -639,11 +626,8 @@
     .genre-scroll-row::-webkit-scrollbar { display: none; }
 
     .genre-badge-item {
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
+      background: #121215;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: var(--text-sub);
       font-size: 12px;
       font-weight: 700;
@@ -652,7 +636,6 @@
       text-decoration: none;
       width: fit-content;
       white-space: nowrap;
-      box-shadow: var(--glass-shadow);
       transition: background 0.2s, border-color 0.2s, color 0.2s;
       text-align: center;
       flex-shrink: 0;
@@ -701,8 +684,8 @@
     }
 
     .badge-bottom { 
-      background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); 
-      border-top: 1px solid var(--glass-border-top); color: #ffffff; font-size: 9.5px; font-weight: 800; 
+      background: rgba(15, 15, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); 
+      color: #ffffff; font-size: 9.5px; font-weight: 800; 
       padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
     }
 
@@ -710,9 +693,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4.5px;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.18);
       color: #f1f5f9;
       font-size: 9px;
@@ -771,8 +752,8 @@
 
     .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
     .floating-circle-btn {
-      width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border); color: var(--text-main); display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 50%; background: #121215;
+      border: 1px solid rgba(255, 255, 255, 0.15); color: var(--text-main); display: flex; align-items: center; justify-content: center;
       cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
     }
     .floating-circle-btn.show { opacity: 1; visibility: visible; }
