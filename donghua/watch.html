@@ -1474,7 +1474,7 @@
     if (seconds < 60) return 'Baru saja';
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;
-    const hours = Math.floor(minutes / 60);
+    const hours = Math.floor(hours / 60);
     if (hours < 24) return `${hours}j`;
     const days = Math.floor(hours / 24);
     if (days < 30) return `${days}d`;
@@ -1718,6 +1718,9 @@
 
     setTimeout(updateEpScrollFade, 50);
 
+    // Ambil data op dari objek episode jika ada
+    const epOp = episode.op || episode.opening || episode.intro || '';
+
     const rawServers = episode.servers || episode.server || [];
     let originalServers = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
       .map((s, i) => ({
@@ -1733,7 +1736,9 @@
       if (/ok\.ru\/(video|videoembed)\//i.test(srv.url)) {
         const matchId = srv.url.match(/(?:videoembed\/|video\/)(\d+)/i);
         if (matchId && matchId[1]) {
-          dongflixServerUrl = `https://api-extract-player.pages.dev/?id=${matchId[1]}`;
+          // Sertakan parameter &op= jika ditemukan di JSON episode
+          const opQuery = epOp ? `&op=${encodeURIComponent(epOp)}` : '';
+          dongflixServerUrl = `https://api-extract-player.pages.dev/?id=${matchId[1]}${opQuery}`;
         }
       }
     });
