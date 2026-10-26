@@ -558,7 +558,6 @@
 
     <!-- ACTION BAR -->
     <div class="action-bar" id="actionBarContainer">
-      <!-- HOLDER / SKELETON SAAT MEMUAT -->
       <div class="action-holder-item">
         <div class="skeleton" style="width: 22px; height: 22px; border-radius: 6px;"></div>
         <div class="skeleton" style="width: 34px; height: 10px; border-radius: 4px;"></div>
@@ -970,7 +969,6 @@
     setTimeout(updateEpScrollFade, 50);
   }
 
-  /* SISTEM VIEW TOTAL & HARIAN (AUTO-INCR & DISPLAY) */
   window.triggerViewIncrement = async function() {
     if (!targetSlug || !window.db || !window.fbRef) {
       setTimeout(window.triggerViewIncrement, 250);
@@ -1139,7 +1137,6 @@
     window.loadComments();
   }
 
-  /* AMBIL PROFILE USER DARI REALTIME DATABASE /users/ */
   async function fetchUserProfile(email, uid) {
     const cacheKey = email || uid || '';
     if (!cacheKey) return { name: 'User', photoURL: '' };
@@ -1177,7 +1174,6 @@
     return finalData;
   }
 
-  /* LOAD COMMENTS DARI REALTIME DATABASE */
   window.loadComments = async function() {
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
@@ -1700,12 +1696,31 @@
     setTimeout(updateEpScrollFade, 50);
 
     const rawServers = episode.servers || episode.server || [];
-    const servers = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
-      .map((s, i) => ({
-        name: s.name || s.title || `Server ${i + 1}`,
-        url: s.link || s.url || (typeof s === 'string' ? s : '')
-      }))
+    let servers = (Array.isArray(rawServers) ? rawServers : Object.values(rawServers))
+      .map((s, i) => {
+        let u = s.link || s.url || (typeof s === 'string' ? s : '');
+        let name = s.name || s.title || `Server ${i + 1}`;
+        
+        // Pengecekan cerdas: jika link mengandung ok.ru, ubah otomatis menjadi iframe Vercel kamu!
+        if (/ok\.ru\/(video|videoembed)\//i.test(u)) {
+          const matchId = u.match(/(?:videoembed\/|video\/)(\d+)/i);
+          if (matchId && matchId[1]) {
+            u = `https://video-extractor-eight.vercel.app/?id=${matchId[1]}`;
+            name = `${name} (Custom)`;
+          }
+        }
+        return { name, url: u };
+      })
       .filter(s => /^https?:\/\//i.test(s.url));
+
+    // Urutkan agar server yang menggunakan Vercel/ok.ru otomatis ditaruh di posisi teratas sebagai default server
+    servers.sort((a, b) => {
+      const aIsCustom = a.url.includes('video-extractor-eight.vercel.app');
+      const bIsCustom = b.url.includes('video-extractor-eight.vercel.app');
+      if (aIsCustom && !bIsCustom) return -1;
+      if (!aIsCustom && bIsCustom) return 1;
+      return 0;
+    });
 
     const serverSelect = document.getElementById('serverSelect');
     if (serverSelect) {
