@@ -78,12 +78,33 @@
       --text-sub: #d1d5db;
       --text-muted: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.1);
-      /* iOS Glass Tokens */
-      --glass-bg: rgba(20, 20, 24, 0.58);
+      
+      /* Token Standar */
+      --glass-bg: rgba(20, 20, 24, 0.85);
       --glass-border: rgba(255, 255, 255, 0.16);
       --glass-border-top: rgba(255, 255, 255, 0.28);
       --glass-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
       --glass-blur: blur(16px);
+    }
+
+    /* KONDISIONAL BERDASARKAN PLATFORM (IOS vs ANDROID) */
+    @supports (-webkit-touch-callout: none) {
+      /* Rule Khusus iOS (iPhone/iPad): Full Glassmorphic */
+      :root {
+        --glass-bg: rgba(20, 20, 24, 0.58);
+      }
+      .nav-capsule, .action-btn-home, .search-input-field, .filter-pill, .badge-bottom, .btn-load-more, .floating-circle-btn {
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+      }
+    }
+
+    @supports not (-webkit-touch-callout: none) {
+      /* Rule Khusus Android / Non-iOS: Blur HANYA pada header atas (Pill & Ontop) */
+      .nav-capsule, .action-btn-home, .floating-circle-btn {
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+      }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
@@ -96,11 +117,12 @@
       padding-bottom: 50px; 
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      -webkit-overflow-scrolling: touch;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-    /* HEADER: KAPSUL DONGFLIX DI KIRI, TOMBOL HOME DI KANAN */
+    /* HEADER */
     .header-bar {
       position: fixed;
       top: 16px;
@@ -115,6 +137,7 @@
       padding: 0 16px;
       pointer-events: none;
       transform: translateZ(0);
+      will-change: transform;
     }
 
     .header-bar > * { pointer-events: auto; }
@@ -143,8 +166,6 @@
       display: flex;
       align-items: center;
       background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
       border-radius: 9999px;
@@ -153,6 +174,7 @@
       box-shadow: var(--glass-shadow);
       cursor: pointer;
       text-decoration: none;
+      transform: translateZ(0);
     }
 
     .brand-title-capsule { 
@@ -186,8 +208,6 @@
       height: 46px;
       border-radius: 50%;
       background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
       color: var(--text-main);
@@ -198,11 +218,12 @@
       box-shadow: var(--glass-shadow);
       flex-shrink: 0;
       text-decoration: none;
+      transform: translateZ(0);
     }
 
     .action-btn-home svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    /* CONTROLS AREA: SEARCH, TYPE, DAN GENRE */
+    /* CONTROLS AREA */
     .controls-panel {
       margin-top: 10px;
       margin-bottom: 24px;
@@ -211,7 +232,7 @@
       gap: 12px;
     }
 
-    /* INPUT PENCARIAN & ICON FIX */
+    /* INPUT PENCARIAN */
     .search-input-box { 
       position: relative; 
       display: flex; 
@@ -234,11 +255,8 @@
     .search-input-field { 
       width: 100%; 
       height: 46px; 
-      background: var(--glass-bg); 
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border); 
-      border-top: 1px solid var(--glass-border-top);
+      background: #141418; 
+      border: 1px solid rgba(255, 255, 255, 0.12); 
       border-radius: 9999px; 
       padding: 0 18px 0 46px; 
       color: #ffffff; 
@@ -256,14 +274,13 @@
       padding-bottom: 4px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
     }
     .filter-scroll-row::-webkit-scrollbar { display: none; }
 
     .filter-pill {
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
+      background: #141418;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: var(--text-sub);
       font-size: 12px;
       font-weight: 700;
@@ -312,6 +329,8 @@
       background: var(--bg-card); 
       box-shadow: 0 4px 15px rgba(0,0,0,0.6); 
       transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
@@ -335,18 +354,21 @@
     }
 
     .badge-bottom { 
-      background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); 
-      border-top: 1px solid var(--glass-border-top); color: #ffffff; font-size: 9.5px; font-weight: 800; 
-      padding: 3px 9px; border-radius: 9999px; white-space: nowrap; 
+      background: #121215; 
+      border: 1px solid rgba(255, 255, 255, 0.12); 
+      color: #ffffff; 
+      font-size: 9.5px; 
+      font-weight: 800; 
+      padding: 3px 9px; 
+      border-radius: 9999px; 
+      white-space: nowrap; 
     }
 
     .badge-view-count {
       display: inline-flex;
       align-items: center;
       gap: 4.5px;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.18);
       color: #f1f5f9;
       font-size: 9px;
@@ -370,11 +392,8 @@
     /* LOAD MORE */
     .load-more-container { text-align: center; margin-top: 36px; }
     .btn-load-more {
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
-      border-top: 1px solid var(--glass-border-top);
+      background: #141418;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: var(--color-accent);
       padding: 12px 32px;
       font-size: 13.5px;
@@ -395,9 +414,10 @@
     /* BACK TO TOP */
     .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
     .floating-circle-btn {
-      width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+      width: 44px; height: 44px; border-radius: 50%; background: var(--glass-bg);
       border: 1px solid var(--glass-border); color: var(--text-main); display: flex; align-items: center; justify-content: center;
       cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
+      transform: translateZ(0);
     }
     .floating-circle-btn.show { opacity: 1; visibility: visible; }
     .floating-circle-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
@@ -411,7 +431,7 @@
 </head>
 <body>
 
-  <!-- HEADER BAR: KIRI KAPSUL, KANAN TOMBOL HOME -->
+  <!-- HEADER BAR -->
   <header class="header-bar">
     <div class="pill-wrapper">
       <div class="top-light-pip"></div>
@@ -431,7 +451,7 @@
   <div class="container">
     <!-- KONTROL: SEARCH, TYPE, DAN SEMUA GENRE -->
     <div class="controls-panel">
-      <!-- 1. INPUT PENCARIAN DENGAN ICON LUP -->
+      <!-- 1. INPUT PENCARIAN -->
       <div class="search-input-box">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input type="text" class="search-input-field" id="catalogSearchInput" placeholder="Cari judul donghua atau movie..." oninput="onSearchInput()">
@@ -446,7 +466,7 @@
         <button class="filter-pill" onclick="setTypeFilter('completed')">Tamat</button>
       </div>
 
-      <!-- 3. PIL FILTER DAFTAR SEMUA GENRE SESUAI PERMINTAAN -->
+      <!-- 3. PIL FILTER DAFTAR GENRE -->
       <div class="filter-scroll-row" id="categoryFilterRow">
         <button class="filter-pill active" onclick="setCategoryFilter('all')">Semua Genre</button>
         <button class="filter-pill" onclick="setCategoryFilter('Action')">Action</button>
@@ -468,7 +488,7 @@
       </div>
     </div>
 
-    <!-- STATUS BAR JUMLAH DONGHUA -->
+    <!-- STATUS BAR -->
     <div class="catalog-status-bar">
       <span>Daftar Donghua</span>
       <span class="catalog-total-badge" id="catalogTotalBadge">Memuat...</span>
