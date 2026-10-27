@@ -39,6 +39,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dongflix">
 
+  <script type="module" src="/assets/firebase-config.js"></script>
+
   <style>
     :root {
       --bg-main: #000000;
@@ -516,7 +518,7 @@
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
-        <div class="episode-sort-wrapper" id="episodeSortWrapper" style="display:none;">
+        <div class="episode-sort-wrapper">
           <button class="episode-sort-button" onclick="toggleEpisodeSort(event)">
             <span id="episodeSortText">Terlama</span>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -527,7 +529,7 @@
           </div>
         </div>
 
-        <button class="btn-see-all-ep" id="btnSeeAllEp" onclick="openEpisodeSheet()" style="display:none;">
+        <button class="btn-see-all-ep" onclick="openEpisodeSheet()">
           <span id="epTotalInfo">0 Episode</span>
           <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
         </button>
@@ -670,14 +672,18 @@
     if (typeof window.checkFavorite === 'function') {
       window.checkFavorite();
     }
-    if (typeof window.loadComments === 'function') {
-      window.loadComments();
-    }
   });
 
-  if (typeof window.initWatchApp === 'function') {
-    window.initWatchApp();
-  }
+  const checkFirebaseReady = setInterval(() => {
+    if (window.db && window.fbRef) {
+      clearInterval(checkFirebaseReady);
+      if (typeof window.initWatchApp === 'function') {
+        window.initWatchApp();
+      } else {
+        if (typeof window.loadDetail === 'function') window.loadDetail();
+      }
+    }
+  }, 50);
 </script>
 
 <script>
@@ -735,13 +741,6 @@
     const text = str.trim();
     const half = Math.floor(text.length / 2);
     return (text.length > 4 && text.slice(0, half) === text.slice(half)) ? text.slice(0, half).trim() : text;
-  }
-
-  function isMovieItem(info) {
-    if (!info) return false;
-    const typeStr = (info.type || '').toString().toLowerCase();
-    const titleStr = `${info.title || ''} ${targetSlug}`.toLowerCase();
-    return typeStr === 'movie' || titleStr.includes('movie');
   }
 
   function extractEpNumber(val, fallback = 1) {
@@ -1164,92 +1163,39 @@
     window.loadComments();
   }
 
-  // Ambil foto & nama terbaru user secara background tanpa memblokir render komentar
-  async function hydrateUserAvatarAsync(email, uid, cardEl) {
-    if (!email && !uid) return;
-    if (!window.db || !window.fbRef || !window.fbGet) return;
+  async function fetchUserProfile(email, uid) {
+    const cacheKey = email || uid || '';
+    if (!cacheKey) return { name: 'User', photoURL: '' };
+    if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
 
-    const cacheKey = email || uid;
-    let profile = userProfilesCache[cacheKey];
+    let foundProfile = null;
 
-    if (!profile) {
-      try {
-        if (email) {
-          const sanitizedEmail = String(email).toLowerCase().replace(/\./g, ',');
-          const snap = await window.fbGet(window.fbRef(window.db, `users/${sanitizedEmail}`));
-          if (snap && snap.exists()) profile = snap.val();
+    try {
+      if (email && window.db && window.fbRef && window.fbGet) {
+        const sanitizedEmail = String(email).replace(/\./g, ',');
+        const userRef = window.fbRef(window.db, `users/${sanitizedEmail}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
         }
-        if (!profile && uid) {
-          const snap = await window.fbGet(window.fbRef(window.db, `users/${uid}`));
-          if (snap && snap.exists()) profile = snap.val();
+      }
+
+      if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
+        const userRef = window.fbRef(window.db, `users/${uid}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
         }
-      } catch (_) {}
-
-      if (profile) {
-        userProfilesCache[cacheKey] = profile;
-      } else {
-        userProfilesCache[cacheKey] = {};
       }
-    }
+    } catch (_) {}
 
-    if (profile && cardEl) {
-      const nameEl = cardEl.querySelector('.tiktok-username');
-      const avatarEl = cardEl.querySelector('.tiktok-avatar');
-      if (profile.name && nameEl) {
-        nameEl.textContent = profile.name;
-      }
-      if (profile.photoURL && avatarEl) {
-        const initial = (profile.name || 'U').charAt(0).toUpperCase();
-        avatarEl.innerHTML = `<img src="${profile.photoURL}" alt="${escapeHtml(profile.name || 'User')}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`;
-      }
-    }
-  }
+    const finalData = {
+      name: (foundProfile && foundProfile.name) ? foundProfile.name : (email ? email.split('@')[0] : 'User'),
+      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : ''
+    };
 
-  // Ekstraktor rekursif untuk mengambil semua objek komentar meskipun bersarang di dalam sub-node
-  function extractAllCommentNodes(rawObj) {
-    const list = [];
-    if (!rawObj || typeof rawObj !== 'object') return list;
-
-    Object.keys(rawObj).forEach(k => {
-      const val = rawObj[k];
-      if (!val) return;
-
-      if (typeof val === 'object') {
-        const hasTextField = (
-          val.text !== undefined || 
-          val.comment !== undefined || 
-          val.message !== undefined || 
-          val.body !== undefined || 
-          val.content !== undefined ||
-          val.uid !== undefined ||
-          val.email !== undefined
-        );
-
-        if (hasTextField) {
-          // PENTING: id: String(k) ditaruh PALING AKHIR agar tidak tertimpa properti id kosong dari database
-          const commentObj = { ...val, id: String(k) };
-
-          // Jika ada balasan bersarang di dalam properti replies/children
-          if (val.replies && typeof val.replies === 'object') {
-            Object.keys(val.replies).forEach(rk => {
-              const rVal = val.replies[rk];
-              if (rVal && typeof rVal === 'object') {
-                list.push({ ...rVal, parentId: String(k), id: String(rk) });
-              }
-            });
-          }
-          list.push(commentObj);
-        } else {
-          // Jika node ini adalah sub-folder (misal pengelompokan lain), telusuri ke dalamnya
-          const nested = extractAllCommentNodes(val);
-          list.push(...nested);
-        }
-      } else if (typeof val === 'string') {
-        list.push({ id: String(k), text: val, author: 'User', timestamp: Date.now() });
-      }
-    });
-
-    return list;
+    userProfilesCache[cacheKey] = finalData;
+    return finalData;
   }
 
   window.loadComments = async function() {
@@ -1258,10 +1204,7 @@
     const countBadge = document.getElementById('commentsCountBadge');
     if (!container) return;
 
-    if (!window.db || !window.fbRef || !window.fbGet) {
-      container.innerHTML = '<p style="font-size:12px;color:#64748b;">Menghubungkan ke server komentar...</p>';
-      return;
-    }
+    if (!window.db || !window.fbRef || !window.fbGet) return;
     if (!targetSlug) return;
 
     try {
@@ -1269,89 +1212,90 @@
       const commentsRef = window.fbRef(window.db, `comments/${cleanKey}`);
       const snap = await window.fbGet(commentsRef);
 
-      if (!snap || !snap.exists()) {
-        if (countBadge) countBadge.innerText = '(0)';
-        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
-        return;
-      }
+      if (snap.exists()) {
+        const rawData = snap.val() || {};
+        container.innerHTML = '';
+        const mainComments = [];
+        const repliesMap = {};
 
-      const rawData = snap.val();
-      const allComments = extractAllCommentNodes(rawData);
-
-      if (countBadge) countBadge.innerText = `(${allComments.length})`;
-
-      if (allComments.length === 0) {
-        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
-        return;
-      }
-
-      const mainComments = [];
-      const repliesMap = {};
-      const allIdsSet = new Set(allComments.map(c => String(c.id)));
-
-      allComments.forEach(item => {
-        const pId = item.parentId ? String(item.parentId).trim() : '';
-        // Hanya jadikan balasan jika parentId ada DAN komentar induknya masih ada di daftar
-        if (pId && pId !== 'null' && pId !== 'undefined' && pId !== String(item.id) && allIdsSet.has(pId)) {
-          if (!repliesMap[pId]) repliesMap[pId] = [];
-          repliesMap[pId].push(item);
-        } else {
-          mainComments.push(item);
+        // Parse semua anak data secara aman
+        if (Array.isArray(rawData)) {
+          rawData.forEach((item, idx) => {
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || idx), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
+            }
+          });
+        } else if (typeof rawData === 'object') {
+          Object.keys(rawData).forEach(key => {
+            const item = rawData[key];
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || key), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
+            }
+          });
         }
-      });
 
-      mainComments.sort((a, b) => {
-        if (a.isPinned && !b.isPinned) return -1;
-        if (!a.isPinned && b.isPinned) return 1;
-        if (currentSortMode === 'top') {
-          const repliesA = (repliesMap[a.id] || []).length;
-          const repliesB = (repliesMap[b.id] || []).length;
-          return repliesB - repliesA;
+        const totalCount = mainComments.length + Object.values(repliesMap).reduce((acc, r) => acc + r.length, 0);
+        if (countBadge) countBadge.innerText = `(${totalCount})`;
+
+        mainComments.sort((a, b) => {
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+          if (currentSortMode === 'top') {
+            const repliesA = (repliesMap[a.id] || []).length;
+            const repliesB = (repliesMap[b.id] || []).length;
+            return repliesB - repliesA;
+          }
+          return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+        });
+
+        if (mainComments.length === 0) {
+          container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
+          return;
         }
-        return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
-      });
 
-      const fragment = document.createDocumentFragment();
-      let renderedCount = 0;
-
-      for (const item of mainComments) {
-        try {
+        // Render komentar secara sinkron langsung
+        for (const item of mainComments) {
           const replies = repliesMap[item.id] || [];
           replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-          const cardEl = createCommentCardDOM(item, replies);
-          fragment.appendChild(cardEl);
-          renderedCount++;
-        } catch (cardErr) {
-          console.error("Card Render Error:", cardErr);
+          const cardEl = renderTikTokCommentCardSync(item, replies);
+          container.appendChild(cardEl);
         }
-      }
-
-      container.innerHTML = '';
-      if (renderedCount > 0) {
-        container.appendChild(fragment);
       } else {
-        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar yang dapat ditampilkan.</p>';
+        if (countBadge) countBadge.innerText = '(0)';
+        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
       console.error("Load Comments Error:", e);
-      container.innerHTML = `<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar: ${escapeHtml(e.message || String(e))}</p>`;
+      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Periksa izin baca database.</p>';
     }
   };
 
-  function createCommentCardDOM(item, replies = []) {
+  function renderTikTokCommentCardSync(item, replies = []) {
     const card = document.createElement('div');
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
     const authorEmail = String(item.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
-    const currentAuthorName = String(item.author || item.name || item.username || (item.email ? String(item.email).split('@')[0] : 'User'));
-    const photoURL = item.photoURL || item.avatar || '';
-    const initial = (currentAuthorName.trim().charAt(0) || 'U').toUpperCase();
+    const currentAuthorName = item.author || (item.email ? item.email.split('@')[0] : 'User');
+    const photoURL = item.photoURL || '';
+    const initial = currentAuthorName.charAt(0).toUpperCase();
 
-    const commentText = String(item.text || item.comment || item.message || item.body || item.content || '');
     const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
-    
     const avatarHtml = photoURL 
       ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
       : initial;
@@ -1359,16 +1303,12 @@
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
     const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
 
-    const isMyComment = window.currentUser && (
-      (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) || 
-      (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
-    );
-    const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
+    const isMyComment = window.currentUser && (window.currentUser.email === item.email || window.currentUser.uid === item.uid);
     let actionButtons = '';
+
     if (window.currentUser) {
       actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}')">Balas</button>`;
-      if (isMyComment || isCurrentUserAdmin) {
+      if (isMyComment || (window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase())) {
         actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
       }
     }
@@ -1377,7 +1317,7 @@
     if (replies.length > 0) {
       let renderedReplies = '';
       for (const reply of replies) {
-        renderedReplies += createReplyCardHTML(reply);
+        renderedReplies += renderTikTokReplyCardSync(reply);
       }
       repliesHtml = `
         <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
@@ -1394,7 +1334,7 @@
           <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
           ${levelBadge} ${adminBadge}
         </div>
-        <div class="comment-body-text">${escapeHtml(commentText)}</div>
+        <div class="comment-body-text">${escapeHtml(item.text || '')}</div>
         <div class="comment-footer-actions">
           <span class="comment-time">${timeAgo}</span>
           ${actionButtons}
@@ -1407,20 +1347,16 @@
       </div>
     `;
 
-    // Ambil foto profil terbaru di background tanpa mengganggu tampilan komentar
-    hydrateUserAvatarAsync(item.email, item.uid, card);
-
     return card;
   }
 
-  function createReplyCardHTML(reply) {
+  function renderTikTokReplyCardSync(reply) {
     const authorEmail = String(reply.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || reply.isAdmin === true;
-    const currentAuthorName = String(reply.author || reply.name || reply.username || (reply.email ? String(reply.email).split('@')[0] : 'User'));
-    const photoURL = reply.photoURL || reply.avatar || '';
-    const initial = (currentAuthorName.trim().charAt(0) || 'U').toUpperCase();
+    const currentAuthorName = reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
+    const photoURL = reply.photoURL || '';
+    const initial = currentAuthorName.charAt(0).toUpperCase();
 
-    const replyText = String(reply.text || reply.comment || reply.message || reply.body || reply.content || '');
     const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
     const avatarHtml = photoURL 
       ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
@@ -1429,14 +1365,9 @@
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
     const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
 
-    const isMyComment = window.currentUser && (
-      (window.currentUser.email && reply.email && window.currentUser.email.toLowerCase() === String(reply.email).toLowerCase()) || 
-      (window.currentUser.uid && reply.uid && window.currentUser.uid === reply.uid)
-    );
-    const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
+    const isMyComment = window.currentUser && (window.currentUser.email === reply.email || window.currentUser.uid === reply.uid);
     let deleteBtn = '';
-    if (window.currentUser && (isMyComment || isCurrentUserAdmin)) {
+    if (window.currentUser && (isMyComment || (window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()))) {
       deleteBtn = `<button class="btn-delete-tiktok" onclick="deleteComment('${reply.id}')">Hapus</button>`;
     }
 
@@ -1448,7 +1379,7 @@
             <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
             ${levelBadge} ${adminBadge}
           </div>
-          <div class="comment-body-text">${escapeHtml(replyText)}</div>
+          <div class="comment-body-text">${escapeHtml(reply.text || '')}</div>
           <div class="comment-footer-actions">
             <span class="comment-time">${timeAgo}</span>
             ${deleteBtn}
@@ -1561,9 +1492,7 @@
   }
 
   function getTimeAgo(timestamp) {
-    const ts = Number(timestamp);
-    if (isNaN(ts) || ts <= 0) return 'Baru saja';
-    const seconds = Math.floor((Date.now() - ts) / 1000);
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
     if (seconds < 60) return 'Baru saja';
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;
@@ -1571,7 +1500,7 @@
     if (hours < 24) return `${hours}j`;
     const days = Math.floor(hours / 24);
     if (days < 30) return `${days}d`;
-    return new Date(ts).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
   }
 
   function escapeHtml(str) {
@@ -1621,7 +1550,7 @@
     row.innerHTML = topRecs.map(item => {
       const title = sanitizeTitle(item.title);
       const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
-      const isMovie = isMovieItem(item);
+      const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
       const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
       const epText = isMovie ? 'MOVIE' : `Ep ${epNum}`;
       const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'TAMAT' : 'ONGOING';
@@ -1727,17 +1656,6 @@
       if (epRes.ok) {
         globalEpisodes = await epRes.json();
         document.getElementById('epTotalInfo').innerText = `${globalEpisodes.length} Episode`;
-
-        const isMovie = isMovieItem(info);
-        const epContainerEl = document.getElementById('epContainer');
-
-        if (isMovie && globalEpisodes.length <= 1) {
-          if (epContainerEl) epContainerEl.style.display = 'none';
-        } else {
-          if (epContainerEl) epContainerEl.style.display = 'block';
-          document.getElementById('episodeSortWrapper').style.display = 'block';
-          document.getElementById('btnSeeAllEp').style.display = 'inline-flex';
-        }
 
         if (globalEpisodes.length > 0) {
           renderEpisodeGrid();
