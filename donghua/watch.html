@@ -6,12 +6,14 @@
   <title id="pageTitle">Nonton Donghua Sub Indo - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
+  <!-- Meta Tag Dasar & SEO -->
   <meta name="description" id="metaDescription" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate dengan kualitas HD di Dongflix.">
   <meta name="keywords" content="donghua sub indo, streaming donghua, nonton donghua, dongflix, anime china">
   <meta name="author" content="Dongflix">
   <meta name="robots" content="index, follow">
   <link rel="canonical" id="canonicalUrl" href="https://dongflix.my.id/">
 
+  <!-- Open Graph -->
   <meta property="og:type" content="video.other">
   <meta property="og:site_name" content="Dongflix">
   <meta property="og:title" id="ogTitle" content="Nonton Donghua Sub Indo - Dongflix">
@@ -20,14 +22,17 @@
   <meta property="og:image" id="ogImage" content="">
   <meta property="og:image:alt" id="ogImageAlt" content="Cover Donghua">
 
+  <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" id="twitterTitle" content="Nonton Donghua Sub Indo - Dongflix">
   <meta name="twitter:description" id="twitterDescription" content="Nonton streaming donghua subtitle Indonesia kualitas terbaik di Dongflix.">
   <meta name="twitter:image" id="twitterImage" content="">
 
+  <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
 
+  <!-- Web Manifest & PWA Support -->
   <link rel="manifest" href="/site.webmanifest">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -688,6 +693,7 @@
   let hasIncrementedView = false;
   let currentSortMode = 'latest';
   let currentViewCount = '0';
+  const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
@@ -1162,7 +1168,42 @@
     window.loadComments();
   }
 
-  // FORMAT WAKTU TAHAN ERROR PADA SAFARI IOS
+  // --- FUNGSI MENGAMBIL NAMA & FOTO PROFIL DARI NODE USERS ---
+  async function fetchUserProfile(email, uid) {
+    const cacheKey = email || uid || '';
+    if (!cacheKey) return { name: '', photoURL: '' };
+    if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
+
+    let foundProfile = null;
+
+    try {
+      if (email && window.db && window.fbRef && window.fbGet) {
+        const sanitizedEmail = String(email).toLowerCase().replace(/\./g, ',');
+        const userRef = window.fbRef(window.db, `users/${sanitizedEmail}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
+        }
+      }
+
+      if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
+        const userRef = window.fbRef(window.db, `users/${uid}`);
+        const snap = await window.fbGet(userRef);
+        if (snap.exists()) {
+          foundProfile = snap.val();
+        }
+      }
+    } catch (_) {}
+
+    const finalData = {
+      name: (foundProfile && foundProfile.name) ? foundProfile.name : '',
+      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : ''
+    };
+
+    userProfilesCache[cacheKey] = finalData;
+    return finalData;
+  }
+
   function formatCommentTime(tsVal) {
     const ts = Number(tsVal);
     if (!ts || isNaN(ts)) return 'Baru saja';
@@ -1192,13 +1233,180 @@
       .replace(/'/g, "&#039;");
   }
 
-  // RENDER SATU KARTU BALASAN
-  function buildReplyHtml(reply) {
+  // --- PEMUAT KOMENTAR UTAMA (MENGAMBIL PROFIL DARI USERS) ---
+  window.loadComments = async function() {
+    targetSlug = getCleanMainSlug();
+    const container = document.getElementById('commentsListContainer');
+    const countBadge = document.getElementById('commentsCountBadge');
+    if (!container) return;
+
+    if (!window.db || !window.fbRef || !window.fbGet) {
+      container.innerHTML = '<p style="font-size:12px;color:#64748b;">Menghubungkan ke database...</p>';
+      return;
+    }
+    if (!targetSlug) return;
+
+    try {
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const commentsRef = window.fbRef(window.db, `comments/${cleanKey}`);
+      const snap = await window.fbGet(commentsRef);
+
+      if (!snap || !snap.exists()) {
+        if (countBadge) countBadge.innerText = '(0)';
+        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
+        return;
+      }
+
+      const rawData = snap.val() || {};
+      const allComments = [];
+
+      Object.keys(rawData).forEach(key => {
+        const item = rawData[key];
+        if (item && typeof item === 'object') {
+          allComments.push({ ...item, id: String(key) });
+        }
+      });
+
+      if (countBadge) countBadge.innerText = `(${allComments.length})`;
+
+      if (allComments.length === 0) {
+        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
+        return;
+      }
+
+      const mainComments = [];
+      const repliesMap = {};
+
+      allComments.forEach(item => {
+        const pId = item.parentId ? String(item.parentId).trim() : '';
+        if (pId && pId !== 'null' && pId !== 'undefined' && pId !== String(item.id)) {
+          if (!repliesMap[pId]) repliesMap[pId] = [];
+          repliesMap[pId].push(item);
+        } else {
+          mainComments.push(item);
+        }
+      });
+
+      mainComments.sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        if (currentSortMode === 'top') {
+          const repA = (repliesMap[a.id] || []).length;
+          const repB = (repliesMap[b.id] || []).length;
+          return repB - repA;
+        }
+        return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+      });
+
+      container.innerHTML = '';
+
+      for (let item of mainComments) {
+        const replies = repliesMap[item.id] || [];
+        replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
+        
+        // Ambil profil data dari users secara asinkron lalu render kartu
+        const cardEl = await createCommentCardElement(item, replies);
+        container.appendChild(cardEl);
+      }
+
+    } catch (e) {
+      console.error("Load Comments Error:", e);
+      container.innerHTML = `<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar: ${escapeHtml(e.message || String(e))}</p>`;
+    }
+  };
+
+  async function createCommentCardElement(item, replies = []) {
+    const card = document.createElement('div');
+    card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
+    card.id = `comment-${item.id}`;
+
+    // Ambil data profil dari node users berdasarkan email atau uid
+    let profile = { name: '', photoURL: '' };
+    try {
+      profile = await fetchUserProfile(item.email, item.uid);
+    } catch (_) {}
+
+    const authorEmail = String(item.email || '').toLowerCase();
+    const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
+    
+    // Prioritas nama: Data di users -> data author di komentar -> email prefix -> 'User'
+    const authorName = profile.name || item.author || (item.email ? String(item.email).split('@')[0] : 'User');
+    const photoURL = profile.photoURL || item.photoURL || '';
+    const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+
+    const commentText = String(item.text || '');
+    const timeText = formatCommentTime(item.timestamp);
+
+    const avatarHtml = photoURL 
+      ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
+      : initial;
+
+    const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+
+    const isMyComment = window.currentUser && (
+      (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) || 
+      (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
+    );
+    const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+    let actionButtons = '';
+    if (window.currentUser) {
+      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}')">Balas</button>`;
+      if (isMyComment || isCurrentUserAdmin) {
+        actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
+      }
+    }
+
+    let repliesHtml = '';
+    if (replies && replies.length > 0) {
+      let inner = '';
+      for (let r of replies) {
+        inner += await createReplyCardHtmlAsync(r);
+      }
+      repliesHtml = `
+        <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
+          Lihat ${replies.length} balasan ▾
+        </button>
+        <div class="replies-container" id="replies-box-${item.id}">${inner}</div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="tiktok-avatar">${avatarHtml}</div>
+      <div class="comment-content">
+        <div class="comment-user-row">
+          <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
+          ${levelBadge} ${adminBadge}
+        </div>
+        <div class="comment-body-text">${escapeHtml(commentText)}</div>
+        <div class="comment-footer-actions">
+          <span class="comment-time">${timeText}</span>
+          ${actionButtons}
+        </div>
+        <div id="reply-input-wrapper-${item.id}"></div>
+        ${repliesHtml}
+      </div>
+      <div class="comment-like-box" onclick="toggleLikeComment(this)">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </div>
+    `;
+
+    return card;
+  }
+
+  async function createReplyCardHtmlAsync(reply) {
+    let profile = { name: '', photoURL: '' };
+    try {
+      profile = await fetchUserProfile(reply.email, reply.uid);
+    } catch (_) {}
+
     const authorEmail = String(reply.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || reply.isAdmin === true;
-    const authorName = String(reply.author || (reply.email ? String(reply.email).split('@')[0] : 'User'));
-    const photoURL = reply.photoURL || '';
+    const authorName = profile.name || reply.author || (reply.email ? String(reply.email).split('@')[0] : 'User');
+    const photoURL = profile.photoURL || reply.photoURL || '';
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+
     const replyText = String(reply.text || '');
     const timeText = formatCommentTime(reply.timestamp);
 
@@ -1237,156 +1445,6 @@
       </div>
     `;
   }
-
-  // RENDER SATU KARTU KOMENTAR UTAMA
-  function buildCommentCardHtml(item, replies) {
-    const authorEmail = String(item.email || '').toLowerCase();
-    const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
-    const authorName = String(item.author || (item.email ? String(item.email).split('@')[0] : 'User'));
-    const photoURL = item.photoURL || '';
-    const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
-    const commentText = String(item.text || '');
-    const timeText = formatCommentTime(item.timestamp);
-
-    const avatarHtml = photoURL 
-      ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
-      : initial;
-
-    const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
-    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
-
-    const isMyComment = window.currentUser && (
-      (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) || 
-      (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
-    );
-    const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-    let actionButtons = '';
-    if (window.currentUser) {
-      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}')">Balas</button>`;
-      if (isMyComment || isCurrentUserAdmin) {
-        actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
-      }
-    }
-
-    let repliesHtml = '';
-    if (replies && replies.length > 0) {
-      let inner = '';
-      for (let r of replies) {
-        inner += buildReplyHtml(r);
-      }
-      repliesHtml = `
-        <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
-          Lihat ${replies.length} balasan ▾
-        </button>
-        <div class="replies-container" id="replies-box-${item.id}">${inner}</div>
-      `;
-    }
-
-    return `
-      <div class="comment-card ${item.isPinned ? 'pinned' : ''}" id="comment-${item.id}">
-        <div class="tiktok-avatar">${avatarHtml}</div>
-        <div class="comment-content">
-          <div class="comment-user-row">
-            <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
-            ${levelBadge} ${adminBadge}
-          </div>
-          <div class="comment-body-text">${escapeHtml(commentText)}</div>
-          <div class="comment-footer-actions">
-            <span class="comment-time">${timeText}</span>
-            ${actionButtons}
-          </div>
-          <div id="reply-input-wrapper-${item.id}"></div>
-          ${repliesHtml}
-        </div>
-        <div class="comment-like-box" onclick="toggleLikeComment(this)">
-          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        </div>
-      </div>
-    `;
-  }
-
-  // PEMUAT KOMENTAR UTAMA
-  window.loadComments = async function() {
-    targetSlug = getCleanMainSlug();
-    const container = document.getElementById('commentsListContainer');
-    const countBadge = document.getElementById('commentsCountBadge');
-    if (!container) return;
-
-    if (!window.db || !window.fbRef || !window.fbGet) {
-      container.innerHTML = '<p style="font-size:12px;color:#64748b;">Menghubungkan ke database...</p>';
-      return;
-    }
-    if (!targetSlug) return;
-
-    try {
-      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
-      const commentsRef = window.fbRef(window.db, `comments/${cleanKey}`);
-      const snap = await window.fbGet(commentsRef);
-
-      if (!snap || !snap.exists()) {
-        if (countBadge) countBadge.innerText = '(0)';
-        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
-        return;
-      }
-
-      const rawData = snap.val() || {};
-      const allComments = [];
-
-      // Baca node komentar dari Firebase
-      Object.keys(rawData).forEach(key => {
-        const item = rawData[key];
-        if (item && typeof item === 'object') {
-          allComments.push({ ...item, id: String(key) });
-        }
-      });
-
-      if (countBadge) countBadge.innerText = `(${allComments.length})`;
-
-      if (allComments.length === 0) {
-        container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
-        return;
-      }
-
-      const mainComments = [];
-      const repliesMap = {};
-
-      allComments.forEach(item => {
-        const pId = item.parentId ? String(item.parentId).trim() : '';
-        if (pId && pId !== 'null' && pId !== 'undefined' && pId !== String(item.id)) {
-          if (!repliesMap[pId]) repliesMap[pId] = [];
-          repliesMap[pId].push(item);
-        } else {
-          mainComments.push(item);
-        }
-      });
-
-      // Urutkan komentar
-      mainComments.sort((a, b) => {
-        if (a.isPinned && !b.isPinned) return -1;
-        if (!a.isPinned && b.isPinned) return 1;
-        if (currentSortMode === 'top') {
-          const repA = (repliesMap[a.id] || []).length;
-          const repB = (repliesMap[b.id] || []).length;
-          return repB - repA;
-        }
-        return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
-      });
-
-      let fullHtml = '';
-      for (let item of mainComments) {
-        const replies = repliesMap[item.id] || [];
-        replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-        fullHtml += buildCommentCardHtml(item, replies);
-      }
-
-      container.innerHTML = fullHtml || '<p style="font-size:12px;color:#64748b;">Belum ada komentar.</p>';
-
-    } catch (e) {
-      console.error("Load Comments Error:", e);
-      container.innerHTML = `<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar: ${escapeHtml(e.message || String(e))}</p>`;
-    }
-  };
 
   function toggleRepliesDisplay(commentId, count) {
     const container = document.getElementById(`replies-box-${commentId}`);
