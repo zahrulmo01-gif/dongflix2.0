@@ -1215,16 +1215,18 @@
       const snap = await window.fbGet(commentsRef);
 
       if (snap.exists()) {
-        const commentsData = snap.val() || {};
+        const rawData = snap.val() || {};
         container.innerHTML = '';
         const mainComments = [];
         const repliesMap = {};
 
-        const keys = Object.keys(commentsData);
-        if (countBadge) countBadge.innerText = `(${keys.length})`;
+        const commentsArray = Array.isArray(rawData) 
+          ? rawData.filter(Boolean).map((item, idx) => ({ id: String(idx), ...item }))
+          : Object.keys(rawData).map(key => ({ id: String(key), ...rawData[key] }));
 
-        keys.forEach(key => {
-          const item = { id: String(key), ...commentsData[key] };
+        if (countBadge) countBadge.innerText = `(${commentsArray.length})`;
+
+        commentsArray.forEach(item => {
           if (item.parentId) {
             const pId = String(item.parentId);
             if (!repliesMap[pId]) repliesMap[pId] = [];
