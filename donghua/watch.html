@@ -39,8 +39,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dongflix">
 
-  <script type="module" src="/assets/firebase-config.js"></script>
-
   <style>
     :root {
       --bg-main: #000000;
@@ -695,7 +693,6 @@
   let hasIncrementedView = false;
   let currentSortMode = 'latest';
   let currentViewCount = '0';
-  const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
@@ -1170,13 +1167,17 @@
     window.loadComments();
   }
 
+  // --- FUNGSI LOAD KOMENTAR YANG DIBUAT 100% AMAN DARI ERROR PANGGILAN ---
   window.loadComments = async function() {
     targetSlug = getCleanMainSlug();
     const container = document.getElementById('commentsListContainer');
     const countBadge = document.getElementById('commentsCountBadge');
     if (!container) return;
 
-    if (!window.db || !window.fbRef || !window.fbGet) return;
+    if (!window.db || !window.fbRef || !window.fbGet) {
+      container.innerHTML = '<p style="font-size:12px;color:#64748b;">Menghubungkan ke database...</p>';
+      return;
+    }
     if (!targetSlug) return;
 
     try {
@@ -1190,23 +1191,37 @@
         const mainComments = [];
         const repliesMap = {};
 
-        const commentsArray = Array.isArray(rawData) 
-          ? rawData.filter(Boolean).map((item, idx) => ({ id: String(item.id || idx), ...item }))
-          : Object.keys(rawData).map(key => ({ id: String(key), ...rawData[key] }));
-
-        if (countBadge) countBadge.innerText = `(${commentsArray.length})`;
-
-        commentsArray.forEach(item => {
-          if (item && typeof item === 'object') {
-            if (item.parentId) {
-              const pId = String(item.parentId);
-              if (!repliesMap[pId]) repliesMap[pId] = [];
-              repliesMap[pId].push(item);
-            } else {
-              mainComments.push(item);
+        if (Array.isArray(rawData)) {
+          rawData.forEach((item, idx) => {
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || idx), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
             }
-          }
-        });
+          });
+        } else if (typeof rawData === 'object') {
+          Object.keys(rawData).forEach(key => {
+            const item = rawData[key];
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || key), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
+            }
+          });
+        }
+
+        const totalCount = mainComments.length + Object.values(repliesMap).reduce((acc, r) => acc + r.length, 0);
+        if (countBadge) countBadge.innerText = `(${totalCount})`;
 
         mainComments.sort((a, b) => {
           if (a.isPinned && !b.isPinned) return -1;
@@ -1231,7 +1246,7 @@
             const cardEl = renderTikTokCommentCardSync(item, replies);
             container.appendChild(cardEl);
           } catch (cardErr) {
-            console.warn("Gagal merender kartu komentar:", cardErr);
+            console.warn("Gagal merender kartu:", cardErr);
           }
         }
       } else {
@@ -1239,8 +1254,8 @@
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
-      console.error("Load Comments Error:", e);
-      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Periksa izin baca database.</p>';
+      console.error("Load Comments Fatal Error:", e);
+      container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Cek konsol browser.</p>';
     }
   };
 
