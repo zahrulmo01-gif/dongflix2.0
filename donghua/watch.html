@@ -1275,12 +1275,12 @@
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    let currentAuthorName = 'User';
+    let currentAuthorName = item.author || (item.email ? item.email.split('@')[0] : 'User');
     let photoURL = '';
     try {
       const profile = await fetchUserProfile(item.email, item.uid);
-      currentAuthorName = profile.name || item.author || (item.email ? item.email.split('@')[0] : 'User');
-      photoURL = profile.photoURL || '';
+      if (profile && profile.name) currentAuthorName = profile.name;
+      if (profile && profile.photoURL) photoURL = profile.photoURL;
     } catch (_) {}
 
     const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
@@ -1345,12 +1345,12 @@
   }
 
   async function renderTikTokReplyCard(reply) {
-    let currentAuthorName = 'User';
+    let currentAuthorName = reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
     let photoURL = '';
     try {
       const profile = await fetchUserProfile(reply.email, reply.uid);
-      currentAuthorName = profile.name || reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
-      photoURL = profile.photoURL || '';
+      if (profile && profile.name) currentAuthorName = profile.name;
+      if (profile && profile.photoURL) photoURL = profile.photoURL;
     } catch (_) {}
 
     const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
