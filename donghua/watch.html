@@ -1170,26 +1170,24 @@
 
     let foundProfile = null;
 
-    if (email && window.db && window.fbRef && window.fbGet) {
-      const sanitizedEmail = String(email).replace(/\./g, ',');
-      try {
+    try {
+      if (email && window.db && window.fbRef && window.fbGet) {
+        const sanitizedEmail = String(email).replace(/\./g, ',');
         const userRef = window.fbRef(window.db, `users/${sanitizedEmail}`);
         const snap = await window.fbGet(userRef);
         if (snap.exists()) {
           foundProfile = snap.val();
         }
-      } catch (_) {}
-    }
+      }
 
-    if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
-      try {
+      if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
         const userRef = window.fbRef(window.db, `users/${uid}`);
         const snap = await window.fbGet(userRef);
         if (snap.exists()) {
           foundProfile = snap.val();
         }
-      } catch (_) {}
-    }
+      }
+    } catch (_) {}
 
     const finalData = {
       name: (foundProfile && foundProfile.name) ? foundProfile.name : (email ? email.split('@')[0] : 'User'),
@@ -1220,21 +1218,38 @@
         const mainComments = [];
         const repliesMap = {};
 
-        const commentsArray = Array.isArray(rawData) 
-          ? rawData.filter(Boolean).map((item, idx) => ({ id: String(idx), ...item }))
-          : Object.keys(rawData).map(key => ({ id: String(key), ...rawData[key] }));
+        // Parse semua anak data secara aman
+        if (Array.isArray(rawData)) {
+          rawData.forEach((item, idx) => {
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || idx), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
+            }
+          });
+        } else if (typeof rawData === 'object') {
+          Object.keys(rawData).forEach(key => {
+            const item = rawData[key];
+            if (item && typeof item === 'object') {
+              const fullItem = { id: String(item.id || key), ...item };
+              if (fullItem.parentId) {
+                const pId = String(fullItem.parentId);
+                if (!repliesMap[pId]) repliesMap[pId] = [];
+                repliesMap[pId].push(fullItem);
+              } else {
+                mainComments.push(fullItem);
+              }
+            }
+          });
+        }
 
-        if (countBadge) countBadge.innerText = `(${commentsArray.length})`;
-
-        commentsArray.forEach(item => {
-          if (item.parentId) {
-            const pId = String(item.parentId);
-            if (!repliesMap[pId]) repliesMap[pId] = [];
-            repliesMap[pId].push(item);
-          } else {
-            mainComments.push(item);
-          }
-        });
+        const totalCount = mainComments.length + Object.values(repliesMap).reduce((acc, r) => acc + r.length, 0);
+        if (countBadge) countBadge.innerText = `(${totalCount})`;
 
         mainComments.sort((a, b) => {
           if (a.isPinned && !b.isPinned) return -1;
@@ -1252,15 +1267,12 @@
           return;
         }
 
+        // Render komentar secara sinkron langsung
         for (const item of mainComments) {
-          try {
-            const replies = repliesMap[item.id] || [];
-            replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-            const cardEl = await renderTikTokCommentCard(item, replies);
-            container.appendChild(cardEl);
-          } catch (cardErr) {
-            console.warn("Gagal merender kartu komentar:", cardErr);
-          }
+          const replies = repliesMap[item.id] || [];
+          replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
+          const cardEl = renderTikTokCommentCardSync(item, replies);
+          container.appendChild(cardEl);
         }
       } else {
         if (countBadge) countBadge.innerText = '(0)';
@@ -1272,24 +1284,18 @@
     }
   };
 
-  async function renderTikTokCommentCard(item, replies = []) {
+  function renderTikTokCommentCardSync(item, replies = []) {
     const card = document.createElement('div');
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    let currentAuthorName = item.author || (item.email ? item.email.split('@')[0] : 'User');
-    let photoURL = '';
-    try {
-      const profile = await fetchUserProfile(item.email, item.uid);
-      if (profile && profile.name) currentAuthorName = profile.name;
-      if (profile && profile.photoURL) photoURL = profile.photoURL;
-    } catch (_) {}
-
-    const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
     const authorEmail = String(item.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
+    const currentAuthorName = item.author || (item.email ? item.email.split('@')[0] : 'User');
+    const photoURL = item.photoURL || '';
     const initial = currentAuthorName.charAt(0).toUpperCase();
 
+    const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
     const avatarHtml = photoURL 
       ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
       : initial;
@@ -1311,9 +1317,7 @@
     if (replies.length > 0) {
       let renderedReplies = '';
       for (const reply of replies) {
-        try {
-          renderedReplies += await renderTikTokReplyCard(reply);
-        } catch (_) {}
+        renderedReplies += renderTikTokReplyCardSync(reply);
       }
       repliesHtml = `
         <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
@@ -1330,7 +1334,7 @@
           <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
           ${levelBadge} ${adminBadge}
         </div>
-        <div class="comment-body-text">${escapeHtml(item.text)}</div>
+        <div class="comment-body-text">${escapeHtml(item.text || '')}</div>
         <div class="comment-footer-actions">
           <span class="comment-time">${timeAgo}</span>
           ${actionButtons}
@@ -1346,20 +1350,14 @@
     return card;
   }
 
-  async function renderTikTokReplyCard(reply) {
-    let currentAuthorName = reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
-    let photoURL = '';
-    try {
-      const profile = await fetchUserProfile(reply.email, reply.uid);
-      if (profile && profile.name) currentAuthorName = profile.name;
-      if (profile && profile.photoURL) photoURL = profile.photoURL;
-    } catch (_) {}
-
-    const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
+  function renderTikTokReplyCardSync(reply) {
     const authorEmail = String(reply.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || reply.isAdmin === true;
+    const currentAuthorName = reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
+    const photoURL = reply.photoURL || '';
     const initial = currentAuthorName.charAt(0).toUpperCase();
 
+    const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
     const avatarHtml = photoURL 
       ? `<img src="${photoURL}" alt="${escapeHtml(currentAuthorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
       : initial;
@@ -1381,7 +1379,7 @@
             <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(currentAuthorName)}</span>
             ${levelBadge} ${adminBadge}
           </div>
-          <div class="comment-body-text">${escapeHtml(reply.text)}</div>
+          <div class="comment-body-text">${escapeHtml(reply.text || '')}</div>
           <div class="comment-footer-actions">
             <span class="comment-time">${timeAgo}</span>
             ${deleteBtn}
@@ -1433,6 +1431,8 @@
     const commentItem = { 
       uid: window.currentUser.uid, 
       email: window.currentUser.email || '', 
+      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
+      photoURL: window.currentUser.photoURL || '',
       text: text, 
       timestamp: Date.now(),
       isAdmin: isAdmin
@@ -1460,6 +1460,8 @@
     const replyItem = { 
       uid: window.currentUser.uid, 
       email: window.currentUser.email || '', 
+      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
+      photoURL: window.currentUser.photoURL || '',
       text: text, 
       parentId: String(parentId), 
       timestamp: Date.now(),
