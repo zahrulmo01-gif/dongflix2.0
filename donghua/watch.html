@@ -1251,16 +1251,21 @@
         }
 
         for (const item of mainComments) {
-          const replies = repliesMap[item.id] || [];
-          replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-          const cardEl = await renderTikTokCommentCard(item, replies);
-          container.appendChild(cardEl);
+          try {
+            const replies = repliesMap[item.id] || [];
+            replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
+            const cardEl = await renderTikTokCommentCard(item, replies);
+            container.appendChild(cardEl);
+          } catch (cardErr) {
+            console.warn("Gagal merender kartu komentar:", cardErr);
+          }
         }
       } else {
         if (countBadge) countBadge.innerText = '(0)';
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">Belum ada komentar. Jadilah yang pertama berkomentar!</p>';
       }
     } catch (e) {
+      console.error("Load Comments Error:", e);
       container.innerHTML = '<p style="font-size:12px;color:#ef4444;">Gagal memuat komentar. Periksa izin baca database.</p>';
     }
   };
@@ -1270,9 +1275,13 @@
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    const profile = await fetchUserProfile(item.email, item.uid);
-    const currentAuthorName = profile.name || item.author || (item.email ? item.email.split('@')[0] : 'User');
-    const photoURL = profile.photoURL || '';
+    let currentAuthorName = 'User';
+    let photoURL = '';
+    try {
+      const profile = await fetchUserProfile(item.email, item.uid);
+      currentAuthorName = profile.name || item.author || (item.email ? item.email.split('@')[0] : 'User');
+      photoURL = profile.photoURL || '';
+    } catch (_) {}
 
     const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : 'Baru saja';
     const authorEmail = String(item.email || '').toLowerCase();
@@ -1300,7 +1309,9 @@
     if (replies.length > 0) {
       let renderedReplies = '';
       for (const reply of replies) {
-        renderedReplies += await renderTikTokReplyCard(reply);
+        try {
+          renderedReplies += await renderTikTokReplyCard(reply);
+        } catch (_) {}
       }
       repliesHtml = `
         <button class="replies-toggle-btn" id="btn-toggle-${item.id}" onclick="toggleRepliesDisplay('${item.id}', ${replies.length})">
@@ -1334,9 +1345,13 @@
   }
 
   async function renderTikTokReplyCard(reply) {
-    const profile = await fetchUserProfile(reply.email, reply.uid);
-    const currentAuthorName = profile.name || reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
-    const photoURL = profile.photoURL || '';
+    let currentAuthorName = 'User';
+    let photoURL = '';
+    try {
+      const profile = await fetchUserProfile(reply.email, reply.uid);
+      currentAuthorName = profile.name || reply.author || (reply.email ? reply.email.split('@')[0] : 'User');
+      photoURL = profile.photoURL || '';
+    } catch (_) {}
 
     const timeAgo = reply.timestamp ? getTimeAgo(reply.timestamp) : 'Baru saja';
     const authorEmail = String(reply.email || '').toLowerCase();
