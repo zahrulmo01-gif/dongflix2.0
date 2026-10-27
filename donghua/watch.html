@@ -518,7 +518,7 @@
     <div id="epContainer">
       <div class="ep-header-row">
         <span class="ep-header-title">Episode List</span>
-        <div class="episode-sort-wrapper">
+        <div class="episode-sort-wrapper" id="episodeSortWrapper" style="display:none;">
           <button class="episode-sort-button" onclick="toggleEpisodeSort(event)">
             <span id="episodeSortText">Terlama</span>
             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -529,7 +529,7 @@
           </div>
         </div>
 
-        <button class="btn-see-all-ep" onclick="openEpisodeSheet()">
+        <button class="btn-see-all-ep" id="btnSeeAllEp" onclick="openEpisodeSheet()" style="display:none;">
           <span id="epTotalInfo">0 Episode</span>
           <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
         </button>
@@ -741,6 +741,13 @@
     const text = str.trim();
     const half = Math.floor(text.length / 2);
     return (text.length > 4 && text.slice(0, half) === text.slice(half)) ? text.slice(0, half).trim() : text;
+  }
+
+  function isMovieItem(info) {
+    if (!info) return false;
+    const typeStr = (info.type || '').toString().toLowerCase();
+    const titleStr = `${info.title || ''} ${targetSlug}`.toLowerCase();
+    return typeStr === 'movie' || titleStr.includes('movie');
   }
 
   function extractEpNumber(val, fallback = 1) {
@@ -1163,41 +1170,6 @@
     window.loadComments();
   }
 
-  async function fetchUserProfile(email, uid) {
-    const cacheKey = email || uid || '';
-    if (!cacheKey) return { name: 'User', photoURL: '' };
-    if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
-
-    let foundProfile = null;
-
-    try {
-      if (email && window.db && window.fbRef && window.fbGet) {
-        const sanitizedEmail = String(email).replace(/\./g, ',');
-        const userRef = window.fbRef(window.db, `users/${sanitizedEmail}`);
-        const snap = await window.fbGet(userRef);
-        if (snap.exists()) {
-          foundProfile = snap.val();
-        }
-      }
-
-      if (!foundProfile && uid && window.db && window.fbRef && window.fbGet) {
-        const userRef = window.fbRef(window.db, `users/${uid}`);
-        const snap = await window.fbGet(userRef);
-        if (snap.exists()) {
-          foundProfile = snap.val();
-        }
-      }
-    } catch (_) {}
-
-    const finalData = {
-      name: (foundProfile && foundProfile.name) ? foundProfile.name : (email ? email.split('@')[0] : 'User'),
-      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : ''
-    };
-
-    userProfilesCache[cacheKey] = finalData;
-    return finalData;
-  }
-
   window.loadComments = async function() {
     targetSlug = getCleanMainSlug();
     const container = document.getElementById('commentsListContainer');
@@ -1218,38 +1190,23 @@
         const mainComments = [];
         const repliesMap = {};
 
-        // Parse semua anak data secara aman
-        if (Array.isArray(rawData)) {
-          rawData.forEach((item, idx) => {
-            if (item && typeof item === 'object') {
-              const fullItem = { id: String(item.id || idx), ...item };
-              if (fullItem.parentId) {
-                const pId = String(fullItem.parentId);
-                if (!repliesMap[pId]) repliesMap[pId] = [];
-                repliesMap[pId].push(fullItem);
-              } else {
-                mainComments.push(fullItem);
-              }
-            }
-          });
-        } else if (typeof rawData === 'object') {
-          Object.keys(rawData).forEach(key => {
-            const item = rawData[key];
-            if (item && typeof item === 'object') {
-              const fullItem = { id: String(item.id || key), ...item };
-              if (fullItem.parentId) {
-                const pId = String(fullItem.parentId);
-                if (!repliesMap[pId]) repliesMap[pId] = [];
-                repliesMap[pId].push(fullItem);
-              } else {
-                mainComments.push(fullItem);
-              }
-            }
-          });
-        }
+        const commentsArray = Array.isArray(rawData) 
+          ? rawData.filter(Boolean).map((item, idx) => ({ id: String(item.id || idx), ...item }))
+          : Object.keys(rawData).map(key => ({ id: String(key), ...rawData[key] }));
 
-        const totalCount = mainComments.length + Object.values(repliesMap).reduce((acc, r) => acc + r.length, 0);
-        if (countBadge) countBadge.innerText = `(${totalCount})`;
+        if (countBadge) countBadge.innerText = `(${commentsArray.length})`;
+
+        commentsArray.forEach(item => {
+          if (item && typeof item === 'object') {
+            if (item.parentId) {
+              const pId = String(item.parentId);
+              if (!repliesMap[pId]) repliesMap[pId] = [];
+              repliesMap[pId].push(item);
+            } else {
+              mainComments.push(item);
+            }
+          }
+        });
 
         mainComments.sort((a, b) => {
           if (a.isPinned && !b.isPinned) return -1;
@@ -1267,12 +1224,15 @@
           return;
         }
 
-        // Render komentar secara sinkron langsung
         for (const item of mainComments) {
-          const replies = repliesMap[item.id] || [];
-          replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
-          const cardEl = renderTikTokCommentCardSync(item, replies);
-          container.appendChild(cardEl);
+          try {
+            const replies = repliesMap[item.id] || [];
+            replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
+            const cardEl = renderTikTokCommentCardSync(item, replies);
+            container.appendChild(cardEl);
+          } catch (cardErr) {
+            console.warn("Gagal merender kartu komentar:", cardErr);
+          }
         }
       } else {
         if (countBadge) countBadge.innerText = '(0)';
@@ -1550,7 +1510,7 @@
     row.innerHTML = topRecs.map(item => {
       const title = sanitizeTitle(item.title);
       const poster = item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
-      const isMovie = (item.type || '').toString().toLowerCase() === 'movie' || title.toLowerCase().includes('movie');
+      const isMovie = isMovieItem(item);
       const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
       const epText = isMovie ? 'MOVIE' : `Ep ${epNum}`;
       const statusText = ((item.status || item.type || '').toString().toLowerCase().includes('completed')) ? 'TAMAT' : 'ONGOING';
@@ -1656,6 +1616,17 @@
       if (epRes.ok) {
         globalEpisodes = await epRes.json();
         document.getElementById('epTotalInfo').innerText = `${globalEpisodes.length} Episode`;
+
+        const isMovie = isMovieItem(info);
+        const epContainerEl = document.getElementById('epContainer');
+
+        if (isMovie && globalEpisodes.length <= 1) {
+          if (epContainerEl) epContainerEl.style.display = 'none';
+        } else {
+          if (epContainerEl) epContainerEl.style.display = 'block';
+          document.getElementById('episodeSortWrapper').style.display = 'block';
+          document.getElementById('btnSeeAllEp').style.display = 'inline-flex';
+        }
 
         if (globalEpisodes.length > 0) {
           renderEpisodeGrid();
