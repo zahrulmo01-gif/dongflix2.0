@@ -677,10 +677,13 @@
   const checkFirebaseReady = setInterval(() => {
     if (window.db && window.fbRef) {
       clearInterval(checkFirebaseReady);
-      if (typeof window.triggerViewIncrement === 'function') window.triggerViewIncrement();
-      if (typeof window.loadComments === 'function') window.loadComments();
+      if (typeof window.initWatchApp === 'function') {
+        window.initWatchApp();
+      } else {
+        if (typeof window.loadDetail === 'function') window.loadDetail();
+      }
     }
-  }, 100);
+  }, 50);
 </script>
 
 <script>
@@ -1548,7 +1551,7 @@
     section.style.display = 'block';
   }
 
-  async function loadDetail() {
+  async function initWatchApp() {
     targetSlug = getCleanMainSlug();
 
     if (!targetSlug) {
@@ -1694,6 +1697,8 @@
     }
   }
 
+  window.loadDetail = initWatchApp;
+
   function selectEpisodeByNum(epNum) {
     closeEpisodeSheet();
     
@@ -1718,7 +1723,6 @@
 
     setTimeout(updateEpScrollFade, 50);
 
-    // Ambil data op dari objek episode jika ada
     const epOp = episode.op || episode.opening || episode.intro || '';
 
     const rawServers = episode.servers || episode.server || [];
@@ -1736,7 +1740,6 @@
       if (/ok\.ru\/(video|videoembed)\//i.test(srv.url)) {
         const matchId = srv.url.match(/(?:videoembed\/|video\/)(\d+)/i);
         if (matchId && matchId[1]) {
-          // Sertakan parameter &op= jika ditemukan di JSON episode
           const opQuery = epOp ? `&op=${encodeURIComponent(epOp)}` : '';
           dongflixServerUrl = `https://api-extract-player.pages.dev/?id=${matchId[1]}${opQuery}`;
         }
@@ -1815,8 +1818,6 @@
   function closeEpisodeSheet() {
     document.getElementById('sheetOverlay').classList.remove('active');
   }
-
-  window.onload = loadDetail;
 </script>
 </body>
 </html>
