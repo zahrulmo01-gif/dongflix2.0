@@ -1,5 +1,33 @@
 [
   {
+    "episode": "11",
+    "title": "The Guardian of Daxia Episode 11 Subtitle Indonesia",
+    "link": "https://anichin.my/the-guardian-of-daxia-episode-11-subtitle-indonesia/",
+    "date": "October 28, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16308039060146"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=30c8eb5d-4700-4f83-b812-2e7cfd6cf9d4"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=kqxznJazs9hipWM9SGG"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7fbkiq/?pub=2li51c"
+      },
+      {
+        "name": "Drive 1 [Ads]",
+        "link": "https://morencius.com/embed/2torl4b1kejc"
+      }
+    ]
+  },
+  {
     "episode": "10",
     "title": "The Guardian of Daxia Episode 10 Subtitle Indonesia",
     "link": "https://anichin.moe/the-guardian-of-daxia-episode-10-subtitle-indonesia/",
@@ -352,9 +380,9 @@
     ]
   },
   {
-    "episode": "01",
+    "episode": "02",
     "title": "The Guardian of Daxia Episode 02 Subtitle Indonesia",
-    "link": "https://anichin.moe/the-guardian-of-daxia-episode-02-subtitle-indonesia/",
+    "link": "https://anichin.my/the-guardian-of-daxia-episode-02-subtitle-indonesia/",
     "date": "September 30, 2026",
     "servers": [
       {
@@ -374,24 +402,8 @@
         "link": "https://rumble.com/embed/v7e08xa/?pub=2li51c"
       },
       {
-        "name": "RPM Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#elwelo"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/FVnblSR5w"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-ae8fwxdhhlvp.html"
-      },
-      {
-        "name": "VidHide [ADS]",
+        "name": "Drive 1 [Ads]",
         "link": "https://morencius.com/embed/yx2zqsjlc2jg"
-      },
-      {
-        "name": "Doodstream",
-        "link": "https://playmogo.com/e/wfxih5i00z30"
       }
     ]
   },
