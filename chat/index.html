@@ -13,6 +13,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+  <script type="module" src="/assets/firebase-config.js"></script>
+
   <style>
     :root {
       --bg-main: #000000;
@@ -160,19 +162,20 @@
     }
 
     .user-avatar {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #0284c7;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 800;
       overflow: hidden;
       flex-shrink: 0;
       border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
     }
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -618,13 +621,10 @@
 
     window.auth = FB.auth;
     window.db = FB.db;
-    window.fbRef = FB.ref;
-    window.fbGet = FB.get;
-    window.fbSet = FB.set;
-    window.fbPush = FB.push;
-    window.fbOnValue = FB.onValue;
-    window.fbQuery = FB.query;
-    window.fbLimitToLast = FB.limitToLast;
+    window.fbRef = FB.ref || FB.fbRef;
+    window.fbGet = FB.get || FB.fbGet;
+    window.fbSet = FB.set || FB.fbSet;
+    window.fbOnValue = FB.onValue || FB.fbOnValue || null;
 
     if (FB.onAuthStateChanged && FB.auth) {
       FB.onAuthStateChanged(FB.auth, (user) => {
@@ -645,16 +645,14 @@
     let checkTries = 0;
     const checkReady = setInterval(() => {
       checkTries++;
-      if (window.db && window.fbRef) {
+      if (window.db && window.fbRef && window.fbGet) {
         clearInterval(checkReady);
-        if (typeof window.initLiveChat === 'function') {
-          window.initLiveChat();
-        }
-      } else if (checkTries > 40) {
+        initLiveChat();
+      } else if (checkTries > 30) {
         clearInterval(checkReady);
         const loadingEl = document.getElementById('chatLoading');
         if (loadingEl) {
-          loadingEl.innerHTML = '<span style="color:#ef4444;">Gagal memuat modul Firebase. Pastikan file /assets/firebase-config.js dapat diakses.</span>';
+          loadingEl.innerHTML = '<span style="color:#ef4444;">Gagal memuat modul database.</span>';
         }
       }
     }, 100);
@@ -666,6 +664,7 @@
     let cachedStickers = [];
     let chatUsersList = [];
     let isInitialLoad = true;
+    let lastRenderedChatJson = '';
 
     const DEFAULT_STICKERS = [
       'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
@@ -778,7 +777,7 @@
       if (box) box.classList.remove('active');
     }
 
-    /* Mention @User Helpers */
+    /* Mention Helpers */
     function handleMentionSearch(inputEl) {
       const menu = document.getElementById('mentionMenu');
       if (!menu) return;
@@ -834,90 +833,148 @@
       });
     }
 
-    /* Live Chat Core Firebase Listener */
-    function initLiveChat() {
+    /* Core Render Function: Mengambil Nama & Foto Terupdate Dari Node USERS */
+    async function renderLiveChatMessages(chatData) {
       const container = document.getElementById('chatContainer');
-      const chatRef = window.fbRef(window.db, 'live_chat');
+      const loadingEl = document.getElementById('chatLoading');
+      if (loadingEl) loadingEl.remove();
 
-      // Fallback query jika limitToLast tidak diekspor
-      const queryRef = (window.fbQuery && window.fbLimitToLast)
-        ? window.fbQuery(chatRef, window.fbLimitToLast(80))
-        : chatRef;
+      if (!chatData || Object.keys(chatData).length === 0) {
+        container.innerHTML = '<div class="chat-loading-placeholder">Belum ada obrolan. Mulai sapa teman-teman sekarang!</div>';
+        return;
+      }
 
-      // Listener onValue dengan penanganan error
-      window.fbOnValue(queryRef, (snapshot) => {
-        const loadingEl = document.getElementById('chatLoading');
-        if (loadingEl) loadingEl.remove();
-
-        if (!snapshot.exists()) {
-          container.innerHTML = '<div class="chat-loading-placeholder">Belum ada obrolan. Mulai sapa teman-teman sekarang!</div>';
-          return;
-        }
-
-        const data = snapshot.val() || {};
-        container.innerHTML = '';
-        const usersMap = {};
-
-        Object.keys(data).forEach((key) => {
-          const item = data[key];
-          const isMine = window.currentUser && (
-            (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) ||
-            (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
-          );
-
-          const authorName = item.author || (item.email ? String(item.email).split('@')[0] : 'User');
-          const photoURL = item.photoURL || '';
-          const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
-          const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
-
-          if (!usersMap[authorName]) {
-            usersMap[authorName] = { name: authorName, photo: photoURL };
+      // Ambil seluruh node users untuk sinkronisasi nama/foto terbaru secara realtime
+      let allUsersMap = {};
+      try {
+        if (window.db && window.fbRef && window.fbGet) {
+          const usersSnap = await window.fbGet(window.fbRef(window.db, 'users'));
+          if (usersSnap.exists()) {
+            allUsersMap = usersSnap.val() || {};
           }
-
-          const avatarContent = photoURL 
-            ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
-            : initial;
-
-          const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
-          const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
-
-          const row = document.createElement('div');
-          row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
-
-          let contentHtml = '';
-          if (item.text) contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
-          if (item.stickerUrl) contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
-
-          row.innerHTML = `
-            <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
-            <div class="msg-body-wrapper">
-              <div class="msg-user-meta">
-                <span class="sender-name ${isAdmin ? 'admin' : ''}" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${escapeHtml(authorName)}</span>
-                ${levelBadge} ${adminBadge}
-              </div>
-              <div class="msg-bubble">${contentHtml}</div>
-              <span class="msg-time">${formatTime(item.timestamp)}</span>
-            </div>
-          `;
-
-          container.appendChild(row);
-        });
-
-        chatUsersList = Object.values(usersMap);
-
-        if (isInitialLoad) {
-          scrollToBottom(false);
-          isInitialLoad = false;
-        } else {
-          scrollToBottom(true);
         }
-      }, (err) => {
-        console.error("Firebase Read Error:", err);
-        const loadingEl = document.getElementById('chatLoading');
-        if (loadingEl) {
-          loadingEl.innerHTML = `<span style="color:#ef4444;">Izin akses ditolak database: ${escapeHtml(err.message)}</span>`;
+      } catch (_) {}
+
+      // Urutkan berdasarkan timestamp ASC (pesan lama di atas, baru di bawah)
+      const messageList = [];
+      Object.keys(chatData).forEach((key) => {
+        const item = chatData[key];
+        if (item && typeof item === 'object') {
+          messageList.push({ ...item, id: key });
         }
       });
+      messageList.sort((a, b) => (Number(a.timestamp) || 0) - (Number(b.timestamp) || 0));
+
+      container.innerHTML = '';
+      const mentionUsersMap = {};
+
+      messageList.forEach((item) => {
+        const isMine = window.currentUser && (
+          (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) ||
+          (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
+        );
+
+        // Cari profil user terupdate dari node 'users'
+        let updatedProfile = null;
+        if (item.email) {
+          const sanitizedEmail = String(item.email).toLowerCase().replace(/\./g, ',');
+          if (allUsersMap[sanitizedEmail]) updatedProfile = allUsersMap[sanitizedEmail];
+        }
+        if (!updatedProfile && item.uid && allUsersMap[item.uid]) {
+          updatedProfile = allUsersMap[item.uid];
+        }
+
+        // Prioritas nama: Node users -> item.author -> prefix email -> 'User'
+        const authorName = (updatedProfile && updatedProfile.name) ? updatedProfile.name : (item.author || (item.email ? String(item.email).split('@')[0] : 'User'));
+        const photoURL = (updatedProfile && updatedProfile.photoURL) ? updatedProfile.photoURL : (item.photoURL || '');
+        const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+        const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
+
+        if (!mentionUsersMap[authorName]) {
+          mentionUsersMap[authorName] = { name: authorName, photo: photoURL };
+        }
+
+        const avatarContent = photoURL 
+          ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
+          : initial;
+
+        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+        const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+
+        const row = document.createElement('div');
+        row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
+
+        let contentHtml = '';
+        if (item.text) contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
+        if (item.stickerUrl) contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
+
+        row.innerHTML = `
+          <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
+          <div class="msg-body-wrapper">
+            <div class="msg-user-meta">
+              <span class="sender-name ${isAdmin ? 'admin' : ''}" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${escapeHtml(authorName)}</span>
+              ${levelBadge} ${adminBadge}
+            </div>
+            <div class="msg-bubble">${contentHtml}</div>
+            <span class="msg-time">${formatTime(item.timestamp)}</span>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+
+      chatUsersList = Object.values(mentionUsersMap);
+
+      if (isInitialLoad) {
+        scrollToBottom(false);
+        isInitialLoad = false;
+      } else {
+        scrollToBottom(true);
+      }
+    }
+
+    /* Live Chat Loader: Mendukung onValue dan Polling fbGet otomatis */
+    async function loadChatMessagesOnce() {
+      try {
+        if (!window.db || !window.fbRef || !window.fbGet) return;
+        const chatRef = window.fbRef(window.db, 'live_chat');
+        const snap = await window.fbGet(chatRef);
+        if (snap.exists()) {
+          const val = snap.val() || {};
+          const jsonStr = JSON.stringify(val);
+          if (jsonStr !== lastRenderedChatJson) {
+            lastRenderedChatJson = jsonStr;
+            await renderLiveChatMessages(val);
+          }
+        } else {
+          const loadingEl = document.getElementById('chatLoading');
+          if (loadingEl) {
+            document.getElementById('chatContainer').innerHTML = '<div class="chat-loading-placeholder">Belum ada obrolan. Mulai sapa teman-teman sekarang!</div>';
+          }
+        }
+      } catch (err) {
+        console.error("Load Chat Error:", err);
+      }
+    }
+
+    function initLiveChat() {
+      // 1. Muat pesan awal langsung
+      loadChatMessagesOnce();
+
+      // 2. Jika fungsi onValue tersedia, pasang listener realtime
+      if (typeof window.fbOnValue === 'function') {
+        const chatRef = window.fbRef(window.db, 'live_chat');
+        window.fbOnValue(chatRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const val = snapshot.val() || {};
+            lastRenderedChatJson = JSON.stringify(val);
+            renderLiveChatMessages(val);
+          }
+        });
+      } else {
+        // Fallback polling realtime setiap 2.5 detik (menjamin pesan selalu update tanpa onValue)
+        setInterval(loadChatMessagesOnce, 2500);
+      }
     }
     window.initLiveChat = initLiveChat;
 
@@ -945,19 +1002,13 @@
       };
 
       try {
-        const chatRef = window.fbRef(window.db, 'live_chat');
-        let newMsgRef;
-        if (window.fbPush) {
-          newMsgRef = window.fbPush(chatRef);
-        } else {
-          newMsgRef = window.fbRef(window.db, `live_chat/${Date.now()}`);
-        }
-
+        const msgKey = Date.now();
+        const newMsgRef = window.fbRef(window.db, `live_chat/${msgKey}`);
         await window.fbSet(newMsgRef, newMsg);
 
         input.value = '';
         removeStickerPreview();
-        scrollToBottom(true);
+        loadChatMessagesOnce();
       } catch (err) {
         alert('Gagal mengirim pesan: ' + err.message);
       }
