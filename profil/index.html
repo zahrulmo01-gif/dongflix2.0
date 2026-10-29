@@ -35,6 +35,45 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* SKELETON ANIMASI */
+    @keyframes skeletonLoading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.11) 50%, rgba(255, 255, 255, 0.04) 75%);
+      background-size: 200% 100%;
+      animation: skeletonLoading 1.6s infinite ease-in-out;
+      border-radius: 6px;
+      display: inline-block;
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+      border: none !important;
+    }
+
+    .skeleton-avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50% !important;
+    }
+
+    .skeleton-text {
+      height: 1em;
+      border-radius: 6px;
+    }
+
+    .skeleton-btn {
+      border-radius: var(--radius-btn) !important;
+    }
+
+    .skeleton-card {
+      border-radius: var(--radius-card) !important;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+    }
+
     /* HEADER */
     header {
       position: fixed;
@@ -75,6 +114,8 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
     }
 
     /* CONTAINER UTAMA */
@@ -114,6 +155,7 @@
       flex-direction: column;
       align-items: flex-start;
       margin-bottom: 22px;
+      width: 100%;
     }
 
     .name-badge-row {
@@ -121,6 +163,7 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+      width: 100%;
     }
 
     .profile-name {
@@ -128,9 +171,11 @@
       font-weight: 800;
       letter-spacing: -0.4px;
       color: #fff;
+      display: inline-flex;
+      align-items: center;
     }
 
-    /* ANIMASI SHIMMER DARI KODE LIVE CHAT */
+    /* ANIMASI SHIMMER BADGE */
     @keyframes badgeShimmer {
       0% { transform: translateX(-150%) skewX(-20deg); }
       35%, 100% { transform: translateX(180%) skewX(-20deg); }
@@ -181,7 +226,7 @@
       line-height: 1.48;
       color: var(--text-sub);
       margin-top: 10px;
-      max-width: 100%;
+      width: 100%;
       word-break: break-word;
     }
 
@@ -276,7 +321,7 @@
       stroke-width: 2.2;
     }
 
-    /* TAB NAVIGASI MINIMALIS SEPERTI GAMBAR */
+    /* TAB NAVIGASI MINIMALIS */
     .profile-tabs-nav {
       display: flex;
       align-items: center;
@@ -308,7 +353,6 @@
       color: #ffffff;
     }
 
-    /* Indikator Garis Putih di Bawah Tab Aktif */
     .tab-nav-btn.active::after {
       content: '';
       position: absolute;
@@ -321,12 +365,8 @@
     }
 
     /* KONTEN TAB */
-    .tab-pane {
-      display: none;
-    }
-    .tab-pane.active {
-      display: block;
-    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
 
     /* GRID KOLEKSI (3 KOLOM) */
     .works-grid {
@@ -346,9 +386,7 @@
       text-decoration: none;
       transition: transform 0.15s;
     }
-    .work-card:active {
-      transform: scale(0.97);
-    }
+    .work-card:active { transform: scale(0.97); }
     .work-card img {
       width: 100%;
       height: 100%;
@@ -356,7 +394,7 @@
       display: block;
     }
 
-    /* LIST RIWAYAT NONTON (GRID CARD) */
+    /* LIST RIWAYAT NONTON */
     .history-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -422,7 +460,7 @@
       color: var(--text-sub);
     }
 
-    /* KONDISI AKSES DITOLAK UNTUK TAB RIWAYAT */
+    /* AKSES DITOLAK */
     .access-denied-box {
       text-align: center;
       padding: 48px 16px;
@@ -526,43 +564,48 @@
       <button class="back-btn" onclick="window.history.length > 1 ? window.history.back() : window.location.href='/'">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
-      <span class="header-title" id="headerTitle">Memuat...</span>
+      <span class="header-title" id="headerTitle">
+        <span class="skeleton skeleton-text" style="width: 120px; height: 18px;"></span>
+      </span>
     </div>
   </header>
 
   <div class="container" id="profileContent">
-    <!-- AVATAR -->
-    <div class="avatar-wrapper" id="profileAvatar">
-      <span class="avatar-placeholder" id="avatarInitial">...</span>
-    </div>
+    <!-- AVATAR DENGAN SKELETON -->
+    <div class="avatar-wrapper skeleton skeleton-avatar" id="profileAvatar"></div>
 
-    <!-- INFO PROFIL -->
+    <!-- INFO PROFIL DENGAN SKELETON -->
     <div class="profile-info">
       <div class="name-badge-row">
-        <h1 class="profile-name" id="userName">Memuat...</h1>
-        <div id="badgeContainer" style="display:inline-flex; align-items:center; gap:6px;"></div>
+        <h1 class="profile-name" id="userName">
+          <span class="skeleton skeleton-text" style="width: 160px; height: 26px;"></span>
+        </h1>
+        <div id="badgeContainer" style="display:inline-flex; align-items:center; gap:6px;">
+          <span class="skeleton" style="width: 44px; height: 20px; border-radius: 6px;"></span>
+        </div>
       </div>
 
-      <p class="profile-bio" id="userBio">No bio yet</p>
+      <div class="profile-bio" id="userBio">
+        <span class="skeleton skeleton-text" style="width: 80%; height: 14px; margin-top: 6px; display: block;"></span>
+        <span class="skeleton skeleton-text" style="width: 50%; height: 14px; margin-top: 6px; display: block;"></span>
+      </div>
 
-      <!-- STATISTIK (FOLLOWERS & FOLLOWING) -->
+      <!-- STATISTIK (FOLLOWERS & FOLLOWING) DENGAN SKELETON -->
       <div class="stats-row">
         <div class="stat-item">
-          <span class="stat-number" id="statFollowers">0</span>
+          <span class="stat-number" id="statFollowers"><span class="skeleton skeleton-text" style="width: 24px; height: 16px;"></span></span>
           <span class="stat-label">Followers</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number" id="statFollowing">0</span>
+          <span class="stat-number" id="statFollowing"><span class="skeleton skeleton-text" style="width: 24px; height: 16px;"></span></span>
           <span class="stat-label">Following</span>
         </div>
       </div>
     </div>
 
-    <!-- ACTION BAR: TOMBOL UTAMA + LOGOUT -->
+    <!-- ACTION BAR DENGAN SKELETON -->
     <div class="action-bar-row">
-      <button class="btn-action-main" id="btnMainAction" onclick="handleMainAction()">
-        + Follow
-      </button>
+      <button class="btn-action-main skeleton skeleton-btn" id="btnMainAction"></button>
       <button class="btn-logout-icon" id="btnLogoutProfile" style="display: none;" onclick="handleLogout()" title="Keluar dari Akun">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -574,7 +617,6 @@
 
     <!-- DUA TAB NAVIGASI MINIMALIS -->
     <div class="profile-tabs-nav">
-      <!-- Tab 1: Koleksi Favorit (Ikon Grid 9 Titik) -->
       <button class="tab-nav-btn active" id="tabBtnKoleksi" onclick="switchProfileTab('koleksi')" title="Koleksi Favorit">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <rect x="3" y="3" width="4.5" height="4.5" rx="1"/>
@@ -589,7 +631,6 @@
         </svg>
       </button>
 
-      <!-- Tab 2: Riwayat Nonton (Ikon Putar / Reload) -->
       <button class="tab-nav-btn" id="tabBtnRiwayat" onclick="switchProfileTab('riwayat')" title="Riwayat Tontonan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/>
@@ -597,16 +638,26 @@
       </button>
     </div>
 
-    <!-- ISI TAB 1: KOLEKSI -->
+    <!-- ISI TAB 1: KOLEKSI DENGAN SKELETON CARDS -->
     <div class="tab-pane active" id="paneKoleksi">
       <div class="works-grid" id="koleksiContainer">
-        <div class="empty-state">Memuat koleksi...</div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
       </div>
     </div>
 
-    <!-- ISI TAB 2: RIWAYAT NONTON -->
+    <!-- ISI TAB 2: RIWAYAT NONTON DENGAN SKELETON -->
     <div class="tab-pane" id="paneRiwayat">
-      <div id="riwayatContentArea"></div>
+      <div id="riwayatContentArea">
+        <div class="history-grid">
+          <div class="skeleton" style="height: 72px; width: 100%; border-radius: 14px;"></div>
+          <div class="skeleton" style="height: 72px; width: 100%; border-radius: 14px;"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -664,7 +715,6 @@
     let isNewUsernameValid = true;
     let editCheckTimeout = null;
 
-    // 1. Ekstrak nama user dari URL /profil/:username
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
@@ -676,7 +726,6 @@
       return null;
     }
 
-    // 2. Fetch data pengguna dari Firebase
     async function fetchUserData(identifier) {
       try {
         const usersRef = ref(db, 'users');
@@ -711,7 +760,6 @@
       return null;
     }
 
-    // 3. Render Profil Utama
     async function renderProfile(targetData, key, currentUser) {
       targetUserKey = key;
       targetUserData = targetData;
@@ -729,8 +777,9 @@
       const bioText = targetData.bio && targetData.bio.trim() !== '' ? targetData.bio : 'No bio yet';
       const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
 
-      document.getElementById('headerTitle').innerText = name;
-      document.getElementById('userName').innerText = name;
+      // Hapus skeleton teks di Header dan Nama
+      document.getElementById('headerTitle').innerHTML = name;
+      document.getElementById('userName').innerHTML = name;
       document.getElementById('userBio').innerText = bioText;
 
       // BADGE ADMIN & LEVEL
@@ -741,18 +790,22 @@
       const adminBadgeHtml = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
       badgeBox.innerHTML = `${levelBadgeHtml} ${adminBadgeHtml}`;
 
+      // STATISTIK
       document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
       document.getElementById('statFollowing').innerText = targetData.followingCount || 0;
 
+      // AVATAR
       const avatarBox = document.getElementById('profileAvatar');
+      avatarBox.classList.remove('skeleton', 'skeleton-avatar');
       if (photoURL) {
         avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span class=\\'avatar-placeholder\\'>${name.charAt(0).toUpperCase()}</span>'">`;
       } else {
         avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      // Tombol Aksi & Log Out
+      // TOMBOL AKSI
       const actionBtn = document.getElementById('btnMainAction');
+      actionBtn.classList.remove('skeleton', 'skeleton-btn');
       const logoutBtn = document.getElementById('btnLogoutProfile');
 
       if (isOwnProfile) {
@@ -772,12 +825,11 @@
         }
       }
 
-      // Render Data Tab
+      // Render Koleksi & Riwayat
       renderKoleksi(targetData.favorites);
       renderRiwayat(targetData.history);
     }
 
-    // 4. Render Tab Koleksi
     function renderKoleksi(rtdbFavorites) {
       const container = document.getElementById('koleksiContainer');
       let favList = [];
@@ -800,11 +852,9 @@
       `).join('');
     }
 
-    // 5. Render Tab Riwayat Nonton (Dengan proteksi kepemilikan)
     function renderRiwayat(rtdbHistory) {
       const area = document.getElementById('riwayatContentArea');
 
-      // Proteksi hak akses jika BUKAN pemilik akun
       if (!isOwnProfile) {
         area.innerHTML = `
           <div class="access-denied-box">
@@ -869,7 +919,6 @@
       return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     }
 
-    // 6. Pengalih Tab Navigasi
     window.switchProfileTab = function(tabName) {
       const btnKoleksi = document.getElementById('tabBtnKoleksi');
       const btnRiwayat = document.getElementById('tabBtnRiwayat');
@@ -889,7 +938,6 @@
       }
     };
 
-    // 7. Tombol Aksi Handler
     window.handleMainAction = async function() {
       if (isOwnProfile) {
         document.getElementById('inputEditName').value = targetUserData?.name || '';
@@ -943,7 +991,6 @@
       }
     };
 
-    // 8. Cek Ketersediaan Username Saat Edit
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
 
@@ -995,7 +1042,6 @@
       }, 400);
     });
 
-    // 9. Upload File Gambar
     document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
       if (this.files && this.files[0]) {
         const reader = new FileReader();
@@ -1006,7 +1052,6 @@
       }
     });
 
-    // 10. Simpan Edit Profil
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
       if (!isOwnProfile || !targetUserKey) return;
@@ -1059,7 +1104,6 @@
       }
     };
 
-    // 11. Logout
     window.handleLogout = async function() {
       if (confirm('Yakin ingin keluar dari akun?')) {
         await signOut(auth);
@@ -1070,7 +1114,6 @@
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // 12. Controller Inisialisasi
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
