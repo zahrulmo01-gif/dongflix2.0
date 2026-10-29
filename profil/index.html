@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Profil - Dongflix</title>
+  <title>Profil Pengguna - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
-
-  <script type="module" src="/assets/firebase-config.js"></script>
 
   <style>
     :root {
@@ -718,8 +716,10 @@
   </div>
 
   <script type="module">
-    import { auth, db, ref, get, set, remove, query, orderByChild, equalTo, onAuthStateChanged } from '/assets/firebase-config.js';
-    import { updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    // Ambil auth & db dari konfigurasi Anda, fungsi helper langsung dari CDN Firebase
+    import { auth, db } from '/assets/firebase-config.js';
+    import { ref, get, set, remove, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let base64Photo = '';
@@ -727,7 +727,7 @@
     let targetUserKey = null;
     let isOwnProfile = false;
 
-    // 1. Ekstrak nama pengguna dari path URL: /profil/:username
+    // 1. Ambil username dari URL (/profil/1255akbaral)
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
@@ -741,43 +741,56 @@
       return null;
     }
 
-    // 2. Query data user berdasarkan field username atau key UID/emailKey di Firebase
-    async function fetchUserByUsernameOrKey(identifier) {
+    // 2. Cari pengguna di Database (Mencocokkan field username atau emailKey)
+    async function fetchUserData(identifier) {
       try {
-        // Query child 'username'
         const usersRef = ref(db, 'users');
-        const userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
-        const snap = await get(userQuery);
-        if (snap.exists()) {
-          const val = snap.val();
-          const key = Object.keys(val)[0];
-          return { key, data: val[key] };
+
+        // Percobaan 1: Menggunakan query index username
+        try {
+          const q = query(usersRef, orderByChild('username'), equalTo(identifier));
+          const snap = await get(q);
+          if (snap.exists()) {
+            const val = snap.val();
+            const key = Object.keys(val)[0];
+            return { key, data: val[key] };
+          }
+        } catch (e) {
+          console.warn('Index query dilewati, beralih ke direct scan:', e);
+        }
+
+        // Percobaan 2: Scan koleksi users (mencocokkan field username / awalan emailKey)
+        const allSnap = await get(usersRef);
+        if (allSnap.exists()) {
+          const allUsers = allSnap.val();
+          for (const [key, val] of Object.entries(allUsers)) {
+            const matchUsername = val.username && String(val.username).toLowerCase() === identifier.toLowerCase();
+            const matchEmailPrefix = key.toLowerCase().startsWith(identifier.toLowerCase() + '@');
+            const matchExactKey = key.toLowerCase() === identifier.toLowerCase();
+
+            if (matchUsername || matchEmailPrefix || matchExactKey) {
+              return { key, data: val };
+            }
+          }
         }
       } catch (err) {
-        console.warn('Index username query fallback:', err);
+        console.error('Error saat mengambil data pengguna:', err);
       }
-
-      // Fallback: Direct key /users/{uid_atau_emailKey}
-      const directSnap = await get(ref(db, `users/${identifier}`));
-      if (directSnap.exists()) {
-        return { key: identifier, data: directSnap.val() };
-      }
-
       return null;
     }
 
-    // 3. Render Profil dan hak akses
+    // 3. Tampilkan data profil ke elemen DOM
     async function renderProfile(targetData, key, currentUser) {
       targetUserKey = key;
       const currentUserEmailKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/\./g, ',') : null;
       
+      // Validasi apakah user yang login membuka profilnya sendiri
       isOwnProfile = currentUser && (
         currentUser.uid === key || 
         currentUserEmailKey === key ||
         (targetData.email && currentUser.email.toLowerCase() === targetData.email.toLowerCase())
       );
 
-      // Sembunyikan kontrol edit & riwayat tontonan bila bukan akun sendiri
       const settingsWrapper = document.getElementById('sectionSettingsWrapper');
       const historyWrapper = document.getElementById('sectionHistoryWrapper');
       const editAvatarBadge = document.getElementById('btnEditPhotoBadge');
@@ -858,7 +871,7 @@
       `).join('');
     }
 
-    // 5. Render Riwayat Nonton
+    // 5. Render Riwayat Tontonan
     function loadUserHistory(rtdbHistory) {
       const container = document.getElementById('historyContainer');
       const clearBtn = document.getElementById('btnClearAllHistory');
@@ -923,7 +936,7 @@
       return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     }
 
-    /* AKSI DATA USER SENDIRI */
+    /* AKSI DATA PENGGUNA */
     window.deleteSingleFavorite = async function(slug) {
       if (!isOwnProfile || !confirm('Hapus donghua ini dari koleksi favorit?')) return;
       let favs = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
@@ -1024,47 +1037,48 @@
       }
     };
 
-    // 6. Controller Jalur Masuk
+    // 6. Controller Utama Alur Halaman
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
 
       if (urlUsername) {
-        // Akses via /profil/:username
-        const found = await fetchUserByUsernameOrKey(urlUsername);
+        // Jalur 1: Membuka URL dinamis /profil/{username}
+        const found = await fetchUserData(urlUsername);
         if (found) {
           await renderProfile(found.data, found.key, authUser);
         } else {
           document.getElementById('profileContent').innerHTML = `
             <div style="text-align:center;padding:80px 20px;color:var(--text-sub);">
               <h2 style="color:#fff;margin-bottom:8px;font-size:20px;">Pengguna Tidak Ditemukan</h2>
-              <p style="font-size:13px;">Profil "@${urlUsername}" belum terdaftar atau tidak tersedia.</p>
+              <p style="font-size:13px;">Profil "@${urlUsername}" belum terdaftar atau tidak ditemukan.</p>
               <a href="/" style="display:inline-block;margin-top:20px;padding:10px 20px;background:var(--color-primary);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;font-size:13px;">Kembali ke Beranda</a>
             </div>
           `;
         }
       } else {
-        // Akses langsung /profil/ tanpa username
+        // Jalur 2: Membuka langsung /profil/ tanpa username di URL
         if (!authUser) {
           window.location.href = '/profil/login.html';
           return;
         }
+
         const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
         const userKey = authUser.uid || emailKey;
         
-        let snap = await get(ref(db, `users/${userKey}`));
+        let snap = await get(ref(db, `users/${emailKey}`));
         let data = snap.exists() ? snap.val() : null;
         
         if (!data) {
-          snap = await get(ref(db, `users/${emailKey}`));
+          snap = await get(ref(db, `users/${userKey}`));
           data = snap.exists() ? snap.val() : {};
         }
         
-        // Update URL tanpa reload agar rapi sesuai username jika ada
+        // Perbarui URL ke /profil/{username} tanpa reload halaman jika ada username-nya
         if (data.username) {
           window.history.replaceState(null, '', `/profil/${data.username}`);
         }
-        await renderProfile(data, userKey, authUser);
+        await renderProfile(data, emailKey, authUser);
       }
     });
   </script>
