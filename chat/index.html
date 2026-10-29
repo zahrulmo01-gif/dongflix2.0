@@ -19,12 +19,13 @@
     :root {
       --bg-main: #000000;
       --bg-card: #0a0a0c;
-      --bg-chat-bubble: #0f172a;
+      --bg-chat-bubble: #17181c;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
+      --color-quote-border: #a855f7;
       --text-main: #ffffff;
-      --text-sub: #cbd5e1;
+      --text-sub: #d1d5db;
       --text-muted: #64748b;
       --border-color: rgba(255, 255, 255, 0.08);
       --glass-bg: rgba(18, 18, 24, 0.72);
@@ -150,10 +151,15 @@
       align-items: flex-start;
       max-width: 88%;
       animation: fadeInMsg 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
     .chat-msg-row.mine {
       margin-left: auto;
       flex-direction: row-reverse;
+    }
+    .chat-msg-row.highlighted .msg-bubble {
+      box-shadow: 0 0 0 2px var(--color-accent);
+      transition: box-shadow 0.3s ease;
     }
 
     @keyframes fadeInMsg {
@@ -162,8 +168,8 @@
     }
 
     .user-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: #0284c7;
       color: #fff;
@@ -183,26 +189,10 @@
       display: flex;
       flex-direction: column;
       gap: 3px;
+      max-width: 100%;
     }
     .chat-msg-row.mine .msg-body-wrapper {
       align-items: flex-end;
-    }
-
-    .msg-user-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11.5px;
-      margin-bottom: 2px;
-      flex-wrap: wrap;
-    }
-    .sender-name {
-      font-weight: 700;
-      color: #94a3b8;
-      cursor: pointer;
-    }
-    .sender-name.admin {
-      color: #f59e0b !important;
     }
 
     /* Shimmer Badge Effect */
@@ -232,10 +222,9 @@
       pointer-events: none;
     }
     .badge-level {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
     }
     .badge-level.admin-lvl {
       background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
@@ -255,23 +244,77 @@
     .msg-bubble {
       background: var(--bg-chat-bubble);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 9px 13px;
-      font-size: 13.5px;
-      color: var(--text-sub);
-      line-height: 1.45;
-      word-break: break-word;
+      border-radius: 18px;
+      padding: 10px 14px;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
     }
     .chat-msg-row.mine .msg-bubble {
-      background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
-      color: #fff;
-      border-color: rgba(56, 189, 248, 0.35);
+      background: #1e2638;
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+
+    /* Kotak Reply / Quote Box di dalam Bubble Pesan */
+    .msg-quote-box {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 10px;
+      padding: 6px 10px 6px 12px;
+      margin-bottom: 4px;
+      position: relative;
+      border-left: 3.5px solid #a855f7;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .chat-msg-row.mine .msg-quote-box {
+      border-left-color: #38bdf8;
+    }
+    .quote-author {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #4ade80;
+    }
+    .chat-msg-row.mine .quote-author {
+      color: #38bdf8;
+    }
+    .quote-snippet {
+      font-size: 11.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 250px;
+    }
+
+    .msg-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      flex-wrap: wrap;
+    }
+    .sender-name {
+      font-weight: 800;
+      color: #93c5fd;
+    }
+    .sender-name.admin {
+      color: #f59e0b !important;
+    }
+
+    .msg-text-content {
+      font-size: 13.5px;
+      color: #f1f5f9;
+      line-height: 1.4;
+      word-break: break-word;
     }
 
     .msg-sticker {
-      max-width: 145px;
-      max-height: 145px;
+      max-width: 140px;
+      max-height: 140px;
       object-fit: contain;
       border-radius: 10px;
       display: block;
@@ -287,10 +330,13 @@
       color: #bae6fd !important;
     }
 
-    .msg-time {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .msg-time-badge {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
     }
 
     /* Bottom Input Bar Area */
@@ -310,6 +356,46 @@
       position: relative;
       display: flex;
       flex-direction: column;
+    }
+
+    /* Balas Banner di atas input */
+    .reply-target-banner {
+      display: none;
+      background: #111827;
+      border-left: 3.5px solid #a855f7;
+      border-radius: 10px 10px 0 0;
+      padding: 6px 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .reply-target-banner.active { display: flex; }
+    .reply-target-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+    .reply-target-name {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #a855f7;
+    }
+    .reply-target-text {
+      font-size: 11.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+    .reply-target-cancel {
+      color: #94a3b8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
     }
 
     /* Preview Sticker Inside Input Area */
@@ -560,6 +646,15 @@
   <!-- Bottom Message Input Bar -->
   <div class="chat-bottom-bar">
     <div class="chat-input-wrapper" id="chatInputArea" style="display:none;">
+      <!-- Balas Banner Indicator -->
+      <div class="reply-target-banner" id="replyBanner">
+        <div class="reply-target-info">
+          <span class="reply-target-name" id="replyTargetAuthor">Membalas...</span>
+          <span class="reply-target-text" id="replyTargetSnippet">...</span>
+        </div>
+        <button class="reply-target-cancel" onclick="cancelReply()">✕</button>
+      </div>
+
       <!-- Sticker Preview -->
       <div class="sticker-preview-box" id="stickerPreview">
         <img id="stickerPreviewImg" src="" alt="Selected Sticker" />
@@ -580,7 +675,7 @@
           onkeydown="if(event.key==='Enter') sendMessage()"
         />
 
-        <!-- Sticker SVG Button -->
+        <!-- Sticker Button -->
         <button class="btn-sticker" onclick="openStickerPicker()" title="Pilih Stiker & GIF">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
@@ -665,6 +760,7 @@
     let chatUsersList = [];
     let isInitialLoad = true;
     let lastRenderedChatJson = '';
+    let replyingMessage = null; // Data pesan yang sedang dibalas
 
     const DEFAULT_STICKERS = [
       'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
@@ -689,7 +785,7 @@
     function formatTime(timestamp) {
       if (!timestamp) return '';
       const d = new Date(timestamp);
-      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      return `${String(d.getHours()).padStart(2, '0')}.${String(d.getMinutes()).padStart(2, '0')}`;
     }
 
     function scrollToBottom(smooth = false) {
@@ -700,6 +796,36 @@
           behavior: smooth ? 'smooth' : 'auto'
         });
       }
+    }
+
+    function scrollToMessage(msgId) {
+      const el = document.getElementById(`msg-${msgId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlighted');
+        setTimeout(() => el.classList.remove('highlighted'), 1500);
+      }
+    }
+
+    /* Reply Feature Handlers */
+    function setReplyMessage(msgId, author, text, stickerUrl) {
+      if (!window.currentUser) return;
+      const snippet = text || (stickerUrl ? '[Stiker/GIF]' : 'Pesan');
+      replyingMessage = {
+        id: msgId,
+        author: author,
+        snippet: snippet
+      };
+
+      document.getElementById('replyTargetAuthor').innerText = author;
+      document.getElementById('replyTargetSnippet').innerText = snippet;
+      document.getElementById('replyBanner').classList.add('active');
+      document.getElementById('chatInput').focus();
+    }
+
+    function cancelReply() {
+      replyingMessage = null;
+      document.getElementById('replyBanner').classList.remove('active');
     }
 
     /* Sticker Fetch & Select */
@@ -844,7 +970,6 @@
         return;
       }
 
-      // Ambil seluruh node users untuk sinkronisasi nama/foto terbaru secara realtime
       let allUsersMap = {};
       try {
         if (window.db && window.fbRef && window.fbGet) {
@@ -855,7 +980,6 @@
         }
       } catch (_) {}
 
-      // Urutkan berdasarkan timestamp ASC (pesan lama di atas, baru di bawah)
       const messageList = [];
       Object.keys(chatData).forEach((key) => {
         const item = chatData[key];
@@ -874,7 +998,6 @@
           (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
         );
 
-        // Cari profil user terupdate dari node 'users'
         let updatedProfile = null;
         if (item.email) {
           const sanitizedEmail = String(item.email).toLowerCase().replace(/\./g, ',');
@@ -884,7 +1007,6 @@
           updatedProfile = allUsersMap[item.uid];
         }
 
-        // Prioritas nama: Node users -> item.author -> prefix email -> 'User'
         const authorName = (updatedProfile && updatedProfile.name) ? updatedProfile.name : (item.author || (item.email ? String(item.email).split('@')[0] : 'User'));
         const photoURL = (updatedProfile && updatedProfile.photoURL) ? updatedProfile.photoURL : (item.photoURL || '');
         const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
@@ -898,25 +1020,40 @@
           ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
           : initial;
 
-        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">🍃 Lvl 8</span>`;
         const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
 
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
+        row.id = `msg-${item.id}`;
+
+        // Render Balasan / Quote Box jika pesan ini membalas pesan lain
+        let quoteHtml = '';
+        if (item.replyTo) {
+          quoteHtml = `
+            <div class="msg-quote-box" onclick="event.stopPropagation(); scrollToMessage('${item.replyTo.id}')">
+              <span class="quote-author">${escapeHtml(item.replyTo.author)}</span>
+              <span class="quote-snippet">${escapeHtml(item.replyTo.snippet)}</span>
+            </div>
+          `;
+        }
 
         let contentHtml = '';
-        if (item.text) contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
+        if (item.text) contentHtml += `<div class="msg-text-content">${parseMentions(item.text)}</div>`;
         if (item.stickerUrl) contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
 
         row.innerHTML = `
           <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
           <div class="msg-body-wrapper">
-            <div class="msg-user-meta">
-              <span class="sender-name ${isAdmin ? 'admin' : ''}" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${escapeHtml(authorName)}</span>
-              ${levelBadge} ${adminBadge}
+            <div class="msg-bubble" onclick="setReplyMessage('${item.id}', '${escapeHtml(authorName)}', '${escapeHtml(item.text || '')}', '${item.stickerUrl || ''}')">
+              <span class="msg-time-badge">${formatTime(item.timestamp)}</span>
+              ${quoteHtml}
+              <div class="msg-user-meta">
+                <span class="sender-name ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
+                ${levelBadge} ${adminBadge}
+              </div>
+              ${contentHtml}
             </div>
-            <div class="msg-bubble">${contentHtml}</div>
-            <span class="msg-time">${formatTime(item.timestamp)}</span>
           </div>
         `;
 
@@ -958,10 +1095,8 @@
     }
 
     function initLiveChat() {
-      // 1. Muat pesan awal langsung
       loadChatMessagesOnce();
 
-      // 2. Jika fungsi onValue tersedia, pasang listener realtime
       if (typeof window.fbOnValue === 'function') {
         const chatRef = window.fbRef(window.db, 'live_chat');
         window.fbOnValue(chatRef, (snapshot) => {
@@ -972,7 +1107,6 @@
           }
         });
       } else {
-        // Fallback polling realtime setiap 2.5 detik (menjamin pesan selalu update tanpa onValue)
         setInterval(loadChatMessagesOnce, 2500);
       }
     }
@@ -1001,6 +1135,15 @@
         isAdmin: isAdmin
       };
 
+      // Tambahkan info balasan / quote jika sedang membalas
+      if (replyingMessage) {
+        newMsg.replyTo = {
+          id: replyingMessage.id,
+          author: replyingMessage.author,
+          snippet: replyingMessage.snippet
+        };
+      }
+
       try {
         const msgKey = Date.now();
         const newMsgRef = window.fbRef(window.db, `live_chat/${msgKey}`);
@@ -1008,6 +1151,7 @@
 
         input.value = '';
         removeStickerPreview();
+        cancelReply();
         loadChatMessagesOnce();
       } catch (err) {
         alert('Gagal mengirim pesan: ' + err.message);
