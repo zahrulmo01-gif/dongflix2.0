@@ -6,8 +6,8 @@
   <title>Profil - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
-  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
-  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+  <link rel="icon" type="image/png" href="/image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="/image/IMG_6395.png">
 
   <style>
     :root {
@@ -27,7 +27,7 @@
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       padding-top: 60px;
       padding-bottom: 60px;
       min-height: 100vh;
@@ -94,7 +94,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .avatar-wrapper img {
@@ -108,18 +108,19 @@
       color: #fff;
     }
 
-    /* INFORMASI PROFIL */
+    /* INFORMASI PROFIL & BADGE */
     .profile-info {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .name-badge-row {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .profile-name {
@@ -129,11 +130,50 @@
       color: #fff;
     }
 
-    .verified-icon {
-      width: 18px;
-      height: 18px;
-      fill: #38bdf8;
-      display: none;
+    /* ANIMASI SHIMMER DARI KODE LIVE CHAT */
+    @keyframes badgeShimmer {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      35%, 100% { transform: translateX(180%) skewX(-20deg); }
+    }
+    .badge-admin, .badge-level {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7.5px;
+      border-radius: 6px;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .badge-admin::after, .badge-level::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 45%; height: 200%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+      animation: badgeShimmer 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+    .badge-level {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+    .badge-level.admin-lvl {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      color: #451a03;
+      border: 1px solid rgba(254, 243, 199, 0.5);
+      font-weight: 900;
+    }
+    .badge-admin {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.45);
+      font-weight: 900;
     }
 
     .profile-bio {
@@ -150,7 +190,7 @@
       display: flex;
       align-items: center;
       gap: 36px;
-      margin-top: 20px;
+      margin-top: 18px;
     }
 
     .stat-item {
@@ -170,9 +210,17 @@
       font-weight: 500;
     }
 
-    /* TOMBOL AKSI UTAMA (FOLLOW / EDIT PROFIL) */
-    .btn-action-main {
+    /* ACTION BAR: EDIT PROFIL + LOG OUT */
+    .action-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       width: 100%;
+      margin-top: 22px;
+    }
+
+    .btn-action-main {
+      flex: 1;
       height: 46px;
       border-radius: var(--radius-btn);
       border: none;
@@ -185,7 +233,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin-top: 22px;
       box-shadow: 0 4px 18px rgba(255, 255, 255, 0.08);
       transition: opacity 0.2s, transform 0.1s;
     }
@@ -193,11 +240,39 @@
       transform: scale(0.98);
       opacity: 0.9;
     }
-
     .btn-action-main.btn-secondary {
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-logout-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-logout-icon:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+    .btn-logout-icon:active {
+      transform: scale(0.95);
+    }
+    .btn-logout-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
     }
 
     /* SECTION TITLE: KOLEKSI */
@@ -209,7 +284,7 @@
       margin-bottom: 16px;
     }
 
-    /* GRID KOLEKSI (3 KOLOM) */
+    /* GRID KOLEKSI */
     .works-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -225,10 +300,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       display: block;
       text-decoration: none;
-      transition: transform 0.2s;
-    }
-    .work-card:active {
-      transform: scale(0.97);
     }
     .work-card img {
       width: 100%;
@@ -261,7 +332,9 @@
 
     .modal-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      max-height: 90vh;
+      overflow-y: auto;
       background: #11141c;
       border: 1px solid var(--border-color);
       border-radius: 20px;
@@ -279,19 +352,35 @@
     .form-group { margin-bottom: 14px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px; }
     .form-input {
-      width: 100%; height: 44px; background: #080a0f; border: 1px solid var(--border-color);
+      width: 100%; height: 42px; background: #080a0f; border: 1px solid var(--border-color);
       border-radius: 10px; padding: 0 12px; color: #fff; font-size: 13.5px; outline: none;
     }
     .form-textarea {
-      width: 100%; height: 80px; background: #080a0f; border: 1px solid var(--border-color);
+      width: 100%; height: 70px; background: #080a0f; border: 1px solid var(--border-color);
       border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13.5px; outline: none; resize: none;
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
-
-    .btn-modal-save {
-      width: 100%; height: 44px; background: #fff; color: #000; border: none;
-      border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    
+    .input-hint {
+      font-size: 11px;
+      margin-top: 4px;
+      display: none;
+      font-weight: 600;
     }
+    .input-hint.error { color: #ef4444; display: block; }
+    .input-hint.success { color: #22c55e; display: block; }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    .btn-modal-save {
+      width: 100%; height: 46px; background: #fff; color: #000; border: none;
+      border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
+    }
+    .btn-modal-save:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -316,10 +405,7 @@
     <div class="profile-info">
       <div class="name-badge-row">
         <h1 class="profile-name" id="userName">Memuat...</h1>
-        <!-- Verified Icon -->
-        <svg class="verified-icon" id="verifiedIcon" viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-        </svg>
+        <div id="badgeContainer" style="display:inline-flex; align-items:center; gap:6px;"></div>
       </div>
 
       <p class="profile-bio" id="userBio">No bio yet</p>
@@ -337,10 +423,20 @@
       </div>
     </div>
 
-    <!-- TOMBOL AKSI (FOLLOW / EDIT PROFIL) -->
-    <button class="btn-action-main" id="btnMainAction" onclick="handleMainAction()">
-      + Follow
-    </button>
+    <!-- ACTION BAR -->
+    <div class="action-bar-row">
+      <button class="btn-action-main" id="btnMainAction" onclick="handleMainAction()">
+        + Follow
+      </button>
+      <!-- Tombol Log Out (Muncul jika profil sendiri) -->
+      <button class="btn-logout-icon" id="btnLogoutProfile" style="display: none;" onclick="handleLogout()" title="Keluar dari Akun">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
 
     <!-- SECTION: KOLEKSI -->
     <div class="section-title">Koleksi</div>
@@ -355,18 +451,39 @@
       <button class="modal-close" onclick="closeModal('modalEditProfile')">&times;</button>
       <div class="modal-title">Edit Profil</div>
       <form onsubmit="handleSaveProfile(event)">
+        
+        <!-- Edit Nama Lengkap -->
         <div class="form-group">
           <label class="form-label">Nama Tampilan</label>
           <input type="text" id="inputEditName" class="form-input" required placeholder="Nama Anda...">
         </div>
+
+        <!-- Edit Username -->
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="inputEditUsername" class="form-input" required pattern="^[a-zA-Z0-9_]{3,20}$" placeholder="username baru...">
+          <div id="editUsernameStatus" class="input-hint"></div>
+        </div>
+
+        <!-- Edit Bio -->
         <div class="form-group">
           <label class="form-label">Bio Singkat</label>
           <textarea id="inputEditBio" class="form-textarea" placeholder="Tuliskan bio profil Anda..."></textarea>
         </div>
+
+        <!-- Edit Foto: Upload File atau URL -->
         <div class="form-group">
-          <label class="form-label">Foto Profil (URL Gambar)</label>
-          <input type="url" id="inputEditPhoto" class="form-input" placeholder="https://example.com/foto.jpg">
+          <label class="form-label">Foto Profil (Pilih Salah Satu)</label>
+          <input type="file" id="inputEditPhotoFile" accept="image/*" class="form-input" style="padding-top:7px; margin-bottom: 6px;">
+          <input type="url" id="inputEditPhotoUrl" class="form-input" placeholder="Atau tempel URL gambar...">
         </div>
+
+        <!-- Ganti Password -->
+        <div class="form-group">
+          <label class="form-label">Ganti Password (Kosongkan jika tidak diubah)</label>
+          <input type="password" id="inputEditPassword" class="form-input" minlength="6" placeholder="Minimal 6 karakter...">
+        </div>
+
         <button type="submit" class="btn-modal-save" id="btnSaveModal">Simpan Perubahan</button>
       </form>
     </div>
@@ -375,27 +492,31 @@
   <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
     import { ref, get, set, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let currentAuthUser = null;
     let targetUserKey = null;
     let targetUserData = null;
     let isOwnProfile = false;
     let isFollowing = false;
+    let uploadedPhotoBase64 = '';
+    let isNewUsernameValid = true;
+    let editCheckTimeout = null;
 
-    // 1. Ekstrak username dari URL path (/profil/:username)
+    // 1. Dapatkan parameter username dari URL /profil/:username
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
       const profilIdx = segments.indexOf('profil');
       if (profilIdx !== -1 && segments[profilIdx + 1]) {
         const val = decodeURIComponent(segments[profilIdx + 1]);
-        if (val !== 'index.html' && val !== 'login.html') return val;
+        if (val !== 'index.html' && val !== 'login.html' && val !== 'register.html') return val;
       }
       return null;
     }
 
-    // 2. Fetch User dari Database (Query index / scan fallback)
+    // 2. Fetch data pengguna dari database (Query index atau scan fallback)
     async function fetchUserData(identifier) {
       try {
         const usersRef = ref(db, 'users');
@@ -408,7 +529,7 @@
             return { key, data: val[key] };
           }
         } catch (e) {
-          console.warn('Index query skipped, scanning data...', e);
+          console.warn('Query index dilewati, menggunakan scan...', e);
         }
 
         const allSnap = await get(usersRef);
@@ -437,7 +558,6 @@
 
       const currentUserEmailKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/\./g, ',') : null;
       
-      // Validasi apakah ini profil sendiri
       isOwnProfile = currentUser && (
         currentUser.uid === key || 
         currentUserEmailKey === key ||
@@ -447,18 +567,20 @@
       const name = targetData.name || targetData.username || 'Pengguna';
       const photoURL = targetData.photoURL || '';
       const bioText = targetData.bio && targetData.bio.trim() !== '' ? targetData.bio : 'No bio yet';
+      const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
 
-      // Header menampilkan Nama
+      // Header & Informasi Teks
       document.getElementById('headerTitle').innerText = name;
       document.getElementById('userName').innerText = name;
       document.getElementById('userBio').innerText = bioText;
 
-      // Status Verifikasi (Opsional untuk status admin/verified)
-      if (targetData.status === 'admin' || targetData.verified) {
-        document.getElementById('verifiedIcon').style.display = 'inline-block';
-      } else {
-        document.getElementById('verifiedIcon').style.display = 'none';
-      }
+      // BADGE ADMIN & LEVEL (LOGIKA DAN STYLE DARI LIVE CHAT)
+      const badgeBox = document.getElementById('badgeContainer');
+      const levelBadgeHtml = isAdmin 
+        ? `<span class="badge-level admin-lvl">Lv999+</span>` 
+        : `<span class="badge-level">Lv${targetData.level || 1}</span>`;
+      const adminBadgeHtml = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+      badgeBox.innerHTML = `${levelBadgeHtml} ${adminBadgeHtml}`;
 
       // Followers & Following
       document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
@@ -472,13 +594,16 @@
         avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      // Tombol Aksi: Edit Profil vs Follow
+      // Tombol Aksi: Edit Profil vs Follow + Log Out
       const actionBtn = document.getElementById('btnMainAction');
+      const logoutBtn = document.getElementById('btnLogoutProfile');
+
       if (isOwnProfile) {
         actionBtn.innerText = 'Edit Profil';
         actionBtn.className = 'btn-action-main btn-secondary';
+        logoutBtn.style.display = 'flex';
       } else {
-        // Cek status follow jika login
+        logoutBtn.style.display = 'none';
         if (currentUser && targetData.followers && targetData.followers[currentUserEmailKey]) {
           isFollowing = true;
           actionBtn.innerText = 'Following';
@@ -490,11 +615,10 @@
         }
       }
 
-      // Render Koleksi (Grid 3 kolom)
       renderKoleksi(targetData.favorites);
     }
 
-    // 4. Render Grid Koleksi
+    // 4. Render Koleksi
     function renderKoleksi(rtdbFavorites) {
       const container = document.getElementById('koleksiContainer');
       let favList = [];
@@ -517,16 +641,21 @@
       `).join('');
     }
 
-    // 5. Handler Klik Tombol Utama (Edit Profil / Follow)
+    // 5. Action Button Handler (Edit Profil / Follow)
     window.handleMainAction = async function() {
       if (isOwnProfile) {
-        // Buka modal edit profil
         document.getElementById('inputEditName').value = targetUserData?.name || '';
+        document.getElementById('inputEditUsername').value = targetUserData?.username || '';
         document.getElementById('inputEditBio').value = targetUserData?.bio || '';
-        document.getElementById('inputEditPhoto').value = targetUserData?.photoURL || '';
+        document.getElementById('inputEditPhotoUrl').value = targetUserData?.photoURL || '';
+        document.getElementById('inputEditPhotoFile').value = '';
+        document.getElementById('inputEditPassword').value = '';
+        uploadedPhotoBase64 = '';
+        isNewUsernameValid = true;
+        document.getElementById('editUsernameStatus').style.display = 'none';
+
         openModal('modalEditProfile');
       } else {
-        // Logika Follow / Unfollow
         if (!currentAuthUser) {
           alert('Silakan login terlebih dahulu untuk mengikuti profil ini.');
           window.location.href = '/profil/login.html';
@@ -540,7 +669,6 @@
         try {
           let currentFollowers = targetUserData.followersCount || 0;
           if (isFollowing) {
-            // Unfollow
             await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), null);
             currentFollowers = Math.max(0, currentFollowers - 1);
             await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
@@ -549,7 +677,6 @@
             btn.innerText = '+ Follow';
             btn.className = 'btn-action-main';
           } else {
-            // Follow
             await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), true);
             currentFollowers += 1;
             await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
@@ -561,51 +688,125 @@
           targetUserData.followersCount = currentFollowers;
           document.getElementById('statFollowers').innerText = currentFollowers;
         } catch (e) {
-          alert('Gagal memproses permintaan follow.');
+          alert('Gagal memproses follow/unfollow.');
         } finally {
           btn.disabled = false;
         }
       }
     };
 
-    // 6. Simpan Edit Profil
+    // 6. Validasi Real-time Perubahan Username di Modal Edit
+    const editUsernameInput = document.getElementById('inputEditUsername');
+    const editUsernameStatus = document.getElementById('editUsernameStatus');
+
+    editUsernameInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
+      clearTimeout(editCheckTimeout);
+      const val = e.target.value.trim();
+
+      if (!val || val === (targetUserData?.username || '').toLowerCase()) {
+        editUsernameStatus.style.display = 'none';
+        isNewUsernameValid = true;
+        return;
+      }
+
+      if (val.length < 3) {
+        editUsernameStatus.className = 'input-hint error';
+        editUsernameStatus.innerText = 'Username minimal 3 karakter.';
+        isNewUsernameValid = false;
+        return;
+      }
+
+      editCheckTimeout = setTimeout(async () => {
+        try {
+          const usersRef = ref(db, 'users');
+          const allSnap = await get(usersRef);
+          let isTaken = false;
+          if (allSnap.exists()) {
+            const data = allSnap.val();
+            for (const key in data) {
+              if (key !== targetUserKey && data[key]?.username && data[key].username.toLowerCase() === val) {
+                isTaken = true;
+                break;
+              }
+            }
+          }
+
+          if (isTaken) {
+            editUsernameStatus.className = 'input-hint error';
+            editUsernameStatus.innerText = `Username "${val}" sudah dipakai orang lain!`;
+            isNewUsernameValid = false;
+          } else {
+            editUsernameStatus.className = 'input-hint success';
+            editUsernameStatus.innerText = `Username "${val}" dapat digunakan!`;
+            isNewUsernameValid = true;
+          }
+        } catch (_) {
+          isNewUsernameValid = true;
+        }
+      }, 400);
+    });
+
+    // 7. Preview & Konversi File Foto Upload
+    document.getElementById('inputEditPhotoFile').addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedPhotoBase64 = evt.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+
+    // 8. Simpan Seluruh Perubahan Edit Profil
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
-      const newName = document.getElementById('inputEditName').value.trim();
-      const newBio = document.getElementById('inputEditBio').value.trim();
-      const newPhoto = document.getElementById('inputEditPhoto').value.trim();
+      if (!isOwnProfile || !targetUserKey) return;
 
-      if (!newName || !targetUserKey) return;
+      if (!isNewUsernameValid) {
+        alert('Username yang dimasukkan tidak valid atau sudah dipakai orang lain.');
+        return;
+      }
+
+      const newName = document.getElementById('inputEditName').value.trim();
+      const newUsername = document.getElementById('inputEditUsername').value.trim().toLowerCase();
+      const newBio = document.getElementById('inputEditBio').value.trim();
+      const newPhotoUrl = document.getElementById('inputEditPhotoUrl').value.trim();
+      const finalPhoto = uploadedPhotoBase64 || newPhotoUrl || targetUserData.photoURL || '';
+      const newPassword = document.getElementById('inputEditPassword').value;
 
       const saveBtn = document.getElementById('btnSaveModal');
       saveBtn.disabled = true;
       saveBtn.innerText = 'Menyimpan...';
 
       try {
+        // Ganti password jika diisi
+        if (newPassword && newPassword.length >= 6) {
+          await updatePassword(currentAuthUser, newPassword);
+        }
+
+        // Simpan perubahan ke Realtime Database
         const updates = {
           name: newName,
+          username: newUsername,
           bio: newBio,
-          photoURL: newPhoto
+          photoURL: finalPhoto
         };
 
         await update(ref(db, `users/${targetUserKey}`), updates);
 
         targetUserData.name = newName;
+        targetUserData.username = newUsername;
         targetUserData.bio = newBio;
-        targetUserData.photoURL = newPhoto;
+        targetUserData.photoURL = finalPhoto;
 
-        document.getElementById('headerTitle').innerText = newName;
-        document.getElementById('userName').innerText = newName;
-        document.getElementById('userBio').innerText = newBio !== '' ? newBio : 'No bio yet';
-
-        const avatarBox = document.getElementById('profileAvatar');
-        if (newPhoto) {
-          avatarBox.innerHTML = `<img src="${newPhoto}" alt="${newName}">`;
-        } else {
-          avatarBox.innerHTML = `<span class="avatar-placeholder">${newName.charAt(0).toUpperCase()}</span>`;
-        }
-
+        // Render ulang tampilan lokal
+        await renderProfile(targetUserData, targetUserKey, currentAuthUser);
         closeModal('modalEditProfile');
+
+        // Update URL bilamana username diubah
+        window.history.replaceState(null, '', `/profil/${newUsername}`);
+        alert('Profil berhasil diperbarui!');
       } catch (err) {
         alert('Gagal menyimpan profil: ' + err.message);
       } finally {
@@ -614,10 +815,18 @@
       }
     };
 
+    // 9. Logout
+    window.handleLogout = async function() {
+      if (confirm('Yakin ingin keluar dari akun?')) {
+        await signOut(auth);
+        window.location.href = '/profil/login.html';
+      }
+    };
+
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // 7. Alur Masuk Halaman
+    // 10. Controller Alur Navigasi & Redirect Otomatis
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
@@ -638,27 +847,28 @@
           document.getElementById('headerTitle').innerText = 'Tidak Ditemukan';
         }
       } else {
-        // Akses langsung /profil/ tanpa username
+        // Akses /profil tanpa username
         if (!authUser) {
+          // Belum login -> alihkan langsung ke /profil/login
           window.location.href = '/profil/login.html';
           return;
         }
 
+        // Sudah login -> ambil username akun sendiri dan redirect ke /profil/username
         const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
-        const userKey = authUser.uid || emailKey;
-
         let snap = await get(ref(db, `users/${emailKey}`));
         let data = snap.exists() ? snap.val() : null;
 
         if (!data) {
-          snap = await get(ref(db, `users/${userKey}`));
+          snap = await get(ref(db, `users/${authUser.uid}`));
           data = snap.exists() ? snap.val() : {};
         }
 
         if (data.username) {
-          window.history.replaceState(null, '', `/profil/${data.username}`);
+          window.location.href = `/profil/${data.username}`;
+        } else {
+          await renderProfile(data, emailKey, authUser);
         }
-        await renderProfile(data, emailKey, authUser);
       }
     });
   </script>
