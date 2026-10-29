@@ -316,40 +316,175 @@
       display: block;
     }
 
+    /* POPOVER DRAWER MENU (STYLE MODERN 2 KOLOM) */
     .popover-menu {
       display: none;
       position: fixed;
-      top: 72px;
+      top: 16px;
       right: 16px;
+      left: 16px;
+      max-width: 420px;
+      margin: 0 auto;
+      background: rgba(12, 14, 20, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--glass-border);
       border-top: 1px solid var(--glass-border-top);
-      border-radius: 18px;
-      padding: 8px;
-      min-width: 210px;
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6);
-      z-index: 105;
+      border-radius: 26px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      z-index: 200;
       transform: translateZ(0);
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
+    .popover-menu::-webkit-scrollbar { display: none; }
+    .popover-menu.active { display: flex; flex-direction: column; gap: 14px; }
 
-    .popover-menu.active { display: block; }
-    .popover-menu a {
+    /* Header Mini Menu Popover */
+    .popover-top-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .popover-brand {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .popover-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .popover-close-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    /* Grid Navigasi 2 Kolom */
+    .menu-grid-nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .menu-nav-tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
       color: var(--text-main);
       text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .menu-nav-tile:hover, .menu-nav-tile:active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #ffffff;
+    }
+    .menu-nav-tile.active-pill {
+      background: rgba(2, 132, 199, 0.25);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: var(--color-accent);
+    }
+    .menu-nav-tile svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      flex-shrink: 0;
+    }
+
+    /* Kartu Status Akun di dalam Menu */
+    .menu-account-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .menu-account-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .menu-account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .menu-account-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .menu-account-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .menu-account-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Tombol Aksi Masuk / Daftar di dalam Menu */
+    .menu-btn-auth {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 42px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.08);
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .menu-btn-auth:active { transform: scale(0.98); opacity: 0.9; }
+    .menu-btn-auth svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
     .modal-overlay { 
       display: none; 
       position: fixed; 
       inset: 0; 
-      background: #000000 !important;
+      background: #000000 !important; 
       z-index: 999; 
       padding: 16px; 
       overflow-y: auto; 
@@ -1053,24 +1188,74 @@
     </div>
   </header>
 
+  <!-- MENU POPOVER MODERN 2 KOLOM (DONGFLIX) -->
   <div class="popover-menu" id="popoverMenu">
-    <div id="authMenuContainer">
-      <a href="/profil/login.html">
-        <span>Login / Daftar</span>
-        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    <!-- Header Popover -->
+    <div class="popover-top-bar">
+      <div class="popover-brand">
+        <img src="image/IMG_6395.png" alt="Logo" style="width:20px; height:20px; object-fit:contain;">
+        <span>Dong<span style="color:var(--color-accent);">flix</span></span>
+      </div>
+      <button class="popover-close-btn" onclick="togglePopoverMenu()" aria-label="Tutup Menu">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Grid Menu Utama 2 Kolom -->
+    <div class="menu-grid-nav">
+      <!-- 1. Beranda -->
+      <a href="/" class="menu-nav-tile active-pill">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>Beranda</span>
+      </a>
+
+      <!-- 2. Series Donghua -->
+      <a href="/donghua/" class="menu-nav-tile">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        <span>Series</span>
+      </a>
+
+      <!-- 3. Movie -->
+      <a href="/donghua/?type=movie" class="menu-nav-tile">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        <span>Movie</span>
+      </a>
+
+      <!-- 4. Koleksi / Favorit -->
+      <a href="/profil/" class="menu-nav-tile">
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span>Koleksi</span>
+      </a>
+
+      <!-- 5. Genre Katalog -->
+      <a href="#genreBar" class="menu-nav-tile" onclick="togglePopoverMenu()">
+        <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        <span>Genre</span>
+      </a>
+
+      <!-- 6. Live Chat Komunitas -->
+      <a href="/chat/" class="menu-nav-tile">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Live Chat</span>
       </a>
     </div>
-    <a href="/chat/">
-      <span>Live Chat Komunitas</span>
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </a>
-    <a href="/profil/">
-      <span>Favorit Saya</span>
-      <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-    </a>
-    <a href="/donghua/"><span>Katalog Lengkap</span><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg></a>
-    <a href="/donghua/"><span>Donghua Terbaru</span><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg></a>
-    <a href="/donghua/?type=movie"><span>Movie Terbaru</span><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg></a>
+
+    <!-- Wadah Status Akun & Tombol Auth Dinamis -->
+    <div id="authMenuContainer" style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="menu-account-card">
+        <div class="menu-account-avatar">
+          <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="menu-account-info">
+          <div class="menu-account-title">Akun Saya</div>
+          <div class="menu-account-sub">Masuk untuk simpan riwayat & koleksi.</div>
+        </div>
+      </div>
+      <a href="/profil/login.html" class="menu-btn-auth">
+        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span>Masuk / Daftar</span>
+      </a>
+    </div>
   </div>
 
   <div class="modal-overlay" id="searchModalOverlay">
@@ -1304,17 +1489,10 @@
           const socialMenuBtn = document.getElementById('socialMenuBtn');
 
           if (user) {
-            if (authMenuContainer) {
-              authMenuContainer.innerHTML = `
-                <a href="/profil/">
-                  <span>Profil Saya</span>
-                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </a>
-              `;
-            }
-
             let photoURL = user.photoURL || '';
-            let initial = (user.email ? user.email.charAt(0) : 'U').toUpperCase();
+            let name = user.displayName || user.email.split('@')[0];
+            let username = '';
+            let initial = (name.trim().charAt(0) || 'U').toUpperCase();
 
             if (fb.db && fb.ref && fb.get && user.email) {
               try {
@@ -1323,11 +1501,34 @@
                 if (snap.exists()) {
                   const data = snap.val();
                   if (data.photoURL) photoURL = data.photoURL;
-                  if (data.name) initial = data.name.charAt(0).toUpperCase();
+                  if (data.name) name = data.name;
+                  if (data.username) username = data.username;
+                  initial = (name.trim().charAt(0) || 'U').toUpperCase();
                 }
               } catch (_) {}
             }
 
+            const profileUrl = username ? `/profil/${username}` : '/profil/';
+
+            // Render Kartu Akun Aktif di dalam Popover
+            if (authMenuContainer) {
+              const avatarHtml = photoURL 
+                ? `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='${initial}'" />` 
+                : initial;
+
+              authMenuContainer.innerHTML = `
+                <a href="${profileUrl}" class="menu-account-card">
+                  <div class="menu-account-avatar">${avatarHtml}</div>
+                  <div class="menu-account-info">
+                    <div class="menu-account-title">${name}</div>
+                    <div class="menu-account-sub">${username ? `@${username}` : user.email}</div>
+                  </div>
+                  <svg style="width:16px;height:16px;stroke:var(--text-muted);fill:none;stroke-width:2.2;flex-shrink:0;" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              `;
+            }
+
+            // Update icon avatar di header bar
             if (socialMenuBtn) {
               if (photoURL) {
                 socialMenuBtn.innerHTML = `
@@ -1346,11 +1547,21 @@
               }
             }
           } else {
+            // Render Keadaan Belum Login
             if (authMenuContainer) {
               authMenuContainer.innerHTML = `
-                <a href="/profil/login.html">
-                  <span>Login / Daftar</span>
+                <div class="menu-account-card">
+                  <div class="menu-account-avatar">
+                    <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                  <div class="menu-account-info">
+                    <div class="menu-account-title">Akun Saya</div>
+                    <div class="menu-account-sub">Masuk untuk simpan riwayat & koleksi.</div>
+                  </div>
+                </div>
+                <a href="/profil/login.html" class="menu-btn-auth">
                   <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                  <span>Masuk / Daftar</span>
                 </a>
               `;
             }
@@ -1623,7 +1834,6 @@
       });
     }
 
-    /* FITUR 3 LIVE CHAT TERAKHIR DI BERANDA */
     window.loadHomeLiveChatPreview = async function() {
       const listEl = document.getElementById('homeChatList');
       if (!listEl || !window.db || !window.fbRef || !window.fbGet) return;
