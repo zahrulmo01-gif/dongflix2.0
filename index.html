@@ -105,7 +105,7 @@
       :root {
         --glass-bg: rgba(20, 20, 24, 0.58);
       }
-      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .floating-circle-btn, .popover-menu, .home-chat-widget {
+      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .floating-circle-btn, .popover-menu {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
       }
@@ -316,7 +316,7 @@
       display: block;
     }
 
-    /* POPOVER DRAWER MENU (STYLE MODERN 2 KOLOM) */
+    /* POPOVER DRAWER MENU */
     .popover-menu {
       display: none;
       position: fixed;
@@ -342,7 +342,6 @@
     .popover-menu::-webkit-scrollbar { display: none; }
     .popover-menu.active { display: flex; flex-direction: column; gap: 14px; }
 
-    /* Header Mini Menu Popover */
     .popover-top-bar {
       display: flex;
       align-items: center;
@@ -373,7 +372,6 @@
     }
     .popover-close-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    /* Grid Navigasi 2 Kolom */
     .menu-grid-nav {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -412,7 +410,6 @@
       flex-shrink: 0;
     }
 
-    /* Kartu Status Akun di dalam Menu */
     .menu-account-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.07);
@@ -461,7 +458,6 @@
       line-height: 1.3;
     }
 
-    /* Tombol Aksi Masuk / Daftar di dalam Menu */
     .menu-btn-auth {
       display: flex;
       align-items: center;
@@ -788,41 +784,51 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
+    /* WIDGET LIVE CHAT BERANDA (BACKGROUND LUAR TRANSPARAN) */
     .home-chat-widget {
-      background: #0d0f14;
-      border: 1px solid var(--border-color);
-      border-top: 1px solid var(--glass-border-top);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-shadow: none;
     }
     .home-chat-items-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 9px;
       margin-bottom: 14px;
     }
+
+    /* BACKGROUND HALUS PER CHAT (TIDAK MENCOLOK) */
     .home-chat-item {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 10px 14px;
       text-decoration: none;
       color: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .home-chat-item:active {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.2);
     }
     .home-chat-avatar {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #0284c7;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 800;
       flex-shrink: 0;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
     }
     .home-chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .home-chat-content { flex: 1; min-width: 0; }
@@ -833,7 +839,7 @@
       margin-bottom: 2px;
     }
     .home-chat-name {
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 700;
       color: #f1f5f9;
       white-space: nowrap;
@@ -842,7 +848,7 @@
     }
     .home-chat-name.admin { color: #f59e0b !important; }
     .home-chat-text {
-      font-size: 12.5px;
+      font-size: 12px;
       color: #94a3b8;
       line-height: 1.35;
       display: -webkit-box;
@@ -900,13 +906,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #07090d;
+      background: rgba(255, 255, 255, 0.035);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 9999px;
       padding: 6px 10px 6px 16px;
       text-decoration: none;
       cursor: pointer;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background 0.2s;
     }
     .home-chat-fake-input:hover { border-color: rgba(56, 189, 248, 0.4); }
     .home-chat-placeholder { font-size: 12.5px; color: #64748b; }
@@ -1190,7 +1196,6 @@
 
   <!-- MENU POPOVER MODERN 2 KOLOM (DONGFLIX) -->
   <div class="popover-menu" id="popoverMenu">
-    <!-- Header Popover -->
     <div class="popover-top-bar">
       <div class="popover-brand">
         <img src="image/IMG_6395.png" alt="Logo" style="width:20px; height:20px; object-fit:contain;">
@@ -1201,46 +1206,38 @@
       </button>
     </div>
 
-    <!-- Grid Menu Utama 2 Kolom -->
     <div class="menu-grid-nav">
-      <!-- 1. Beranda -->
       <a href="/" class="menu-nav-tile active-pill">
         <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         <span>Beranda</span>
       </a>
 
-      <!-- 2. Series Donghua -->
       <a href="/donghua/" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
         <span>Series</span>
       </a>
 
-      <!-- 3. Movie -->
       <a href="/donghua/?type=movie" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
         <span>Movie</span>
       </a>
 
-      <!-- 4. Koleksi / Favorit -->
       <a href="/profil/" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         <span>Koleksi</span>
       </a>
 
-      <!-- 5. Genre Katalog -->
       <a href="#genreBar" class="menu-nav-tile" onclick="togglePopoverMenu()">
         <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         <span>Genre</span>
       </a>
 
-      <!-- 6. Live Chat Komunitas -->
       <a href="/chat/" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span>Live Chat</span>
       </a>
     </div>
 
-    <!-- Wadah Status Akun & Tombol Auth Dinamis -->
     <div id="authMenuContainer" style="display: flex; flex-direction: column; gap: 10px;">
       <div class="menu-account-card">
         <div class="menu-account-avatar">
@@ -1510,7 +1507,6 @@
 
             const profileUrl = username ? `/profil/${username}` : '/profil/';
 
-            // Render Kartu Akun Aktif di dalam Popover
             if (authMenuContainer) {
               const avatarHtml = photoURL 
                 ? `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='${initial}'" />` 
@@ -1528,7 +1524,6 @@
               `;
             }
 
-            // Update icon avatar di header bar
             if (socialMenuBtn) {
               if (photoURL) {
                 socialMenuBtn.innerHTML = `
@@ -1547,7 +1542,6 @@
               }
             }
           } else {
-            // Render Keadaan Belum Login
             if (authMenuContainer) {
               authMenuContainer.innerHTML = `
                 <div class="menu-account-card">
