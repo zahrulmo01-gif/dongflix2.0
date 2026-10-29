@@ -403,17 +403,27 @@
     .sort-dropdown-item:hover, .sort-dropdown-item.active { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
 
     .comment-input-box {
-      display: flex; align-items: center; gap: 10px; background: #0f172a; border: 1px solid #1e293b;
-      border-radius: 24px; padding: 6px 8px 6px 16px; margin-bottom: 20px; width: 100%;
+      display: flex; align-items: center; gap: 8px; background: #0f172a; border: 1px solid #1e293b;
+      border-radius: 24px; padding: 6px 8px 6px 16px; margin-bottom: 20px; width: 100%; position: relative;
     }
     .comment-input-box:focus-within { border-color: #38bdf8; }
     .comment-textarea {
       flex: 1; height: 38px; background: transparent; border: none; color: #fff; font-size: 13px;
       outline: none; resize: none; font-family: inherit; line-height: 38px;
     }
+    
+    /* Tombol Stiker & Kirim */
+    .btn-sticker-toggle {
+      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #cbd5e1;
+      width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: all 0.2s ease;
+    }
+    .btn-sticker-toggle:hover { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border-color: #38bdf8; }
+    .btn-sticker-toggle svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
     .btn-send-comment {
       background: #0284c7; color: #fff; border: none; width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
     }
     .btn-send-comment svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
@@ -505,6 +515,13 @@
     }
 
     .comment-body-text { font-size: 13.5px; color: #f1f5f9; line-height: 1.4; word-break: break-word; margin-bottom: 6px; text-align: left !important; }
+    
+    /* Gambar Stiker Di Komentar */
+    .comment-sticker-media {
+      display: block; max-width: 140px; max-height: 140px; object-fit: contain;
+      border-radius: 10px; margin-top: 6px; margin-bottom: 6px;
+    }
+
     .comment-footer-actions { display: flex; align-items: center; gap: 14px; font-size: 11.5px; color: #64748b; }
     .comment-time { font-size: 11px; }
 
@@ -533,14 +550,45 @@
       border-radius: 8px; padding: 8px; width: 100%;
     }
     .reply-card .tiktok-avatar { width: 26px; height: 26px; font-size: 11px; }
-    .reply-input-box { margin-top: 10px; display: flex; gap: 8px; width: 100%; }
+    .reply-input-box { margin-top: 10px; display: flex; gap: 8px; width: 100%; align-items: center; }
     .reply-input {
       flex: 1; height: 34px; background: #0b1329; border: 1px solid #1e293b;
       border-radius: 18px; padding: 0 12px; color: #fff; font-size: 12px; outline: none;
     }
     .btn-reply-send {
-      background: #0284c7; color: #fff; border: none; padding: 0 14px; border-radius: 18px; font-size: 12px; font-weight: 700; cursor: pointer;
+      background: #0284c7; color: #fff; border: none; padding: 0 14px; height: 34px; border-radius: 18px; font-size: 12px; font-weight: 700; cursor: pointer;
     }
+
+    /* --- STICKER PICKER MODAL / POPUP --- */
+    .sticker-picker-panel {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: #090e17; border-top: 1px solid #1e293b; border-top-left-radius: 20px; border-top-right-radius: 20px;
+      z-index: 300; padding: 14px; box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.7);
+      max-height: 48vh; flex-direction: column;
+    }
+    .sticker-picker-panel.active { display: flex; }
+    .sticker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .sticker-tabs { display: flex; gap: 8px; }
+    .sticker-tab-btn {
+      background: rgba(255, 255, 255, 0.06); border: 1px solid #1e293b; color: #94a3b8;
+      font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer;
+    }
+    .sticker-tab-btn.active { background: #0284c7; color: #fff; border-color: #38bdf8; }
+    .sticker-close-btn { background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; }
+    
+    .sticker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px;
+      overflow-y: auto; padding: 8px 4px; max-height: 32vh;
+    }
+    .sticker-item-btn {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; aspect-ratio: 1/1;
+    }
+    .sticker-item-btn:hover, .sticker-item-btn:active {
+      transform: scale(1.08); background: rgba(56, 189, 248, 0.12); border-color: #38bdf8;
+    }
+    .sticker-item-btn img { max-width: 100%; max-height: 100%; object-fit: contain; }
   </style>
 </head>
 <body>
@@ -676,8 +724,16 @@
         </div>
       </div>
 
+      <!-- Kotak Input Komentar dengan Tombol Stiker -->
       <div class="comment-input-box" id="commentFormBox" style="display:none;">
         <input class="comment-textarea" id="commentInput" placeholder="Tambah komentar..." />
+        
+        <!-- Tombol Stiker di samping Kirim -->
+        <button class="btn-sticker-toggle" onclick="openStickerPicker(null)" title="Kirim Stiker">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </button>
+
+        <!-- Tombol Kirim -->
         <button class="btn-send-comment" onclick="submitComment()">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -692,6 +748,19 @@
       </div>
     </section>
   </div>
+</div>
+
+<!-- Modal Picker Stiker -->
+<div class="sheet-overlay" id="stickerOverlay" onclick="closeStickerPicker()"></div>
+<div class="sticker-picker-panel" id="stickerPanel">
+  <div class="sticker-header">
+    <div class="sticker-tabs">
+      <button class="sticker-tab-btn active" id="tabStatic" onclick="switchStickerTab('static')">Stiker Biasa</button>
+      <button class="sticker-tab-btn" id="tabGif" onclick="switchStickerTab('gif')">Stiker GIF Gerak</button>
+    </div>
+    <button class="sticker-close-btn" onclick="closeStickerPicker()">✕</button>
+  </div>
+  <div class="sticker-grid" id="stickerGridContainer"></div>
 </div>
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeEpisodeSheet()">
@@ -756,6 +825,98 @@
   const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+
+  // --- DAFTAR STIKER BIASA & GIF BERGERAK ---
+  const STICKER_LIST = {
+    static: [
+      'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408201.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408166.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408224.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408191.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408215.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408182.png',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408235.png'
+    ],
+    gif: [
+      'https://media.tenor.com/On7KVXhzuf8AAAAj/chibi-cat.gif',
+      'https://media.tenor.com/2s_jOsl0e8MAAAAj/dance-happy.gif',
+      'https://media.tenor.com/kHIdycPoP6AAAAAj/anime-cry.gif',
+      'https://media.tenor.com/gK2J_J7KkE8AAAAj/cute-love.gif',
+      'https://media.tenor.com/8Qp2jDqj2lEAAAAj/fight-anime.gif',
+      'https://media.tenor.com/g0R_F3H4L_IAAAAj/thumbs-up.gif',
+      'https://media.tenor.com/D_i9JgW1GIEAAAAj/shocked-surprised.gif',
+      'https://media.tenor.com/wP_8n3bZ85cAAAAj/cheers-drink.gif'
+    ]
+  };
+
+  let currentStickerTab = 'static';
+  let currentStickerReplyParentId = null;
+
+  function openStickerPicker(parentId = null) {
+    if (!window.currentUser) { goToHomeLogin(); return; }
+    currentStickerReplyParentId = parentId;
+    document.getElementById('stickerPanel').classList.add('active');
+    document.getElementById('stickerOverlay').classList.add('active');
+    renderStickerItems();
+  }
+
+  function closeStickerPicker() {
+    document.getElementById('stickerPanel').classList.remove('active');
+    document.getElementById('stickerOverlay').classList.remove('active');
+    currentStickerReplyParentId = null;
+  }
+
+  function switchStickerTab(tab) {
+    currentStickerTab = tab;
+    document.getElementById('tabStatic').classList.toggle('active', tab === 'static');
+    document.getElementById('tabGif').classList.toggle('active', tab === 'gif');
+    renderStickerItems();
+  }
+
+  function renderStickerItems() {
+    const container = document.getElementById('stickerGridContainer');
+    if (!container) return;
+    const list = STICKER_LIST[currentStickerTab] || [];
+    container.innerHTML = list.map(url => `
+      <div class="sticker-item-btn" onclick="sendSelectedSticker('${url}')">
+        <img src="${url}" loading="lazy" />
+      </div>
+    `).join('');
+  }
+
+  async function sendSelectedSticker(stickerUrl) {
+    const parentId = currentStickerReplyParentId;
+    closeStickerPicker();
+
+    targetSlug = getCleanMainSlug();
+    if (!window.currentUser || !targetSlug) return;
+
+    const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const commentItem = {
+      uid: window.currentUser.uid,
+      email: window.currentUser.email || '',
+      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
+      photoURL: window.currentUser.photoURL || '',
+      text: '',
+      stickerUrl: stickerUrl,
+      timestamp: Date.now(),
+      isAdmin: isAdmin
+    };
+
+    if (parentId) {
+      commentItem.parentId = String(parentId);
+    }
+
+    try {
+      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+      const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
+      await window.fbSet(newCommentRef, commentItem);
+      window.loadComments();
+    } catch (e) {
+      alert('Gagal mengirim stiker: ' + e.message);
+    }
+  }
 
   function getUserBasePath() {
     if (!window.currentUser) return null;
@@ -1390,6 +1551,7 @@
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
 
     const commentText = String(item.text || '');
+    const stickerUrl = item.stickerUrl ? String(item.stickerUrl) : '';
     const timeText = formatCommentTime(item.timestamp);
 
     const avatarHtml = photoURL 
@@ -1413,6 +1575,11 @@
       }
     }
 
+    let stickerHtml = '';
+    if (stickerUrl) {
+      stickerHtml = `<img src="${stickerUrl}" class="comment-sticker-media" alt="Sticker" loading="lazy" />`;
+    }
+
     let repliesHtml = '';
     if (replies && replies.length > 0) {
       let inner = '';
@@ -1434,7 +1601,8 @@
           <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
           ${levelBadge} ${adminBadge}
         </div>
-        <div class="comment-body-text">${escapeHtml(commentText)}</div>
+        ${commentText ? `<div class="comment-body-text">${escapeHtml(commentText)}</div>` : ''}
+        ${stickerHtml}
         <div class="comment-footer-actions">
           <span class="comment-time">${timeText}</span>
           ${actionButtons}
@@ -1463,6 +1631,7 @@
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
 
     const replyText = String(reply.text || '');
+    const stickerUrl = reply.stickerUrl ? String(reply.stickerUrl) : '';
     const timeText = formatCommentTime(reply.timestamp);
 
     const avatarHtml = photoURL 
@@ -1483,6 +1652,11 @@
       deleteBtn = `<button class="btn-delete-tiktok" onclick="deleteComment('${reply.id}')">Hapus</button>`;
     }
 
+    let stickerHtml = '';
+    if (stickerUrl) {
+      stickerHtml = `<img src="${stickerUrl}" class="comment-sticker-media" alt="Sticker" loading="lazy" />`;
+    }
+
     return `
       <div class="reply-card" id="comment-${reply.id}">
         <div class="tiktok-avatar">${avatarHtml}</div>
@@ -1491,7 +1665,8 @@
             <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
             ${levelBadge} ${adminBadge}
           </div>
-          <div class="comment-body-text">${escapeHtml(replyText)}</div>
+          ${replyText ? `<div class="comment-body-text">${escapeHtml(replyText)}</div>` : ''}
+          ${stickerHtml}
           <div class="comment-footer-actions">
             <span class="comment-time">${timeText}</span>
             ${deleteBtn}
@@ -1527,6 +1702,9 @@
     container.innerHTML = `
       <div class="reply-input-box">
         <input type="text" class="reply-input" id="replyInput-${commentId}" placeholder="Tulis balasan..." />
+        <button class="btn-sticker-toggle" onclick="openStickerPicker('${commentId}')" style="width:34px;height:34px;" title="Kirim Stiker">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </button>
         <button class="btn-reply-send" onclick="submitReply('${commentId}')">Kirim</button>
       </div>
     `;
