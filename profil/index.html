@@ -175,7 +175,7 @@
       align-items: center;
     }
 
-    /* ANIMASI SHIMMER BADGE */
+    /* SHIMMER BADGE */
     @keyframes badgeShimmer {
       0% { transform: translateX(-150%) skewX(-20deg); }
       35%, 100% { transform: translateX(180%) skewX(-20deg); }
@@ -230,7 +230,7 @@
       word-break: break-word;
     }
 
-    /* STATS (FOLLOWERS & FOLLOWING) */
+    /* STATISTIK */
     .stats-row {
       display: flex;
       align-items: center;
@@ -321,7 +321,7 @@
       stroke-width: 2.2;
     }
 
-    /* TAB NAVIGASI MINIMALIS */
+    /* DUA TAB NAVIGASI MINIMALIS */
     .profile-tabs-nav {
       display: flex;
       align-items: center;
@@ -460,7 +460,7 @@
       color: var(--text-sub);
     }
 
-    /* AKSES DITOLAK */
+    /* KONDISI AKSES TERKUNCI */
     .access-denied-box {
       text-align: center;
       padding: 48px 16px;
@@ -571,10 +571,10 @@
   </header>
 
   <div class="container" id="profileContent">
-    <!-- AVATAR DENGAN SKELETON -->
+    <!-- AVATAR -->
     <div class="avatar-wrapper skeleton skeleton-avatar" id="profileAvatar"></div>
 
-    <!-- INFO PROFIL DENGAN SKELETON -->
+    <!-- INFORMASI PROFIL & BADGE -->
     <div class="profile-info">
       <div class="name-badge-row">
         <h1 class="profile-name" id="userName">
@@ -590,7 +590,7 @@
         <span class="skeleton skeleton-text" style="width: 50%; height: 14px; margin-top: 6px; display: block;"></span>
       </div>
 
-      <!-- STATISTIK (FOLLOWERS & FOLLOWING) DENGAN SKELETON -->
+      <!-- STATISTIK (FOLLOWERS & FOLLOWING) -->
       <div class="stats-row">
         <div class="stat-item">
           <span class="stat-number" id="statFollowers"><span class="skeleton skeleton-text" style="width: 24px; height: 16px;"></span></span>
@@ -603,9 +603,9 @@
       </div>
     </div>
 
-    <!-- ACTION BAR DENGAN SKELETON -->
+    <!-- ACTION BAR -->
     <div class="action-bar-row">
-      <button class="btn-action-main skeleton skeleton-btn" id="btnMainAction"></button>
+      <button class="btn-action-main skeleton skeleton-btn" id="btnMainAction" onclick="handleMainAction()"></button>
       <button class="btn-logout-icon" id="btnLogoutProfile" style="display: none;" onclick="handleLogout()" title="Keluar dari Akun">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -638,7 +638,7 @@
       </button>
     </div>
 
-    <!-- ISI TAB 1: KOLEKSI DENGAN SKELETON CARDS -->
+    <!-- ISI TAB 1: KOLEKSI -->
     <div class="tab-pane active" id="paneKoleksi">
       <div class="works-grid" id="koleksiContainer">
         <div class="skeleton skeleton-card"></div>
@@ -650,7 +650,7 @@
       </div>
     </div>
 
-    <!-- ISI TAB 2: RIWAYAT NONTON DENGAN SKELETON -->
+    <!-- ISI TAB 2: RIWAYAT NONTON -->
     <div class="tab-pane" id="paneRiwayat">
       <div id="riwayatContentArea">
         <div class="history-grid">
@@ -715,6 +715,10 @@
     let isNewUsernameValid = true;
     let editCheckTimeout = null;
 
+    function getDbKey(email) {
+      return email.toLowerCase().trim().replace(/\./g, ',');
+    }
+
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
@@ -737,9 +741,7 @@
             const key = Object.keys(val)[0];
             return { key, data: val[key] };
           }
-        } catch (e) {
-          console.warn('Index query dilewati:', e);
-        }
+        } catch (_) {}
 
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
@@ -764,7 +766,7 @@
       targetUserKey = key;
       targetUserData = targetData;
 
-      const currentUserEmailKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/\./g, ',') : null;
+      const currentUserEmailKey = currentUser?.email ? getDbKey(currentUser.email) : null;
       
       isOwnProfile = currentUser && (
         currentUser.uid === key || 
@@ -777,7 +779,6 @@
       const bioText = targetData.bio && targetData.bio.trim() !== '' ? targetData.bio : 'No bio yet';
       const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
 
-      // Hapus skeleton teks di Header dan Nama
       document.getElementById('headerTitle').innerHTML = name;
       document.getElementById('userName').innerHTML = name;
       document.getElementById('userBio').innerText = bioText;
@@ -803,7 +804,7 @@
         avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      // TOMBOL AKSI
+      // TOMBOL AKSI & STATUS FOLLOW
       const actionBtn = document.getElementById('btnMainAction');
       actionBtn.classList.remove('skeleton', 'skeleton-btn');
       const logoutBtn = document.getElementById('btnLogoutProfile');
@@ -814,7 +815,9 @@
         logoutBtn.style.display = 'flex';
       } else {
         logoutBtn.style.display = 'none';
-        if (currentUser && targetData.followers && targetData.followers[currentUserEmailKey]) {
+
+        // Cek apakah akun aktif sedang follow profil ini
+        if (currentUserEmailKey && targetData.followers && targetData.followers[currentUserEmailKey]) {
           isFollowing = true;
           actionBtn.innerText = 'Following';
           actionBtn.className = 'btn-action-main btn-secondary';
@@ -825,7 +828,6 @@
         }
       }
 
-      // Render Koleksi & Riwayat
       renderKoleksi(targetData.favorites);
       renderRiwayat(targetData.history);
     }
@@ -861,7 +863,7 @@
             <div class="access-lock-icon">
               <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             </div>
-            <div class="access-denied-text">Hanya pemilik akun yang dapat mengakses riwayat tontonan ini.</div>
+            <div class="access-denied-text">Hanya pengguna pemilik yang dapat mengakses riwayat tontonan ini.</div>
           </div>
         `;
         return;
@@ -938,7 +940,10 @@
       }
     };
 
+    // LOGIKA KLIK TOMBOL UTAMA (FOLLOW / UNFOLLOW / EDIT PROFIL)
     window.handleMainAction = async function() {
+      const btn = document.getElementById('btnMainAction');
+
       if (isOwnProfile) {
         document.getElementById('inputEditName').value = targetUserData?.name || '';
         document.getElementById('inputEditUsername').value = targetUserData?.username || '';
@@ -951,46 +956,86 @@
         document.getElementById('editUsernameStatus').style.display = 'none';
 
         openModal('modalEditProfile');
-      } else {
-        if (!currentAuthUser) {
-          alert('Silakan login terlebih dahulu untuk mengikuti profil ini.');
-          window.location.href = '/profil/login.html';
-          return;
-        }
+        return;
+      }
 
-        const myEmailKey = currentAuthUser.email.toLowerCase().replace(/\./g, ',');
-        const btn = document.getElementById('btnMainAction');
-        btn.disabled = true;
+      if (!currentAuthUser) {
+        alert('Silakan login terlebih dahulu untuk mengikuti akun ini.');
+        window.location.href = '/profil/login.html';
+        return;
+      }
 
-        try {
-          let currentFollowers = targetUserData.followersCount || 0;
-          if (isFollowing) {
-            await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), null);
-            currentFollowers = Math.max(0, currentFollowers - 1);
-            await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+      if (!targetUserKey) {
+        console.error('Target key akun tidak ditemukan.');
+        return;
+      }
 
-            isFollowing = false;
-            btn.innerText = '+ Follow';
-            btn.className = 'btn-action-main';
-          } else {
-            await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), true);
-            currentFollowers += 1;
-            await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+      const myEmailKey = getDbKey(currentAuthUser.email);
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
 
-            isFollowing = true;
-            btn.innerText = 'Following';
-            btn.className = 'btn-action-main btn-secondary';
+      try {
+        let currentFollowers = Number(targetUserData?.followersCount) || 0;
+
+        if (isFollowing) {
+          // Unfollow
+          await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), null);
+          currentFollowers = Math.max(0, currentFollowers - 1);
+          await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+
+          // Update data following di akun sendiri
+          const mySnap = await get(ref(db, `users/${myEmailKey}`));
+          if (mySnap.exists()) {
+            const myData = mySnap.val();
+            const myFollowingCount = Math.max(0, (Number(myData.followingCount) || 0) - 1);
+            await update(ref(db, `users/${myEmailKey}`), { followingCount: myFollowingCount });
           }
-          targetUserData.followersCount = currentFollowers;
-          document.getElementById('statFollowers').innerText = currentFollowers;
-        } catch (e) {
-          alert('Gagal memproses follow/unfollow.');
-        } finally {
-          btn.disabled = false;
+
+          if (!targetUserData.followers) targetUserData.followers = {};
+          delete targetUserData.followers[myEmailKey];
+
+          isFollowing = false;
+          btn.innerText = '+ Follow';
+          btn.className = 'btn-action-main';
+        } else {
+          // Follow
+          await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), {
+            uid: currentAuthUser.uid,
+            email: currentAuthUser.email,
+            timestamp: Date.now()
+          });
+          currentFollowers += 1;
+          await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+
+          // Update data following di akun sendiri
+          const mySnap = await get(ref(db, `users/${myEmailKey}`));
+          if (mySnap.exists()) {
+            const myData = mySnap.val();
+            const myFollowingCount = (Number(myData.followingCount) || 0) + 1;
+            await update(ref(db, `users/${myEmailKey}`), { followingCount: myFollowingCount });
+          }
+
+          if (!targetUserData.followers) targetUserData.followers = {};
+          targetUserData.followers[myEmailKey] = true;
+
+          isFollowing = true;
+          btn.innerText = 'Following';
+          btn.className = 'btn-action-main btn-secondary';
         }
+
+        if (targetUserData) targetUserData.followersCount = currentFollowers;
+        document.getElementById('statFollowers').innerText = currentFollowers;
+
+      } catch (err) {
+        console.error('Error Follow/Unfollow:', err);
+        alert('Gagal memproses follow: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.style.opacity = '1';
       }
     };
 
+    // CEK USERNAME SAAT EDIT
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
 
@@ -1020,7 +1065,7 @@
           if (allSnap.exists()) {
             const data = allSnap.val();
             for (const key in data) {
-              if (key !== targetUserKey && data[key]?.username && data[key].username.toLowerCase() === val) {
+              if (key !== targetUserKey && data[key]?.username && String(data[key].username).toLowerCase() === val) {
                 isTaken = true;
                 break;
               }
@@ -1029,7 +1074,7 @@
 
           if (isTaken) {
             editUsernameStatus.className = 'input-hint error';
-            editUsernameStatus.innerText = `Username "${val}" sudah dipakai orang lain!`;
+            editUsernameStatus.innerText = `Username "${val}" sudah dipakai!`;
             isNewUsernameValid = false;
           } else {
             editUsernameStatus.className = 'input-hint success';
@@ -1042,6 +1087,7 @@
       }, 400);
     });
 
+    // UPLOAD FOTO PROFIL
     document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
       if (this.files && this.files[0]) {
         const reader = new FileReader();
@@ -1052,12 +1098,13 @@
       }
     });
 
+    // SIMPAN EDIT PROFIL
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
       if (!isOwnProfile || !targetUserKey) return;
 
       if (!isNewUsernameValid) {
-        alert('Username yang dimasukkan tidak valid atau sudah dipakai orang lain.');
+        alert('Username yang dimasukkan tidak valid atau sudah digunakan.');
         return;
       }
 
@@ -1104,6 +1151,7 @@
       }
     };
 
+    // LOG OUT
     window.handleLogout = async function() {
       if (confirm('Yakin ingin keluar dari akun?')) {
         await signOut(auth);
@@ -1114,6 +1162,7 @@
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
+    // INISIALISASI HALAMAN
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
@@ -1138,7 +1187,7 @@
           return;
         }
 
-        const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
+        const emailKey = getDbKey(authUser.email);
         let snap = await get(ref(db, `users/${emailKey}`));
         let data = snap.exists() ? snap.val() : null;
 
