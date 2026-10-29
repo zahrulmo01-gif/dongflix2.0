@@ -84,7 +84,7 @@
       padding: 12px 20px;
     }
 
-    /* AVATAR KIRI ATAS */
+    /* AVATAR */
     .avatar-wrapper {
       width: 86px;
       height: 86px;
@@ -210,13 +210,14 @@
       font-weight: 500;
     }
 
-    /* ACTION BAR: EDIT PROFIL + LOG OUT */
+    /* ACTION BAR */
     .action-bar-row {
       display: flex;
       align-items: center;
       gap: 10px;
       width: 100%;
       margin-top: 22px;
+      margin-bottom: 28px;
     }
 
     .btn-action-main {
@@ -275,16 +276,59 @@
       stroke-width: 2.2;
     }
 
-    /* SECTION TITLE: KOLEKSI */
-    .section-title {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-      margin-top: 36px;
-      margin-bottom: 16px;
+    /* TAB NAVIGASI MINIMALIS SEPERTI GAMBAR */
+    .profile-tabs-nav {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
     }
 
-    /* GRID KOLEKSI */
+    .tab-nav-btn {
+      flex: 1;
+      height: 48px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      color: #64748b;
+      transition: color 0.2s;
+    }
+
+    .tab-nav-btn svg {
+      width: 22px;
+      height: 22px;
+      transition: transform 0.15s;
+    }
+
+    .tab-nav-btn.active {
+      color: #ffffff;
+    }
+
+    /* Indikator Garis Putih di Bawah Tab Aktif */
+    .tab-nav-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 2px;
+    }
+
+    /* KONTEN TAB */
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* GRID KOLEKSI (3 KOLOM) */
     .works-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -300,6 +344,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       display: block;
       text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .work-card:active {
+      transform: scale(0.97);
     }
     .work-card img {
       width: 100%;
@@ -307,12 +355,110 @@
       object-fit: cover;
       display: block;
     }
-    .work-empty {
-      grid-column: 1 / -1;
+
+    /* LIST RIWAYAT NONTON (GRID CARD) */
+    .history-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .history-card-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .history-thumb-wrap {
+      width: 100px;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      background: #090d16;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .history-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .history-ep-tag {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(2, 132, 199, 0.9);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .history-details {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .history-item-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item-time {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* KONDISI AKSES DITOLAK UNTUK TAB RIWAYAT */
+    .access-denied-box {
       text-align: center;
-      padding: 36px 12px;
+      padding: 48px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .access-lock-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-sub);
+    }
+    .access-lock-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .access-denied-text {
       font-size: 13.5px;
       color: var(--text-sub);
+      max-width: 300px;
+      line-height: 1.45;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 12px;
+      font-size: 13px;
+      color: var(--text-sub);
+      grid-column: 1 / -1;
     }
 
     /* MODAL EDIT PROFIL */
@@ -361,21 +507,10 @@
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
     
-    .input-hint {
-      font-size: 11px;
-      margin-top: 4px;
-      display: none;
-      font-weight: 600;
-    }
+    .input-hint { font-size: 11px; margin-top: 4px; display: none; font-weight: 600; }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
 
-    .file-input-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-    }
     .btn-modal-save {
       width: 100%; height: 46px; background: #fff; color: #000; border: none;
       border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
@@ -423,12 +558,11 @@
       </div>
     </div>
 
-    <!-- ACTION BAR -->
+    <!-- ACTION BAR: TOMBOL UTAMA + LOGOUT -->
     <div class="action-bar-row">
       <button class="btn-action-main" id="btnMainAction" onclick="handleMainAction()">
         + Follow
       </button>
-      <!-- Tombol Log Out (Muncul jika profil sendiri) -->
       <button class="btn-logout-icon" id="btnLogoutProfile" style="display: none;" onclick="handleLogout()" title="Keluar dari Akun">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -438,10 +572,41 @@
       </button>
     </div>
 
-    <!-- SECTION: KOLEKSI -->
-    <div class="section-title">Koleksi</div>
-    <div class="works-grid" id="koleksiContainer">
-      <div class="work-empty">Memuat koleksi...</div>
+    <!-- DUA TAB NAVIGASI MINIMALIS -->
+    <div class="profile-tabs-nav">
+      <!-- Tab 1: Koleksi Favorit (Ikon Grid 9 Titik) -->
+      <button class="tab-nav-btn active" id="tabBtnKoleksi" onclick="switchProfileTab('koleksi')" title="Koleksi Favorit">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <rect x="3" y="3" width="4.5" height="4.5" rx="1"/>
+          <rect x="9.75" y="3" width="4.5" height="4.5" rx="1"/>
+          <rect x="16.5" y="3" width="4.5" height="4.5" rx="1"/>
+          <rect x="3" y="9.75" width="4.5" height="4.5" rx="1"/>
+          <rect x="9.75" y="9.75" width="4.5" height="4.5" rx="1"/>
+          <rect x="16.5" y="9.75" width="4.5" height="4.5" rx="1"/>
+          <rect x="3" y="16.5" width="4.5" height="4.5" rx="1"/>
+          <rect x="9.75" y="16.5" width="4.5" height="4.5" rx="1"/>
+          <rect x="16.5" y="16.5" width="4.5" height="4.5" rx="1"/>
+        </svg>
+      </button>
+
+      <!-- Tab 2: Riwayat Nonton (Ikon Putar / Reload) -->
+      <button class="tab-nav-btn" id="tabBtnRiwayat" onclick="switchProfileTab('riwayat')" title="Riwayat Tontonan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-1.19"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ISI TAB 1: KOLEKSI -->
+    <div class="tab-pane active" id="paneKoleksi">
+      <div class="works-grid" id="koleksiContainer">
+        <div class="empty-state">Memuat koleksi...</div>
+      </div>
+    </div>
+
+    <!-- ISI TAB 2: RIWAYAT NONTON -->
+    <div class="tab-pane" id="paneRiwayat">
+      <div id="riwayatContentArea"></div>
     </div>
   </div>
 
@@ -452,33 +617,28 @@
       <div class="modal-title">Edit Profil</div>
       <form onsubmit="handleSaveProfile(event)">
         
-        <!-- Edit Nama Lengkap -->
         <div class="form-group">
           <label class="form-label">Nama Tampilan</label>
           <input type="text" id="inputEditName" class="form-input" required placeholder="Nama Anda...">
         </div>
 
-        <!-- Edit Username -->
         <div class="form-group">
           <label class="form-label">Username</label>
           <input type="text" id="inputEditUsername" class="form-input" required pattern="^[a-zA-Z0-9_]{3,20}$" placeholder="username baru...">
           <div id="editUsernameStatus" class="input-hint"></div>
         </div>
 
-        <!-- Edit Bio -->
         <div class="form-group">
           <label class="form-label">Bio Singkat</label>
           <textarea id="inputEditBio" class="form-textarea" placeholder="Tuliskan bio profil Anda..."></textarea>
         </div>
 
-        <!-- Edit Foto: Upload File atau URL -->
         <div class="form-group">
-          <label class="form-label">Foto Profil (Pilih Salah Satu)</label>
+          <label class="form-label">Foto Profil</label>
           <input type="file" id="inputEditPhotoFile" accept="image/*" class="form-input" style="padding-top:7px; margin-bottom: 6px;">
-          <input type="url" id="inputEditPhotoUrl" class="form-input" placeholder="Atau tempel URL gambar...">
+          <input type="url" id="inputEditPhotoUrl" class="form-input" placeholder="Atau masukkan URL gambar...">
         </div>
 
-        <!-- Ganti Password -->
         <div class="form-group">
           <label class="form-label">Ganti Password (Kosongkan jika tidak diubah)</label>
           <input type="password" id="inputEditPassword" class="form-input" minlength="6" placeholder="Minimal 6 karakter...">
@@ -504,7 +664,7 @@
     let isNewUsernameValid = true;
     let editCheckTimeout = null;
 
-    // 1. Dapatkan parameter username dari URL /profil/:username
+    // 1. Ekstrak nama user dari URL /profil/:username
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
@@ -516,7 +676,7 @@
       return null;
     }
 
-    // 2. Fetch data pengguna dari database (Query index atau scan fallback)
+    // 2. Fetch data pengguna dari Firebase
     async function fetchUserData(identifier) {
       try {
         const usersRef = ref(db, 'users');
@@ -529,7 +689,7 @@
             return { key, data: val[key] };
           }
         } catch (e) {
-          console.warn('Query index dilewati, menggunakan scan...', e);
+          console.warn('Index query dilewati:', e);
         }
 
         const allSnap = await get(usersRef);
@@ -551,7 +711,7 @@
       return null;
     }
 
-    // 3. Render Profil
+    // 3. Render Profil Utama
     async function renderProfile(targetData, key, currentUser) {
       targetUserKey = key;
       targetUserData = targetData;
@@ -569,12 +729,11 @@
       const bioText = targetData.bio && targetData.bio.trim() !== '' ? targetData.bio : 'No bio yet';
       const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
 
-      // Header & Informasi Teks
       document.getElementById('headerTitle').innerText = name;
       document.getElementById('userName').innerText = name;
       document.getElementById('userBio').innerText = bioText;
 
-      // BADGE ADMIN & LEVEL (LOGIKA DAN STYLE DARI LIVE CHAT)
+      // BADGE ADMIN & LEVEL
       const badgeBox = document.getElementById('badgeContainer');
       const levelBadgeHtml = isAdmin 
         ? `<span class="badge-level admin-lvl">Lv999+</span>` 
@@ -582,11 +741,9 @@
       const adminBadgeHtml = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
       badgeBox.innerHTML = `${levelBadgeHtml} ${adminBadgeHtml}`;
 
-      // Followers & Following
       document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
       document.getElementById('statFollowing').innerText = targetData.followingCount || 0;
 
-      // Avatar
       const avatarBox = document.getElementById('profileAvatar');
       if (photoURL) {
         avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span class=\\'avatar-placeholder\\'>${name.charAt(0).toUpperCase()}</span>'">`;
@@ -594,7 +751,7 @@
         avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      // Tombol Aksi: Edit Profil vs Follow + Log Out
+      // Tombol Aksi & Log Out
       const actionBtn = document.getElementById('btnMainAction');
       const logoutBtn = document.getElementById('btnLogoutProfile');
 
@@ -615,10 +772,12 @@
         }
       }
 
+      // Render Data Tab
       renderKoleksi(targetData.favorites);
+      renderRiwayat(targetData.history);
     }
 
-    // 4. Render Koleksi
+    // 4. Render Tab Koleksi
     function renderKoleksi(rtdbFavorites) {
       const container = document.getElementById('koleksiContainer');
       let favList = [];
@@ -630,7 +789,7 @@
       }
 
       if (favList.length === 0) {
-        container.innerHTML = '<div class="work-empty">Belum ada item dalam koleksi.</div>';
+        container.innerHTML = '<div class="empty-state">Belum ada item dalam koleksi.</div>';
         return;
       }
 
@@ -641,7 +800,96 @@
       `).join('');
     }
 
-    // 5. Action Button Handler (Edit Profil / Follow)
+    // 5. Render Tab Riwayat Nonton (Dengan proteksi kepemilikan)
+    function renderRiwayat(rtdbHistory) {
+      const area = document.getElementById('riwayatContentArea');
+
+      // Proteksi hak akses jika BUKAN pemilik akun
+      if (!isOwnProfile) {
+        area.innerHTML = `
+          <div class="access-denied-box">
+            <div class="access-lock-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="access-denied-text">Hanya pemilik akun yang dapat mengakses riwayat tontonan ini.</div>
+          </div>
+        `;
+        return;
+      }
+
+      let historyList = [];
+      if (rtdbHistory && typeof rtdbHistory === 'object') {
+        historyList = Object.values(rtdbHistory);
+      } else {
+        historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
+      }
+
+      historyList.sort((a, b) => (b.timestamp || b.updatedAt || 0) - (a.timestamp || a.updatedAt || 0));
+
+      if (historyList.length === 0) {
+        area.innerHTML = '<div class="empty-state">Belum ada riwayat tontonan.</div>';
+        return;
+      }
+
+      area.innerHTML = `
+        <div class="history-grid">
+          ${historyList.map(item => {
+            const epLabel = item.episode || 'Ep 1';
+            const targetSlug = item.mainPath || item.slug || '';
+            const epPath = item.epPath ? `?ep=${encodeURIComponent(item.epPath)}` : '';
+            const poster = item.poster || item.cover || 'https://via.placeholder.com/300x170?text=No+Cover';
+            const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : (item.updatedAt ? getTimeAgo(item.updatedAt) : 'Baru saja');
+
+            return `
+              <a href="/donghua/${encodeURIComponent(targetSlug)}${epPath}" class="history-card-item">
+                <div class="history-thumb-wrap">
+                  <img src="${poster}" alt="${item.title}" referrerpolicy="no-referrer">
+                  <span class="history-ep-tag">${epLabel}</span>
+                </div>
+                <div class="history-details">
+                  <div class="history-item-title">${item.title || 'Donghua'}</div>
+                  <div class="history-item-time">Terakhir ditonton • ${timeAgo}</div>
+                </div>
+              </a>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function getTimeAgo(timestamp) {
+      const sec = Math.floor((Date.now() - timestamp) / 1000);
+      if (sec < 60) return 'Baru saja';
+      const min = Math.floor(sec / 60);
+      if (min < 60) return `${min}m lalu`;
+      const hrs = Math.floor(min / 60);
+      if (hrs < 24) return `${hrs}j lalu`;
+      const days = Math.floor(hrs / 24);
+      if (days < 30) return `${days}h lalu`;
+      return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    }
+
+    // 6. Pengalih Tab Navigasi
+    window.switchProfileTab = function(tabName) {
+      const btnKoleksi = document.getElementById('tabBtnKoleksi');
+      const btnRiwayat = document.getElementById('tabBtnRiwayat');
+      const paneKoleksi = document.getElementById('paneKoleksi');
+      const paneRiwayat = document.getElementById('paneRiwayat');
+
+      if (tabName === 'koleksi') {
+        btnKoleksi.classList.add('active');
+        btnRiwayat.classList.remove('active');
+        paneKoleksi.classList.add('active');
+        paneRiwayat.classList.remove('active');
+      } else {
+        btnRiwayat.classList.add('active');
+        btnKoleksi.classList.remove('active');
+        paneRiwayat.classList.add('active');
+        paneKoleksi.classList.remove('active');
+      }
+    };
+
+    // 7. Tombol Aksi Handler
     window.handleMainAction = async function() {
       if (isOwnProfile) {
         document.getElementById('inputEditName').value = targetUserData?.name || '';
@@ -695,7 +943,7 @@
       }
     };
 
-    // 6. Validasi Real-time Perubahan Username di Modal Edit
+    // 8. Cek Ketersediaan Username Saat Edit
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
 
@@ -747,8 +995,8 @@
       }, 400);
     });
 
-    // 7. Preview & Konversi File Foto Upload
-    document.getElementById('inputEditPhotoFile').addEventListener('change', function(e) {
+    // 9. Upload File Gambar
+    document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
       if (this.files && this.files[0]) {
         const reader = new FileReader();
         reader.onload = function(evt) {
@@ -758,7 +1006,7 @@
       }
     });
 
-    // 8. Simpan Seluruh Perubahan Edit Profil
+    // 10. Simpan Edit Profil
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
       if (!isOwnProfile || !targetUserKey) return;
@@ -780,12 +1028,10 @@
       saveBtn.innerText = 'Menyimpan...';
 
       try {
-        // Ganti password jika diisi
         if (newPassword && newPassword.length >= 6) {
           await updatePassword(currentAuthUser, newPassword);
         }
 
-        // Simpan perubahan ke Realtime Database
         const updates = {
           name: newName,
           username: newUsername,
@@ -800,11 +1046,9 @@
         targetUserData.bio = newBio;
         targetUserData.photoURL = finalPhoto;
 
-        // Render ulang tampilan lokal
         await renderProfile(targetUserData, targetUserKey, currentAuthUser);
         closeModal('modalEditProfile');
 
-        // Update URL bilamana username diubah
         window.history.replaceState(null, '', `/profil/${newUsername}`);
         alert('Profil berhasil diperbarui!');
       } catch (err) {
@@ -815,7 +1059,7 @@
       }
     };
 
-    // 9. Logout
+    // 11. Logout
     window.handleLogout = async function() {
       if (confirm('Yakin ingin keluar dari akun?')) {
         await signOut(auth);
@@ -826,13 +1070,12 @@
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // 10. Controller Alur Navigasi & Redirect Otomatis
+    // 12. Controller Inisialisasi
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
 
       if (urlUsername) {
-        // Akses via /profil/:username
         const found = await fetchUserData(urlUsername);
         if (found) {
           await renderProfile(found.data, found.key, authUser);
@@ -847,14 +1090,11 @@
           document.getElementById('headerTitle').innerText = 'Tidak Ditemukan';
         }
       } else {
-        // Akses /profil tanpa username
         if (!authUser) {
-          // Belum login -> alihkan langsung ke /profil/login
           window.location.href = '/profil/login.html';
           return;
         }
 
-        // Sudah login -> ambil username akun sendiri dan redirect ke /profil/username
         const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
         let snap = await get(ref(db, `users/${emailKey}`));
         let data = snap.exists() ? snap.val() : null;
