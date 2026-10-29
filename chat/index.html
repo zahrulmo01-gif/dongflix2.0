@@ -70,7 +70,7 @@
       display: block;
     }
 
-    /* Container Dinamis yang Mengikuti Ukuran Layar Aktif / Keyboard */
+    /* Container Dinamis */
     .app-viewport-wrapper {
       position: absolute;
       top: 0;
@@ -234,6 +234,7 @@
       overflow: hidden;
       flex-shrink: 0;
       border: 1px solid rgba(255, 255, 255, 0.12);
+      text-decoration: none;
       cursor: pointer;
     }
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -352,6 +353,11 @@
     .sender-name {
       font-weight: 800;
       color: #93c5fd;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .sender-name:hover {
+      text-decoration: underline;
     }
     .sender-name.admin {
       color: #f59e0b !important;
@@ -379,13 +385,16 @@
     .mention-tag {
       color: #38bdf8 !important;
       font-weight: 700;
+      text-decoration: none;
       cursor: pointer;
+    }
+    .mention-tag:hover {
+      text-decoration: underline;
     }
     .chat-msg-row.mine .mention-tag {
       color: #bae6fd !important;
     }
 
-    /* Waktu Di Kanan Bawah */
     .msg-time-bottom-right {
       position: absolute;
       bottom: 5px;
@@ -399,7 +408,6 @@
       color: #94a3b8;
     }
 
-    /* Tombol Hapus */
     .msg-delete-btn {
       display: none;
       align-items: center;
@@ -425,7 +433,6 @@
       display: inline-flex;
     }
 
-    /* Bottom Input Bar Area (Tepat di atas keyboard) */
     .chat-bottom-bar {
       background: rgba(10, 10, 14, 0.98);
       border-top: 1px solid var(--border-color);
@@ -524,8 +531,8 @@
       border: 1px solid #1e293b;
       border-radius: 14px;
       padding: 6px;
-      min-width: 190px;
-      max-height: 160px;
+      min-width: 220px;
+      max-height: 180px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
       z-index: 150;
       overflow-y: auto;
@@ -543,7 +550,11 @@
       cursor: pointer;
     }
     .mention-item:hover { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-    .mention-item img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+    .mention-item img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+    .mention-initial {
+      width: 24px; height: 24px; border-radius: 50%; background: #0284c7; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+    }
 
     .input-row {
       display: flex;
@@ -722,7 +733,6 @@
     <!-- Chat Log Message View DENGAN SKELETON PLACEHOLDER -->
     <main class="chat-messages-container" id="chatContainer">
       <div id="chatLoading" style="display:flex; flex-direction:column; gap:14px; width:100%;">
-        <!-- Skeleton Chat 1 -->
         <div class="chat-msg-row">
           <div class="user-avatar skeleton" style="border-radius:50%;"></div>
           <div class="msg-body-wrapper" style="width:65%;">
@@ -736,7 +746,6 @@
             </div>
           </div>
         </div>
-        <!-- Skeleton Chat 2 (Mine) -->
         <div class="chat-msg-row mine">
           <div class="user-avatar skeleton" style="border-radius:50%;"></div>
           <div class="msg-body-wrapper" style="width:55%;">
@@ -748,7 +757,6 @@
             </div>
           </div>
         </div>
-        <!-- Skeleton Chat 3 -->
         <div class="chat-msg-row">
           <div class="user-avatar skeleton" style="border-radius:50%;"></div>
           <div class="msg-body-wrapper" style="width:70%;">
@@ -882,7 +890,7 @@
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let selectedStickerUrl = '';
     let cachedStickers = [];
-    let chatUsersList = [];
+    let allFirebaseUsersList = []; // Daftar semua user dari node users
     let lastRenderedChatJson = '';
     let replyingMessage = null;
     const userProfileCache = {};
@@ -1116,7 +1124,38 @@
       if (box) box.classList.remove('active');
     }
 
-    function handleMentionSearch(inputEl) {
+    // Ambil semua pengguna Firebase untuk support tag mention global
+    async function loadAllFirebaseUsers() {
+      if (allFirebaseUsersList.length > 0) return allFirebaseUsersList;
+      try {
+        if (window.db && window.fbRef && window.fbGet) {
+          const snap = await window.fbGet(window.fbRef(window.db, 'users'));
+          if (snap.exists()) {
+            const raw = snap.val() || {};
+            const list = [];
+            Object.keys(raw).forEach(k => {
+              const u = raw[k];
+              if (u && typeof u === 'object') {
+                list.push({
+                  key: k,
+                  username: u.username || '',
+                  name: u.name || u.username || 'User',
+                  photo: u.photoURL || '',
+                  email: u.email || ''
+                });
+              }
+            });
+            allFirebaseUsersList = list;
+            return allFirebaseUsersList;
+          }
+        }
+      } catch (e) {
+        console.warn("Gagal memuat daftar users:", e);
+      }
+      return [];
+    }
+
+    async function handleMentionSearch(inputEl) {
       const menu = document.getElementById('mentionMenu');
       if (!menu) return;
 
@@ -1127,15 +1166,35 @@
 
       if (atIdx !== -1 && (atIdx === 0 || /\s/.test(textBeforeCursor[atIdx - 1]))) {
         const query = textBeforeCursor.slice(atIdx + 1).toLowerCase();
-        const matches = chatUsersList.filter(u => u.name.toLowerCase().includes(query));
+
+        if (allFirebaseUsersList.length === 0) {
+          await loadAllFirebaseUsers();
+        }
+
+        const matches = allFirebaseUsersList.filter(u => {
+          const uName = (u.username || '').toLowerCase();
+          const dName = (u.name || '').toLowerCase();
+          return uName.includes(query) || dName.includes(query);
+        });
 
         if (matches.length > 0) {
-          menu.innerHTML = matches.map(u => `
-            <div class="mention-item" onclick="applyMention('${u.name}', ${atIdx})">
-              ${u.photo ? `<img src="${u.photo}" />` : `<span>@</span>`}
-              <span>${escapeHtml(u.name)}</span>
-            </div>
-          `).join('');
+          menu.innerHTML = matches.slice(0, 8).map(u => {
+            const insertTag = u.username || u.name;
+            const initial = (u.name || u.username || 'U').charAt(0).toUpperCase();
+            const avatarHtml = u.photo 
+              ? `<img src="${u.photo}" onerror="this.outerHTML='<span class=\\'mention-initial\\'>${initial}</span>'" />` 
+              : `<span class="mention-initial">${initial}</span>`;
+
+            return `
+              <div class="mention-item" onclick="applyMention('${escapeHtml(insertTag)}', ${atIdx})">
+                ${avatarHtml}
+                <div style="display:flex; flex-direction:column; line-height:1.2;">
+                  <span style="color:#f1f5f9; font-weight:700;">${escapeHtml(u.name)}</span>
+                  ${u.username ? `<span style="font-size:10px; color:#64748b;">@${escapeHtml(u.username)}</span>` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
           menu.classList.add('active');
           return;
         }
@@ -1164,10 +1223,12 @@
       input.focus();
     }
 
+    // Mengubah tag @username menjadi link yang bisa diklik menuju profil
     function parseMentions(text) {
       const safe = escapeHtml(text);
-      return safe.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF\s]+?)(?=\s|$|[.,!?])/g, (m, u) => {
-        return `<span class="mention-tag" onclick="appendMentionToInput('${u.trim()}')">@${u.trim()}</span>`;
+      return safe.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+)/g, (m, u) => {
+        const cleanUser = u.trim();
+        return `<a href="/profil/${encodeURIComponent(cleanUser)}" class="mention-tag" onclick="event.stopPropagation()">@${cleanUser}</a>`;
       });
     }
 
@@ -1208,13 +1269,15 @@
       messageList.sort((a, b) => (Number(a.timestamp) || 0) - (Number(b.timestamp) || 0));
 
       const fragment = document.createDocumentFragment();
-      const mentionUsersMap = {};
       let lastMessageDateKey = null;
 
       const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
       const uniqueUsers = [...new Set(messageList.map(m => m.email ? m.email.toLowerCase().replace(/\./g, ',') : m.uid).filter(Boolean))];
       await Promise.all(uniqueUsers.map(uKey => getUserCachedProfile(uKey, uKey)));
+
+      // Muat daftar users jika belum ada
+      loadAllFirebaseUsers();
 
       messageList.forEach((item) => {
         const msgTimestamp = Number(item.timestamp) || Date.now();
@@ -1239,12 +1302,12 @@
 
         const authorName = (updatedProfile && updatedProfile.name) ? updatedProfile.name : (item.author || (item.email ? String(item.email).split('@')[0] : 'User'));
         const photoURL = (updatedProfile && updatedProfile.photoURL) ? updatedProfile.photoURL : (item.photoURL || '');
+        const username = (updatedProfile && updatedProfile.username) ? updatedProfile.username : (item.username || (item.email ? String(item.email).split('@')[0] : ''));
         const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
         const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
 
-        if (!mentionUsersMap[authorName]) {
-          mentionUsersMap[authorName] = { name: authorName, photo: photoURL };
-        }
+        // URL Menuju Profil
+        const profileUrl = username ? `/profil/${encodeURIComponent(username)}` : (item.email ? `/profil/${encodeURIComponent(item.email.split('@')[0])}` : '/profil/');
 
         const avatarContent = photoURL 
           ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
@@ -1283,12 +1346,12 @@
         }
 
         row.innerHTML = `
-          <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
+          <a href="${profileUrl}" class="user-avatar" title="Lihat Profil" onclick="event.stopPropagation()">${avatarContent}</a>
           <div class="msg-body-wrapper">
             <div class="msg-bubble" onclick="setReplyMessage('${item.id}', '${escapeHtml(authorName)}', '${escapeHtml(item.text || '')}', '${item.stickerUrl || ''}')">
               ${quoteHtml}
               <div class="msg-user-meta">
-                <span class="sender-name ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
+                <a href="${profileUrl}" class="sender-name ${isAdmin ? 'admin' : ''}" title="Lihat Profil" onclick="event.stopPropagation()">${escapeHtml(authorName)}</a>
                 ${levelBadge} ${adminBadge}
               </div>
               ${contentHtml}
@@ -1308,8 +1371,6 @@
 
       container.innerHTML = '';
       container.appendChild(fragment);
-
-      chatUsersList = Object.values(mentionUsersMap);
 
       syncAppHeight();
       setTimeout(syncAppHeight, 60);
@@ -1378,11 +1439,16 @@
       const user = window.currentUser;
       const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
+      // Dapatkan data profil user aktif
+      const uKey = user.email ? user.email.toLowerCase().replace(/\./g, ',') : user.uid;
+      const myProfile = await getUserCachedProfile(user.email, user.uid);
+
       const newMsg = {
         uid: user.uid,
         email: user.email || '',
-        author: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
-        photoURL: user.photoURL || '',
+        author: (myProfile && myProfile.name) ? myProfile.name : (user.displayName || (user.email ? user.email.split('@')[0] : 'User')),
+        username: (myProfile && myProfile.username) ? myProfile.username : (user.email ? user.email.split('@')[0] : ''),
+        photoURL: (myProfile && myProfile.photoURL) ? myProfile.photoURL : (user.photoURL || ''),
         text: text,
         stickerUrl: stickerUrl || '',
         timestamp: Date.now(),
