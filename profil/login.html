@@ -210,20 +210,18 @@
       errorBanner.style.display = 'block';
     }
 
-    // REDIRECT OTOMATIS: Jika sudah login, langsung alihkan ke /profil/username
+    // Menggunakan window.location.replace agar halaman login tidak tersimpan di riwayat tombol kembali
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const emailKey = user.email.toLowerCase().replace(/\./g, ',');
         const userSnap = await get(ref(db, `users/${emailKey}`));
-        if (userSnap.exists() && userSnap.val().username) {
-          window.location.href = `/profil/${userSnap.val().username}`;
-        } else {
-          window.location.href = '/profil/';
-        }
+        const targetUrl = (userSnap.exists() && userSnap.val().username)
+          ? `/profil/${userSnap.val().username}`
+          : '/profil/';
+        window.location.replace(targetUrl);
       }
     });
 
-    // Helper identifikasi apakah user memasukkan email atau username
     async function resolveEmailFromIdentifier(identifier) {
       const cleanInput = identifier.trim().toLowerCase();
       if (cleanInput.includes('@')) return cleanInput;
@@ -279,11 +277,11 @@
         const emailKey = cred.user.email.toLowerCase().replace(/\./g, ',');
         const userSnap = await get(ref(db, `users/${emailKey}`));
 
-        if (userSnap.exists() && userSnap.val().username) {
-          window.location.href = `/profil/${userSnap.val().username}`;
-        } else {
-          window.location.href = '/profil/';
-        }
+        const targetUrl = (userSnap.exists() && userSnap.val().username)
+          ? `/profil/${userSnap.val().username}`
+          : '/profil/';
+        
+        window.location.replace(targetUrl);
       } catch (err) {
         let msg = 'Gagal masuk. Periksa kembali email/username dan password.';
         if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') msg = 'Password salah.';
