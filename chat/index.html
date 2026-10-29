@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Live Chat Komunitas - Dongflix</title>
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Ruang obrolan langsung sesama penikmat donghua subtitle Indonesia di Dongflix.">
+
+  <!-- Favicon & PWA -->
+  <link rel="icon" type="image/png" href="/image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="/image/IMG_6395.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <script type="module" src="/assets/firebase-config.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-card: #0a0a0c;
+      --bg-chat-bubble: #0f172a;
+      --color-primary: #0284c7;
+      --color-primary-hover: #0369a1;
+      --color-accent: #38bdf8;
+      --text-main: #ffffff;
+      --text-sub: #cbd5e1;
+      --text-muted: #64748b;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(18, 18, 24, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-blur: blur(20px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .header-content {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-titles h1 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .live-status {
+      font-size: 11px;
+      color: #22c55e;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseGreen 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Chat Messages Container */
+    .chat-messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 76px 16px 20px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-loading-placeholder {
+      margin: auto;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* Message Item Card */
+    .chat-msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      max-width: 88%;
+      animation: fadeInMsg 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .chat-msg-row.mine {
+      margin-left: auto;
+      flex-direction: row-reverse;
+    }
+
+    @keyframes fadeInMsg {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12.5px;
+      font-weight: 800;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .msg-body-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .chat-msg-row.mine .msg-body-wrapper {
+      align-items: flex-end;
+    }
+
+    .msg-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      margin-bottom: 2px;
+      flex-wrap: wrap;
+    }
+    .sender-name {
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .sender-name.admin {
+      color: #f59e0b !important;
+    }
+
+    /* Shimmer Badge Effect */
+    @keyframes badgeShimmer {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      35%, 100% { transform: translateX(180%) skewX(-20deg); }
+    }
+    .badge-admin, .badge-level {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 6px;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .badge-admin::after, .badge-level::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 45%; height: 200%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+      animation: badgeShimmer 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+    .badge-level {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+    .badge-level.admin-lvl {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      color: #451a03;
+      border: 1px solid rgba(254, 243, 199, 0.5);
+      font-weight: 900;
+    }
+    .badge-admin {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.45);
+      font-weight: 900;
+    }
+
+    /* Message Bubble */
+    .msg-bubble {
+      background: var(--bg-chat-bubble);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 9px 13px;
+      font-size: 13.5px;
+      color: var(--text-sub);
+      line-height: 1.45;
+      word-break: break-word;
+      position: relative;
+    }
+    .chat-msg-row.mine .msg-bubble {
+      background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+      color: #fff;
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    .msg-sticker {
+      max-width: 145px;
+      max-height: 145px;
+      object-fit: contain;
+      border-radius: 10px;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .mention-tag {
+      color: #38bdf8 !important;
+      font-weight: 700;
+    }
+    .chat-msg-row.mine .mention-tag {
+      color: #bae6fd !important;
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Bottom Input Bar Area */
+    .chat-bottom-bar {
+      background: rgba(10, 10, 14, 0.94);
+      border-top: 1px solid var(--border-color);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      width: 100%;
+      z-index: 110;
+    }
+
+    .chat-input-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Preview Sticker Inside Input Area */
+    .sticker-preview-box {
+      display: none;
+      position: relative;
+      width: 58px;
+      height: 58px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 12px;
+      padding: 4px;
+      align-items: center;
+      justify-content: center;
+    }
+    .sticker-preview-box.active { display: inline-flex; }
+    .sticker-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .sticker-preview-remove {
+      position: absolute;
+      top: -5px; right: -5px;
+      width: 18px; height: 18px;
+      background: #ef4444;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid #000;
+    }
+
+    /* Mention Suggestion Dropdown */
+    .mention-dropdown {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: #0b1329;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 6px;
+      min-width: 190px;
+      max-height: 160px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      z-index: 150;
+      overflow-y: auto;
+    }
+    .mention-dropdown.active { display: block; }
+    .mention-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .mention-item:hover { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .mention-item img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 26px;
+      padding: 5px 8px 5px 16px;
+      transition: border-color 0.2s;
+    }
+    .input-row:focus-within { border-color: #38bdf8; }
+
+    .chat-input {
+      flex: 1;
+      height: 38px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .btn-sticker {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .btn-sticker:hover { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border-color: #38bdf8; }
+    .btn-sticker svg { width: 20px; height: 20px; }
+
+    .btn-send {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.2s;
+    }
+    .btn-send:hover { background: #0369a1; }
+    .btn-send svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    .chat-login-prompt {
+      display: none;
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      border-radius: 14px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .chat-login-prompt a {
+      color: #38bdf8;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Sticker Bottom Sheet Panel */
+    .sheet-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+    }
+    .sheet-overlay.active { display: block; }
+
+    .sticker-panel {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #090e17;
+      border-top: 1px solid var(--border-color);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      z-index: 205;
+      padding: 16px;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.8);
+      max-height: 45vh;
+      flex-direction: column;
+    }
+    .sticker-panel.active { display: flex; }
+
+    .sticker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .sticker-header span {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #f1f5f9;
+    }
+    .sticker-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 10px;
+      overflow-y: auto;
+      padding: 6px 2px;
+      max-height: 32vh;
+    }
+    .sticker-grid-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, border-color 0.15s;
+      aspect-ratio: 1/1;
+    }
+    .sticker-grid-item:hover, .sticker-grid-item:active {
+      transform: scale(1.08);
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+    }
+    .sticker-grid-item img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="header-content">
+      <div class="header-left" onclick="history.back() || (window.location.href='/')">
+        <button class="icon-btn" aria-label="Kembali">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="header-titles">
+          <h1>Live Chat Dongflix</h1>
+          <div class="live-status">
+            <span class="pulse-dot"></span>
+            <span id="onlineCountText">Komunitas Online</span>
+          </div>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="scrollToBottom(true)" title="Paling Baru">
+        <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Chat Log Message View -->
+  <main class="chat-messages-container" id="chatContainer">
+    <div class="chat-loading-placeholder" id="chatLoading">Menghubungkan ke live chat...</div>
+  </main>
+
+  <!-- Bottom Message Input Bar -->
+  <div class="chat-bottom-bar">
+    <div class="chat-input-wrapper" id="chatInputArea" style="display:none;">
+      <!-- Sticker Preview -->
+      <div class="sticker-preview-box" id="stickerPreview">
+        <img id="stickerPreviewImg" src="" alt="Selected Sticker" />
+        <div class="sticker-preview-remove" onclick="removeStickerPreview()">✕</div>
+      </div>
+
+      <!-- Mention User Dropdown -->
+      <div class="mention-dropdown" id="mentionMenu"></div>
+
+      <div class="input-row">
+        <input 
+          type="text" 
+          id="chatInput" 
+          class="chat-input" 
+          placeholder="Kirim pesan... (ketik @ untuk tag)" 
+          autocomplete="off" 
+          oninput="handleMentionSearch(this)"
+          onkeydown="if(event.key==='Enter') sendMessage()"
+        />
+
+        <!-- Sticker SVG Button -->
+        <button class="btn-sticker" onclick="openStickerPicker()" title="Pilih Stiker & GIF">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
+            <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
+            <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
+            <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
+            <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
+          </svg>
+        </button>
+
+        <!-- Send Message Button -->
+        <button class="btn-send" onclick="sendMessage()" title="Kirim">
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-login-prompt" id="chatLoginPrompt">
+      Silakan <a href="https://dongflix.my.id/profil/login.html">Login</a> terlebih dahulu untuk bergabung dalam live chat.
+    </div>
+  </div>
+
+  <!-- Sticker Picker Bottom Sheet -->
+  <div class="sheet-overlay" id="stickerOverlay" onclick="closeStickerPicker()"></div>
+  <div class="sticker-panel" id="stickerPanel">
+    <div class="sticker-header">
+      <span>Pilih Stiker & GIF</span>
+      <button class="sticker-close" onclick="closeStickerPicker()">✕</button>
+    </div>
+    <div class="sticker-grid" id="stickerGrid">
+      <p style="font-size:12px;color:#64748b;grid-column:1/-1;text-align:center;">Memuat stiker...</p>
+    </div>
+  </div>
+
+  <!-- Firebase Script Init & Live Chat Implementation -->
+  <script type="module">
+    import { auth, db, ref, get, set, push, onValue, limitToLast, query, onAuthStateChanged } from '/assets/firebase-config.js';
+
+    window.auth = auth;
+    window.db = db;
+    window.fbRef = ref;
+    window.fbGet = get;
+    window.fbSet = set;
+    window.fbPush = push;
+    window.fbOnValue = onValue;
+    window.fbQuery = query;
+    window.fbLimitToLast = limitToLast;
+
+    onAuthStateChanged(auth, async (user) => {
+      window.currentUser = user;
+      const inputArea = document.getElementById('chatInputArea');
+      const loginPrompt = document.getElementById('chatLoginPrompt');
+
+      if (user) {
+        if (inputArea) inputArea.style.display = 'flex';
+        if (loginPrompt) loginPrompt.style.display = 'none';
+      } else {
+        if (inputArea) inputArea.style.display = 'none';
+        if (loginPrompt) loginPrompt.style.display = 'block';
+      }
+    });
+
+    const checkReady = setInterval(() => {
+      if (window.db && window.fbRef) {
+        clearInterval(checkReady);
+        initLiveChat();
+      }
+    }, 50);
+  </script>
+
+  <script>
+    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+    let selectedStickerUrl = '';
+    let cachedStickers = [];
+    let chatUsersList = [];
+    let isInitialLoad = true;
+
+    const DEFAULT_STICKERS = [
+      'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
+      'https://media.tenor.com/On7KVXhzuf8AAAAj/chibi-cat.gif',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408201.png',
+      'https://media.tenor.com/2s_jOsl0e8MAAAAj/dance-happy.gif',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408166.png',
+      'https://media.tenor.com/kHIdycPoP6AAAAAj/anime-cry.gif',
+      'https://cdn-icons-png.flaticon.com/128/9408/9408224.png',
+      'https://media.tenor.com/gK2J_J7KkE8AAAAj/cute-love.gif'
+    ];
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return '';
+      const d = new Date(timestamp);
+      return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    }
+
+    function scrollToBottom(smooth = false) {
+      const container = document.getElementById('chatContainer');
+      if (container) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      }
+    }
+
+    /* Sticker Fetch & Select */
+    async function fetchStickers() {
+      if (cachedStickers.length > 0) return cachedStickers;
+      try {
+        if (window.db && window.fbRef && window.fbGet) {
+          let snap = await window.fbGet(window.fbRef(window.db, 'stickers'));
+          if (!snap.exists()) {
+            snap = await window.fbGet(window.fbRef(window.db, 'sticker'));
+          }
+
+          if (snap.exists()) {
+            const val = snap.val();
+            let list = [];
+            if (Array.isArray(val)) {
+              list = val.filter(Boolean);
+            } else if (typeof val === 'object' && val !== null) {
+              Object.values(val).forEach(item => {
+                if (typeof item === 'string') list.push(item);
+                else if (item && typeof item === 'object') {
+                  const url = item.url || item.link || item.image || item.src;
+                  if (url) list.push(url);
+                }
+              });
+            }
+            if (list.length > 0) {
+              cachedStickers = list;
+              return cachedStickers;
+            }
+          }
+        }
+      } catch (_) {}
+      cachedStickers = DEFAULT_STICKERS;
+      return cachedStickers;
+    }
+
+    async function openStickerPicker() {
+      if (!window.currentUser) return;
+      document.getElementById('stickerPanel').classList.add('active');
+      document.getElementById('stickerOverlay').classList.add('active');
+
+      const grid = document.getElementById('stickerGrid');
+      grid.innerHTML = '<p style="font-size:12px;color:#64748b;grid-column:1/-1;text-align:center;">Memuat stiker...</p>';
+
+      const list = await fetchStickers();
+      grid.innerHTML = list.map(url => `
+        <div class="sticker-grid-item" onclick="chooseSticker('${url}')">
+          <img src="${url}" loading="lazy" />
+        </div>
+      `).join('');
+    }
+
+    function closeStickerPicker() {
+      document.getElementById('stickerPanel').classList.remove('active');
+      document.getElementById('stickerOverlay').classList.remove('active');
+    }
+
+    function chooseSticker(url) {
+      selectedStickerUrl = url;
+      closeStickerPicker();
+
+      const box = document.getElementById('stickerPreview');
+      const img = document.getElementById('stickerPreviewImg');
+      if (box && img) {
+        img.src = url;
+        box.classList.add('active');
+      }
+      document.getElementById('chatInput').focus();
+    }
+
+    function removeStickerPreview() {
+      selectedStickerUrl = '';
+      const box = document.getElementById('stickerPreview');
+      if (box) box.classList.remove('active');
+    }
+
+    /* Mention @User Helpers */
+    function handleMentionSearch(inputEl) {
+      const menu = document.getElementById('mentionMenu');
+      if (!menu) return;
+
+      const val = inputEl.value;
+      const cursorPos = inputEl.selectionStart;
+      const textBeforeCursor = val.slice(0, cursorPos);
+      const atIdx = textBeforeCursor.lastIndexOf('@');
+
+      if (atIdx !== -1 && (atIdx === 0 || /\s/.test(textBeforeCursor[atIdx - 1]))) {
+        const query = textBeforeCursor.slice(atIdx + 1).toLowerCase();
+        const matches = chatUsersList.filter(u => u.name.toLowerCase().includes(query));
+
+        if (matches.length > 0) {
+          menu.innerHTML = matches.map(u => `
+            <div class="mention-item" onclick="applyMention('${u.name}', ${atIdx})">
+              ${u.photo ? `<img src="${u.photo}" />` : `<span>@</span>`}
+              <span>${escapeHtml(u.name)}</span>
+            </div>
+          `).join('');
+          menu.classList.add('active');
+          return;
+        }
+      }
+      menu.classList.remove('active');
+    }
+
+    function applyMention(name, atIdx) {
+      const input = document.getElementById('chatInput');
+      const menu = document.getElementById('mentionMenu');
+      if (!input) return;
+
+      const val = input.value;
+      const before = val.slice(0, atIdx);
+      const after = val.slice(input.selectionStart);
+
+      input.value = `${before}@${name} ${after}`;
+      if (menu) menu.classList.remove('active');
+      input.focus();
+    }
+
+    function appendMentionToInput(name) {
+      const input = document.getElementById('chatInput');
+      if (!input) return;
+      input.value += `@${name} `;
+      input.focus();
+    }
+
+    function parseMentions(text) {
+      const safe = escapeHtml(text);
+      return safe.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF\s]+?)(?=\s|$|[.,!?])/g, (m, u) => {
+        return `<span class="mention-tag" onclick="appendMentionToInput('${u.trim()}')">@${u.trim()}</span>`;
+      });
+    }
+
+    /* Live Chat Core Firebase Listener */
+    function initLiveChat() {
+      const container = document.getElementById('chatContainer');
+      const chatRef = window.fbRef(window.db, 'live_chat');
+      const recentChatQuery = window.fbQuery(chatRef, window.fbLimitToLast(80));
+
+      window.fbOnValue(recentChatQuery, (snapshot) => {
+        const loadingEl = document.getElementById('chatLoading');
+        if (loadingEl) loadingEl.remove();
+
+        if (!snapshot.exists()) {
+          container.innerHTML = '<div class="chat-loading-placeholder">Belum ada obrolan. Mulai sapa teman-teman sekarang!</div>';
+          return;
+        }
+
+        const data = snapshot.val() || {};
+        container.innerHTML = '';
+        const usersMap = {};
+
+        Object.keys(data).forEach((key) => {
+          const item = data[key];
+          const isMine = window.currentUser && (
+            (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) ||
+            (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
+          );
+
+          const authorName = item.author || (item.email ? String(item.email).split('@')[0] : 'User');
+          const photoURL = item.photoURL || '';
+          const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+          const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
+
+          // Track users for mentions
+          if (!usersMap[authorName]) {
+            usersMap[authorName] = { name: authorName, photo: photoURL };
+          }
+
+          const avatarContent = photoURL 
+            ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
+            : initial;
+
+          const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+          const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+
+          const row = document.createElement('div');
+          row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
+
+          let contentHtml = '';
+          if (item.text) {
+            contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
+          }
+          if (item.stickerUrl) {
+            contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
+          }
+
+          row.innerHTML = `
+            <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
+            <div class="msg-body-wrapper">
+              <div class="msg-user-meta">
+                <span class="sender-name ${isAdmin ? 'admin' : ''}" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${escapeHtml(authorName)}</span>
+                ${levelBadge} ${adminBadge}
+              </div>
+              <div class="msg-bubble">
+                ${contentHtml}
+              </div>
+              <span class="msg-time">${formatTime(item.timestamp)}</span>
+            </div>
+          `;
+
+          container.appendChild(row);
+        });
+
+        chatUsersList = Object.values(usersMap);
+
+        if (isInitialLoad) {
+          scrollToBottom(false);
+          isInitialLoad = false;
+        } else {
+          scrollToBottom(true);
+        }
+      });
+    }
+
+    /* Send Message */
+    async function sendMessage() {
+      if (!window.currentUser) return;
+      const input = document.getElementById('chatInput');
+      const text = input ? input.value.trim() : '';
+      const stickerUrl = selectedStickerUrl;
+
+      if (!text && !stickerUrl) return;
+
+      const user = window.currentUser;
+      const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+      const newMsg = {
+        uid: user.uid,
+        email: user.email || '',
+        author: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+        photoURL: user.photoURL || '',
+        text: text,
+        stickerUrl: stickerUrl || '',
+        timestamp: Date.now(),
+        isAdmin: isAdmin
+      };
+
+      try {
+        const chatRef = window.fbRef(window.db, 'live_chat');
+        const newMsgRef = window.fbPush(chatRef);
+        await window.fbSet(newMsgRef, newMsg);
+
+        input.value = '';
+        removeStickerPreview();
+        scrollToBottom(true);
+      } catch (err) {
+        alert('Gagal mengirim pesan: ' + err.message);
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#mentionMenu') && !e.target.closest('#chatInput')) {
+        const menu = document.getElementById('mentionMenu');
+        if (menu) menu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
