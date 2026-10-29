@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Daftar Akun - Dongflix</title>
+  <title>Daftar - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
-  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
-  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+  <link rel="icon" type="image/png" href="/image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="/image/IMG_6395.png">
 
   <style>
     :root {
@@ -30,7 +30,7 @@
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -68,123 +68,36 @@
       z-index: 10;
     }
 
-    .brand-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
+    .brand-header { text-align: center; margin-bottom: 24px; }
+    .brand-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .brand-sub { font-size: 13px; color: var(--text-sub); margin-top: 6px; }
 
-    .brand-title {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-sub {
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-top: 6px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-      position: relative;
-    }
-
+    .form-group { margin-bottom: 16px; position: relative; }
     .form-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      display: block; font-size: 11px; font-weight: 700; color: var(--text-sub);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
     }
-
     .form-input {
-      width: 100%;
-      height: 44px;
-      background: rgba(5, 8, 17, 0.85);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 0 14px;
-      color: #fff;
-      font-size: 13.5px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%; height: 44px; background: rgba(5, 8, 17, 0.85); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 0 14px; color: #fff; font-size: 13.5px; outline: none;
     }
+    .form-input:focus { border-color: var(--color-accent); }
+    .form-input.input-error { border-color: var(--color-red); }
+    .form-input.input-success { border-color: var(--color-green); }
 
-    .form-input:focus {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-    }
-
-    .form-input.input-error {
-      border-color: var(--color-red);
-    }
-
-    .form-input.input-success {
-      border-color: var(--color-green);
-    }
-
-    .input-hint {
-      font-size: 11.5px;
-      margin-top: 5px;
-      display: none;
-      font-weight: 500;
-    }
-
-    .input-hint.error {
-      color: var(--color-red);
-      display: block;
-    }
-
-    .input-hint.success {
-      color: var(--color-green);
-      display: block;
-    }
-
-    .input-hint.loading {
-      color: var(--text-sub);
-      display: block;
-    }
+    .input-hint { font-size: 11.5px; margin-top: 5px; display: none; font-weight: 600; }
+    .input-hint.error { color: var(--color-red); display: block; }
+    .input-hint.success { color: var(--color-green); display: block; }
+    .input-hint.loading { color: var(--text-sub); display: block; }
 
     .btn-submit {
-      width: 100%;
-      height: 46px;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-radius: var(--radius-btn);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.2s, opacity 0.2s, transform 0.1s;
+      width: 100%; height: 46px; background: #ffffff; color: #000000; border: none;
+      border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
     }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .btn-submit:active {
-      transform: scale(0.98);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .footer-links {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 13px;
-      color: var(--text-sub);
-    }
-
-    .footer-links a {
-      color: var(--color-accent);
-      text-decoration: none;
-      font-weight: 600;
-    }
+    .footer-links { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-sub); }
+    .footer-links a { color: var(--color-accent); text-decoration: none; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -193,62 +106,34 @@
 
   <div class="register-card">
     <div class="brand-header">
-      <div class="brand-title">Daftar Akun Dongflix</div>
-      <div class="brand-sub">Buat profil Anda untuk menyimpan koleksi favorit</div>
+      <div class="brand-title">Daftar Akun Baru</div>
+      <div class="brand-sub">Bergabung ke Dongflix untuk menyimpan koleksi & riwayat</div>
     </div>
 
-    <form id="formRegister" onsubmit="handleRegister(event)">
-      <!-- Input Username -->
+    <form onsubmit="handleRegister(event)">
+      <!-- Username -->
       <div class="form-group">
-        <label class="form-label" for="regUsername">Username *</label>
-        <input 
-          type="text" 
-          id="regUsername" 
-          class="form-input" 
-          placeholder="contoh: rulsz" 
-          required 
-          autocomplete="off"
-          pattern="^[a-zA-Z0-9_]{3,20}$"
-          title="3-20 karakter, hanya boleh huruf, angka, dan garis bawah (_)"
-        >
+        <label class="form-label">Username *</label>
+        <input type="text" id="regUsername" class="form-input" placeholder="contoh: rulsz" required autocomplete="off" pattern="^[a-zA-Z0-9_]{3,20}$">
         <div id="usernameStatus" class="input-hint"></div>
       </div>
 
-      <!-- Input Nama Lengkap -->
+      <!-- Nama -->
       <div class="form-group">
-        <label class="form-label" for="regName">Nama Lengkap *</label>
-        <input 
-          type="text" 
-          id="regName" 
-          class="form-input" 
-          placeholder="Nama tampilan Anda" 
-          required
-        >
+        <label class="form-label">Nama Lengkap *</label>
+        <input type="text" id="regName" class="form-input" placeholder="Nama Anda" required>
       </div>
 
-      <!-- Input Email -->
+      <!-- Email -->
       <div class="form-group">
-        <label class="form-label" for="regEmail">Email *</label>
-        <input 
-          type="email" 
-          id="regEmail" 
-          class="form-input" 
-          placeholder="nama@email.com" 
-          required
-        >
+        <label class="form-label">Email *</label>
+        <input type="email" id="regEmail" class="form-input" placeholder="nama@email.com" required>
       </div>
 
-      <!-- Input Password -->
+      <!-- Password -->
       <div class="form-group">
-        <label class="form-label" for="regPassword">Password *</label>
-        <input 
-          type="password" 
-          id="regPassword" 
-          class="form-input" 
-          placeholder="Minimal 6 karakter" 
-          minlength="6" 
-          required
-        >
+        <label class="form-label">Password *</label>
+        <input type="password" id="regPassword" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required>
       </div>
 
       <button type="submit" id="btnSubmitRegister" class="btn-submit">Daftar Sekarang</button>
@@ -262,7 +147,7 @@
   <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
     import { ref, get, set, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const usernameInput = document.getElementById('regUsername');
     const usernameStatus = document.getElementById('usernameStatus');
@@ -271,16 +156,22 @@
     let isUsernameAvailable = false;
     let checkTimeout = null;
 
-    // Format email key untuk Firebase (titik diubah jadi koma)
-    function getDbKey(email) {
-      return email.toLowerCase().replace(/\./g, ',');
-    }
+    // REDIRECT OTOMATIS: Jika sudah login, langsung alihkan ke /profil/username
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const emailKey = user.email.toLowerCase().replace(/\./g, ',');
+        const userSnap = await get(ref(db, `users/${emailKey}`));
+        if (userSnap.exists() && userSnap.val().username) {
+          window.location.href = `/profil/${userSnap.val().username}`;
+        } else {
+          window.location.href = '/profil/';
+        }
+      }
+    });
 
-    // Fungsi cek ketersediaan username ke database
+    // Validasi Cek Ketersediaan Username
     async function checkUsernameAvailability(username) {
       const cleanUsername = username.trim().toLowerCase();
-
-      // Validasi panjang karakter
       if (cleanUsername.length < 3) {
         usernameStatus.className = 'input-hint error';
         usernameStatus.innerText = 'Username minimal 3 karakter.';
@@ -289,44 +180,25 @@
         return;
       }
 
-      // Validasi pola regex
-      const validRegex = /^[a-zA-Z0-9_]{3,20}$/;
-      if (!validRegex.test(cleanUsername)) {
-        usernameStatus.className = 'input-hint error';
-        usernameStatus.innerText = 'Hanya boleh huruf, angka, dan underscore (_).';
-        usernameInput.className = 'form-input input-error';
-        isUsernameAvailable = false;
-        return;
-      }
-
-      // Tampilkan indikator pengecekan
       usernameStatus.className = 'input-hint loading';
-      usernameStatus.innerText = 'Memeriksa ketersediaan...';
-      usernameInput.className = 'form-input';
+      usernameStatus.innerText = 'Memeriksa username...';
 
       try {
         const usersRef = ref(db, 'users');
         let isTaken = false;
 
-        // 1. Percobaan query via index child username
         try {
           const q = query(usersRef, orderByChild('username'), equalTo(cleanUsername));
           const snap = await get(q);
-          if (snap.exists()) {
-            isTaken = true;
-          }
-        } catch (e) {
-          console.warn('Index belum diatur, beralih ke scan manual...', e);
-        }
+          if (snap.exists()) isTaken = true;
+        } catch (_) {}
 
-        // 2. Fallback scan jika index belum diset di rules
         if (!isTaken) {
           const allSnap = await get(usersRef);
           if (allSnap.exists()) {
             const data = allSnap.val();
             for (const key in data) {
-              const u = data[key]?.username;
-              if (u && String(u).toLowerCase() === cleanUsername) {
+              if (data[key]?.username && data[key].username.toLowerCase() === cleanUsername) {
                 isTaken = true;
                 break;
               }
@@ -334,7 +206,6 @@
           }
         }
 
-        // Tampilkan hasil
         if (isTaken) {
           usernameStatus.className = 'input-hint error';
           usernameStatus.innerText = `Username "${cleanUsername}" sudah digunakan!`;
@@ -348,17 +219,13 @@
         }
       } catch (err) {
         usernameStatus.className = 'input-hint error';
-        usernameStatus.innerText = 'Gagal memeriksa username. Coba periksa koneksi.';
-        usernameInput.className = 'form-input';
+        usernameStatus.innerText = 'Gagal memeriksa koneksi database.';
         isUsernameAvailable = false;
       }
     }
 
-    // Debounce saat user mengetik username
     usernameInput.addEventListener('input', (e) => {
-      // Hapus spasi secara instan
       e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
-
       clearTimeout(checkTimeout);
       const val = e.target.value.trim();
 
@@ -374,7 +241,6 @@
       }, 400);
     });
 
-    // Handler form submit pendaftaran
     window.handleRegister = async function(e) {
       e.preventDefault();
 
@@ -383,34 +249,19 @@
       const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value;
 
-      // 1. Validasi semua wajib diisi
-      if (!username || !name || !email || !password) {
-        alert('Semua kolom wajib diisi!');
-        return;
-      }
-
-      // 2. Validasi ketersediaan username
-      if (!isUsernameAvailable) {
-        alert('Username belum tersedia atau sudah digunakan. Silakan ganti username lain.');
-        usernameInput.focus();
-        return;
-      }
+      if (!username || !name || !email || !password) return alert('Semua form wajib diisi!');
+      if (!isUsernameAvailable) return alert('Username belum tersedia atau sudah digunakan.');
 
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Mendaftarkan akun...';
+      submitBtn.innerText = 'Mendaftarkan...';
 
       try {
-        // Buat akun di Firebase Auth
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-        const user = cred.user;
+        await updateProfile(cred.user, { displayName: name });
 
-        // Set display name di akun auth
-        await updateProfile(user, { displayName: name });
-
-        // Simpan data profil ke Firebase Realtime Database: users/{emailKey}
-        const emailKey = getDbKey(email);
+        const emailKey = email.toLowerCase().replace(/\./g, ',');
         const newUserData = {
-          uid: user.uid,
+          uid: cred.user.uid,
           name: name,
           username: username,
           email: email,
@@ -425,11 +276,10 @@
 
         await set(ref(db, `users/${emailKey}`), newUserData);
 
-        alert('Pendaftaran berhasil! Mengalihkan ke halaman profil...');
+        alert('Pendaftaran berhasil! Mengalihkan ke profil Anda...');
         window.location.href = `/profil/${username}`;
       } catch (err) {
-        console.error(err);
-        alert('Pendaftaran gagal: ' + err.message);
+        alert('Gagal mendaftar: ' + err.message);
         submitBtn.disabled = false;
         submitBtn.innerText = 'Daftar Sekarang';
       }
