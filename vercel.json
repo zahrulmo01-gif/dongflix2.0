@@ -11,6 +11,10 @@
     {
       "source": "/donghua/:slug",
       "destination": "/donghua/watch.html"
+    },
+    {
+      "source": "/profil/:username",
+      "destination": "/profil/index.html"
     }
   ]
 }
