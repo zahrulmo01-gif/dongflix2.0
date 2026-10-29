@@ -47,6 +47,29 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* SKELETON SHIMMER ANIMATION */
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0.03) 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.6s infinite ease-in-out;
+      border-radius: 8px;
+      border: none !important;
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .skeleton-text {
+      height: 12px;
+      border-radius: 6px;
+      display: block;
+    }
+
     /* Container Dinamis yang Mengikuti Ukuran Layar Aktif / Keyboard */
     .app-viewport-wrapper {
       position: absolute;
@@ -60,7 +83,7 @@
       background-color: var(--bg-main);
     }
 
-    /* Top Navigation Header (Berada di alur flex agar tidak tumpang tindih) */
+    /* Top Navigation Header */
     header {
       height: 60px;
       z-index: 100;
@@ -540,7 +563,7 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 16px; /* 16px mencegah browser iOS auto-zoom */
+      font-size: 16px;
       outline: none;
       font-family: inherit;
     }
@@ -696,16 +719,56 @@
       </div>
     </header>
 
-    <!-- Chat Log Message View -->
+    <!-- Chat Log Message View DENGAN SKELETON PLACEHOLDER -->
     <main class="chat-messages-container" id="chatContainer">
-      <div class="chat-loading-placeholder" id="chatLoading">Menghubungkan ke live chat...</div>
+      <div id="chatLoading" style="display:flex; flex-direction:column; gap:14px; width:100%;">
+        <!-- Skeleton Chat 1 -->
+        <div class="chat-msg-row">
+          <div class="user-avatar skeleton" style="border-radius:50%;"></div>
+          <div class="msg-body-wrapper" style="width:65%;">
+            <div class="msg-bubble" style="background:#141720; border-color:transparent; gap:8px;">
+              <div style="display:flex; gap:6px;">
+                <div class="skeleton skeleton-text" style="width:75px; height:12px;"></div>
+                <div class="skeleton" style="width:36px; height:12px; border-radius:4px;"></div>
+              </div>
+              <div class="skeleton skeleton-text" style="width:90%; height:13px;"></div>
+              <div class="skeleton skeleton-text" style="width:55%; height:13px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Skeleton Chat 2 (Mine) -->
+        <div class="chat-msg-row mine">
+          <div class="user-avatar skeleton" style="border-radius:50%;"></div>
+          <div class="msg-body-wrapper" style="width:55%;">
+            <div class="msg-bubble" style="background:#1b2336; border-color:transparent; gap:8px;">
+              <div style="display:flex; gap:6px;">
+                <div class="skeleton skeleton-text" style="width:60px; height:12px;"></div>
+              </div>
+              <div class="skeleton skeleton-text" style="width:85%; height:13px;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Skeleton Chat 3 -->
+        <div class="chat-msg-row">
+          <div class="user-avatar skeleton" style="border-radius:50%;"></div>
+          <div class="msg-body-wrapper" style="width:70%;">
+            <div class="msg-bubble" style="background:#141720; border-color:transparent; gap:8px;">
+              <div style="display:flex; gap:6px;">
+                <div class="skeleton skeleton-text" style="width:90px; height:12px;"></div>
+                <div class="skeleton" style="width:40px; height:12px; border-radius:4px;"></div>
+              </div>
+              <div class="skeleton skeleton-text" style="width:95%; height:13px;"></div>
+              <div class="skeleton skeleton-text" style="width:70%; height:13px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div id="chatBottomAnchor" style="height: 18px; width: 100%; flex-shrink: 0;"></div>
     </main>
 
     <!-- Bottom Message Input Bar -->
     <div class="chat-bottom-bar" id="chatBottomBar">
       <div class="chat-input-wrapper" id="chatInputArea" style="display:none;">
-        <!-- Balas Banner Indicator -->
         <div class="reply-target-banner" id="replyBanner">
           <div class="reply-target-info">
             <span class="reply-target-name" id="replyTargetAuthor">Membalas...</span>
@@ -714,13 +777,11 @@
           <button class="reply-target-cancel" onclick="cancelReply()">✕</button>
         </div>
 
-        <!-- Sticker Preview -->
         <div class="sticker-preview-box" id="stickerPreview">
           <img id="stickerPreviewImg" src="" alt="Selected Sticker" />
           <div class="sticker-preview-remove" onclick="removeStickerPreview()">✕</div>
         </div>
 
-        <!-- Mention User Dropdown -->
         <div class="mention-dropdown" id="mentionMenu"></div>
 
         <div class="input-row">
@@ -734,7 +795,6 @@
             onkeydown="if(event.key==='Enter') sendMessage()"
           />
 
-          <!-- Sticker Button -->
           <button class="btn-sticker" onclick="openStickerPicker()" title="Pilih Stiker & GIF">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
@@ -745,7 +805,6 @@
             </svg>
           </button>
 
-          <!-- Send Message Button -->
           <button class="btn-send" onclick="sendMessage()" title="Kirim">
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
@@ -766,7 +825,10 @@
       <button class="sticker-close" onclick="closeStickerPicker()">✕</button>
     </div>
     <div class="sticker-grid" id="stickerGrid">
-      <p style="font-size:12px;color:#64748b;grid-column:1/-1;text-align:center;">Memuat stiker...</p>
+      <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+      <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+      <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+      <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
     </div>
   </div>
 
@@ -810,7 +872,7 @@
         clearInterval(checkReady);
         const loadingEl = document.getElementById('chatLoading');
         if (loadingEl) {
-          loadingEl.innerHTML = '<span style="color:#ef4444;">Gagal memuat modul database.</span>';
+          loadingEl.innerHTML = '<span style="color:#ef4444; text-align:center; display:block; padding:20px;">Gagal memuat modul database.</span>';
         }
       }
     }, 50);
@@ -905,7 +967,6 @@
       }
     }
 
-    /* Solusi Presisi Viewport Keyboard (Android & iOS Safari) */
     const appViewport = document.getElementById('appViewport');
     const bottomBar = document.getElementById('chatBottomBar');
     const chatInput = document.getElementById('chatInput');
@@ -945,7 +1006,6 @@
       });
     }
 
-    /* Delete Chat */
     async function deleteChatMessage(msgId) {
       if (!confirm('Hapus pesan ini?')) return;
       try {
@@ -963,7 +1023,6 @@
       }
     }
 
-    /* Reply Feature */
     function setReplyMessage(msgId, author, text, stickerUrl) {
       if (!window.currentUser) return;
       const snippet = text || (stickerUrl ? '[Stiker/GIF]' : 'Pesan');
@@ -980,7 +1039,6 @@
       document.getElementById('replyBanner').classList.remove('active');
     }
 
-    /* Sticker Fetch & Select */
     async function fetchStickers() {
       if (cachedStickers.length > 0) return cachedStickers;
       try {
@@ -1019,7 +1077,12 @@
       document.getElementById('stickerOverlay').classList.add('active');
 
       const grid = document.getElementById('stickerGrid');
-      grid.innerHTML = '<p style="font-size:12px;color:#64748b;grid-column:1/-1;text-align:center;">Memuat stiker...</p>';
+      grid.innerHTML = `
+        <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+        <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+        <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+        <div class="skeleton" style="aspect-ratio:1/1; border-radius:12px;"></div>
+      `;
 
       const list = await fetchStickers();
       grid.innerHTML = list.map(url => `
@@ -1053,7 +1116,6 @@
       if (box) box.classList.remove('active');
     }
 
-    /* Mention Helpers */
     function handleMentionSearch(inputEl) {
       const menu = document.getElementById('mentionMenu');
       if (!menu) return;
@@ -1126,7 +1188,6 @@
       return null;
     }
 
-    /* Core Render Function */
     async function renderLiveChatMessages(chatData) {
       const container = document.getElementById('chatContainer');
       const loadingEl = document.getElementById('chatLoading');
@@ -1254,7 +1315,6 @@
       setTimeout(syncAppHeight, 60);
     }
 
-    /* Fast Live Chat Loader */
     async function loadChatMessagesOnce() {
       try {
         if (!window.db || !window.fbRef || !window.fbGet) return;
@@ -1307,7 +1367,6 @@
     }
     window.initLiveChat = initLiveChat;
 
-    /* Send Message */
     async function sendMessage() {
       if (!window.currentUser) return;
       const input = document.getElementById('chatInput');
