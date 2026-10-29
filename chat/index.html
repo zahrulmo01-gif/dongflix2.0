@@ -13,8 +13,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <script type="module" src="/assets/firebase-config.js"></script>
-
   <style>
     :root {
       --bg-main: #000000;
@@ -140,6 +138,7 @@
       color: var(--text-muted);
       font-size: 13px;
       text-align: center;
+      padding: 20px;
     }
 
     /* Message Item Card */
@@ -197,6 +196,7 @@
     .sender-name {
       font-weight: 700;
       color: #94a3b8;
+      cursor: pointer;
     }
     .sender-name.admin {
       color: #f59e0b !important;
@@ -278,6 +278,7 @@
     .mention-tag {
       color: #38bdf8 !important;
       font-weight: 700;
+      cursor: pointer;
     }
     .chat-msg-row.mine .mention-tag {
       color: #bae6fd !important;
@@ -611,40 +612,52 @@
     </div>
   </div>
 
-  <!-- Firebase Script Init & Live Chat Implementation -->
+  <!-- Firebase Script Init -->
   <script type="module">
-    import { auth, db, ref, get, set, push, onValue, limitToLast, query, onAuthStateChanged } from '/assets/firebase-config.js';
+    import * as FB from '/assets/firebase-config.js';
 
-    window.auth = auth;
-    window.db = db;
-    window.fbRef = ref;
-    window.fbGet = get;
-    window.fbSet = set;
-    window.fbPush = push;
-    window.fbOnValue = onValue;
-    window.fbQuery = query;
-    window.fbLimitToLast = limitToLast;
+    window.auth = FB.auth;
+    window.db = FB.db;
+    window.fbRef = FB.ref;
+    window.fbGet = FB.get;
+    window.fbSet = FB.set;
+    window.fbPush = FB.push;
+    window.fbOnValue = FB.onValue;
+    window.fbQuery = FB.query;
+    window.fbLimitToLast = FB.limitToLast;
 
-    onAuthStateChanged(auth, async (user) => {
-      window.currentUser = user;
-      const inputArea = document.getElementById('chatInputArea');
-      const loginPrompt = document.getElementById('chatLoginPrompt');
+    if (FB.onAuthStateChanged && FB.auth) {
+      FB.onAuthStateChanged(FB.auth, (user) => {
+        window.currentUser = user;
+        const inputArea = document.getElementById('chatInputArea');
+        const loginPrompt = document.getElementById('chatLoginPrompt');
 
-      if (user) {
-        if (inputArea) inputArea.style.display = 'flex';
-        if (loginPrompt) loginPrompt.style.display = 'none';
-      } else {
-        if (inputArea) inputArea.style.display = 'none';
-        if (loginPrompt) loginPrompt.style.display = 'block';
-      }
-    });
+        if (user) {
+          if (inputArea) inputArea.style.display = 'flex';
+          if (loginPrompt) loginPrompt.style.display = 'none';
+        } else {
+          if (inputArea) inputArea.style.display = 'none';
+          if (loginPrompt) loginPrompt.style.display = 'block';
+        }
+      });
+    }
 
+    let checkTries = 0;
     const checkReady = setInterval(() => {
+      checkTries++;
       if (window.db && window.fbRef) {
         clearInterval(checkReady);
-        initLiveChat();
+        if (typeof window.initLiveChat === 'function') {
+          window.initLiveChat();
+        }
+      } else if (checkTries > 40) {
+        clearInterval(checkReady);
+        const loadingEl = document.getElementById('chatLoading');
+        if (loadingEl) {
+          loadingEl.innerHTML = '<span style="color:#ef4444;">Gagal memuat modul Firebase. Pastikan file /assets/firebase-config.js dapat diakses.</span>';
+        }
       }
-    }, 50);
+    }, 100);
   </script>
 
   <script>
@@ -825,9 +838,14 @@
     function initLiveChat() {
       const container = document.getElementById('chatContainer');
       const chatRef = window.fbRef(window.db, 'live_chat');
-      const recentChatQuery = window.fbQuery(chatRef, window.fbLimitToLast(80));
 
-      window.fbOnValue(recentChatQuery, (snapshot) => {
+      // Fallback query jika limitToLast tidak diekspor
+      const queryRef = (window.fbQuery && window.fbLimitToLast)
+        ? window.fbQuery(chatRef, window.fbLimitToLast(80))
+        : chatRef;
+
+      // Listener onValue dengan penanganan error
+      window.fbOnValue(queryRef, (snapshot) => {
         const loadingEl = document.getElementById('chatLoading');
         if (loadingEl) loadingEl.remove();
 
@@ -852,7 +870,6 @@
           const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
           const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
 
-          // Track users for mentions
           if (!usersMap[authorName]) {
             usersMap[authorName] = { name: authorName, photo: photoURL };
           }
@@ -868,12 +885,8 @@
           row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
 
           let contentHtml = '';
-          if (item.text) {
-            contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
-          }
-          if (item.stickerUrl) {
-            contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
-          }
+          if (item.text) contentHtml += `<div class="msg-text">${parseMentions(item.text)}</div>`;
+          if (item.stickerUrl) contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
 
           row.innerHTML = `
             <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
@@ -882,9 +895,7 @@
                 <span class="sender-name ${isAdmin ? 'admin' : ''}" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${escapeHtml(authorName)}</span>
                 ${levelBadge} ${adminBadge}
               </div>
-              <div class="msg-bubble">
-                ${contentHtml}
-              </div>
+              <div class="msg-bubble">${contentHtml}</div>
               <span class="msg-time">${formatTime(item.timestamp)}</span>
             </div>
           `;
@@ -900,8 +911,15 @@
         } else {
           scrollToBottom(true);
         }
+      }, (err) => {
+        console.error("Firebase Read Error:", err);
+        const loadingEl = document.getElementById('chatLoading');
+        if (loadingEl) {
+          loadingEl.innerHTML = `<span style="color:#ef4444;">Izin akses ditolak database: ${escapeHtml(err.message)}</span>`;
+        }
       });
     }
+    window.initLiveChat = initLiveChat;
 
     /* Send Message */
     async function sendMessage() {
@@ -928,7 +946,13 @@
 
       try {
         const chatRef = window.fbRef(window.db, 'live_chat');
-        const newMsgRef = window.fbPush(chatRef);
+        let newMsgRef;
+        if (window.fbPush) {
+          newMsgRef = window.fbPush(chatRef);
+        } else {
+          newMsgRef = window.fbRef(window.db, `live_chat/${Date.now()}`);
+        }
+
         await window.fbSet(newMsgRef, newMsg);
 
         input.value = '';
