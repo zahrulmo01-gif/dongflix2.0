@@ -441,9 +441,69 @@
     .comment-user-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
     .tiktok-username { font-size: 13px; font-weight: 700; color: #94a3b8; }
     .tiktok-username.admin { color: #f59e0b !important; }
-    .badge-admin { background: #f59e0b; color: #000; font-size: 9px; font-weight: 900; padding: 1px 5px; border-radius: 3px; }
-    .badge-level { background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; }
-    .badge-level.admin-lvl { background: #f59e0b; color: #000; font-weight: 900; }
+
+    /* --- EFEK BERKILAU & MODERN UNTUK BADGE --- */
+    @keyframes badgeShimmer {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      35%, 100% { transform: translateX(180%) skewX(-20deg); }
+    }
+
+    .badge-admin, .badge-level {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1.5px 7px;
+      border-radius: 6px;
+      overflow: hidden;
+      vertical-align: middle;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+
+    .badge-admin::after, .badge-level::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 45%;
+      height: 200%;
+      background: linear-gradient(
+        90deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.65) 50%, 
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: badgeShimmer 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .badge-level {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .badge-level.admin-lvl {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      color: #451a03;
+      border: 1px solid rgba(254, 243, 199, 0.5);
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      font-weight: 900;
+    }
+
+    .badge-admin {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      font-weight: 900;
+    }
+
     .comment-body-text { font-size: 13.5px; color: #f1f5f9; line-height: 1.4; word-break: break-word; margin-bottom: 6px; text-align: left !important; }
     .comment-footer-actions { display: flex; align-items: center; gap: 14px; font-size: 11.5px; color: #64748b; }
     .comment-time { font-size: 11px; }
@@ -1168,7 +1228,6 @@
     window.loadComments();
   }
 
-  // --- FUNGSI MENGAMBIL NAMA & FOTO PROFIL DARI NODE USERS ---
   async function fetchUserProfile(email, uid) {
     const cacheKey = email || uid || '';
     if (!cacheKey) return { name: '', photoURL: '' };
@@ -1233,7 +1292,6 @@
       .replace(/'/g, "&#039;");
   }
 
-  // --- PEMUAT KOMENTAR UTAMA (MENGAMBIL PROFIL DARI USERS) ---
   window.loadComments = async function() {
     targetSlug = getCleanMainSlug();
     const container = document.getElementById('commentsListContainer');
@@ -1304,7 +1362,6 @@
         const replies = repliesMap[item.id] || [];
         replies.sort((r1, r2) => (Number(r1.timestamp) || 0) - (Number(r2.timestamp) || 0));
         
-        // Ambil profil data dari users secara asinkron lalu render kartu
         const cardEl = await createCommentCardElement(item, replies);
         container.appendChild(cardEl);
       }
@@ -1320,7 +1377,6 @@
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    // Ambil data profil dari node users berdasarkan email atau uid
     let profile = { name: '', photoURL: '' };
     try {
       profile = await fetchUserProfile(item.email, item.uid);
@@ -1329,7 +1385,6 @@
     const authorEmail = String(item.email || '').toLowerCase();
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || item.isAdmin === true;
     
-    // Prioritas nama: Data di users -> data author di komentar -> email prefix -> 'User'
     const authorName = profile.name || item.author || (item.email ? String(item.email).split('@')[0] : 'User');
     const photoURL = profile.photoURL || item.photoURL || '';
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
