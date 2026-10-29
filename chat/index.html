@@ -38,6 +38,8 @@
     html, body {
       width: 100%;
       height: 100%;
+      margin: 0;
+      padding: 0;
       background-color: var(--bg-main);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -45,18 +47,20 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Container Fleksibel Mengikuti Tinggi Dinamis Layar (dvh) */
+    /* Container Dinamis yang Mengikuti Ukuran Layar Aktif / Keyboard */
     .app-viewport-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 100vh;
-      height: 100dvh;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      position: relative;
       overflow: hidden;
+      background-color: var(--bg-main);
     }
 
-    /* Top Navigation Header */
+    /* Top Navigation Header (Berada di alur flex agar tidak tumpang tindih) */
     header {
       height: 60px;
       z-index: 100;
@@ -135,7 +139,7 @@
     .chat-messages-container {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 16px 12px;
+      padding: 14px 16px 8px;
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
@@ -398,13 +402,13 @@
       display: inline-flex;
     }
 
-    /* Bottom Input Bar Area */
+    /* Bottom Input Bar Area (Tepat di atas keyboard) */
     .chat-bottom-bar {
-      background: rgba(10, 10, 14, 0.96);
+      background: rgba(10, 10, 14, 0.98);
       border-top: 1px solid var(--border-color);
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
       width: 100%;
       z-index: 110;
       flex-shrink: 0;
@@ -536,7 +540,7 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 16px;
+      font-size: 16px; /* 16px mencegah browser iOS auto-zoom */
       outline: none;
       font-family: inherit;
     }
@@ -901,24 +905,43 @@
       }
     }
 
-    /* Solusi Keyboard Alami (Universal iOS & Android) */
-    const chatInput = document.getElementById('chatInput');
+    /* Solusi Presisi Viewport Keyboard (Android & iOS Safari) */
+    const appViewport = document.getElementById('appViewport');
     const bottomBar = document.getElementById('chatBottomBar');
+    const chatInput = document.getElementById('chatInput');
+
+    function syncAppHeight() {
+      if (!appViewport) return;
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        appViewport.style.height = `${vv.height}px`;
+        appViewport.style.top = `${vv.offsetTop}px`;
+
+        const isKeyboardUp = (window.innerHeight - vv.height) > 120;
+        if (bottomBar) {
+          bottomBar.style.paddingBottom = isKeyboardUp ? '8px' : 'calc(8px + env(safe-area-inset-bottom))';
+        }
+      } else {
+        appViewport.style.height = '100dvh';
+      }
+      scrollToBottomInstant();
+    }
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncAppHeight);
+      window.visualViewport.addEventListener('scroll', syncAppHeight);
+    }
+    window.addEventListener('resize', syncAppHeight);
 
     if (chatInput) {
       chatInput.addEventListener('focus', () => {
-        setTimeout(() => {
-          bottomBar.scrollIntoView({ block: 'end', behavior: 'smooth' });
-          scrollToBottomInstant();
-        }, 300);
+        window.scrollTo(0, 0);
+        setTimeout(syncAppHeight, 100);
+        setTimeout(syncAppHeight, 300);
       });
-
       chatInput.addEventListener('blur', () => {
         window.scrollTo(0, 0);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          scrollToBottomInstant();
-        }, 100);
+        setTimeout(syncAppHeight, 100);
       });
     }
 
@@ -1227,9 +1250,8 @@
 
       chatUsersList = Object.values(mentionUsersMap);
 
-      scrollToBottomInstant();
-      setTimeout(scrollToBottomInstant, 50);
-      setTimeout(scrollToBottomInstant, 200);
+      syncAppHeight();
+      setTimeout(syncAppHeight, 60);
     }
 
     /* Fast Live Chat Loader */
@@ -1262,6 +1284,7 @@
     }
 
     function initLiveChat() {
+      syncAppHeight();
       loadChatMessagesOnce();
 
       if (typeof window.fbOnValue === 'function') {
@@ -1324,7 +1347,7 @@
         removeStickerPreview();
         cancelReply();
         loadChatMessagesOnce();
-        setTimeout(scrollToBottomInstant, 80);
+        setTimeout(syncAppHeight, 80);
       } catch (err) {
         alert('Gagal mengirim pesan: ' + err.message);
       }
