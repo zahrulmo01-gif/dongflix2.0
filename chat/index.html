@@ -38,20 +38,26 @@
     html, body {
       width: 100%;
       height: 100%;
-      height: 100dvh;
-      overflow: hidden;
       background-color: var(--bg-main);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container Fleksibel Mengikuti Tinggi Dinamis Layar (dvh) */
+    .app-viewport-wrapper {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
-      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow: hidden;
     }
 
     /* Top Navigation Header */
     header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
       height: 60px;
       z-index: 100;
       background: rgba(0, 0, 0, 0.85);
@@ -61,6 +67,7 @@
       display: flex;
       align-items: center;
       padding: 0 16px;
+      flex-shrink: 0;
     }
 
     .header-content {
@@ -128,7 +135,7 @@
     .chat-messages-container {
       flex: 1;
       overflow-y: auto;
-      padding: 76px 16px 12px;
+      padding: 16px 16px 12px;
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
@@ -393,7 +400,7 @@
 
     /* Bottom Input Bar Area */
     .chat-bottom-bar {
-      background: rgba(10, 10, 14, 0.94);
+      background: rgba(10, 10, 14, 0.96);
       border-top: 1px solid var(--border-color);
       backdrop-filter: var(--glass-blur);
       -webkit-backdrop-filter: var(--glass-blur);
@@ -401,7 +408,6 @@
       width: 100%;
       z-index: 110;
       flex-shrink: 0;
-      transition: transform 0.15s ease-out;
     }
 
     .chat-input-wrapper {
@@ -530,7 +536,7 @@
       background: transparent;
       border: none;
       color: #fff;
-      font-size: 16px; /* 16px mencegah browser iOS auto-zoom otomatis */
+      font-size: 16px;
       outline: none;
       font-family: inherit;
     }
@@ -667,82 +673,84 @@
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
-  <header>
-    <div class="header-content">
-      <div class="header-left" onclick="history.back() || (window.location.href='/')">
-        <button class="icon-btn" aria-label="Kembali">
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <div class="header-titles">
-          <h1>Live Chat Dongflix</h1>
-          <div class="live-status">
-            <span class="pulse-dot"></span>
-            <span id="onlineCountText">Komunitas Online</span>
+  <div class="app-viewport-wrapper" id="appViewport">
+    <!-- Top Header Navigation -->
+    <header>
+      <div class="header-content">
+        <div class="header-left" onclick="history.back() || (window.location.href='/')">
+          <button class="icon-btn" aria-label="Kembali">
+            <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="header-titles">
+            <h1>Live Chat Dongflix</h1>
+            <div class="live-status">
+              <span class="pulse-dot"></span>
+              <span id="onlineCountText">Komunitas Online</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Chat Log Message View -->
-  <main class="chat-messages-container" id="chatContainer">
-    <div class="chat-loading-placeholder" id="chatLoading">Menghubungkan ke live chat...</div>
-    <div id="chatBottomAnchor" style="height: 18px; width: 100%; flex-shrink: 0;"></div>
-  </main>
+    <!-- Chat Log Message View -->
+    <main class="chat-messages-container" id="chatContainer">
+      <div class="chat-loading-placeholder" id="chatLoading">Menghubungkan ke live chat...</div>
+      <div id="chatBottomAnchor" style="height: 18px; width: 100%; flex-shrink: 0;"></div>
+    </main>
 
-  <!-- Bottom Message Input Bar -->
-  <div class="chat-bottom-bar" id="chatBottomBar">
-    <div class="chat-input-wrapper" id="chatInputArea" style="display:none;">
-      <!-- Balas Banner Indicator -->
-      <div class="reply-target-banner" id="replyBanner">
-        <div class="reply-target-info">
-          <span class="reply-target-name" id="replyTargetAuthor">Membalas...</span>
-          <span class="reply-target-text" id="replyTargetSnippet">...</span>
+    <!-- Bottom Message Input Bar -->
+    <div class="chat-bottom-bar" id="chatBottomBar">
+      <div class="chat-input-wrapper" id="chatInputArea" style="display:none;">
+        <!-- Balas Banner Indicator -->
+        <div class="reply-target-banner" id="replyBanner">
+          <div class="reply-target-info">
+            <span class="reply-target-name" id="replyTargetAuthor">Membalas...</span>
+            <span class="reply-target-text" id="replyTargetSnippet">...</span>
+          </div>
+          <button class="reply-target-cancel" onclick="cancelReply()">✕</button>
         </div>
-        <button class="reply-target-cancel" onclick="cancelReply()">✕</button>
+
+        <!-- Sticker Preview -->
+        <div class="sticker-preview-box" id="stickerPreview">
+          <img id="stickerPreviewImg" src="" alt="Selected Sticker" />
+          <div class="sticker-preview-remove" onclick="removeStickerPreview()">✕</div>
+        </div>
+
+        <!-- Mention User Dropdown -->
+        <div class="mention-dropdown" id="mentionMenu"></div>
+
+        <div class="input-row">
+          <input 
+            type="text" 
+            id="chatInput" 
+            class="chat-input" 
+            placeholder="Kirim pesan... (ketik @ untuk tag)" 
+            autocomplete="off" 
+            oninput="handleMentionSearch(this)"
+            onkeydown="if(event.key==='Enter') sendMessage()"
+          />
+
+          <!-- Sticker Button -->
+          <button class="btn-sticker" onclick="openStickerPicker()" title="Pilih Stiker & GIF">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
+              <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
+              <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
+              <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
+              <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
+            </svg>
+          </button>
+
+          <!-- Send Message Button -->
+          <button class="btn-send" onclick="sendMessage()" title="Kirim">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
       </div>
 
-      <!-- Sticker Preview -->
-      <div class="sticker-preview-box" id="stickerPreview">
-        <img id="stickerPreviewImg" src="" alt="Selected Sticker" />
-        <div class="sticker-preview-remove" onclick="removeStickerPreview()">✕</div>
+      <div class="chat-login-prompt" id="chatLoginPrompt">
+        Silakan <a href="https://dongflix.my.id/profil/login.html">Login</a> terlebih dahulu untuk bergabung dalam live chat.
       </div>
-
-      <!-- Mention User Dropdown -->
-      <div class="mention-dropdown" id="mentionMenu"></div>
-
-      <div class="input-row">
-        <input 
-          type="text" 
-          id="chatInput" 
-          class="chat-input" 
-          placeholder="Kirim pesan... (ketik @ untuk tag)" 
-          autocomplete="off" 
-          oninput="handleMentionSearch(this)"
-          onkeydown="if(event.key==='Enter') sendMessage()"
-        />
-
-        <!-- Sticker Button -->
-        <button class="btn-sticker" onclick="openStickerPicker()" title="Pilih Stiker & GIF">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
-            <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
-            <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
-            <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
-            <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
-          </svg>
-        </button>
-
-        <!-- Send Message Button -->
-        <button class="btn-send" onclick="sendMessage()" title="Kirim">
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="chat-login-prompt" id="chatLoginPrompt">
-      Silakan <a href="https://dongflix.my.id/profil/login.html">Login</a> terlebih dahulu untuk bergabung dalam live chat.
     </div>
   </div>
 
@@ -893,41 +901,24 @@
       }
     }
 
-    /* SINKRONISASI VIEWPORT KEYBOARD (IOS & ANDROID FIX) */
-    const bottomBar = document.getElementById('chatBottomBar');
+    /* Solusi Keyboard Alami (Universal iOS & Android) */
     const chatInput = document.getElementById('chatInput');
-
-    if (window.visualViewport) {
-      const handleViewportChange = () => {
-        // Hitung jarak keyboard yang menutupi layar bagian bawah
-        const offsetFromBottom = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
-        if (offsetFromBottom > 40) {
-          // Keyboard sedang terbuka
-          if (bottomBar) bottomBar.style.transform = `translateY(-${offsetFromBottom}px)`;
-          scrollToBottomInstant();
-        } else {
-          // Keyboard tertutup
-          if (bottomBar) bottomBar.style.transform = 'translateY(0)';
-          window.scrollTo(0, 0);
-          scrollToBottomInstant();
-        }
-      };
-
-      window.visualViewport.addEventListener('resize', handleViewportChange);
-      window.visualViewport.addEventListener('scroll', handleViewportChange);
-    }
+    const bottomBar = document.getElementById('chatBottomBar');
 
     if (chatInput) {
       chatInput.addEventListener('focus', () => {
-        setTimeout(scrollToBottomInstant, 250);
+        setTimeout(() => {
+          bottomBar.scrollIntoView({ block: 'end', behavior: 'smooth' });
+          scrollToBottomInstant();
+        }, 300);
       });
+
       chatInput.addEventListener('blur', () => {
-        if (bottomBar) bottomBar.style.transform = 'translateY(0)';
         window.scrollTo(0, 0);
         setTimeout(() => {
           window.scrollTo(0, 0);
           scrollToBottomInstant();
-        }, 120);
+        }, 100);
       });
     }
 
