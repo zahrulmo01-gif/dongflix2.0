@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Live Chat Komunitas - Dongflix</title>
   <meta name="referrer" content="no-referrer">
   <meta name="description" content="Ruang obrolan langsung sesama penikmat donghua subtitle Indonesia di Dongflix.">
@@ -38,8 +38,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      position: fixed; /* Mencegah Safari iOS menggeser seluruh viewport window */
-      inset: 0;
+      height: 100dvh;
       overflow: hidden;
       background-color: var(--bg-main);
       color: var(--text-main);
@@ -51,7 +50,7 @@
 
     /* Top Navigation Header */
     header {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0; right: 0;
       height: 60px;
       z-index: 100;
@@ -402,6 +401,7 @@
       width: 100%;
       z-index: 110;
       flex-shrink: 0;
+      transition: transform 0.15s ease-out;
     }
 
     .chat-input-wrapper {
@@ -893,29 +893,41 @@
       }
     }
 
-    /* FIX BUG KEYBOARD NYANGKUT DI SAFARI IOS */
-    const chatInputEl = document.getElementById('chatInput');
-    if (chatInputEl) {
-      // Saat keyboard ditutup, paksa window viewport kembali ke posisi awal
-      chatInputEl.addEventListener('blur', () => {
+    /* SINKRONISASI VIEWPORT KEYBOARD (IOS & ANDROID FIX) */
+    const bottomBar = document.getElementById('chatBottomBar');
+    const chatInput = document.getElementById('chatInput');
+
+    if (window.visualViewport) {
+      const handleViewportChange = () => {
+        // Hitung jarak keyboard yang menutupi layar bagian bawah
+        const offsetFromBottom = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
+        if (offsetFromBottom > 40) {
+          // Keyboard sedang terbuka
+          if (bottomBar) bottomBar.style.transform = `translateY(-${offsetFromBottom}px)`;
+          scrollToBottomInstant();
+        } else {
+          // Keyboard tertutup
+          if (bottomBar) bottomBar.style.transform = 'translateY(0)';
+          window.scrollTo(0, 0);
+          scrollToBottomInstant();
+        }
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+    }
+
+    if (chatInput) {
+      chatInput.addEventListener('focus', () => {
+        setTimeout(scrollToBottomInstant, 250);
+      });
+      chatInput.addEventListener('blur', () => {
+        if (bottomBar) bottomBar.style.transform = 'translateY(0)';
         window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
         setTimeout(() => {
           window.scrollTo(0, 0);
           scrollToBottomInstant();
-        }, 100);
-      });
-
-      chatInputEl.addEventListener('focus', () => {
-        setTimeout(scrollToBottomInstant, 300);
-      });
-    }
-
-    // Koreksi jika visualViewport Safari berubah ukuran
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', () => {
-        window.scrollTo(0, 0);
-        scrollToBottomInstant();
+        }, 120);
       });
     }
 
@@ -1226,7 +1238,7 @@
 
       scrollToBottomInstant();
       setTimeout(scrollToBottomInstant, 50);
-      setTimeout(scrollToBottomInstant, 180);
+      setTimeout(scrollToBottomInstant, 200);
     }
 
     /* Fast Live Chat Loader */
