@@ -418,7 +418,7 @@
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
-    /* HERO SLIDER (UKURAN DIPENDEKKAN KE BAWAH) */
+    /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
@@ -578,7 +578,7 @@
       flex-shrink: 0;
     }
 
-    /* TOMBOL LIHAT SEMUA DENGAN PANAH SAMPING */
+    /* TOMBOL LIHAT SEMUA DENGAN PANAH SVG */
     .see-all-btn { 
       color: var(--color-accent); 
       font-size: 13px; 
@@ -587,8 +587,17 @@
       text-decoration: none; 
       display: inline-flex;
       align-items: center;
-      gap: 2px;
+      gap: 4px;
       transition: color 0.15s ease;
+    }
+    .see-all-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
     .see-all-btn:hover { color: #ffffff; }
 
@@ -624,7 +633,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* WIDGET LIVE CHAT BERANDA (SELARAS DENGAN WEB DONGFLIX) */
+    /* WIDGET LIVE CHAT BERANDA */
     .home-chat-widget {
       background: #0d0f14;
       border: 1px solid var(--border-color);
@@ -759,11 +768,19 @@
     }
     .home-chat-send-circle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    .continue-section-wrapper { margin-top: 36px; margin-bottom: 24px; }
+    /* SECTION LANJUTKAN MENONTON DENGAN JARAK YANG PAS */
+    .continue-section-wrapper { 
+      margin-top: 48px; /* Jarak atas lebih lega */
+      margin-bottom: 28px; 
+    }
+    .continue-section-wrapper .section-header-flex {
+      margin-bottom: 20px; /* Jarak dari judul ke thumbnail kartu agar tidak mepet */
+    }
     .continue-scroll-row {
       display: flex;
       gap: 16px;
       overflow-x: auto;
+      padding-top: 4px; /* Memberi ruang bayangan atas */
       padding-bottom: 12px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
@@ -1074,8 +1091,11 @@
   </div>
 
   <div class="container">
+    <!-- SECTION LANJUTKAN MENONTON -->
     <section class="section-block continue-section-wrapper" id="continueSection" style="display: none !important;">
-      <h2 class="section-title">Lanjutkan Menonton</h2>
+      <div class="section-header-flex">
+        <h2 class="section-title">Lanjutkan Menonton</h2>
+      </div>
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
@@ -1089,7 +1109,10 @@
             Online
           </span>
         </div>
-        <a href="/chat/" class="see-all-btn">Buka chat ›</a>
+        <a href="/chat/" class="see-all-btn">
+          Buka chat
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
 
       <div class="home-chat-widget">
@@ -1141,7 +1164,10 @@
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Terbaru</h2>
-        <a href="/donghua/" class="see-all-btn">Lihat Semua ›</a>
+        <a href="/donghua/" class="see-all-btn">
+          Lihat Semua
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
       <div class="grid-3" id="latestGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
@@ -1175,7 +1201,10 @@
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">Movie Terbaru</h2>
-        <a href="/donghua/?type=movie" class="see-all-btn">Lihat Semua ›</a>
+        <a href="/donghua/?type=movie" class="see-all-btn">
+          Lihat Semua
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
       <div class="grid-3" id="movieGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
