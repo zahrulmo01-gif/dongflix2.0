@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Masuk ke Akun - Dongflix</title>
+  <title>Masuk - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
-  <link rel="icon" type="image/png" href="../image/IMG_6395.png">
-  <link rel="apple-touch-icon" href="../image/IMG_6395.png">
+  <link rel="icon" type="image/png" href="/image/IMG_6395.png">
+  <link rel="apple-touch-icon" href="/image/IMG_6395.png">
 
   <style>
     :root {
@@ -15,7 +15,6 @@
       --bg-card: rgba(18, 22, 34, 0.75);
       --color-primary: #0284c7;
       --color-accent: #38bdf8;
-      --color-red: #ef4444;
       --text-main: #ffffff;
       --text-sub: #94a3b8;
       --border-color: rgba(255, 255, 255, 0.1);
@@ -29,7 +28,7 @@
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -85,9 +84,7 @@
       margin-top: 6px;
     }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+    .form-group { margin-bottom: 18px; }
 
     .form-label {
       display: block;
@@ -109,12 +106,11 @@
       color: #fff;
       font-size: 13.5px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
 
     .form-input:focus {
       border-color: var(--color-accent);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
 
     .error-banner {
@@ -126,7 +122,6 @@
       border-radius: var(--radius-md);
       font-size: 12.5px;
       margin-bottom: 18px;
-      text-align: left;
     }
 
     .btn-submit {
@@ -140,18 +135,11 @@
       font-weight: 700;
       cursor: pointer;
       margin-top: 8px;
-      transition: background 0.2s, opacity 0.2s, transform 0.1s;
+      transition: transform 0.1s;
     }
 
-    .btn-submit:active {
-      transform: scale(0.98);
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .footer-links {
       text-align: center;
@@ -174,9 +162,6 @@
       color: var(--text-sub);
       text-decoration: none;
     }
-    .back-home:hover {
-      color: #ffffff;
-    }
   </style>
 </head>
 <body>
@@ -191,31 +176,15 @@
 
     <div id="errorBanner" class="error-banner"></div>
 
-    <form id="formLogin" onsubmit="handleLogin(event)">
-      <!-- Input Username atau Email -->
+    <form onsubmit="handleLogin(event)">
       <div class="form-group">
-        <label class="form-label" for="loginIdentifier">Email atau Username *</label>
-        <input 
-          type="text" 
-          id="loginIdentifier" 
-          class="form-input" 
-          placeholder="contoh: rulsz atau nama@email.com" 
-          required 
-          autocomplete="username"
-        >
+        <label class="form-label">Email atau Username *</label>
+        <input type="text" id="loginIdentifier" class="form-input" placeholder="contoh: rulsz atau nama@email.com" required autocomplete="username">
       </div>
 
-      <!-- Input Password -->
       <div class="form-group">
-        <label class="form-label" for="loginPassword">Password *</label>
-        <input 
-          type="password" 
-          id="loginPassword" 
-          class="form-input" 
-          placeholder="Masukkan password Anda" 
-          required 
-          autocomplete="current-password"
-        >
+        <label class="form-label">Password *</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="Masukkan password Anda" required autocomplete="current-password">
       </div>
 
       <button type="submit" id="btnSubmitLogin" class="btn-submit">Masuk Sekarang</button>
@@ -241,12 +210,7 @@
       errorBanner.style.display = 'block';
     }
 
-    function hideError() {
-      errorBanner.style.display = 'none';
-      errorBanner.innerText = '';
-    }
-
-    // Jika sudah dalam posisi login, arahkan langsung ke profilnya
+    // REDIRECT OTOMATIS: Jika sudah login, langsung alihkan ke /profil/username
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const emailKey = user.email.toLowerCase().replace(/\./g, ',');
@@ -259,33 +223,22 @@
       }
     });
 
-    // Helper: Cari email asli berdasarkan username jika user mengetikkan username
+    // Helper identifikasi apakah user memasukkan email atau username
     async function resolveEmailFromIdentifier(identifier) {
       const cleanInput = identifier.trim().toLowerCase();
+      if (cleanInput.includes('@')) return cleanInput;
 
-      // Jika input sudah mengandung '@', anggap sebagai email langsung
-      if (cleanInput.includes('@')) {
-        return cleanInput;
-      }
-
-      // Cari username di Realtime Database
       try {
         const usersRef = ref(db, 'users');
-
-        // 1. Coba via Index
         try {
           const q = query(usersRef, orderByChild('username'), equalTo(cleanInput));
           const snap = await get(q);
           if (snap.exists()) {
             const data = snap.val();
-            const firstKey = Object.keys(data)[0];
-            return data[firstKey].email || null;
+            return data[Object.keys(data)[0]].email || null;
           }
-        } catch (e) {
-          console.warn('Query username index skipped:', e);
-        }
+        } catch (_) {}
 
-        // 2. Scan manual jika index belum aktif
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
           const allData = allSnap.val();
@@ -296,48 +249,35 @@
           }
         }
       } catch (err) {
-        console.error('Gagal mencocokkan username:', err);
+        console.error(err);
       }
-
       return null;
     }
 
-    // Handler Submit Login
     window.handleLogin = async function(e) {
       e.preventDefault();
-      hideError();
+      errorBanner.style.display = 'none';
 
       const identifier = document.getElementById('loginIdentifier').value.trim();
       const password = document.getElementById('loginPassword').value;
 
-      if (!identifier || !password) {
-        showError('Email/Username dan Password wajib diisi!');
-        return;
-      }
+      if (!identifier || !password) return showError('Semua form wajib diisi!');
 
       submitBtn.disabled = true;
       submitBtn.innerText = 'Memeriksa akun...';
 
       try {
-        // Cari email terdaftar
         const emailToLogin = await resolveEmailFromIdentifier(identifier);
-
         if (!emailToLogin) {
-          showError('Username tidak ditemukan. Pastikan username sudah terdaftar.');
+          showError('Username tidak ditemukan.');
           submitBtn.disabled = false;
           submitBtn.innerText = 'Masuk Sekarang';
           return;
         }
 
-        // Proses Login ke Firebase Auth
         const cred = await signInWithEmailAndPassword(auth, emailToLogin, password);
-        const user = cred.user;
-
-        // Ambil data username untuk diarahkan ke URL /profil/username
-        const emailKey = user.email.toLowerCase().replace(/\./g, ',');
+        const emailKey = cred.user.email.toLowerCase().replace(/\./g, ',');
         const userSnap = await get(ref(db, `users/${emailKey}`));
-
-        submitBtn.innerText = 'Berhasil! Mengalihkan...';
 
         if (userSnap.exists() && userSnap.val().username) {
           window.location.href = `/profil/${userSnap.val().username}`;
@@ -345,16 +285,10 @@
           window.location.href = '/profil/';
         }
       } catch (err) {
-        console.error(err);
-        let errorMsg = 'Gagal masuk. Periksa kembali email/username dan password.';
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
-          errorMsg = 'Password atau email yang Anda masukkan salah.';
-        } else if (err.code === 'auth/user-not-found') {
-          errorMsg = 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.';
-        } else if (err.code === 'auth/too-many-requests') {
-          errorMsg = 'Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat lagi.';
-        }
-        showError(errorMsg);
+        let msg = 'Gagal masuk. Periksa kembali email/username dan password.';
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') msg = 'Password salah.';
+        else if (err.code === 'auth/user-not-found') msg = 'Akun belum terdaftar.';
+        showError(msg);
         submitBtn.disabled = false;
         submitBtn.innerText = 'Masuk Sekarang';
       }
