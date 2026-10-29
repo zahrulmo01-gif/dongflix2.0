@@ -35,7 +35,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* SKELETON ANIMASI */
     @keyframes skeletonLoading {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
@@ -74,7 +73,6 @@
       width: 100%;
     }
 
-    /* HEADER */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -118,14 +116,12 @@
       align-items: center;
     }
 
-    /* CONTAINER UTAMA */
     .container {
       max-width: 540px;
       margin: 0 auto;
       padding: 12px 20px;
     }
 
-    /* AVATAR */
     .avatar-wrapper {
       width: 86px;
       height: 86px;
@@ -149,7 +145,6 @@
       color: #fff;
     }
 
-    /* INFORMASI PROFIL & BADGE */
     .profile-info {
       display: flex;
       flex-direction: column;
@@ -175,7 +170,6 @@
       align-items: center;
     }
 
-    /* SHIMMER BADGE */
     @keyframes badgeShimmer {
       0% { transform: translateX(-150%) skewX(-20deg); }
       35%, 100% { transform: translateX(180%) skewX(-20deg); }
@@ -230,7 +224,6 @@
       word-break: break-word;
     }
 
-    /* STATISTIK */
     .stats-row {
       display: flex;
       align-items: center;
@@ -255,7 +248,6 @@
       font-weight: 500;
     }
 
-    /* ACTION BAR */
     .action-bar-row {
       display: flex;
       align-items: center;
@@ -321,7 +313,6 @@
       stroke-width: 2.2;
     }
 
-    /* DUA TAB NAVIGASI MINIMALIS */
     .profile-tabs-nav {
       display: flex;
       align-items: center;
@@ -364,11 +355,9 @@
       border-radius: 2px;
     }
 
-    /* KONTEN TAB */
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    /* GRID KOLEKSI (3 KOLOM) */
     .works-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -394,7 +383,6 @@
       display: block;
     }
 
-    /* LIST RIWAYAT NONTON */
     .history-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -460,7 +448,6 @@
       color: var(--text-sub);
     }
 
-    /* KONDISI AKSES TERKUNCI */
     .access-denied-box {
       text-align: center;
       padding: 48px 16px;
@@ -499,7 +486,6 @@
       grid-column: 1 / -1;
     }
 
-    /* MODAL EDIT PROFIL */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -561,7 +547,8 @@
   <!-- HEADER -->
   <header>
     <div class="header-content">
-      <button class="back-btn" onclick="window.history.length > 1 ? window.history.back() : window.location.href='/'">
+      <!-- Tombol Kembali yang Aman dari Stack Login/Register -->
+      <button class="back-btn" onclick="handleBackNavigation()">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
       <span class="header-title" id="headerTitle">
@@ -571,10 +558,8 @@
   </header>
 
   <div class="container" id="profileContent">
-    <!-- AVATAR -->
     <div class="avatar-wrapper skeleton skeleton-avatar" id="profileAvatar"></div>
 
-    <!-- INFORMASI PROFIL & BADGE -->
     <div class="profile-info">
       <div class="name-badge-row">
         <h1 class="profile-name" id="userName">
@@ -590,7 +575,6 @@
         <span class="skeleton skeleton-text" style="width: 50%; height: 14px; margin-top: 6px; display: block;"></span>
       </div>
 
-      <!-- STATISTIK (FOLLOWERS & FOLLOWING) -->
       <div class="stats-row">
         <div class="stat-item">
           <span class="stat-number" id="statFollowers"><span class="skeleton skeleton-text" style="width: 24px; height: 16px;"></span></span>
@@ -603,7 +587,6 @@
       </div>
     </div>
 
-    <!-- ACTION BAR -->
     <div class="action-bar-row">
       <button class="btn-action-main skeleton skeleton-btn" id="btnMainAction" onclick="handleMainAction()"></button>
       <button class="btn-logout-icon" id="btnLogoutProfile" style="display: none;" onclick="handleLogout()" title="Keluar dari Akun">
@@ -615,7 +598,6 @@
       </button>
     </div>
 
-    <!-- DUA TAB NAVIGASI MINIMALIS -->
     <div class="profile-tabs-nav">
       <button class="tab-nav-btn active" id="tabBtnKoleksi" onclick="switchProfileTab('koleksi')" title="Koleksi Favorit">
         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -638,7 +620,6 @@
       </button>
     </div>
 
-    <!-- ISI TAB 1: KOLEKSI -->
     <div class="tab-pane active" id="paneKoleksi">
       <div class="works-grid" id="koleksiContainer">
         <div class="skeleton skeleton-card"></div>
@@ -650,7 +631,6 @@
       </div>
     </div>
 
-    <!-- ISI TAB 2: RIWAYAT NONTON -->
     <div class="tab-pane" id="paneRiwayat">
       <div id="riwayatContentArea">
         <div class="history-grid">
@@ -661,7 +641,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT PROFIL -->
   <div id="modalEditProfile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal('modalEditProfile')">&times;</button>
@@ -730,6 +709,16 @@
       return null;
     }
 
+    // Navigasi Back yang aman dari loop login/register
+    window.handleBackNavigation = function() {
+      const refUrl = document.referrer;
+      if (refUrl.includes('/login') || refUrl.includes('/register') || !refUrl || window.history.length <= 1) {
+        window.location.replace('/');
+      } else {
+        window.history.back();
+      }
+    };
+
     async function fetchUserData(identifier) {
       try {
         const usersRef = ref(db, 'users');
@@ -783,7 +772,6 @@
       document.getElementById('userName').innerHTML = name;
       document.getElementById('userBio').innerText = bioText;
 
-      // BADGE ADMIN & LEVEL
       const badgeBox = document.getElementById('badgeContainer');
       const levelBadgeHtml = isAdmin 
         ? `<span class="badge-level admin-lvl">Lv999+</span>` 
@@ -791,11 +779,9 @@
       const adminBadgeHtml = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
       badgeBox.innerHTML = `${levelBadgeHtml} ${adminBadgeHtml}`;
 
-      // STATISTIK
       document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
       document.getElementById('statFollowing').innerText = targetData.followingCount || 0;
 
-      // AVATAR
       const avatarBox = document.getElementById('profileAvatar');
       avatarBox.classList.remove('skeleton', 'skeleton-avatar');
       if (photoURL) {
@@ -804,7 +790,6 @@
         avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      // TOMBOL AKSI & STATUS FOLLOW
       const actionBtn = document.getElementById('btnMainAction');
       actionBtn.classList.remove('skeleton', 'skeleton-btn');
       const logoutBtn = document.getElementById('btnLogoutProfile');
@@ -816,7 +801,6 @@
       } else {
         logoutBtn.style.display = 'none';
 
-        // Cek apakah akun aktif sedang follow profil ini
         if (currentUserEmailKey && targetData.followers && targetData.followers[currentUserEmailKey]) {
           isFollowing = true;
           actionBtn.innerText = 'Following';
@@ -940,7 +924,6 @@
       }
     };
 
-    // LOGIKA KLIK TOMBOL UTAMA (FOLLOW / UNFOLLOW / EDIT PROFIL)
     window.handleMainAction = async function() {
       const btn = document.getElementById('btnMainAction');
 
@@ -961,7 +944,7 @@
 
       if (!currentAuthUser) {
         alert('Silakan login terlebih dahulu untuk mengikuti akun ini.');
-        window.location.href = '/profil/login.html';
+        window.location.replace('/profil/login.html');
         return;
       }
 
@@ -978,12 +961,10 @@
         let currentFollowers = Number(targetUserData?.followersCount) || 0;
 
         if (isFollowing) {
-          // Unfollow
           await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), null);
           currentFollowers = Math.max(0, currentFollowers - 1);
           await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
 
-          // Update data following di akun sendiri
           const mySnap = await get(ref(db, `users/${myEmailKey}`));
           if (mySnap.exists()) {
             const myData = mySnap.val();
@@ -998,7 +979,6 @@
           btn.innerText = '+ Follow';
           btn.className = 'btn-action-main';
         } else {
-          // Follow
           await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), {
             uid: currentAuthUser.uid,
             email: currentAuthUser.email,
@@ -1007,7 +987,6 @@
           currentFollowers += 1;
           await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
 
-          // Update data following di akun sendiri
           const mySnap = await get(ref(db, `users/${myEmailKey}`));
           if (mySnap.exists()) {
             const myData = mySnap.val();
@@ -1035,7 +1014,6 @@
       }
     };
 
-    // CEK USERNAME SAAT EDIT
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
 
@@ -1087,7 +1065,6 @@
       }, 400);
     });
 
-    // UPLOAD FOTO PROFIL
     document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
       if (this.files && this.files[0]) {
         const reader = new FileReader();
@@ -1098,7 +1075,6 @@
       }
     });
 
-    // SIMPAN EDIT PROFIL
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
       if (!isOwnProfile || !targetUserKey) return;
@@ -1151,18 +1127,16 @@
       }
     };
 
-    // LOG OUT
     window.handleLogout = async function() {
       if (confirm('Yakin ingin keluar dari akun?')) {
         await signOut(auth);
-        window.location.href = '/profil/login.html';
+        window.location.replace('/profil/login.html');
       }
     };
 
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // INISIALISASI HALAMAN
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
@@ -1183,7 +1157,7 @@
         }
       } else {
         if (!authUser) {
-          window.location.href = '/profil/login.html';
+          window.location.replace('/profil/login.html');
           return;
         }
 
@@ -1197,7 +1171,7 @@
         }
 
         if (data.username) {
-          window.location.href = `/profil/${data.username}`;
+          window.location.replace(`/profil/${data.username}`);
         } else {
           await renderProfile(data, emailKey, authUser);
         }
