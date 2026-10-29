@@ -402,14 +402,52 @@
     }
     .sort-dropdown-item:hover, .sort-dropdown-item.active { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
 
+    /* Area Komentar & Preview Stiker */
+    .comment-input-box-wrapper {
+      display: flex; flex-direction: column; width: 100%; position: relative; margin-bottom: 20px;
+    }
+
     .comment-input-box {
       display: flex; align-items: center; gap: 8px; background: #0f172a; border: 1px solid #1e293b;
-      border-radius: 24px; padding: 6px 8px 6px 16px; margin-bottom: 20px; width: 100%; position: relative;
+      border-radius: 24px; padding: 6px 8px 6px 16px; width: 100%; position: relative;
     }
     .comment-input-box:focus-within { border-color: #38bdf8; }
     .comment-textarea {
       flex: 1; height: 38px; background: transparent; border: none; color: #fff; font-size: 13px;
       outline: none; resize: none; font-family: inherit; line-height: 38px;
+    }
+
+    /* Sticker Preview Box Ala TikTok */
+    .sticker-preview-box {
+      display: none; position: relative; width: 62px; height: 62px; margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px; padding: 4px; align-items: center; justify-content: center;
+    }
+    .sticker-preview-box.active { display: inline-flex; }
+    .sticker-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .sticker-preview-remove {
+      position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
+      background: #ef4444; color: #fff; border-radius: 50%; font-size: 10px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #000;
+    }
+
+    /* Tag Mention Suggestion Popup */
+    .mention-dropdown-menu {
+      display: none; position: absolute; bottom: 105%; left: 16px; background: #0b1329;
+      border: 1px solid #1e293b; border-radius: 14px; padding: 6px; min-width: 180px; max-height: 170px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85); z-index: 150; overflow-y: auto;
+    }
+    .mention-dropdown-menu.active { display: block; }
+    .mention-dropdown-item {
+      display: flex; align-items: center; gap: 8px; padding: 8px 10px; color: #94a3b8;
+      font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer;
+    }
+    .mention-dropdown-item:hover { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .mention-dropdown-item img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+
+    /* Highlight Mention Di Komentar */
+    .mention-tag-link {
+      color: #38bdf8 !important; font-weight: 700; text-decoration: none; cursor: pointer;
     }
     
     /* Tombol Stiker & Kirim */
@@ -550,7 +588,9 @@
       border-radius: 8px; padding: 8px; width: 100%;
     }
     .reply-card .tiktok-avatar { width: 26px; height: 26px; font-size: 11px; }
-    .reply-input-box { margin-top: 10px; display: flex; gap: 8px; width: 100%; align-items: center; }
+
+    .reply-form-wrapper { display: flex; flex-direction: column; width: 100%; margin-top: 10px; position: relative; }
+    .reply-input-box { display: flex; gap: 8px; width: 100%; align-items: center; }
     .reply-input {
       flex: 1; height: 34px; background: #0b1329; border: 1px solid #1e293b;
       border-radius: 18px; padding: 0 12px; color: #fff; font-size: 12px; outline: none;
@@ -719,29 +759,36 @@
         </div>
       </div>
 
-      <!-- Kotak Input Komentar dengan Tombol Stiker SVG Kustom -->
-      <div class="comment-input-box" id="commentFormBox" style="display:none;">
-        <input class="comment-textarea" id="commentInput" placeholder="Tambah komentar..." />
-        
-        <!-- Tombol Stiker SVG Baru -->
-        <button class="btn-sticker-toggle" onclick="openStickerPicker(null)" title="Kirim Stiker / GIF">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
+      <!-- Kotak Input Komentar dengan Preview Stiker & Tag Mention -->
+      <div class="comment-input-box-wrapper" id="commentFormBox" style="display:none;">
+        <!-- Preview Stiker Sebelum Kirim Ala TikTok -->
+        <div class="sticker-preview-box" id="mainStickerPreview">
+          <img id="mainStickerPreviewImg" src="" />
+          <div class="sticker-preview-remove" onclick="removeSelectedSticker(null)">✕</div>
+        </div>
+
+        <!-- Popup Rekomendasi Mention @User -->
+        <div class="mention-dropdown-menu" id="mainMentionMenu"></div>
+
+        <div class="comment-input-box">
+          <input class="comment-textarea" id="commentInput" placeholder="Tambah komentar... (ketik @ untuk tag)" oninput="handleMentionInput(this, 'mainMentionMenu')" />
+          
+          <!-- Tombol Stiker SVG Kustom -->
+          <button class="btn-sticker-toggle" onclick="openStickerPicker(null)" title="Pilih Stiker">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
               <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
               <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
               <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
               <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
-            </g>
-          </svg>
-        </button>
+            </svg>
+          </button>
 
-        <!-- Tombol Kirim -->
-        <button class="btn-send-comment" onclick="submitComment()">
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
+          <!-- Tombol Kirim -->
+          <button class="btn-send-comment" onclick="submitComment()">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="comment-login-notice" id="commentLoginNotice">
@@ -830,11 +877,13 @@
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
 
-  // --- LOGIKA STIKER & GIF (DARI FIREBASE /stickers) ---
+  // --- STIKER & MENTION STATE ---
   let cachedStickers = [];
-  let currentStickerReplyParentId = null;
+  let currentStickerTarget = null; // null untuk komentar utama, atau id komentar untuk reply
+  let selectedMainStickerUrl = '';
+  const selectedReplyStickers = {}; // { commentId: stickerUrl }
+  let activeCommentUsers = []; // Daftar nama pengguna untuk auto-complete mention
 
-  // Stiker Cadangan jika node /stickers di Firebase masih kosong
   const DEFAULT_STICKERS = [
     'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
     'https://media.tenor.com/On7KVXhzuf8AAAAj/chibi-cat.gif',
@@ -850,7 +899,6 @@
     if (cachedStickers.length > 0) return cachedStickers;
     try {
       if (window.db && window.fbRef && window.fbGet) {
-        // Ambil data dari node /stickers atau /sticker
         let snap = await window.fbGet(window.fbRef(window.db, 'stickers'));
         if (!snap.exists()) {
           snap = await window.fbGet(window.fbRef(window.db, 'sticker'));
@@ -885,9 +933,9 @@
     return cachedStickers;
   }
 
-  async function openStickerPicker(parentId = null) {
+  async function openStickerPicker(targetId = null) {
     if (!window.currentUser) { goToHomeLogin(); return; }
-    currentStickerReplyParentId = parentId;
+    currentStickerTarget = targetId;
     document.getElementById('stickerPanel').classList.add('active');
     document.getElementById('stickerOverlay').classList.add('active');
 
@@ -903,7 +951,6 @@
   function closeStickerPicker() {
     document.getElementById('stickerPanel').classList.remove('active');
     document.getElementById('stickerOverlay').classList.remove('active');
-    currentStickerReplyParentId = null;
   }
 
   function renderStickerItems(list) {
@@ -916,43 +963,99 @@
     }
 
     container.innerHTML = list.map(url => `
-      <div class="sticker-item-btn" onclick="sendSelectedSticker('${url}')">
+      <div class="sticker-item-btn" onclick="selectSticker('${url}')">
         <img src="${url}" loading="lazy" />
       </div>
     `).join('');
   }
 
-  async function sendSelectedSticker(stickerUrl) {
-    const parentId = currentStickerReplyParentId;
+  // Pilih Stiker ke Input Kolom Komen (Tidak Langsung Kirim)
+  function selectSticker(url) {
     closeStickerPicker();
+    if (!currentStickerTarget) {
+      selectedMainStickerUrl = url;
+      const previewBox = document.getElementById('mainStickerPreview');
+      const previewImg = document.getElementById('mainStickerPreviewImg');
+      if (previewBox && previewImg) {
+        previewImg.src = url;
+        previewBox.classList.add('active');
+      }
+      const input = document.getElementById('commentInput');
+      if (input) input.focus();
+    } else {
+      const parentId = currentStickerTarget;
+      selectedReplyStickers[parentId] = url;
+      const previewBox = document.getElementById(`replyStickerPreview-${parentId}`);
+      const previewImg = document.getElementById(`replyStickerPreviewImg-${parentId}`);
+      if (previewBox && previewImg) {
+        previewImg.src = url;
+        previewBox.classList.add('active');
+      }
+      const input = document.getElementById(`replyInput-${parentId}`);
+      if (input) input.focus();
+    }
+  }
 
-    targetSlug = getCleanMainSlug();
-    if (!window.currentUser || !targetSlug) return;
+  function removeSelectedSticker(targetId = null) {
+    if (!targetId) {
+      selectedMainStickerUrl = '';
+      const previewBox = document.getElementById('mainStickerPreview');
+      if (previewBox) previewBox.classList.remove('active');
+    } else {
+      delete selectedReplyStickers[targetId];
+      const previewBox = document.getElementById(`replyStickerPreview-${targetId}`);
+      if (previewBox) previewBox.classList.remove('active');
+    }
+  }
 
-    const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-    const commentItem = {
-      uid: window.currentUser.uid,
-      email: window.currentUser.email || '',
-      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
-      photoURL: window.currentUser.photoURL || '',
-      text: '',
-      stickerUrl: stickerUrl,
-      timestamp: Date.now(),
-      isAdmin: isAdmin
-    };
+  // --- LOGIKA MENTION @USER ---
+  function handleMentionInput(inputEl, menuId) {
+    const menu = document.getElementById(menuId);
+    if (!menu) return;
 
-    if (parentId) {
-      commentItem.parentId = String(parentId);
+    const val = inputEl.value;
+    const cursorPos = inputEl.selectionStart;
+    const textBeforeCursor = val.slice(0, cursorPos);
+    const atIndex = textBeforeCursor.lastIndexOf('@');
+
+    if (atIndex !== -1 && (atIndex === 0 || /\s/.test(textBeforeCursor[atIndex - 1]))) {
+      const query = textBeforeCursor.slice(atIndex + 1).toLowerCase();
+      const matchedUsers = activeCommentUsers.filter(u => u.name.toLowerCase().includes(query));
+
+      if (matchedUsers.length > 0) {
+        menu.innerHTML = matchedUsers.map(u => `
+          <div class="mention-dropdown-item" onclick="insertMention('${u.name}', '${inputEl.id}', '${menuId}', ${atIndex})">
+            ${u.photo ? `<img src="${u.photo}" />` : `<span>@</span>`}
+            <span>${escapeHtml(u.name)}</span>
+          </div>
+        `).join('');
+        menu.classList.add('active');
+        return;
+      }
     }
 
-    try {
-      const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
-      const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
-      await window.fbSet(newCommentRef, commentItem);
-      window.loadComments();
-    } catch (e) {
-      alert('Gagal mengirim stiker: ' + e.message);
-    }
+    menu.classList.remove('active');
+  }
+
+  function insertMention(username, inputId, menuId, atIndex) {
+    const inputEl = document.getElementById(inputId);
+    const menu = document.getElementById(menuId);
+    if (!inputEl) return;
+
+    const val = inputEl.value;
+    const textBeforeAt = val.slice(0, atIndex);
+    const textAfterCursor = val.slice(inputEl.selectionStart);
+
+    inputEl.value = `${textBeforeAt}@${username} ${textAfterCursor}`;
+    if (menu) menu.classList.remove('active');
+    inputEl.focus();
+  }
+
+  function parseMentionsToHtml(str) {
+    const escaped = escapeHtml(str);
+    return escaped.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF\s]+?)(?=\s|$|[.,!?])/g, (match, username) => {
+      return `<span class="mention-tag-link">@${username.trim()}</span>`;
+    });
   }
 
   function getUserBasePath() {
@@ -1169,11 +1272,15 @@
     renderEpisodeGrid();
   }
 
-  document.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
     const menu = document.getElementById('episodeSortMenu');
     if (menu) menu.classList.remove('active');
     const dropdown = document.getElementById('sortDropdownMenu');
     if (dropdown) dropdown.classList.remove('active');
+
+    if (!e.target.closest('.mention-dropdown-menu') && !e.target.closest('.comment-textarea') && !e.target.closest('.reply-input')) {
+      document.querySelectorAll('.mention-dropdown-menu').forEach(m => m.classList.remove('active'));
+    }
   });
 
   function getSortedEpisodes() {
@@ -1554,6 +1661,16 @@
         return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
       });
 
+      // Kumpulkan daftar user unik untuk fitur Mention @user
+      const usersMap = {};
+      allComments.forEach(c => {
+        const name = c.author || (c.email ? c.email.split('@')[0] : 'User');
+        if (name && !usersMap[name]) {
+          usersMap[name] = { name, photo: c.photoURL || '' };
+        }
+      });
+      activeCommentUsers = Object.values(usersMap);
+
       container.innerHTML = '';
 
       for (let item of mainComments) {
@@ -1606,7 +1723,7 @@
 
     let actionButtons = '';
     if (window.currentUser) {
-      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}')">Balas</button>`;
+      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}', '${escapeHtml(authorName)}')">Balas</button>`;
       if (isMyComment || isCurrentUserAdmin) {
         actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
       }
@@ -1638,7 +1755,7 @@
           <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
           ${levelBadge} ${adminBadge}
         </div>
-        ${commentText ? `<div class="comment-body-text">${escapeHtml(commentText)}</div>` : ''}
+        ${commentText ? `<div class="comment-body-text">${parseMentionsToHtml(commentText)}</div>` : ''}
         ${stickerHtml}
         <div class="comment-footer-actions">
           <span class="comment-time">${timeText}</span>
@@ -1702,7 +1819,7 @@
             <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
             ${levelBadge} ${adminBadge}
           </div>
-          ${replyText ? `<div class="comment-body-text">${escapeHtml(replyText)}</div>` : ''}
+          ${replyText ? `<div class="comment-body-text">${parseMentionsToHtml(replyText)}</div>` : ''}
           ${stickerHtml}
           <div class="comment-footer-actions">
             <span class="comment-time">${timeText}</span>
@@ -1729,36 +1846,58 @@
 
   function toggleLikeComment(el) { el.classList.toggle('liked'); }
 
-  function toggleReplyBox(commentId) {
+  // Toggle Kotak Reply dengan Dukungan Mention Otomatis & Preview Stiker
+  function toggleReplyBox(commentId, replyToUser = '') {
     const container = document.getElementById(`reply-input-wrapper-${commentId}`);
     if (!container) return;
     if (container.innerHTML !== '') {
       container.innerHTML = '';
+      delete selectedReplyStickers[commentId];
       return;
     }
+
+    const defaultMention = replyToUser ? `@${replyToUser} ` : '';
+
     container.innerHTML = `
-      <div class="reply-input-box">
-        <input type="text" class="reply-input" id="replyInput-${commentId}" placeholder="Tulis balasan..." />
-        <button class="btn-sticker-toggle" onclick="openStickerPicker('${commentId}')" style="width:34px;height:34px;" title="Kirim Stiker / GIF">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
-            <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
-            <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
-            <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
-            <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
-          </svg>
-        </button>
-        <button class="btn-reply-send" onclick="submitReply('${commentId}')">Kirim</button>
+      <div class="reply-form-wrapper">
+        <div class="sticker-preview-box" id="replyStickerPreview-${commentId}">
+          <img id="replyStickerPreviewImg-${commentId}" src="" />
+          <div class="sticker-preview-remove" onclick="removeSelectedSticker('${commentId}')">✕</div>
+        </div>
+        
+        <div class="mention-dropdown-menu" id="replyMentionMenu-${commentId}"></div>
+
+        <div class="reply-input-box">
+          <input type="text" class="reply-input" id="replyInput-${commentId}" value="${escapeHtml(defaultMention)}" placeholder="Tulis balasan... (@ untuk tag)" oninput="handleMentionInput(this, 'replyMentionMenu-${commentId}')" />
+          <button class="btn-sticker-toggle" onclick="openStickerPicker('${commentId}')" style="width:34px;height:34px;" title="Pilih Stiker">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 12C2 17.5228 6.47715 22 12 22C12.6477 22 13.2503 21.7004 13.7083 21.2424L21.2424 13.7083C21.7004 13.2503 22 12.6477 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="#ffffff" stroke-width="1.5"></path>
+              <path d="M8.9126 15.9336C9.94668 16.1928 11.0951 16.2391 12.2688 16.0337" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>
+              <ellipse cx="14.5094" cy="9.77405" rx="1" ry="1.5" transform="rotate(-15 14.5094 9.77405)" fill="#ffffff"></ellipse>
+              <ellipse cx="8.71402" cy="11.3278" rx="1" ry="1.5" transform="rotate(-15 8.71402 11.3278)" fill="#ffffff"></ellipse>
+              <path d="M12 22C12 19.2071 12 17.8107 12.3928 16.688C13.0964 14.6773 14.6773 13.0964 16.688 12.3928C17.8107 12 19.2071 12 22 12" stroke="#ffffff" stroke-width="1.5"></path>
+            </svg>
+          </button>
+          <button class="btn-reply-send" onclick="submitReply('${commentId}')">Kirim</button>
+        </div>
       </div>
     `;
+
+    const input = document.getElementById(`replyInput-${commentId}`);
+    if (input) {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
   }
 
   async function submitComment() {
     targetSlug = getCleanMainSlug();
     if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById('commentInput');
-    const text = input.value.trim();
-    if (!text || !targetSlug) return;
+    const text = input ? input.value.trim() : '';
+    const stickerUrl = selectedMainStickerUrl;
+
+    if ((!text && !stickerUrl) || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const commentItem = { 
@@ -1767,6 +1906,7 @@
       author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
       photoURL: window.currentUser.photoURL || '',
       text: text, 
+      stickerUrl: stickerUrl || '',
       timestamp: Date.now(),
       isAdmin: isAdmin
     };
@@ -1775,7 +1915,11 @@
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
       const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, commentItem);
+      
+      // Bersihkan input & preview
       input.value = '';
+      removeSelectedSticker(null);
+
       window.loadComments();
     } catch (e) {
       alert('Gagal mengirim komentar: ' + e.message);
@@ -1787,7 +1931,9 @@
     if (!window.currentUser) { goToHomeLogin(); return; }
     const input = document.getElementById(`replyInput-${parentId}`);
     const text = input ? input.value.trim() : '';
-    if (!text || !targetSlug) return;
+    const stickerUrl = selectedReplyStickers[parentId] || '';
+
+    if ((!text && !stickerUrl) || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const replyItem = { 
@@ -1796,6 +1942,7 @@
       author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
       photoURL: window.currentUser.photoURL || '',
       text: text, 
+      stickerUrl: stickerUrl || '',
       parentId: String(parentId), 
       timestamp: Date.now(),
       isAdmin: isAdmin
@@ -1805,6 +1952,11 @@
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
       const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, replyItem);
+
+      removeSelectedSticker(parentId);
+      const container = document.getElementById(`reply-input-wrapper-${parentId}`);
+      if (container) container.innerHTML = '';
+
       window.loadComments();
     } catch (e) {
       alert('Gagal membalas komentar: ' + e.message);
