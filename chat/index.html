@@ -66,7 +66,7 @@
       max-width: 900px;
       margin: 0 auto;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
     }
 
@@ -144,6 +144,28 @@
       padding: 20px;
     }
 
+    /* Badge Pemisah Tanggal */
+    .date-separator-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin: 10px 0;
+      user-select: none;
+    }
+    .date-separator-badge {
+      background: rgba(22, 27, 34, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
     /* Message Item Card */
     .chat-msg-row {
       display: flex;
@@ -206,7 +228,7 @@
       align-items: center;
       font-size: 9px;
       font-weight: 800;
-      padding: 1px 6px;
+      padding: 1.5px 6.5px;
       border-radius: 6px;
       overflow: hidden;
       letter-spacing: 0.3px;
@@ -222,9 +244,10 @@
       pointer-events: none;
     }
     .badge-level {
-      background: rgba(34, 197, 94, 0.18);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.4);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
     }
     .badge-level.admin-lvl {
       background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
@@ -245,19 +268,20 @@
       background: var(--bg-chat-bubble);
       border: 1px solid var(--border-color);
       border-radius: 18px;
-      padding: 10px 14px;
+      padding: 10px 14px 22px 14px;
       position: relative;
       display: flex;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
+      min-width: 90px;
     }
     .chat-msg-row.mine .msg-bubble {
       background: #1e2638;
       border-color: rgba(56, 189, 248, 0.2);
     }
 
-    /* Kotak Reply / Quote Box di dalam Bubble Pesan */
+    /* Kotak Reply / Quote Box di dalam Bubble */
     .msg-quote-box {
       background: rgba(0, 0, 0, 0.35);
       border-radius: 10px;
@@ -276,9 +300,6 @@
     .quote-author {
       font-size: 11.5px;
       font-weight: 800;
-      color: #4ade80;
-    }
-    .chat-msg-row.mine .quote-author {
       color: #38bdf8;
     }
     .quote-snippet {
@@ -310,6 +331,7 @@
       color: #f1f5f9;
       line-height: 1.4;
       word-break: break-word;
+      padding-right: 32px;
     }
 
     .msg-sticker {
@@ -319,6 +341,7 @@
       border-radius: 10px;
       display: block;
       margin-top: 4px;
+      margin-bottom: 2px;
     }
 
     .mention-tag {
@@ -330,13 +353,44 @@
       color: #bae6fd !important;
     }
 
-    .msg-time-badge {
+    /* Waktu di kanan bawah */
+    .msg-time-bottom-right {
       position: absolute;
-      top: 10px;
-      right: 14px;
-      font-size: 11px;
+      bottom: 5px;
+      right: 12px;
+      font-size: 10px;
       color: #64748b;
       font-weight: 600;
+      user-select: none;
+    }
+    .chat-msg-row.mine .msg-time-bottom-right {
+      color: #94a3b8;
+    }
+
+    /* Tombol Aksi Hapus Chat */
+    .msg-delete-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+      align-self: center;
+    }
+    .msg-delete-btn:hover {
+      background: #ef4444;
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+    .msg-delete-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .chat-msg-row:hover .msg-delete-btn {
+      display: inline-flex;
     }
 
     /* Bottom Input Bar Area */
@@ -632,9 +686,6 @@
           </div>
         </div>
       </div>
-      <button class="icon-btn" onclick="scrollToBottom(true)" title="Paling Baru">
-        <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
-      </button>
     </div>
   </header>
 
@@ -719,6 +770,7 @@
     window.fbRef = FB.ref || FB.fbRef;
     window.fbGet = FB.get || FB.fbGet;
     window.fbSet = FB.set || FB.fbSet;
+    window.fbRemove = FB.remove || FB.fbRemove;
     window.fbOnValue = FB.onValue || FB.fbOnValue || null;
 
     if (FB.onAuthStateChanged && FB.auth) {
@@ -760,7 +812,7 @@
     let chatUsersList = [];
     let isInitialLoad = true;
     let lastRenderedChatJson = '';
-    let replyingMessage = null; // Data pesan yang sedang dibalas
+    let replyingMessage = null;
 
     const DEFAULT_STICKERS = [
       'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
@@ -788,6 +840,40 @@
       return `${String(d.getHours()).padStart(2, '0')}.${String(d.getMinutes()).padStart(2, '0')}`;
     }
 
+    function getDateDividerLabel(timestamp) {
+      if (!timestamp) return '';
+      const d = new Date(timestamp);
+      const now = new Date();
+
+      const dYear = d.getFullYear();
+      const dMonth = d.getMonth();
+      const dDate = d.getDate();
+
+      const nowYear = now.getFullYear();
+      const nowMonth = now.getMonth();
+      const nowDate = now.getDate();
+
+      const isToday = (dYear === nowYear && dMonth === nowMonth && dDate === nowDate);
+      if (isToday) return 'HARI INI';
+
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      const isYesterday = (dYear === yesterday.getFullYear() && dMonth === yesterday.getMonth() && dDate === yesterday.getDate());
+      if (isYesterday) return 'KEMARIN';
+
+      const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      if (dYear === nowYear) {
+        return `${dDate} ${months[dMonth]}`;
+      }
+      return `${dDate} ${months[dMonth]} ${dYear}`;
+    }
+
+    function getDateKey(timestamp) {
+      if (!timestamp) return '';
+      const d = new Date(timestamp);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
     function scrollToBottom(smooth = false) {
       const container = document.getElementById('chatContainer');
       if (container) {
@@ -804,6 +890,23 @@
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el.classList.add('highlighted');
         setTimeout(() => el.classList.remove('highlighted'), 1500);
+      }
+    }
+
+    /* Delete Chat Handler */
+    async function deleteChatMessage(msgId) {
+      if (!confirm('Hapus pesan ini?')) return;
+      try {
+        if (!window.db || !window.fbRef) return;
+        const targetRef = window.fbRef(window.db, `live_chat/${msgId}`);
+        if (window.fbRemove) {
+          await window.fbRemove(targetRef);
+        } else if (window.fbSet) {
+          await window.fbSet(targetRef, null);
+        }
+        loadChatMessagesOnce();
+      } catch (err) {
+        alert('Gagal menghapus pesan: ' + err.message);
       }
     }
 
@@ -959,7 +1062,7 @@
       });
     }
 
-    /* Core Render Function: Mengambil Nama & Foto Terupdate Dari Node USERS */
+    /* Core Render Function */
     async function renderLiveChatMessages(chatData) {
       const container = document.getElementById('chatContainer');
       const loadingEl = document.getElementById('chatLoading');
@@ -991,8 +1094,24 @@
 
       container.innerHTML = '';
       const mentionUsersMap = {};
+      let lastMessageDateKey = null;
+
+      const isCurrentUserAdmin = window.currentUser && window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
       messageList.forEach((item) => {
+        const msgTimestamp = Number(item.timestamp) || Date.now();
+        const dateKey = getDateKey(msgTimestamp);
+
+        // Separator Tanggal ala WA
+        if (dateKey !== lastMessageDateKey) {
+          const dateLabel = getDateDividerLabel(msgTimestamp);
+          const dividerEl = document.createElement('div');
+          dividerEl.className = 'date-separator-wrapper';
+          dividerEl.innerHTML = `<span class="date-separator-badge">${dateLabel}</span>`;
+          container.appendChild(dividerEl);
+          lastMessageDateKey = dateKey;
+        }
+
         const isMine = window.currentUser && (
           (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) ||
           (window.currentUser.uid && item.uid && window.currentUser.uid === item.uid)
@@ -1020,14 +1139,15 @@
           ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
           : initial;
 
-        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">🍃 Lvl 8</span>`;
+        // Level: Lv999+ untuk Admin, Lv1 berkilau untuk member biasa
+        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
         const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
 
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMine ? 'mine' : ''}`;
         row.id = `msg-${item.id}`;
 
-        // Render Balasan / Quote Box jika pesan ini membalas pesan lain
+        // Render Quote Box jika pesan ini membalas pesan lain
         let quoteHtml = '';
         if (item.replyTo) {
           quoteHtml = `
@@ -1042,19 +1162,31 @@
         if (item.text) contentHtml += `<div class="msg-text-content">${parseMentions(item.text)}</div>`;
         if (item.stickerUrl) contentHtml += `<img src="${item.stickerUrl}" class="msg-sticker" loading="lazy" />`;
 
+        // Tombol Hapus jika milik sendiri atau Admin
+        let deleteBtnHtml = '';
+        if (isMine || isCurrentUserAdmin) {
+          deleteBtnHtml = `
+            <button class="msg-delete-btn" onclick="event.stopPropagation(); deleteChatMessage('${item.id}')" title="Hapus Chat">
+              <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+            </button>
+          `;
+        }
+
         row.innerHTML = `
           <div class="user-avatar" onclick="appendMentionToInput('${escapeHtml(authorName)}')">${avatarContent}</div>
           <div class="msg-body-wrapper">
             <div class="msg-bubble" onclick="setReplyMessage('${item.id}', '${escapeHtml(authorName)}', '${escapeHtml(item.text || '')}', '${item.stickerUrl || ''}')">
-              <span class="msg-time-badge">${formatTime(item.timestamp)}</span>
               ${quoteHtml}
               <div class="msg-user-meta">
                 <span class="sender-name ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
                 ${levelBadge} ${adminBadge}
               </div>
               ${contentHtml}
+              <!-- Waktu Di Pojok Kanan Bawah -->
+              <span class="msg-time-bottom-right">${formatTime(msgTimestamp)}</span>
             </div>
           </div>
+          ${deleteBtnHtml}
         `;
 
         container.appendChild(row);
@@ -1070,7 +1202,7 @@
       }
     }
 
-    /* Live Chat Loader: Mendukung onValue dan Polling fbGet otomatis */
+    /* Live Chat Loader */
     async function loadChatMessagesOnce() {
       try {
         if (!window.db || !window.fbRef || !window.fbGet) return;
@@ -1104,6 +1236,8 @@
             const val = snapshot.val() || {};
             lastRenderedChatJson = JSON.stringify(val);
             renderLiveChatMessages(val);
+          } else {
+            document.getElementById('chatContainer').innerHTML = '<div class="chat-loading-placeholder">Belum ada obrolan. Mulai sapa teman-teman sekarang!</div>';
           }
         });
       } else {
@@ -1135,7 +1269,6 @@
         isAdmin: isAdmin
       };
 
-      // Tambahkan info balasan / quote jika sedang membalas
       if (replyingMessage) {
         newMsg.replyTo = {
           id: replyingMessage.id,
