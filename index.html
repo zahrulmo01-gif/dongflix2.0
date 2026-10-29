@@ -85,7 +85,6 @@
     :root {
       --bg-main: #000000;
       --bg-card: #0a0a0a;
-      --bg-skeleton: #141416;
       --color-primary: #0284c7;
       --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
@@ -136,6 +135,43 @@
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+    /* SKELETON SHIMMER UNIVERSAL */
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0.03) 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.6s infinite ease-in-out;
+      border-radius: 8px;
+      border: none !important;
+      color: transparent !important;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .skeleton-text {
+      height: 12px;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .skeleton-hero {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px 20px 38px;
+      background: #000;
+    }
+
+    .card-skeleton { width: 100%; display: flex; flex-direction: column; }
+    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; }
+    .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
+    .card-skeleton-sub { height: 11px; width: 50%; }
 
     .header-bar {
       position: fixed;
@@ -405,19 +441,6 @@
       text-transform: uppercase;
     }
 
-    @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
-    .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
-
-    .skeleton-hero { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 20px 20px 38px; }
-    .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
-    .skeleton-text.title { height: 24px; width: 60%; margin-bottom: 10px; }
-    .skeleton-text.sub { height: 13px; width: 35%; margin-bottom: 14px; }
-    .skeleton-btn { height: 36px; width: 105px; border-radius: 10px; }
-
-    .card-skeleton { width: 100%; }
-    .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
-    .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
-
     /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
@@ -557,7 +580,6 @@
     .section-block { margin-top: 36px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     
-    /* JUDUL SECTION DENGAN GARIS TEGAK WARNA BIRU */
     .section-title { 
       font-size: 18px; 
       font-weight: 800; 
@@ -578,7 +600,6 @@
       flex-shrink: 0;
     }
 
-    /* TOMBOL LIHAT SEMUA DENGAN PANAH SVG */
     .see-all-btn { 
       color: var(--color-accent); 
       font-size: 13px; 
@@ -601,7 +622,6 @@
     }
     .see-all-btn:hover { color: #ffffff; }
 
-    /* DOT & ONLINE HIJAU KECIL DI SAMPING LIVE CHAT */
     .chat-header-left-title {
       display: flex;
       align-items: center;
@@ -633,7 +653,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* WIDGET LIVE CHAT BERANDA */
     .home-chat-widget {
       background: #0d0f14;
       border: 1px solid var(--border-color);
@@ -698,7 +717,7 @@
       word-break: break-word;
     }
 
-    /* Shimmer Badge */
+    /* Badge Shimmer */
     @keyframes badgeShimmer {
       0% { transform: translateX(-150%) skewX(-20deg); }
       35%, 100% { transform: translateX(180%) skewX(-20deg); }
@@ -768,19 +787,18 @@
     }
     .home-chat-send-circle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-    /* SECTION LANJUTKAN MENONTON DENGAN JARAK YANG PAS */
     .continue-section-wrapper { 
-      margin-top: 48px; /* Jarak atas lebih lega */
+      margin-top: 48px;
       margin-bottom: 28px; 
     }
     .continue-section-wrapper .section-header-flex {
-      margin-bottom: 20px; /* Jarak dari judul ke thumbnail kartu agar tidak mepet */
+      margin-bottom: 20px;
     }
     .continue-scroll-row {
       display: flex;
       gap: 16px;
       overflow-x: auto;
-      padding-top: 4px; /* Memberi ruang bayangan atas */
+      padding-top: 4px;
       padding-bottom: 12px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
@@ -1079,13 +1097,14 @@
     </div>
   </div>
 
+  <!-- HERO SLIDER DENGAN SKELETON SHIMMER -->
   <div class="hero-slider-wrapper" id="heroSlider">
-    <div class="skeleton skeleton-hero">
-      <div style="width: 100%; max-width: 760px; margin: 0 auto;">
-        <div class="skeleton" style="height: 22px; width: 90px; margin-bottom: 12px; border-radius: 4px;"></div>
-        <div class="skeleton skeleton-text title"></div>
-        <div class="skeleton skeleton-text sub"></div>
-        <div class="skeleton skeleton-btn"></div>
+    <div class="skeleton-hero">
+      <div style="width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;">
+        <span class="skeleton" style="width: 80px; height: 20px; border-radius: 9999px;"></span>
+        <span class="skeleton skeleton-text" style="width: 70%; height: 28px;"></span>
+        <span class="skeleton skeleton-text" style="width: 40%; height: 14px;"></span>
+        <span class="skeleton" style="width: 110px; height: 38px; border-radius: 12px; margin-top: 4px;"></span>
       </div>
     </div>
   </div>
@@ -1116,8 +1135,22 @@
       </div>
 
       <div class="home-chat-widget">
+        <!-- SKELETON LIVE CHAT LIST -->
         <div class="home-chat-items-list" id="homeChatList">
-          <div style="color: var(--text-muted); font-size: 12.5px; text-align: center; padding: 12px;">Memuat live chat...</div>
+          <div class="home-chat-item">
+            <div class="home-chat-avatar skeleton" style="border-radius: 50%;"></div>
+            <div class="home-chat-content" style="display: flex; flex-direction: column; gap: 6px;">
+              <span class="skeleton skeleton-text" style="width: 100px; height: 13px;"></span>
+              <span class="skeleton skeleton-text" style="width: 80%; height: 12px;"></span>
+            </div>
+          </div>
+          <div class="home-chat-item">
+            <div class="home-chat-avatar skeleton" style="border-radius: 50%;"></div>
+            <div class="home-chat-content" style="display: flex; flex-direction: column; gap: 6px;">
+              <span class="skeleton skeleton-text" style="width: 90px; height: 13px;"></span>
+              <span class="skeleton skeleton-text" style="width: 65%; height: 12px;"></span>
+            </div>
+          </div>
         </div>
 
         <a href="/chat/" class="home-chat-fake-input">
@@ -1129,38 +1162,38 @@
       </div>
     </section>
 
-    <!-- POPULER HARI INI -->
+    <!-- POPULER HARI INI DENGAN SKELETON -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">Populer Hari Ini</h2>
       </div>
       <div class="popular-featured-row" id="todayPopularRow">
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton"></div>
-          <div class="featured-info-col">
+          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="skeleton" style="height: 18px; width: 80%;"></div>
-              <div class="skeleton" style="height: 12px; width: 95%;"></div>
-              <div class="skeleton" style="height: 12px; width: 65%;"></div>
+              <span class="skeleton skeleton-text" style="height: 18px; width: 85%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 95%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 65%;"></span>
             </div>
-            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+            <span class="skeleton" style="height: 26px; width: 100px; border-radius: 9999px;"></span>
           </div>
         </div>
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton"></div>
-          <div class="featured-info-col">
+          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="skeleton" style="height: 18px; width: 80%;"></div>
-              <div class="skeleton" style="height: 12px; width: 95%;"></div>
-              <div class="skeleton" style="height: 12px; width: 65%;"></div>
+              <span class="skeleton skeleton-text" style="height: 18px; width: 85%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 95%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 65%;"></span>
             </div>
-            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+            <span class="skeleton" style="height: 26px; width: 100px; border-radius: 9999px;"></span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- DONGHUA TERBARU -->
+    <!-- DONGHUA TERBARU DENGAN SKELETON -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Terbaru</h2>
@@ -1170,12 +1203,12 @@
         </a>
       </div>
       <div class="grid-3" id="latestGrid">
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
       </div>
     </section>
 
@@ -1197,7 +1230,7 @@
       </div>
     </div>
 
-    <!-- MOVIE TERBARU -->
+    <!-- MOVIE TERBARU DENGAN SKELETON -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">Movie Terbaru</h2>
@@ -1207,38 +1240,38 @@
         </a>
       </div>
       <div class="grid-3" id="movieGrid">
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
-        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
       </div>
     </section>
 
-    <!-- DONGHUA POPULER -->
+    <!-- DONGHUA POPULER DENGAN SKELETON -->
     <section class="section-block">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Populer</h2>
       </div>
       <div class="popular-vertical-list" id="popularAllGrid">
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton"></div>
-          <div class="featured-info-col">
+          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="skeleton" style="height: 18px; width: 75%;"></div>
-              <div class="skeleton" style="height: 12px; width: 90%;"></div>
-              <div class="skeleton" style="height: 12px; width: 60%;"></div>
+              <span class="skeleton skeleton-text" style="height: 18px; width: 80%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 90%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 60%;"></span>
             </div>
-            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+            <span class="skeleton" style="height: 26px; width: 100px; border-radius: 9999px;"></span>
           </div>
         </div>
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton"></div>
-          <div class="featured-info-col">
+          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="skeleton" style="height: 18px; width: 75%;"></div>
-              <div class="skeleton" style="height: 12px; width: 90%;"></div>
-              <div class="skeleton" style="height: 12px; width: 60%;"></div>
+              <span class="skeleton skeleton-text" style="height: 18px; width: 80%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 90%;"></span>
+              <span class="skeleton skeleton-text" style="height: 12px; width: 60%;"></span>
             </div>
-            <div class="skeleton" style="height: 28px; width: 110px; border-radius: 9999px;"></div>
+            <span class="skeleton" style="height: 26px; width: 100px; border-radius: 9999px;"></span>
           </div>
         </div>
       </div>
