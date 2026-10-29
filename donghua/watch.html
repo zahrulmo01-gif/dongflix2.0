@@ -456,11 +456,16 @@
       font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer;
     }
     .mention-dropdown-item:hover { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
-    .mention-dropdown-item img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+    .mention-dropdown-item img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+    .mention-dropdown-item .mention-initial {
+      width: 22px; height: 22px; border-radius: 50%; background: #0284c7; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;
+    }
 
     .mention-tag-link {
       color: #38bdf8 !important; font-weight: 700; text-decoration: none; cursor: pointer;
     }
+    .mention-tag-link:hover { text-decoration: underline; }
     
     .btn-sticker-toggle {
       background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #cbd5e1;
@@ -492,13 +497,18 @@
     .tiktok-avatar {
       width: 36px; height: 36px; border-radius: 50%; background: #0284c7; color: #fff;
       display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; overflow: hidden; flex-shrink: 0;
+      text-decoration: none;
     }
     .tiktok-avatar img {
       width: 100%; height: 100%; object-fit: cover; display: block;
     }
     .comment-content { flex: 1; min-width: 0; text-align: left !important; }
     .comment-user-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap; }
-    .tiktok-username { font-size: 13px; font-weight: 700; color: #94a3b8; }
+    
+    .tiktok-username { 
+      font-size: 13px; font-weight: 700; color: #94a3b8; text-decoration: none; transition: color 0.15s;
+    }
+    .tiktok-username:hover { color: #ffffff; }
     .tiktok-username.admin { color: #f59e0b !important; }
 
     @keyframes badgeShimmer {
@@ -831,7 +841,7 @@
   </div>
 </div>
 
-<!-- Modal Picker Stiker Gabungan (Stiker & GIF dari Firebase /stickers) -->
+<!-- Modal Picker Stiker Gabungan -->
 <div class="sheet-overlay" id="stickerOverlay" onclick="closeStickerPicker()"></div>
 <div class="sticker-picker-panel" id="stickerPanel">
   <div class="sticker-header">
@@ -913,7 +923,9 @@
   let currentStickerTarget = null;
   let selectedMainStickerUrl = '';
   const selectedReplyStickers = {};
-  let activeCommentUsers = [];
+  
+  // Cache seluruh data users dari Firebase untuk auto-complete tag & routing profil
+  let allRegisteredUsers = [];
 
   const DEFAULT_STICKERS = [
     'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
@@ -925,6 +937,36 @@
     'https://cdn-icons-png.flaticon.com/128/9408/9408224.png',
     'https://media.tenor.com/gK2J_J7KkE8AAAAj/cute-love.gif'
   ];
+
+  async function loadAllFirebaseUsers() {
+    if (allRegisteredUsers.length > 0) return allRegisteredUsers;
+    try {
+      if (window.db && window.fbRef && window.fbGet) {
+        const usersSnap = await window.fbGet(window.fbRef(window.db, 'users'));
+        if (usersSnap.exists()) {
+          const raw = usersSnap.val() || {};
+          const users = [];
+          Object.keys(raw).forEach(key => {
+            const u = raw[key];
+            if (u && typeof u === 'object') {
+              users.push({
+                key: key,
+                username: u.username || '',
+                name: u.name || u.username || 'User',
+                photo: u.photoURL || '',
+                email: u.email || ''
+              });
+            }
+          });
+          allRegisteredUsers = users;
+          return allRegisteredUsers;
+        }
+      }
+    } catch (e) {
+      console.warn("Gagal mengambil users untuk mention:", e);
+    }
+    return [];
+  }
 
   async function fetchStickersFromFirebase() {
     if (cachedStickers.length > 0) return cachedStickers;
@@ -1043,7 +1085,8 @@
     }
   }
 
-  function handleMentionInput(inputEl, menuId) {
+  // Auto-complete @mention mendukung seluruh pengguna dari Firebase users
+  async function handleMentionInput(inputEl, menuId) {
     const menu = document.getElementById(menuId);
     if (!menu) return;
 
@@ -1054,15 +1097,36 @@
 
     if (atIndex !== -1 && (atIndex === 0 || /\s/.test(textBeforeCursor[atIndex - 1]))) {
       const query = textBeforeCursor.slice(atIndex + 1).toLowerCase();
-      const matchedUsers = activeCommentUsers.filter(u => u.name.toLowerCase().includes(query));
+
+      // Pastikan data users sudah termuat
+      if (allRegisteredUsers.length === 0) {
+        await loadAllFirebaseUsers();
+      }
+
+      const matchedUsers = allRegisteredUsers.filter(u => {
+        const uName = (u.username || '').toLowerCase();
+        const dName = (u.name || '').toLowerCase();
+        return uName.includes(query) || dName.includes(query);
+      });
 
       if (matchedUsers.length > 0) {
-        menu.innerHTML = matchedUsers.map(u => `
-          <div class="mention-dropdown-item" onclick="insertMention('${u.name}', '${inputEl.id}', '${menuId}', ${atIndex})">
-            ${u.photo ? `<img src="${u.photo}" />` : `<span>@</span>`}
-            <span>${escapeHtml(u.name)}</span>
-          </div>
-        `).join('');
+        menu.innerHTML = matchedUsers.slice(0, 8).map(u => {
+          const insertTag = u.username || u.name;
+          const initial = (u.name || u.username || 'U').charAt(0).toUpperCase();
+          const avatarHtml = u.photo 
+            ? `<img src="${u.photo}" onerror="this.outerHTML='<span class=\\'mention-initial\\'>${initial}</span>'" />` 
+            : `<span class="mention-initial">${initial}</span>`;
+
+          return `
+            <div class="mention-dropdown-item" onclick="insertMention('${escapeHtml(insertTag)}', '${inputEl.id}', '${menuId}', ${atIndex})">
+              ${avatarHtml}
+              <div style="display:flex; flex-direction:column; line-height:1.2;">
+                <span style="color:#f1f5f9; font-weight:700;">${escapeHtml(u.name)}</span>
+                ${u.username ? `<span style="font-size:10px; color:#64748b;">@${escapeHtml(u.username)}</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
         menu.classList.add('active');
         return;
       }
@@ -1085,10 +1149,12 @@
     inputEl.focus();
   }
 
+  // Ubah @username menjadi link profil yang dapat diklik
   function parseMentionsToHtml(str) {
     const escaped = escapeHtml(str);
-    return escaped.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF\s]+?)(?=\s|$|[.,!?])/g, (match, username) => {
-      return `<span class="mention-tag-link">@${username.trim()}</span>`;
+    return escaped.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+)/g, (match, username) => {
+      const cleanUser = username.trim();
+      return `<a href="/profil/${encodeURIComponent(cleanUser)}" class="mention-tag-link" onclick="event.stopPropagation()">@${cleanUser}</a>`;
     });
   }
 
@@ -1569,7 +1635,7 @@
 
   async function fetchUserProfile(email, uid) {
     const cacheKey = email || uid || '';
-    if (!cacheKey) return { name: '', photoURL: '' };
+    if (!cacheKey) return { name: '', photoURL: '', username: '' };
     if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
 
     let foundProfile = null;
@@ -1595,7 +1661,8 @@
 
     const finalData = {
       name: (foundProfile && foundProfile.name) ? foundProfile.name : '',
-      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : ''
+      photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : '',
+      username: (foundProfile && foundProfile.username) ? foundProfile.username : ''
     };
 
     userProfilesCache[cacheKey] = finalData;
@@ -1644,6 +1711,9 @@
     if (!targetSlug) return;
 
     try {
+      // Ambil juga data users untuk tag mention global
+      loadAllFirebaseUsers();
+
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
       const commentsRef = window.fbRef(window.db, `comments/${cleanKey}`);
       const snap = await window.fbGet(commentsRef);
@@ -1695,15 +1765,6 @@
         return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
       });
 
-      const usersMap = {};
-      allComments.forEach(c => {
-        const name = c.author || (c.email ? c.email.split('@')[0] : 'User');
-        if (name && !usersMap[name]) {
-          usersMap[name] = { name, photo: c.photoURL || '' };
-        }
-      });
-      activeCommentUsers = Object.values(usersMap);
-
       container.innerHTML = '';
 
       for (let item of mainComments) {
@@ -1725,7 +1786,7 @@
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    let profile = { name: '', photoURL: '' };
+    let profile = { name: '', photoURL: '', username: '' };
     try {
       profile = await fetchUserProfile(item.email, item.uid);
     } catch (_) {}
@@ -1735,7 +1796,11 @@
     
     const authorName = profile.name || item.author || (item.email ? String(item.email).split('@')[0] : 'User');
     const photoURL = profile.photoURL || item.photoURL || '';
+    const username = profile.username || item.username || (item.email ? String(item.email).split('@')[0] : '');
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+
+    // Link URL Profil Pengguna
+    const profileUrl = username ? `/profil/${encodeURIComponent(username)}` : (item.email ? `/profil/${encodeURIComponent(item.email.split('@')[0])}` : '/profil/');
 
     const commentText = String(item.text || '');
     const stickerUrl = item.stickerUrl ? String(item.stickerUrl) : '';
@@ -1756,7 +1821,7 @@
 
     let actionButtons = '';
     if (window.currentUser) {
-      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}', '${escapeHtml(authorName)}')">Balas</button>`;
+      actionButtons += `<button class="btn-reply-tiktok" onclick="toggleReplyBox('${item.id}', '${escapeHtml(username || authorName)}')">Balas</button>`;
       if (isMyComment || isCurrentUserAdmin) {
         actionButtons += `<button class="btn-delete-tiktok" onclick="deleteComment('${item.id}')">Hapus</button>`;
       }
@@ -1782,10 +1847,10 @@
     }
 
     card.innerHTML = `
-      <div class="tiktok-avatar">${avatarHtml}</div>
+      <a href="${profileUrl}" class="tiktok-avatar" title="Lihat Profil">${avatarHtml}</a>
       <div class="comment-content">
         <div class="comment-user-row">
-          <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
+          <a href="${profileUrl}" class="tiktok-username ${isAdmin ? 'admin' : ''}" title="Lihat Profil">${escapeHtml(authorName)}</a>
           ${levelBadge} ${adminBadge}
         </div>
         ${commentText ? `<div class="comment-body-text">${parseMentionsToHtml(commentText)}</div>` : ''}
@@ -1806,7 +1871,7 @@
   }
 
   async function createReplyCardHtmlAsync(reply) {
-    let profile = { name: '', photoURL: '' };
+    let profile = { name: '', photoURL: '', username: '' };
     try {
       profile = await fetchUserProfile(reply.email, reply.uid);
     } catch (_) {}
@@ -1815,7 +1880,10 @@
     const isAdmin = authorEmail === ADMIN_EMAIL.toLowerCase() || reply.isAdmin === true;
     const authorName = profile.name || reply.author || (reply.email ? String(reply.email).split('@')[0] : 'User');
     const photoURL = profile.photoURL || reply.photoURL || '';
+    const username = profile.username || reply.username || (reply.email ? String(reply.email).split('@')[0] : '');
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+
+    const profileUrl = username ? `/profil/${encodeURIComponent(username)}` : (reply.email ? `/profil/${encodeURIComponent(reply.email.split('@')[0])}` : '/profil/');
 
     const replyText = String(reply.text || '');
     const stickerUrl = reply.stickerUrl ? String(reply.stickerUrl) : '';
@@ -1846,10 +1914,10 @@
 
     return `
       <div class="reply-card" id="comment-${reply.id}">
-        <div class="tiktok-avatar">${avatarHtml}</div>
+        <a href="${profileUrl}" class="tiktok-avatar" title="Lihat Profil">${avatarHtml}</a>
         <div class="comment-content">
           <div class="comment-user-row">
-            <span class="tiktok-username ${isAdmin ? 'admin' : ''}">${escapeHtml(authorName)}</span>
+            <a href="${profileUrl}" class="tiktok-username ${isAdmin ? 'admin' : ''}" title="Lihat Profil">${escapeHtml(authorName)}</a>
             ${levelBadge} ${adminBadge}
           </div>
           ${replyText ? `<div class="comment-body-text">${parseMentionsToHtml(replyText)}</div>` : ''}
@@ -1932,11 +2000,19 @@
     if ((!text && !stickerUrl) || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    
+    // Ambil profil pengirim agar username & nama tersimpan rapi
+    let myProfile = { name: '', photoURL: '', username: '' };
+    try {
+      myProfile = await fetchUserProfile(window.currentUser.email, window.currentUser.uid);
+    } catch (_) {}
+
     const commentItem = { 
       uid: window.currentUser.uid, 
       email: window.currentUser.email || '', 
-      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
-      photoURL: window.currentUser.photoURL || '',
+      author: myProfile.name || window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
+      username: myProfile.username || (window.currentUser.email ? window.currentUser.email.split('@')[0] : ''),
+      photoURL: myProfile.photoURL || window.currentUser.photoURL || '',
       text: text, 
       stickerUrl: stickerUrl || '',
       timestamp: Date.now(),
@@ -1967,11 +2043,18 @@
     if ((!text && !stickerUrl) || !targetSlug) return;
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+    let myProfile = { name: '', photoURL: '', username: '' };
+    try {
+      myProfile = await fetchUserProfile(window.currentUser.email, window.currentUser.uid);
+    } catch (_) {}
+
     const replyItem = { 
       uid: window.currentUser.uid, 
       email: window.currentUser.email || '', 
-      author: window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
-      photoURL: window.currentUser.photoURL || '',
+      author: myProfile.name || window.currentUser.displayName || (window.currentUser.email ? window.currentUser.email.split('@')[0] : 'User'),
+      username: myProfile.username || (window.currentUser.email ? window.currentUser.email.split('@')[0] : ''),
+      photoURL: myProfile.photoURL || window.currentUser.photoURL || '',
       text: text, 
       stickerUrl: stickerUrl || '',
       parentId: String(parentId), 
