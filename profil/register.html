@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Daftar Akun - Dongflix</title>
+  <title>Daftar - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
   <link rel="icon" type="image/png" href="/image/IMG_6395.png">
@@ -111,26 +111,22 @@
     </div>
 
     <form onsubmit="handleRegister(event)">
-      <!-- Username -->
       <div class="form-group">
         <label class="form-label">Username *</label>
         <input type="text" id="regUsername" class="form-input" placeholder="contoh: rulsz" required autocomplete="off" pattern="^[a-zA-Z0-9_]{3,20}$">
         <div id="usernameStatus" class="input-hint"></div>
       </div>
 
-      <!-- Nama Lengkap -->
       <div class="form-group">
         <label class="form-label">Nama Lengkap *</label>
         <input type="text" id="regName" class="form-input" placeholder="Nama Anda" required>
       </div>
 
-      <!-- Email -->
       <div class="form-group">
         <label class="form-label">Email *</label>
         <input type="email" id="regEmail" class="form-input" placeholder="nama@email.com" required>
       </div>
 
-      <!-- Password -->
       <div class="form-group">
         <label class="form-label">Password *</label>
         <input type="password" id="regPassword" class="form-input" placeholder="Minimal 6 karakter" minlength="6" required>
@@ -146,7 +142,7 @@
 
   <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
-    import { ref, get, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, get, set, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const usernameInput = document.getElementById('regUsername');
@@ -155,29 +151,25 @@
 
     let isUsernameAvailable = false;
     let checkTimeout = null;
-    let isSubmitting = false; // Mencegah onAuthStateChanged redirect duluan saat pendaftaran berlangsung
+    let isSubmitting = false;
 
-    // Format email key untuk Firebase Realtime Database
     function getDbKey(email) {
       return email.toLowerCase().trim().replace(/\./g, ',');
     }
 
-    // Auto-redirect jika pengguna SUDAH login sebelumnya saat membuka halaman ini
     onAuthStateChanged(auth, async (user) => {
       if (user && !isSubmitting) {
         try {
           const emailKey = getDbKey(user.email);
           const userSnap = await get(ref(db, `users/${emailKey}`));
-          if (userSnap.exists() && userSnap.val().username) {
-            window.location.href = `/profil/${userSnap.val().username}`;
-          } else {
-            window.location.href = '/profil/';
-          }
+          const targetUrl = (userSnap.exists() && userSnap.val().username)
+            ? `/profil/${userSnap.val().username}`
+            : '/profil/';
+          window.location.replace(targetUrl);
         } catch (_) {}
       }
     });
 
-    // Pengecekan username secara langsung ke node users
     async function checkUsernameAvailability(username) {
       const cleanUsername = username.trim().toLowerCase();
       if (cleanUsername.length < 3) {
@@ -189,19 +181,27 @@
       }
 
       usernameStatus.className = 'input-hint loading';
-      usernameStatus.innerText = 'Memeriksa ketersediaan...';
+      usernameStatus.innerText = 'Memeriksa username...';
 
       try {
         const usersRef = ref(db, 'users');
-        const snap = await get(usersRef);
         let isTaken = false;
 
-        if (snap.exists()) {
-          const data = snap.val();
-          for (const key in data) {
-            if (data[key]?.username && String(data[key].username).toLowerCase() === cleanUsername) {
-              isTaken = true;
-              break;
+        try {
+          const q = query(usersRef, orderByChild('username'), equalTo(cleanUsername));
+          const snap = await get(q);
+          if (snap.exists()) isTaken = true;
+        } catch (_) {}
+
+        if (!isTaken) {
+          const allSnap = await get(usersRef);
+          if (allSnap.exists()) {
+            const data = allSnap.val();
+            for (const key in data) {
+              if (data[key]?.username && String(data[key].username).toLowerCase() === cleanUsername) {
+                isTaken = true;
+                break;
+              }
             }
           }
         }
@@ -218,9 +218,9 @@
           isUsernameAvailable = true;
         }
       } catch (err) {
-        console.error('Error cek username:', err);
-        // Jika pembacaan gagal, biarkan tetap true agar user tidak terhalang
-        isUsernameAvailable = true;
+        usernameStatus.className = 'input-hint error';
+        usernameStatus.innerText = 'Gagal memeriksa koneksi database.';
+        isUsernameAvailable = false;
       }
     }
 
@@ -241,7 +241,6 @@
       }, 400);
     });
 
-    // PROSES REGISTRASI & PENULISAN DATABASE
     window.handleRegister = async function(e) {
       e.preventDefault();
 
@@ -250,66 +249,47 @@
       const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value;
 
-      if (!username || !name || !email || !password) {
-        alert('Semua kolom formulir wajib diisi!');
-        return;
-      }
-
-      if (!isUsernameAvailable) {
-        alert('Username belum tersedia atau sudah digunakan. Silakan pilih username lain.');
-        return;
-      }
+      if (!username || !name || !email || !password) return alert('Semua form wajib diisi!');
+      if (!isUsernameAvailable) return alert('Username belum tersedia atau sudah digunakan.');
 
       isSubmitting = true;
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Mendaftarkan akun...';
+      submitBtn.innerText = 'Mendaftarkan...';
 
       try {
-        // 1. Buat User di Firebase Auth
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-        const user = cred.user;
-
-        // 2. Set Display Name
         try {
-          await updateProfile(user, { displayName: name });
+          await updateProfile(cred.user, { displayName: name });
         } catch (_) {}
 
-        // 3. Format key email
         const emailKey = getDbKey(email);
-
-        // 4. Struktur data profil lengkap
         const newUserData = {
-          createdAt: Date.now(),
-          email: email,
+          uid: cred.user.uid,
           name: name,
+          username: username,
+          email: email,
+          bio: '',
           photoURL: '',
           status: 'user',
-          username: username,
-          bio: '',
           level: 1,
           followersCount: 0,
-          followingCount: 0
+          followingCount: 0,
+          createdAt: Date.now()
         };
 
-        // 5. Tulis langsung ke database users/{emailKey}
-        const userRef = ref(db, `users/${emailKey}`);
-        await set(userRef, newUserData);
+        await set(ref(db, `users/${emailKey}`), newUserData);
 
-        // Berikan jeda kecil agar proses socket Firebase tuntas sebelum pindah URL
+        // Menggunakan replace agar halaman register tertimpa
         setTimeout(() => {
-          window.location.href = `/profil/${username}`;
-        }, 500);
+          window.location.replace(`/profil/${username}`);
+        }, 300);
 
       } catch (err) {
-        console.error('Pendaftaran Gagal:', err);
         isSubmitting = false;
         submitBtn.disabled = false;
         submitBtn.innerText = 'Daftar Sekarang';
-        
         let msg = err.message;
-        if (err.code === 'auth/email-already-in-use') {
-          msg = 'Email ini sudah terdaftar. Silakan login.';
-        }
+        if (err.code === 'auth/email-already-in-use') msg = 'Email ini sudah terdaftar.';
         alert('Gagal mendaftar: ' + msg);
       }
     };
