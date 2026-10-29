@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Profil Pengguna - Dongflix</title>
+  <title>Profil - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
@@ -12,54 +12,27 @@
   <style>
     :root {
       --bg-base: #000000;
-      --bg-card: rgba(18, 22, 34, 0.65);
-      --bg-surface: rgba(255, 255, 255, 0.04);
-      --bg-surface-hover: rgba(255, 255, 255, 0.08);
-      --color-primary: #0284c7;
-      --color-accent: #38bdf8;
-      --color-gold: #f59e0b;
-      --color-red: #ef4444;
+      --bg-surface: #12151e;
+      --bg-pill: #ffffff;
+      --text-pill: #000000;
       --text-main: #ffffff;
-      --text-sub: #94a3b8;
-      --text-muted: #64748b;
+      --text-sub: #8e95a5;
       --border-color: rgba(255, 255, 255, 0.1);
-      --radius-xl: 26px;
-      --radius-lg: 18px;
-      --radius-md: 12px;
+      --radius-btn: 9999px;
+      --radius-card: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-top: 68px;
-      padding-bottom: 70px;
+      padding-top: 60px;
+      padding-bottom: 60px;
       min-height: 100vh;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-    }
-
-    .ambient-glow-top {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 400px;
-      height: 280px;
-      background: radial-gradient(circle, rgba(2, 132, 199, 0.2) 0%, transparent 75%);
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 0 16px;
-      position: relative;
-      z-index: 10;
     }
 
     /* HEADER */
@@ -67,392 +40,36 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0) 100%);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 10px 16px 16px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 10px 16px;
     }
 
     .header-content {
-      max-width: 680px;
+      max-width: 540px;
       margin: 0 auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      height: 44px;
+      height: 40px;
+      gap: 12px;
     }
 
-    .header-left-group {
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
       cursor: pointer;
+      padding: 4px;
     }
+    .back-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
-    .icon-circle-btn {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-      border-radius: 50%;
-      width: 40px; height: 40px;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      cursor: pointer;
-      transition: transform 0.15s ease;
-    }
-    .icon-circle-btn:active { transform: scale(0.95); }
-    .icon-circle-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; }
-
-    .brand-title {
+    .header-title {
       font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      color: #fff;
-    }
-
-    /* HERO CARD PROFILE */
-    .profile-hero {
-      background: var(--bg-card);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid var(--border-color);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: var(--radius-xl);
-      padding: 28px 20px 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .avatar-container {
-      position: relative;
-      margin-bottom: 14px;
-    }
-
-    .avatar-wrapper {
-      width: 94px;
-      height: 94px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 800;
-      border: 3px solid rgba(56, 189, 248, 0.5);
-      box-shadow: 0 0 25px rgba(2, 132, 199, 0.45);
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-    .avatar-edit-badge {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      background: #0284c7;
-      border: 2px solid #000;
-      color: #fff;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .avatar-edit-badge svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
-
-    .user-name {
-      font-size: 19px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.3px;
-    }
-
-    .user-email {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-top: 3px;
-      font-weight: 500;
-    }
-
-    .badges-row {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      margin-top: 10px;
-    }
-
-    .badge-pill {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 9px;
-      border-radius: 9999px;
-    }
-
-    .badge-level {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--color-accent);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-    }
-
-    .badge-admin {
-      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
-      color: #000;
-      font-weight: 900;
-    }
-
-    /* STATS STRIP */
-    .stats-card {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      width: 100%;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: var(--radius-lg);
-      padding: 14px 10px;
-      margin-top: 20px;
-    }
-
-    .stat-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .stat-box:last-child { border-right: none; }
-
-    .stat-num {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* SECTION HEADER */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 26px 4px 12px;
-    }
-
-    .section-title {
-      font-size: 13.5px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-clear-all {
-      background: transparent;
-      border: none;
-      color: #f87171;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      transition: background 0.2s;
-    }
-    .btn-clear-all:hover {
-      background: rgba(239, 68, 68, 0.15);
-    }
-
-    /* MENU LIST (iOS STYLE) */
-    .menu-group {
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-
-    .menu-item {
-      width: 100%;
-      background: transparent;
-      border: none;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: #fff;
-      font-size: 13.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.2s;
-    }
-    .menu-item:last-child { border-bottom: none; }
-    .menu-item:hover { background: var(--bg-surface-hover); }
-
-    .menu-item-left { display: flex; align-items: center; gap: 12px; }
-
-    .menu-icon-wrap {
-      width: 34px; height: 34px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .menu-icon-wrap svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.2; }
-
-    .icon-blue { background: rgba(56, 189, 248, 0.15); color: var(--color-accent); }
-    .icon-amber { background: rgba(245, 158, 11, 0.15); color: var(--color-gold); }
-    .icon-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-
-    .menu-chevron svg { width: 14px; height: 14px; stroke: var(--text-muted); fill: none; stroke-width: 2.5; }
-    .btn-item-logout { color: #f87171; }
-
-    /* SCROLL HORIZONTAL WRAPPERS */
-    .scroll-row {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .scroll-row::-webkit-scrollbar { display: none; }
-
-    /* CARD FAVORIT */
-    .fav-card {
-      position: relative;
-      flex: 0 0 130px;
-      min-width: 130px;
-      max-width: 130px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .fav-card:hover { transform: translateY(-2px); border-color: rgba(56, 189, 248, 0.35); }
-
-    .fav-link {
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-    }
-
-    .fav-poster-wrap {
-      width: 100%;
-      height: 180px;
-      background: #090d16;
-      overflow: hidden;
-    }
-    .fav-poster-wrap img { width: 100%; height: 100%; object-fit: cover; }
-
-    .fav-title {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #f1f5f9;
-      padding: 8px 10px;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* CARD RIWAYAT NONTON */
-    .history-card {
-      position: relative;
-      flex: 0 0 230px;
-      min-width: 230px;
-      max-width: 230px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s;
-    }
-    .history-card:hover { transform: translateY(-2px); border-color: rgba(56, 189, 248, 0.35); }
-
-    .history-link {
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-    }
-
-    .history-cover-wrap {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: #090d16;
-      position: relative;
-      overflow: hidden;
-    }
-    .history-cover-wrap img { width: 100%; height: 100%; object-fit: cover; }
-
-    .history-play-icon {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.35);
-    }
-    .history-play-icon svg {
-      width: 32px; height: 32px;
-      color: #fff;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
-    }
-
-    .history-ep-badge {
-      position: absolute;
-      top: 8px; left: 8px;
-      background: rgba(2, 132, 199, 0.9);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
-    }
-
-    .history-progress-bar {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.2);
-    }
-    .history-progress-fill {
-      height: 100%;
-      background: var(--color-primary);
-      width: 65%;
-    }
-
-    .history-content {
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .history-title {
-      font-size: 12.5px;
       font-weight: 700;
       color: #fff;
       white-space: nowrap;
@@ -460,39 +77,174 @@
       text-overflow: ellipsis;
     }
 
-    .history-time {
-      font-size: 10.5px;
-      color: var(--text-muted);
-      font-weight: 500;
+    /* CONTAINER UTAMA */
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 12px 20px;
     }
 
-    /* TOMBOL HAPUS */
-    .btn-delete-card {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      z-index: 20;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      width: 24px;
-      height: 24px;
+    /* AVATAR KIRI ATAS */
+    .avatar-wrapper {
+      width: 86px;
+      height: 86px;
       border-radius: 50%;
+      background: #1c2230;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 700;
-      transition: background 0.2s, transform 0.15s;
+      margin-bottom: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
-    .btn-delete-card:hover {
-      background: #ef4444;
-      border-color: #ef4444;
-      transform: scale(1.1);
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .avatar-placeholder {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
     }
 
-    /* MODAL */
+    /* INFORMASI PROFIL */
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .name-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: #fff;
+    }
+
+    .verified-icon {
+      width: 18px;
+      height: 18px;
+      fill: #38bdf8;
+      display: none;
+    }
+
+    .profile-bio {
+      font-size: 14.5px;
+      line-height: 1.48;
+      color: var(--text-sub);
+      margin-top: 10px;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    /* STATS (FOLLOWERS & FOLLOWING) */
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      margin-top: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      font-size: 14.5px;
+    }
+
+    .stat-number {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-label {
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* TOMBOL AKSI UTAMA (FOLLOW / EDIT PROFIL) */
+    .btn-action-main {
+      width: 100%;
+      height: 46px;
+      border-radius: var(--radius-btn);
+      border: none;
+      background: var(--bg-pill);
+      color: var(--text-pill);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 22px;
+      box-shadow: 0 4px 18px rgba(255, 255, 255, 0.08);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-action-main:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+
+    .btn-action-main.btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* SECTION TITLE: KOLEKSI */
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 36px;
+      margin-bottom: 16px;
+    }
+
+    /* GRID KOLEKSI (3 KOLOM) */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .work-card {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: var(--bg-surface);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: block;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .work-card:active {
+      transform: scale(0.97);
+    }
+    .work-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .work-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 36px 12px;
+      font-size: 13.5px;
+      color: var(--text-sub);
+    }
+
+    /* MODAL EDIT PROFIL */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -509,244 +261,144 @@
 
     .modal-card {
       width: 100%;
-      max-width: 380px;
-      background: #0d1322;
+      max-width: 400px;
+      background: #11141c;
       border: 1px solid var(--border-color);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: var(--radius-xl);
+      border-radius: 20px;
       padding: 24px;
       position: relative;
     }
 
-    .modal-title { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 16px; }
+    .modal-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 18px; }
     .modal-close {
-      position: absolute; top: 18px; right: 18px; width: 30px; height: 30px; border-radius: 50%;
+      position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%;
       background: rgba(255, 255, 255, 0.08); border: none; color: var(--text-sub);
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px;
     }
 
     .form-group { margin-bottom: 14px; }
-    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px; }
     .form-input {
-      width: 100%; height: 42px; background: #050811; border: 1px solid var(--border-color);
-      border-radius: 10px; padding: 0 12px; color: #fff; font-size: 13px; outline: none;
+      width: 100%; height: 44px; background: #080a0f; border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 0 12px; color: #fff; font-size: 13.5px; outline: none;
     }
-    .form-input:focus { border-color: var(--color-accent); }
-    .btn-submit {
-      width: 100%; height: 44px; background: var(--color-primary); color: #fff; border: none;
-      border-radius: var(--radius-md); font-size: 13.5px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    .form-textarea {
+      width: 100%; height: 80px; background: #080a0f; border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13.5px; outline: none; resize: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
+
+    .btn-modal-save {
+      width: 100%; height: 44px; background: #fff; color: #000; border: none;
+      border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px;
     }
   </style>
 </head>
 <body>
 
-  <div class="ambient-glow-top"></div>
-
+  <!-- HEADER -->
   <header>
     <div class="header-content">
-      <div class="header-left-group" onclick="window.location.href='/'">
-        <button class="icon-circle-btn">
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <span class="brand-title" id="headerTitle">Profil Pengguna</span>
-      </div>
+      <button class="back-btn" onclick="window.history.length > 1 ? window.history.back() : window.location.href='/'">
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <span class="header-title" id="headerTitle">Memuat...</span>
     </div>
   </header>
 
   <div class="container" id="profileContent">
-    <!-- HERO PROFILE -->
-    <div class="profile-hero">
-      <div class="avatar-container">
-        <div class="avatar-wrapper" id="profileAvatar" onclick="openModal('modalPhoto')">
-          <span id="avatarInitial">...</span>
-        </div>
-        <div class="avatar-edit-badge" id="btnEditPhotoBadge" onclick="openModal('modalPhoto')">
-          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        </div>
+    <!-- AVATAR -->
+    <div class="avatar-wrapper" id="profileAvatar">
+      <span class="avatar-placeholder" id="avatarInitial">...</span>
+    </div>
+
+    <!-- INFO PROFIL -->
+    <div class="profile-info">
+      <div class="name-badge-row">
+        <h1 class="profile-name" id="userName">Memuat...</h1>
+        <!-- Verified Icon -->
+        <svg class="verified-icon" id="verifiedIcon" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
       </div>
 
-      <div class="user-name" id="userName">Memuat...</div>
-      <div class="user-email" id="userEmail">...</div>
+      <p class="profile-bio" id="userBio">No bio yet</p>
 
-      <div class="badges-row">
-        <span class="badge-pill badge-level" id="badgeLevel">Lv1</span>
-        <span class="badge-pill badge-admin" id="badgeAdmin" style="display: none;">★ ADMIN</span>
-      </div>
-
-      <!-- STATISTIK -->
-      <div class="stats-card">
-        <div class="stat-box">
-          <span class="stat-num" id="statFollowers">0</span>
-          <span class="stat-label">Pengikut</span>
+      <!-- STATISTIK (FOLLOWERS & FOLLOWING) -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-number" id="statFollowers">0</span>
+          <span class="stat-label">Followers</span>
         </div>
-        <div class="stat-box">
-          <span class="stat-num" id="statFollowing">0</span>
-          <span class="stat-label">Mengikuti</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-num" id="statFavorites">0</span>
-          <span class="stat-label">Favorit</span>
+        <div class="stat-item">
+          <span class="stat-number" id="statFollowing">0</span>
+          <span class="stat-label">Following</span>
         </div>
       </div>
     </div>
 
-    <!-- PENGATURAN AKUN (KHUSUS PEMILIK) -->
-    <div id="sectionSettingsWrapper">
-      <div class="section-header">
-        <span class="section-title">Pengaturan Akun</span>
-      </div>
+    <!-- TOMBOL AKSI (FOLLOW / EDIT PROFIL) -->
+    <button class="btn-action-main" id="btnMainAction" onclick="handleMainAction()">
+      + Follow
+    </button>
 
-      <div class="menu-group">
-        <button class="menu-item" onclick="openModal('modalName')">
-          <div class="menu-item-left">
-            <div class="menu-icon-wrap icon-blue">
-              <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            </div>
-            <span>Ubah Nama Tampilan</span>
-          </div>
-          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-        </button>
-
-        <button class="menu-item" onclick="openModal('modalPhoto')">
-          <div class="menu-item-left">
-            <div class="menu-icon-wrap icon-blue">
-              <svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg>
-            </div>
-            <span>Perbarui Foto Profil</span>
-          </div>
-          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-        </button>
-
-        <button class="menu-item" onclick="openModal('modalPassword')">
-          <div class="menu-item-left">
-            <div class="menu-icon-wrap icon-amber">
-              <svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
-            </div>
-            <span>Ganti Password</span>
-          </div>
-          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-        </button>
-
-        <button class="menu-item btn-item-logout" onclick="handleLogout()">
-          <div class="menu-item-left">
-            <div class="menu-icon-wrap icon-red">
-              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            </div>
-            <span>Keluar dari Akun</span>
-          </div>
-          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-        </button>
-      </div>
-    </div>
-
-    <!-- DONGHUA FAVORIT -->
-    <div class="section-header">
-      <span class="section-title">
-        <svg width="15" height="15" fill="currentColor" style="color: var(--color-gold);" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        Koleksi Favorit
-      </span>
-      <button class="btn-clear-all" id="btnClearAllFavorites" onclick="clearAllFavorites()" style="display: none;">Hapus Semua</button>
-    </div>
-    <div class="scroll-row" id="favoritesContainer">
-      <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat koleksi...</p>
-    </div>
-
-    <!-- RIWAYAT NONTON (KHUSUS PEMILIK) -->
-    <div id="sectionHistoryWrapper">
-      <div class="section-header">
-        <span class="section-title">
-          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Riwayat Nonton Terakhir
-        </span>
-        <button class="btn-clear-all" id="btnClearAllHistory" onclick="clearAllHistory()" style="display: none;">Hapus Semua</button>
-      </div>
-      <div class="scroll-row" id="historyContainer">
-        <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat riwayat nonton...</p>
-      </div>
+    <!-- SECTION: KOLEKSI -->
+    <div class="section-title">Koleksi</div>
+    <div class="works-grid" id="koleksiContainer">
+      <div class="work-empty">Memuat koleksi...</div>
     </div>
   </div>
 
-  <!-- MODAL: GANTI NAMA -->
-  <div id="modalName" class="modal-overlay">
+  <!-- MODAL: EDIT PROFIL -->
+  <div id="modalEditProfile" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modalName')">&times;</button>
-      <div class="modal-title">Ubah Nama Profil</div>
-      <form onsubmit="handleSaveName(event)">
+      <button class="modal-close" onclick="closeModal('modalEditProfile')">&times;</button>
+      <div class="modal-title">Edit Profil</div>
+      <form onsubmit="handleSaveProfile(event)">
         <div class="form-group">
-          <label class="form-label">Nama Pengguna Baru</label>
-          <input type="text" id="newNameInput" class="form-input" required placeholder="Masukkan nama baru...">
-        </div>
-        <button type="submit" class="btn-submit">Simpan Nama</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: GANTI FOTO PROFIL -->
-  <div id="modalPhoto" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modalPhoto')">&times;</button>
-      <div class="modal-title">Ganti Foto Profil</div>
-      <form onsubmit="handleSavePhoto(event)">
-        <div class="form-group">
-          <label class="form-label">Upload File Gambar</label>
-          <input type="file" id="filePhotoInput" accept="image/*" class="form-input" onchange="previewImage(this)">
+          <label class="form-label">Nama Tampilan</label>
+          <input type="text" id="inputEditName" class="form-input" required placeholder="Nama Anda...">
         </div>
         <div class="form-group">
-          <label class="form-label">Atau Masukkan URL Gambar</label>
-          <input type="url" id="urlPhotoInput" class="form-input" placeholder="https://example.com/foto.jpg">
+          <label class="form-label">Bio Singkat</label>
+          <textarea id="inputEditBio" class="form-textarea" placeholder="Tuliskan bio profil Anda..."></textarea>
         </div>
-        <button type="submit" class="btn-submit">Perbarui Foto</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: GANTI PASSWORD -->
-  <div id="modalPassword" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modalPassword')">&times;</button>
-      <div class="modal-title">Ganti Password</div>
-      <form onsubmit="handleSavePassword(event)">
         <div class="form-group">
-          <label class="form-label">Password Baru</label>
-          <input type="password" id="newPassInput" class="form-input" required placeholder="Minimal 6 karakter...">
+          <label class="form-label">Foto Profil (URL Gambar)</label>
+          <input type="url" id="inputEditPhoto" class="form-input" placeholder="https://example.com/foto.jpg">
         </div>
-        <button type="submit" class="btn-submit">Simpan Password Baru</button>
+        <button type="submit" class="btn-modal-save" id="btnSaveModal">Simpan Perubahan</button>
       </form>
     </div>
   </div>
 
   <script type="module">
-    // Ambil auth & db dari konfigurasi Anda, fungsi helper langsung dari CDN Firebase
     import { auth, db } from '/assets/firebase-config.js';
-    import { ref, get, set, remove, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { ref, get, set, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
-    let base64Photo = '';
     let currentAuthUser = null;
     let targetUserKey = null;
+    let targetUserData = null;
     let isOwnProfile = false;
+    let isFollowing = false;
 
-    // 1. Ambil username dari URL (/profil/1255akbaral)
+    // 1. Ekstrak username dari URL path (/profil/:username)
     function getUsernameFromUrl() {
       const path = window.location.pathname.replace(/\/+$/, '');
       const segments = path.split('/');
       const profilIdx = segments.indexOf('profil');
       if (profilIdx !== -1 && segments[profilIdx + 1]) {
         const val = decodeURIComponent(segments[profilIdx + 1]);
-        if (val !== 'index.html' && val !== 'login.html') {
-          return val;
-        }
+        if (val !== 'index.html' && val !== 'login.html') return val;
       }
       return null;
     }
 
-    // 2. Cari pengguna di Database (Mencocokkan field username atau emailKey)
+    // 2. Fetch User dari Database (Query index / scan fallback)
     async function fetchUserData(identifier) {
       try {
         const usersRef = ref(db, 'users');
-
-        // Percobaan 1: Menggunakan query index username
         try {
           const q = query(usersRef, orderByChild('username'), equalTo(identifier));
           const snap = await get(q);
@@ -756,10 +408,9 @@
             return { key, data: val[key] };
           }
         } catch (e) {
-          console.warn('Index query dilewati, beralih ke direct scan:', e);
+          console.warn('Index query skipped, scanning data...', e);
         }
 
-        // Percobaan 2: Scan koleksi users (mencocokkan field username / awalan emailKey)
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
           const allUsers = allSnap.val();
@@ -774,276 +425,205 @@
           }
         }
       } catch (err) {
-        console.error('Error saat mengambil data pengguna:', err);
+        console.error('Fetch user error:', err);
       }
       return null;
     }
 
-    // 3. Tampilkan data profil ke elemen DOM
+    // 3. Render Profil
     async function renderProfile(targetData, key, currentUser) {
       targetUserKey = key;
+      targetUserData = targetData;
+
       const currentUserEmailKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/\./g, ',') : null;
       
-      // Validasi apakah user yang login membuka profilnya sendiri
+      // Validasi apakah ini profil sendiri
       isOwnProfile = currentUser && (
         currentUser.uid === key || 
         currentUserEmailKey === key ||
         (targetData.email && currentUser.email.toLowerCase() === targetData.email.toLowerCase())
       );
 
-      const settingsWrapper = document.getElementById('sectionSettingsWrapper');
-      const historyWrapper = document.getElementById('sectionHistoryWrapper');
-      const editAvatarBadge = document.getElementById('btnEditPhotoBadge');
-      const avatarBox = document.getElementById('profileAvatar');
-
-      if (!isOwnProfile) {
-        if (settingsWrapper) settingsWrapper.style.display = 'none';
-        if (historyWrapper) historyWrapper.style.display = 'none';
-        if (editAvatarBadge) editAvatarBadge.style.display = 'none';
-        avatarBox.onclick = null;
-        avatarBox.style.cursor = 'default';
-        document.getElementById('headerTitle').innerText = `Profil @${targetData.username || 'user'}`;
-      } else {
-        document.getElementById('headerTitle').innerText = 'Profil Saya';
-      }
-
-      const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
       const name = targetData.name || targetData.username || 'Pengguna';
       const photoURL = targetData.photoURL || '';
+      const bioText = targetData.bio && targetData.bio.trim() !== '' ? targetData.bio : 'No bio yet';
 
+      // Header menampilkan Nama
+      document.getElementById('headerTitle').innerText = name;
       document.getElementById('userName').innerText = name;
-      document.getElementById('userEmail').innerText = isOwnProfile ? (targetData.email || currentUser?.email || '') : `@${targetData.username || 'user'}`;
-      document.getElementById('badgeLevel').innerText = isAdmin ? 'Lv999+' : `Lv${targetData.level || 1}`;
-      
-      if (isAdmin) {
-        document.getElementById('badgeLevel').className = 'badge-pill badge-admin';
-        document.getElementById('badgeAdmin').style.display = 'inline-block';
+      document.getElementById('userBio').innerText = bioText;
+
+      // Status Verifikasi (Opsional untuk status admin/verified)
+      if (targetData.status === 'admin' || targetData.verified) {
+        document.getElementById('verifiedIcon').style.display = 'inline-block';
+      } else {
+        document.getElementById('verifiedIcon').style.display = 'none';
       }
 
+      // Followers & Following
       document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
       document.getElementById('statFollowing').innerText = targetData.followingCount || 0;
 
+      // Avatar
+      const avatarBox = document.getElementById('profileAvatar');
       if (photoURL) {
-        avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span>${name.charAt(0).toUpperCase()}</span>'">`;
+        avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span class=\\'avatar-placeholder\\'>${name.charAt(0).toUpperCase()}</span>'">`;
       } else {
-        avatarBox.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
+        avatarBox.innerHTML = `<span class="avatar-placeholder">${name.charAt(0).toUpperCase()}</span>`;
       }
 
-      loadUserFavorites(targetData.favorites, isOwnProfile);
+      // Tombol Aksi: Edit Profil vs Follow
+      const actionBtn = document.getElementById('btnMainAction');
       if (isOwnProfile) {
-        loadUserHistory(targetData.history);
+        actionBtn.innerText = 'Edit Profil';
+        actionBtn.className = 'btn-action-main btn-secondary';
+      } else {
+        // Cek status follow jika login
+        if (currentUser && targetData.followers && targetData.followers[currentUserEmailKey]) {
+          isFollowing = true;
+          actionBtn.innerText = 'Following';
+          actionBtn.className = 'btn-action-main btn-secondary';
+        } else {
+          isFollowing = false;
+          actionBtn.innerText = '+ Follow';
+          actionBtn.className = 'btn-action-main';
+        }
       }
+
+      // Render Koleksi (Grid 3 kolom)
+      renderKoleksi(targetData.favorites);
     }
 
-    // 4. Render Koleksi Favorit
-    function loadUserFavorites(rtdbFavorites, canEdit) {
-      const container = document.getElementById('favoritesContainer');
-      const countEl = document.getElementById('statFavorites');
-      const clearBtn = document.getElementById('btnClearAllFavorites');
+    // 4. Render Grid Koleksi
+    function renderKoleksi(rtdbFavorites) {
+      const container = document.getElementById('koleksiContainer');
       let favList = [];
 
       if (rtdbFavorites && typeof rtdbFavorites === 'object') {
         favList = Object.values(rtdbFavorites);
-      } else if (canEdit) {
+      } else if (isOwnProfile) {
         favList = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
       }
 
-      countEl.innerText = favList.length;
-
       if (favList.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit.</p>';
-        if (clearBtn) clearBtn.style.display = 'none';
+        container.innerHTML = '<div class="work-empty">Belum ada item dalam koleksi.</div>';
         return;
       }
 
-      if (clearBtn && canEdit) clearBtn.style.display = 'block';
-
       container.innerHTML = favList.map(item => `
-        <div class="fav-card" id="fav-${item.slug}">
-          ${canEdit ? `<button class="btn-delete-card" onclick="deleteSingleFavorite('${item.slug}')" title="Hapus dari Favorit">&times;</button>` : ''}
-          <a href="/donghua/${encodeURIComponent(item.slug)}" class="fav-link">
-            <div class="fav-poster-wrap">
-              <img src="${item.poster || 'https://via.placeholder.com/150x200?text=No+Cover'}" alt="${item.title}" referrerpolicy="no-referrer">
-            </div>
-            <div class="fav-title">${item.title}</div>
-          </a>
-        </div>
+        <a href="/donghua/${encodeURIComponent(item.slug)}" class="work-card" title="${item.title || 'Koleksi'}">
+          <img src="${item.poster || 'https://via.placeholder.com/300x300?text=No+Cover'}" alt="${item.title || 'Item'}" referrerpolicy="no-referrer">
+        </a>
       `).join('');
     }
 
-    // 5. Render Riwayat Tontonan
-    function loadUserHistory(rtdbHistory) {
-      const container = document.getElementById('historyContainer');
-      const clearBtn = document.getElementById('btnClearAllHistory');
-      let historyList = [];
-
-      if (rtdbHistory && typeof rtdbHistory === 'object') {
-        historyList = Object.values(rtdbHistory);
+    // 5. Handler Klik Tombol Utama (Edit Profil / Follow)
+    window.handleMainAction = async function() {
+      if (isOwnProfile) {
+        // Buka modal edit profil
+        document.getElementById('inputEditName').value = targetUserData?.name || '';
+        document.getElementById('inputEditBio').value = targetUserData?.bio || '';
+        document.getElementById('inputEditPhoto').value = targetUserData?.photoURL || '';
+        openModal('modalEditProfile');
       } else {
-        historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
+        // Logika Follow / Unfollow
+        if (!currentAuthUser) {
+          alert('Silakan login terlebih dahulu untuk mengikuti profil ini.');
+          window.location.href = '/profil/login.html';
+          return;
+        }
+
+        const myEmailKey = currentAuthUser.email.toLowerCase().replace(/\./g, ',');
+        const btn = document.getElementById('btnMainAction');
+        btn.disabled = true;
+
+        try {
+          let currentFollowers = targetUserData.followersCount || 0;
+          if (isFollowing) {
+            // Unfollow
+            await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), null);
+            currentFollowers = Math.max(0, currentFollowers - 1);
+            await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+
+            isFollowing = false;
+            btn.innerText = '+ Follow';
+            btn.className = 'btn-action-main';
+          } else {
+            // Follow
+            await set(ref(db, `users/${targetUserKey}/followers/${myEmailKey}`), true);
+            currentFollowers += 1;
+            await update(ref(db, `users/${targetUserKey}`), { followersCount: currentFollowers });
+
+            isFollowing = true;
+            btn.innerText = 'Following';
+            btn.className = 'btn-action-main btn-secondary';
+          }
+          targetUserData.followersCount = currentFollowers;
+          document.getElementById('statFollowers').innerText = currentFollowers;
+        } catch (e) {
+          alert('Gagal memproses permintaan follow.');
+        } finally {
+          btn.disabled = false;
+        }
       }
-
-      historyList.sort((a, b) => (b.timestamp || b.updatedAt || 0) - (a.timestamp || a.updatedAt || 0));
-
-      if (historyList.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
-        if (clearBtn) clearBtn.style.display = 'none';
-        return;
-      }
-
-      if (clearBtn) clearBtn.style.display = 'block';
-
-      container.innerHTML = historyList.map(item => {
-        const epLabel = item.episode || 'Ep 1';
-        const targetSlug = item.mainPath || item.slug || '';
-        const epPath = item.epPath ? `?ep=${encodeURIComponent(item.epPath)}` : '';
-        const poster = item.poster || item.cover || 'https://via.placeholder.com/300x170?text=No+Cover';
-        const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : (item.updatedAt ? getTimeAgo(item.updatedAt) : 'Baru saja');
-
-        return `
-          <div class="history-card" id="hist-${targetSlug}">
-            <button class="btn-delete-card" onclick="deleteSingleHistory('${targetSlug}')" title="Hapus Riwayat">&times;</button>
-            <a href="/donghua/${encodeURIComponent(targetSlug)}${epPath}" class="history-link">
-              <div class="history-cover-wrap">
-                <img src="${poster}" alt="${item.title}" referrerpolicy="no-referrer">
-                <span class="history-ep-badge">${epLabel}</span>
-                <div class="history-play-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-                <div class="history-progress-bar">
-                  <div class="history-progress-fill"></div>
-                </div>
-              </div>
-              <div class="history-content">
-                <div class="history-title">${item.title || 'Donghua'}</div>
-                <div class="history-time">Terakhir ditonton • ${timeAgo}</div>
-              </div>
-            </a>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function getTimeAgo(timestamp) {
-      const sec = Math.floor((Date.now() - timestamp) / 1000);
-      if (sec < 60) return 'Baru saja';
-      const min = Math.floor(sec / 60);
-      if (min < 60) return `${min}m yang lalu`;
-      const hrs = Math.floor(min / 60);
-      if (hrs < 24) return `${hrs}j yang lalu`;
-      const days = Math.floor(hrs / 24);
-      if (days < 30) return `${days}h yang lalu`;
-      return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-    }
-
-    /* AKSI DATA PENGGUNA */
-    window.deleteSingleFavorite = async function(slug) {
-      if (!isOwnProfile || !confirm('Hapus donghua ini dari koleksi favorit?')) return;
-      let favs = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
-      favs = favs.filter(f => f.slug !== slug);
-      localStorage.setItem('df_favorites', JSON.stringify(favs));
-      localStorage.setItem('rz_favorites', JSON.stringify(favs));
-
-      if (targetUserKey) {
-        await remove(ref(db, `users/${targetUserKey}/favorites/${slug}`)).catch(() => {});
-      }
-      document.getElementById(`fav-${slug}`)?.remove();
-      document.getElementById('statFavorites').innerText = favs.length;
     };
 
-    window.clearAllFavorites = async function() {
-      if (!isOwnProfile || !confirm('Yakin ingin menghapus SEMUA koleksi favorit?')) return;
-      localStorage.removeItem('df_favorites');
-      localStorage.removeItem('rz_favorites');
-      if (targetUserKey) {
-        await remove(ref(db, `users/${targetUserKey}/favorites`)).catch(() => {});
+    // 6. Simpan Edit Profil
+    window.handleSaveProfile = async function(e) {
+      e.preventDefault();
+      const newName = document.getElementById('inputEditName').value.trim();
+      const newBio = document.getElementById('inputEditBio').value.trim();
+      const newPhoto = document.getElementById('inputEditPhoto').value.trim();
+
+      if (!newName || !targetUserKey) return;
+
+      const saveBtn = document.getElementById('btnSaveModal');
+      saveBtn.disabled = true;
+      saveBtn.innerText = 'Menyimpan...';
+
+      try {
+        const updates = {
+          name: newName,
+          bio: newBio,
+          photoURL: newPhoto
+        };
+
+        await update(ref(db, `users/${targetUserKey}`), updates);
+
+        targetUserData.name = newName;
+        targetUserData.bio = newBio;
+        targetUserData.photoURL = newPhoto;
+
+        document.getElementById('headerTitle').innerText = newName;
+        document.getElementById('userName').innerText = newName;
+        document.getElementById('userBio').innerText = newBio !== '' ? newBio : 'No bio yet';
+
+        const avatarBox = document.getElementById('profileAvatar');
+        if (newPhoto) {
+          avatarBox.innerHTML = `<img src="${newPhoto}" alt="${newName}">`;
+        } else {
+          avatarBox.innerHTML = `<span class="avatar-placeholder">${newName.charAt(0).toUpperCase()}</span>`;
+        }
+
+        closeModal('modalEditProfile');
+      } catch (err) {
+        alert('Gagal menyimpan profil: ' + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = 'Simpan Perubahan';
       }
-      document.getElementById('statFavorites').innerText = '0';
-      document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit.</p>';
-      document.getElementById('btnClearAllFavorites').style.display = 'none';
     };
 
-    window.deleteSingleHistory = async function(slug) {
-      if (!isOwnProfile) return;
-      let historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
-      historyList = historyList.filter(item => (item.mainPath || item.slug) !== slug);
-      localStorage.setItem('rz_continue_history', JSON.stringify(historyList));
-
-      if (targetUserKey) {
-        await remove(ref(db, `users/${targetUserKey}/history/${slug}`)).catch(() => {});
-      }
-      document.getElementById(`hist-${slug}`)?.remove();
-    };
-
-    window.clearAllHistory = async function() {
-      if (!isOwnProfile || !confirm('Yakin ingin menghapus SEMUA riwayat tontonan?')) return;
-      localStorage.removeItem('rz_continue_history');
-      if (targetUserKey) {
-        await remove(ref(db, `users/${targetUserKey}/history`)).catch(() => {});
-      }
-      document.getElementById('historyContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
-      document.getElementById('btnClearAllHistory').style.display = 'none';
-    };
-
-    window.openModal = function(id) { if (isOwnProfile) document.getElementById(id).classList.add('active'); };
+    window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    window.previewImage = function(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) { base64Photo = e.target.result; };
-        reader.readAsDataURL(input.files[0]);
-      }
-    };
-
-    window.handleSaveName = async function(e) {
-      e.preventDefault();
-      const newName = document.getElementById('newNameInput').value.trim();
-      if (!newName || !targetUserKey) return;
-      await set(ref(db, `users/${targetUserKey}/name`), newName);
-      document.getElementById('userName').innerText = newName;
-      window.closeModal('modalName');
-      alert('Nama berhasil diubah!');
-    };
-
-    window.handleSavePhoto = async function(e) {
-      e.preventDefault();
-      const urlPhoto = document.getElementById('urlPhotoInput').value.trim();
-      const finalPhoto = base64Photo || urlPhoto;
-      if (!finalPhoto || !targetUserKey) return;
-      await set(ref(db, `users/${targetUserKey}/photoURL`), finalPhoto);
-      document.getElementById('profileAvatar').innerHTML = `<img src="${finalPhoto}" alt="Avatar">`;
-      window.closeModal('modalPhoto');
-      alert('Foto profil berhasil diperbarui!');
-    };
-
-    window.handleSavePassword = async function(e) {
-      e.preventDefault();
-      const newPass = document.getElementById('newPassInput').value;
-      if (!newPass || newPass.length < 6) return alert('Password minimal 6 karakter!');
-      try {
-        await updatePassword(currentAuthUser, newPass);
-        window.closeModal('modalPassword');
-        alert('Password berhasil diperbarui!');
-      } catch (err) {
-        alert('Gagal ubah password: ' + err.message);
-      }
-    };
-
-    window.handleLogout = async function() {
-      if (confirm('Yakin ingin keluar dari akun?')) {
-        await signOut(auth);
-        window.location.href = '/profil/login.html';
-      }
-    };
-
-    // 6. Controller Utama Alur Halaman
+    // 7. Alur Masuk Halaman
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
 
       if (urlUsername) {
-        // Jalur 1: Membuka URL dinamis /profil/{username}
+        // Akses via /profil/:username
         const found = await fetchUserData(urlUsername);
         if (found) {
           await renderProfile(found.data, found.key, authUser);
@@ -1051,13 +631,14 @@
           document.getElementById('profileContent').innerHTML = `
             <div style="text-align:center;padding:80px 20px;color:var(--text-sub);">
               <h2 style="color:#fff;margin-bottom:8px;font-size:20px;">Pengguna Tidak Ditemukan</h2>
-              <p style="font-size:13px;">Profil "@${urlUsername}" belum terdaftar atau tidak ditemukan.</p>
-              <a href="/" style="display:inline-block;margin-top:20px;padding:10px 20px;background:var(--color-primary);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;font-size:13px;">Kembali ke Beranda</a>
+              <p style="font-size:13.5px;">Profil "@${urlUsername}" belum terdaftar atau tidak ditemukan.</p>
+              <a href="/" style="display:inline-block;margin-top:20px;padding:10px 24px;background:#fff;color:#000;text-decoration:none;font-weight:700;border-radius:9999px;font-size:13px;">Kembali ke Beranda</a>
             </div>
           `;
+          document.getElementById('headerTitle').innerText = 'Tidak Ditemukan';
         }
       } else {
-        // Jalur 2: Membuka langsung /profil/ tanpa username di URL
+        // Akses langsung /profil/ tanpa username
         if (!authUser) {
           window.location.href = '/profil/login.html';
           return;
@@ -1065,16 +646,15 @@
 
         const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
         const userKey = authUser.uid || emailKey;
-        
+
         let snap = await get(ref(db, `users/${emailKey}`));
         let data = snap.exists() ? snap.val() : null;
-        
+
         if (!data) {
           snap = await get(ref(db, `users/${userKey}`));
           data = snap.exists() ? snap.val() : {};
         }
-        
-        // Perbarui URL ke /profil/{username} tanpa reload halaman jika ada username-nya
+
         if (data.username) {
           window.history.replaceState(null, '', `/profil/${data.username}`);
         }
