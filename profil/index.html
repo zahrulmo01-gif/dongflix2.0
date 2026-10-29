@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Profil Saya - Dongflix</title>
+  <title>Profil - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
@@ -64,7 +64,7 @@
       z-index: 10;
     }
 
-    /* HEADER DENGAN GRADASI GELAP */
+    /* HEADER */
     header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -243,7 +243,7 @@
       margin-top: 2px;
     }
 
-    /* SECTION HEADER & TOMBOL HAPUS SEMUA */
+    /* SECTION HEADER */
     .section-header {
       display: flex;
       align-items: center;
@@ -468,7 +468,7 @@
       font-weight: 500;
     }
 
-    /* TOMBOL HAPUS SATU-SATU (X) PADA CARD */
+    /* TOMBOL HAPUS */
     .btn-delete-card {
       position: absolute;
       top: 6px;
@@ -550,19 +550,19 @@
         <button class="icon-circle-btn">
           <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
         </button>
-        <span class="brand-title">Profil Saya</span>
+        <span class="brand-title" id="headerTitle">Profil Pengguna</span>
       </div>
     </div>
   </header>
 
-  <div class="container">
+  <div class="container" id="profileContent">
     <!-- HERO PROFILE -->
     <div class="profile-hero">
       <div class="avatar-container">
         <div class="avatar-wrapper" id="profileAvatar" onclick="openModal('modalPhoto')">
-          <span id="avatarInitial">U</span>
+          <span id="avatarInitial">...</span>
         </div>
-        <div class="avatar-edit-badge" onclick="openModal('modalPhoto')">
+        <div class="avatar-edit-badge" id="btnEditPhotoBadge" onclick="openModal('modalPhoto')">
           <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
         </div>
       </div>
@@ -592,51 +592,53 @@
       </div>
     </div>
 
-    <!-- PENGATURAN AKUN -->
-    <div class="section-header">
-      <span class="section-title">Pengaturan Akun</span>
-    </div>
+    <!-- PENGATURAN AKUN (KHUSUS PEMILIK) -->
+    <div id="sectionSettingsWrapper">
+      <div class="section-header">
+        <span class="section-title">Pengaturan Akun</span>
+      </div>
 
-    <div class="menu-group">
-      <button class="menu-item" onclick="openModal('modalName')">
-        <div class="menu-item-left">
-          <div class="menu-icon-wrap icon-blue">
-            <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      <div class="menu-group">
+        <button class="menu-item" onclick="openModal('modalName')">
+          <div class="menu-item-left">
+            <div class="menu-icon-wrap icon-blue">
+              <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            </div>
+            <span>Ubah Nama Tampilan</span>
           </div>
-          <span>Ubah Nama Tampilan</span>
-        </div>
-        <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-      </button>
+          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
+        </button>
 
-      <button class="menu-item" onclick="openModal('modalPhoto')">
-        <div class="menu-item-left">
-          <div class="menu-icon-wrap icon-blue">
-            <svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg>
+        <button class="menu-item" onclick="openModal('modalPhoto')">
+          <div class="menu-item-left">
+            <div class="menu-icon-wrap icon-blue">
+              <svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg>
+            </div>
+            <span>Perbarui Foto Profil</span>
           </div>
-          <span>Perbarui Foto Profil</span>
-        </div>
-        <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-      </button>
+          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
+        </button>
 
-      <button class="menu-item" onclick="openModal('modalPassword')">
-        <div class="menu-item-left">
-          <div class="menu-icon-wrap icon-amber">
-            <svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+        <button class="menu-item" onclick="openModal('modalPassword')">
+          <div class="menu-item-left">
+            <div class="menu-icon-wrap icon-amber">
+              <svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+            </div>
+            <span>Ganti Password</span>
           </div>
-          <span>Ganti Password</span>
-        </div>
-        <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-      </button>
+          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
+        </button>
 
-      <button class="menu-item btn-item-logout" onclick="handleLogout()">
-        <div class="menu-item-left">
-          <div class="menu-icon-wrap icon-red">
-            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <button class="menu-item btn-item-logout" onclick="handleLogout()">
+          <div class="menu-item-left">
+            <div class="menu-icon-wrap icon-red">
+              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </div>
+            <span>Keluar dari Akun</span>
           </div>
-          <span>Keluar dari Akun</span>
-        </div>
-        <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
-      </button>
+          <div class="menu-chevron"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
+        </button>
+      </div>
     </div>
 
     <!-- DONGHUA FAVORIT -->
@@ -648,19 +650,21 @@
       <button class="btn-clear-all" id="btnClearAllFavorites" onclick="clearAllFavorites()" style="display: none;">Hapus Semua</button>
     </div>
     <div class="scroll-row" id="favoritesContainer">
-      <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat favorit...</p>
+      <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat koleksi...</p>
     </div>
 
-    <!-- RIWAYAT NONTON -->
-    <div class="section-header">
-      <span class="section-title">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Riwayat Nonton Terakhir
-      </span>
-      <button class="btn-clear-all" id="btnClearAllHistory" onclick="clearAllHistory()" style="display: none;">Hapus Semua</button>
-    </div>
-    <div class="scroll-row" id="historyContainer">
-      <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat riwayat nonton...</p>
+    <!-- RIWAYAT NONTON (KHUSUS PEMILIK) -->
+    <div id="sectionHistoryWrapper">
+      <div class="section-header">
+        <span class="section-title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Riwayat Nonton Terakhir
+        </span>
+        <button class="btn-clear-all" id="btnClearAllHistory" onclick="clearAllHistory()" style="display: none;">Hapus Semua</button>
+      </div>
+      <div class="scroll-row" id="historyContainer">
+        <p style="color:var(--text-muted);font-size:12px;padding:10px 0;">Memuat riwayat nonton...</p>
+      </div>
     </div>
   </div>
 
@@ -714,57 +718,112 @@
   </div>
 
   <script type="module">
-    import { auth, db, ref, get, set, remove, onAuthStateChanged } from '/assets/firebase-config.js';
+    import { auth, db, ref, get, set, remove, query, orderByChild, equalTo, onAuthStateChanged } from '/assets/firebase-config.js';
     import { updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let base64Photo = '';
     let currentAuthUser = null;
+    let targetUserKey = null;
+    let isOwnProfile = false;
 
-    function getDbKey(email) {
-      if (!email) return '';
-      return email.toLowerCase().replace(/\./g, ',');
+    // 1. Ekstrak nama pengguna dari path URL: /profil/:username
+    function getUsernameFromUrl() {
+      const path = window.location.pathname.replace(/\/+$/, '');
+      const segments = path.split('/');
+      const profilIdx = segments.indexOf('profil');
+      if (profilIdx !== -1 && segments[profilIdx + 1]) {
+        const val = decodeURIComponent(segments[profilIdx + 1]);
+        if (val !== 'index.html' && val !== 'login.html') {
+          return val;
+        }
+      }
+      return null;
     }
 
-    async function loadUserData(user) {
-      document.getElementById('userEmail').innerText = user.email;
-      const emailKey = getDbKey(user.email);
-      const userRef = ref(db, `users/${emailKey}`);
-
+    // 2. Query data user berdasarkan field username atau key UID/emailKey di Firebase
+    async function fetchUserByUsernameOrKey(identifier) {
       try {
-        const snap = await get(userRef);
-        let data = snap.exists() ? snap.val() : {};
-
-        const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() || data.status === 'admin';
-        const name = data.name || user.email.split('@')[0];
-        const photoURL = data.photoURL || '';
-
-        document.getElementById('userName').innerText = name;
-        document.getElementById('badgeLevel').innerText = isAdmin ? 'Lv999+' : `Lv${data.level || 1}`;
-        if (isAdmin) {
-          document.getElementById('badgeLevel').className = 'badge-pill badge-admin';
-          document.getElementById('badgeAdmin').style.display = 'inline-block';
+        // Query child 'username'
+        const usersRef = ref(db, 'users');
+        const userQuery = query(usersRef, orderByChild('username'), equalTo(identifier));
+        const snap = await get(userQuery);
+        if (snap.exists()) {
+          const val = snap.val();
+          const key = Object.keys(val)[0];
+          return { key, data: val[key] };
         }
+      } catch (err) {
+        console.warn('Index username query fallback:', err);
+      }
 
-        document.getElementById('statFollowers').innerText = data.followersCount || 0;
-        document.getElementById('statFollowing').innerText = data.followingCount || 0;
+      // Fallback: Direct key /users/{uid_atau_emailKey}
+      const directSnap = await get(ref(db, `users/${identifier}`));
+      if (directSnap.exists()) {
+        return { key: identifier, data: directSnap.val() };
+      }
 
-        const avatarBox = document.getElementById('profileAvatar');
-        if (photoURL) {
-          avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span>${name.charAt(0).toUpperCase()}</span>'">`;
-        } else {
-          avatarBox.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
-        }
+      return null;
+    }
 
-        loadUserFavorites(data.favorites);
-        loadUserHistory(data.history);
-      } catch (e) {
-        document.getElementById('userName').innerText = user.email.split('@')[0];
+    // 3. Render Profil dan hak akses
+    async function renderProfile(targetData, key, currentUser) {
+      targetUserKey = key;
+      const currentUserEmailKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/\./g, ',') : null;
+      
+      isOwnProfile = currentUser && (
+        currentUser.uid === key || 
+        currentUserEmailKey === key ||
+        (targetData.email && currentUser.email.toLowerCase() === targetData.email.toLowerCase())
+      );
+
+      // Sembunyikan kontrol edit & riwayat tontonan bila bukan akun sendiri
+      const settingsWrapper = document.getElementById('sectionSettingsWrapper');
+      const historyWrapper = document.getElementById('sectionHistoryWrapper');
+      const editAvatarBadge = document.getElementById('btnEditPhotoBadge');
+      const avatarBox = document.getElementById('profileAvatar');
+
+      if (!isOwnProfile) {
+        if (settingsWrapper) settingsWrapper.style.display = 'none';
+        if (historyWrapper) historyWrapper.style.display = 'none';
+        if (editAvatarBadge) editAvatarBadge.style.display = 'none';
+        avatarBox.onclick = null;
+        avatarBox.style.cursor = 'default';
+        document.getElementById('headerTitle').innerText = `Profil @${targetData.username || 'user'}`;
+      } else {
+        document.getElementById('headerTitle').innerText = 'Profil Saya';
+      }
+
+      const isAdmin = (targetData.email && targetData.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || targetData.status === 'admin';
+      const name = targetData.name || targetData.username || 'Pengguna';
+      const photoURL = targetData.photoURL || '';
+
+      document.getElementById('userName').innerText = name;
+      document.getElementById('userEmail').innerText = isOwnProfile ? (targetData.email || currentUser?.email || '') : `@${targetData.username || 'user'}`;
+      document.getElementById('badgeLevel').innerText = isAdmin ? 'Lv999+' : `Lv${targetData.level || 1}`;
+      
+      if (isAdmin) {
+        document.getElementById('badgeLevel').className = 'badge-pill badge-admin';
+        document.getElementById('badgeAdmin').style.display = 'inline-block';
+      }
+
+      document.getElementById('statFollowers').innerText = targetData.followersCount || 0;
+      document.getElementById('statFollowing').innerText = targetData.followingCount || 0;
+
+      if (photoURL) {
+        avatarBox.innerHTML = `<img src="${photoURL}" alt="${name}" onerror="this.outerHTML='<span>${name.charAt(0).toUpperCase()}</span>'">`;
+      } else {
+        avatarBox.innerHTML = `<span>${name.charAt(0).toUpperCase()}</span>`;
+      }
+
+      loadUserFavorites(targetData.favorites, isOwnProfile);
+      if (isOwnProfile) {
+        loadUserHistory(targetData.history);
       }
     }
 
-    /* RENDER FAVORIT */
-    function loadUserFavorites(rtdbFavorites) {
+    // 4. Render Koleksi Favorit
+    function loadUserFavorites(rtdbFavorites, canEdit) {
       const container = document.getElementById('favoritesContainer');
       const countEl = document.getElementById('statFavorites');
       const clearBtn = document.getElementById('btnClearAllFavorites');
@@ -772,23 +831,23 @@
 
       if (rtdbFavorites && typeof rtdbFavorites === 'object') {
         favList = Object.values(rtdbFavorites);
-      } else {
+      } else if (canEdit) {
         favList = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
       }
 
       countEl.innerText = favList.length;
 
       if (favList.length === 0) {
-        container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
+        container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit.</p>';
         if (clearBtn) clearBtn.style.display = 'none';
         return;
       }
 
-      if (clearBtn) clearBtn.style.display = 'block';
+      if (clearBtn && canEdit) clearBtn.style.display = 'block';
 
       container.innerHTML = favList.map(item => `
         <div class="fav-card" id="fav-${item.slug}">
-          <button class="btn-delete-card" onclick="deleteSingleFavorite('${item.slug}')" title="Hapus dari Favorit">&times;</button>
+          ${canEdit ? `<button class="btn-delete-card" onclick="deleteSingleFavorite('${item.slug}')" title="Hapus dari Favorit">&times;</button>` : ''}
           <a href="/donghua/${encodeURIComponent(item.slug)}" class="fav-link">
             <div class="fav-poster-wrap">
               <img src="${item.poster || 'https://via.placeholder.com/150x200?text=No+Cover'}" alt="${item.title}" referrerpolicy="no-referrer">
@@ -799,7 +858,7 @@
       `).join('');
     }
 
-    /* RENDER RIWAYAT NONTON */
+    // 5. Render Riwayat Nonton
     function loadUserHistory(rtdbHistory) {
       const container = document.getElementById('historyContainer');
       const clearBtn = document.getElementById('btnClearAllHistory');
@@ -864,85 +923,56 @@
       return new Date(timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     }
 
-    /* HAPUS FAVORIT SATU PER SATU */
+    /* AKSI DATA USER SENDIRI */
     window.deleteSingleFavorite = async function(slug) {
-      if (!confirm('Hapus donghua ini dari koleksi favorit?')) return;
-      
+      if (!isOwnProfile || !confirm('Hapus donghua ini dari koleksi favorit?')) return;
       let favs = JSON.parse(localStorage.getItem('df_favorites') || localStorage.getItem('rz_favorites') || '[]');
       favs = favs.filter(f => f.slug !== slug);
       localStorage.setItem('df_favorites', JSON.stringify(favs));
       localStorage.setItem('rz_favorites', JSON.stringify(favs));
 
-      if (currentAuthUser) {
-        const emailKey = getDbKey(currentAuthUser.email);
-        await remove(ref(db, `users/${emailKey}/favorites/${slug}`)).catch(() => {});
+      if (targetUserKey) {
+        await remove(ref(db, `users/${targetUserKey}/favorites/${slug}`)).catch(() => {});
       }
-
-      const card = document.getElementById(`fav-${slug}`);
-      if (card) card.remove();
-      
-      const countEl = document.getElementById('statFavorites');
-      if (countEl) countEl.innerText = favs.length;
-
-      if (favs.length === 0) {
-        document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
-        document.getElementById('btnClearAllFavorites').style.display = 'none';
-      }
+      document.getElementById(`fav-${slug}`)?.remove();
+      document.getElementById('statFavorites').innerText = favs.length;
     };
 
-    /* HAPUS SEMUA FAVORIT */
     window.clearAllFavorites = async function() {
-      if (!confirm('Yakin ingin menghapus SEMUA koleksi favorit Anda?')) return;
-
+      if (!isOwnProfile || !confirm('Yakin ingin menghapus SEMUA koleksi favorit?')) return;
       localStorage.removeItem('df_favorites');
       localStorage.removeItem('rz_favorites');
-
-      if (currentAuthUser) {
-        const emailKey = getDbKey(currentAuthUser.email);
-        await remove(ref(db, `users/${emailKey}/favorites`)).catch(() => {});
+      if (targetUserKey) {
+        await remove(ref(db, `users/${targetUserKey}/favorites`)).catch(() => {});
       }
-
       document.getElementById('statFavorites').innerText = '0';
-      document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit yang disimpan.</p>';
+      document.getElementById('favoritesContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada koleksi favorit.</p>';
       document.getElementById('btnClearAllFavorites').style.display = 'none';
     };
 
-    /* HAPUS RIWAYAT NONTON SATU PER SATU */
     window.deleteSingleHistory = async function(slug) {
+      if (!isOwnProfile) return;
       let historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
       historyList = historyList.filter(item => (item.mainPath || item.slug) !== slug);
       localStorage.setItem('rz_continue_history', JSON.stringify(historyList));
 
-      if (currentAuthUser) {
-        const emailKey = getDbKey(currentAuthUser.email);
-        await remove(ref(db, `users/${emailKey}/history/${slug}`)).catch(() => {});
+      if (targetUserKey) {
+        await remove(ref(db, `users/${targetUserKey}/history/${slug}`)).catch(() => {});
       }
-
-      const card = document.getElementById(`hist-${slug}`);
-      if (card) card.remove();
-
-      if (historyList.length === 0) {
-        document.getElementById('historyContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
-        document.getElementById('btnClearAllHistory').style.display = 'none';
-      }
+      document.getElementById(`hist-${slug}`)?.remove();
     };
 
-    /* HAPUS SEMUA RIWAYAT NONTON */
     window.clearAllHistory = async function() {
-      if (!confirm('Yakin ingin menghapus SEMUA riwayat tontonan Anda?')) return;
-
+      if (!isOwnProfile || !confirm('Yakin ingin menghapus SEMUA riwayat tontonan?')) return;
       localStorage.removeItem('rz_continue_history');
-
-      if (currentAuthUser) {
-        const emailKey = getDbKey(currentAuthUser.email);
-        await remove(ref(db, `users/${emailKey}/history`)).catch(() => {});
+      if (targetUserKey) {
+        await remove(ref(db, `users/${targetUserKey}/history`)).catch(() => {});
       }
-
       document.getElementById('historyContainer').innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:12px 0;">Belum ada riwayat tontonan.</p>';
       document.getElementById('btnClearAllHistory').style.display = 'none';
     };
 
-    window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
+    window.openModal = function(id) { if (isOwnProfile) document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
     window.previewImage = function(input) {
@@ -956,11 +986,8 @@
     window.handleSaveName = async function(e) {
       e.preventDefault();
       const newName = document.getElementById('newNameInput').value.trim();
-      if (!newName || !currentAuthUser) return;
-
-      const emailKey = getDbKey(currentAuthUser.email);
-      await set(ref(db, `users/${emailKey}/name`), newName);
-
+      if (!newName || !targetUserKey) return;
+      await set(ref(db, `users/${targetUserKey}/name`), newName);
       document.getElementById('userName').innerText = newName;
       window.closeModal('modalName');
       alert('Nama berhasil diubah!');
@@ -970,13 +997,9 @@
       e.preventDefault();
       const urlPhoto = document.getElementById('urlPhotoInput').value.trim();
       const finalPhoto = base64Photo || urlPhoto;
-      if (!finalPhoto || !currentAuthUser) return;
-
-      const emailKey = getDbKey(currentAuthUser.email);
-      await set(ref(db, `users/${emailKey}/photoURL`), finalPhoto);
-
-      const avatarBox = document.getElementById('profileAvatar');
-      avatarBox.innerHTML = `<img src="${finalPhoto}" alt="Avatar">`;
+      if (!finalPhoto || !targetUserKey) return;
+      await set(ref(db, `users/${targetUserKey}/photoURL`), finalPhoto);
+      document.getElementById('profileAvatar').innerHTML = `<img src="${finalPhoto}" alt="Avatar">`;
       window.closeModal('modalPhoto');
       alert('Foto profil berhasil diperbarui!');
     };
@@ -984,11 +1007,7 @@
     window.handleSavePassword = async function(e) {
       e.preventDefault();
       const newPass = document.getElementById('newPassInput').value;
-      if (!newPass || newPass.length < 6) {
-        alert('Password minimal 6 karakter!');
-        return;
-      }
-
+      if (!newPass || newPass.length < 6) return alert('Password minimal 6 karakter!');
       try {
         await updatePassword(currentAuthUser, newPass);
         window.closeModal('modalPassword');
@@ -1005,12 +1024,47 @@
       }
     };
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = '/profil/login.html';
+    // 6. Controller Jalur Masuk
+    onAuthStateChanged(auth, async (authUser) => {
+      currentAuthUser = authUser;
+      const urlUsername = getUsernameFromUrl();
+
+      if (urlUsername) {
+        // Akses via /profil/:username
+        const found = await fetchUserByUsernameOrKey(urlUsername);
+        if (found) {
+          await renderProfile(found.data, found.key, authUser);
+        } else {
+          document.getElementById('profileContent').innerHTML = `
+            <div style="text-align:center;padding:80px 20px;color:var(--text-sub);">
+              <h2 style="color:#fff;margin-bottom:8px;font-size:20px;">Pengguna Tidak Ditemukan</h2>
+              <p style="font-size:13px;">Profil "@${urlUsername}" belum terdaftar atau tidak tersedia.</p>
+              <a href="/" style="display:inline-block;margin-top:20px;padding:10px 20px;background:var(--color-primary);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;font-size:13px;">Kembali ke Beranda</a>
+            </div>
+          `;
+        }
       } else {
-        currentAuthUser = user;
-        await loadUserData(user);
+        // Akses langsung /profil/ tanpa username
+        if (!authUser) {
+          window.location.href = '/profil/login.html';
+          return;
+        }
+        const emailKey = authUser.email.toLowerCase().replace(/\./g, ',');
+        const userKey = authUser.uid || emailKey;
+        
+        let snap = await get(ref(db, `users/${userKey}`));
+        let data = snap.exists() ? snap.val() : null;
+        
+        if (!data) {
+          snap = await get(ref(db, `users/${emailKey}`));
+          data = snap.exists() ? snap.val() : {};
+        }
+        
+        // Update URL tanpa reload agar rapi sesuai username jika ada
+        if (data.username) {
+          window.history.replaceState(null, '', `/profil/${data.username}`);
+        }
+        await renderProfile(data, userKey, authUser);
       }
     });
   </script>
