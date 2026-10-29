@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Masuk & Daftar - Dongflix</title>
+  <title>Masuk ke Akun - Dongflix</title>
   <meta name="referrer" content="no-referrer">
 
   <link rel="icon" type="image/png" href="../image/IMG_6395.png">
   <link rel="apple-touch-icon" href="../image/IMG_6395.png">
 
-  <script type="module" src="/assets/firebase-config.js"></script>
-
   <style>
     :root {
       --bg-base: #000000;
-      --bg-card: rgba(18, 22, 34, 0.7);
+      --bg-card: rgba(18, 22, 34, 0.75);
       --color-primary: #0284c7;
-      --color-primary-hover: #0369a1;
       --color-accent: #38bdf8;
+      --color-red: #ef4444;
       --text-main: #ffffff;
       --text-sub: #94a3b8;
-      --text-muted: #64748b;
       --border-color: rgba(255, 255, 255, 0.1);
-      --radius-xl: 26px;
+      --radius-xl: 24px;
       --radius-md: 12px;
+      --radius-btn: 9999px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       background-color: var(--bg-base);
@@ -34,116 +32,68 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       padding: 24px 16px;
       position: relative;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
     }
 
     .ambient-glow {
       position: fixed;
-      top: 20%;
+      top: -100px;
       left: 50%;
       transform: translateX(-50%);
-      width: 360px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 70%);
-      filter: blur(80px);
+      width: 500px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 75%);
+      filter: blur(90px);
       pointer-events: none;
       z-index: 0;
     }
 
-    .login-container {
-      position: relative;
-      z-index: 10;
+    .login-card {
       width: 100%;
-      max-width: 390px;
+      max-width: 420px;
       background: var(--bg-card);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border-color);
       border-top: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: var(--radius-xl);
-      padding: 34px 24px 28px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+      padding: 34px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      position: relative;
+      z-index: 10;
     }
 
     .brand-header {
       text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .brand-logo {
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 12px;
-      border-radius: 16px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-accent);
-      font-size: 20px;
-      font-weight: 800;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+      margin-bottom: 26px;
     }
 
     .brand-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -0.3px;
       color: #fff;
+      letter-spacing: -0.5px;
     }
 
-    .brand-subtitle {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-top: 4px;
-      line-height: 1.4;
-    }
-
-    /* SEGMENTED TAB SWITCH (iOS STYLE) */
-    .tab-switch {
-      display: flex;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-md);
-      padding: 4px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 8px;
+    .brand-sub {
       font-size: 13px;
-      font-weight: 700;
-      border: none;
-      border-radius: 8px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .tab-btn.active {
-      background: var(--color-primary);
-      color: #fff;
-      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+      color: var(--text-sub);
+      margin-top: 6px;
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
 
     .form-label {
       display: block;
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--text-sub);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
@@ -152,220 +102,263 @@
     .form-input {
       width: 100%;
       height: 44px;
-      background: #050811;
+      background: rgba(5, 8, 17, 0.85);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
       padding: 0 14px;
       color: #fff;
       font-size: 13.5px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-input:focus { border-color: var(--color-accent); }
+
+    .form-input:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    .error-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
 
     .btn-submit {
       width: 100%;
       height: 46px;
-      background: var(--color-primary);
-      color: #ffffff;
+      background: #ffffff;
+      color: #000000;
       border: none;
-      border-radius: var(--radius-md);
-      font-size: 13.5px;
+      border-radius: var(--radius-btn);
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       margin-top: 8px;
-      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
-      transition: all 0.15s ease;
+      transition: background 0.2s, opacity 0.2s, transform 0.1s;
     }
-    .btn-submit:active { transform: scale(0.98); }
 
-    .alert-box {
-      display: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      margin-bottom: 14px;
-      text-align: center;
-      line-height: 1.4;
+    .btn-submit:active {
+      transform: scale(0.98);
     }
-    .alert-error { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; }
-    .alert-success { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.35); color: #4ade80; }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .footer-links {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .footer-links a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
 
     .back-home {
       display: block;
       text-align: center;
-      margin-top: 22px;
+      margin-top: 14px;
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--text-sub);
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s;
     }
-    .back-home:hover { color: #fff; }
+    .back-home:hover {
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
 
   <div class="ambient-glow"></div>
 
-  <div class="login-container">
+  <div class="login-card">
     <div class="brand-header">
-      <div class="brand-logo">DF</div>
-      <h1 class="brand-title" id="panelTitle">Masuk ke Akun</h1>
-      <p class="brand-subtitle" id="panelSub">Simpan bookmark, histori tontonan, dan ikut berkomentar</p>
+      <div class="brand-title">Masuk ke Dongflix</div>
+      <div class="brand-sub">Akses koleksi donghua & kelola profil Anda</div>
     </div>
 
-    <!-- Alert Notifikasi -->
-    <div id="alertBox" class="alert-box"></div>
+    <div id="errorBanner" class="error-banner"></div>
 
-    <!-- Switch Tab Login / Register -->
-    <div class="tab-switch">
-      <button type="button" class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Masuk</button>
-      <button type="button" class="tab-btn" id="tabRegister" onclick="switchTab('register')">Daftar Akun</button>
-    </div>
-
-    <!-- Form Autentikasi -->
-    <form id="authForm" onsubmit="handleAuthSubmit(event)">
-      <div class="form-group" id="groupName" style="display: none;">
-        <label class="form-label">Nama Pengguna</label>
-        <input type="text" id="inputName" class="form-input" placeholder="Masukkan nama panggilan..." autocomplete="nickname">
-      </div>
-
+    <form id="formLogin" onsubmit="handleLogin(event)">
+      <!-- Input Username atau Email -->
       <div class="form-group">
-        <label class="form-label">Alamat Email</label>
-        <input type="email" id="inputEmail" class="form-input" placeholder="nama@email.com" required autocomplete="email">
+        <label class="form-label" for="loginIdentifier">Email atau Username *</label>
+        <input 
+          type="text" 
+          id="loginIdentifier" 
+          class="form-input" 
+          placeholder="contoh: rulsz atau nama@email.com" 
+          required 
+          autocomplete="username"
+        >
       </div>
 
+      <!-- Input Password -->
       <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" id="inputPassword" class="form-input" placeholder="Minimal 6 karakter..." required autocomplete="current-password">
+        <label class="form-label" for="loginPassword">Password *</label>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          class="form-input" 
+          placeholder="Masukkan password Anda" 
+          required 
+          autocomplete="current-password"
+        >
       </div>
 
-      <button type="submit" class="btn-submit" id="btnSubmit">Masuk Sekarang</button>
+      <button type="submit" id="btnSubmitLogin" class="btn-submit">Masuk Sekarang</button>
     </form>
 
-    <a href="/" class="back-home">← Kembali ke Beranda Dongflix</a>
+    <div class="footer-links">
+      Belum punya akun? <a href="/profil/register.html">Daftar di sini</a>
+    </div>
+
+    <a href="/" class="back-home">&larr; Kembali ke Beranda</a>
   </div>
 
   <script type="module">
-    import { auth, db, ref, get, set, onAuthStateChanged } from '/assets/firebase-config.js';
-    import { 
-      signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { auth, db } from '/assets/firebase-config.js';
+    import { ref, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    window.auth = auth;
-    window.db = db;
-    window.fbRef = ref;
-    window.fbGet = get;
-    window.fbSet = set;
-    window.fbSignIn = signInWithEmailAndPassword;
-    window.fbCreateUser = createUserWithEmailAndPassword;
+    const errorBanner = document.getElementById('errorBanner');
+    const submitBtn = document.getElementById('btnSubmitLogin');
 
-    onAuthStateChanged(auth, (user) => {
+    function showError(msg) {
+      errorBanner.innerText = msg;
+      errorBanner.style.display = 'block';
+    }
+
+    function hideError() {
+      errorBanner.style.display = 'none';
+      errorBanner.innerText = '';
+    }
+
+    // Jika sudah dalam posisi login, arahkan langsung ke profilnya
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        window.location.href = '/profil/';
+        const emailKey = user.email.toLowerCase().replace(/\./g, ',');
+        const userSnap = await get(ref(db, `users/${emailKey}`));
+        if (userSnap.exists() && userSnap.val().username) {
+          window.location.href = `/profil/${userSnap.val().username}`;
+        } else {
+          window.location.href = '/profil/';
+        }
       }
     });
-  </script>
 
-  <script>
-    let currentMode = 'login';
-    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
+    // Helper: Cari email asli berdasarkan username jika user mengetikkan username
+    async function resolveEmailFromIdentifier(identifier) {
+      const cleanInput = identifier.trim().toLowerCase();
 
-    function switchTab(mode) {
-      currentMode = mode;
-      const tabLogin = document.getElementById('tabLogin');
-      const tabRegister = document.getElementById('tabRegister');
-      const groupName = document.getElementById('groupName');
-      const btnSubmit = document.getElementById('btnSubmit');
-      const panelTitle = document.getElementById('panelTitle');
-      const panelSub = document.getElementById('panelSub');
-      const alertBox = document.getElementById('alertBox');
-
-      alertBox.style.display = 'none';
-
-      if (mode === 'login') {
-        tabLogin.classList.add('active');
-        tabRegister.classList.remove('active');
-        groupName.style.display = 'none';
-        btnSubmit.innerText = 'Masuk Sekarang';
-        panelTitle.innerText = 'Masuk ke Akun';
-        panelSub.innerText = 'Simpan bookmark, histori tontonan, dan ikut berkomentar';
-      } else {
-        tabRegister.classList.add('active');
-        tabLogin.classList.remove('active');
-        groupName.style.display = 'block';
-        btnSubmit.innerText = 'Daftarkan Akun';
-        panelTitle.innerText = 'Buat Akun Baru';
-        panelSub.innerText = 'Bergabunglah bersama komunitas penonton Dongflix';
+      // Jika input sudah mengandung '@', anggap sebagai email langsung
+      if (cleanInput.includes('@')) {
+        return cleanInput;
       }
+
+      // Cari username di Realtime Database
+      try {
+        const usersRef = ref(db, 'users');
+
+        // 1. Coba via Index
+        try {
+          const q = query(usersRef, orderByChild('username'), equalTo(cleanInput));
+          const snap = await get(q);
+          if (snap.exists()) {
+            const data = snap.val();
+            const firstKey = Object.keys(data)[0];
+            return data[firstKey].email || null;
+          }
+        } catch (e) {
+          console.warn('Query username index skipped:', e);
+        }
+
+        // 2. Scan manual jika index belum aktif
+        const allSnap = await get(usersRef);
+        if (allSnap.exists()) {
+          const allData = allSnap.val();
+          for (const key in allData) {
+            if (allData[key]?.username && allData[key].username.toLowerCase() === cleanInput) {
+              return allData[key].email || null;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mencocokkan username:', err);
+      }
+
+      return null;
     }
 
-    function showAlert(msg, isSuccess = false) {
-      const box = document.getElementById('alertBox');
-      box.className = `alert-box ${isSuccess ? 'alert-success' : 'alert-error'}`;
-      box.innerText = msg;
-      box.style.display = 'block';
-    }
-
-    async function handleAuthSubmit(e) {
+    // Handler Submit Login
+    window.handleLogin = async function(e) {
       e.preventDefault();
-      const email = document.getElementById('inputEmail').value.trim();
-      const password = document.getElementById('inputPassword').value;
-      const name = document.getElementById('inputName').value.trim();
-      const btn = document.getElementById('btnSubmit');
+      hideError();
 
-      if (!window.auth || !window.fbSignIn || !window.fbCreateUser) {
-        showAlert('Menghubungkan ke server Firebase, mohon tunggu sesaat...');
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!identifier || !password) {
+        showError('Email/Username dan Password wajib diisi!');
         return;
       }
 
-      btn.disabled = true;
-      btn.innerText = 'Memproses...';
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Memeriksa akun...';
 
       try {
-        if (currentMode === 'login') {
-          await window.fbSignIn(window.auth, email, password);
-          showAlert('Login berhasil! Mengalihkan...', true);
-          setTimeout(() => { window.location.href = '/profil/'; }, 600);
+        // Cari email terdaftar
+        const emailToLogin = await resolveEmailFromIdentifier(identifier);
+
+        if (!emailToLogin) {
+          showError('Username tidak ditemukan. Pastikan username sudah terdaftar.');
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Masuk Sekarang';
+          return;
+        }
+
+        // Proses Login ke Firebase Auth
+        const cred = await signInWithEmailAndPassword(auth, emailToLogin, password);
+        const user = cred.user;
+
+        // Ambil data username untuk diarahkan ke URL /profil/username
+        const emailKey = user.email.toLowerCase().replace(/\./g, ',');
+        const userSnap = await get(ref(db, `users/${emailKey}`));
+
+        submitBtn.innerText = 'Berhasil! Mengalihkan...';
+
+        if (userSnap.exists() && userSnap.val().username) {
+          window.location.href = `/profil/${userSnap.val().username}`;
         } else {
-          const userCredential = await window.fbCreateUser(window.auth, email, password);
-          const user = userCredential.user;
-
-          if (window.db && window.fbRef && window.fbSet) {
-            const emailKey = email.toLowerCase().replace(/\./g, ',');
-            const role = email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'admin' : 'user';
-            
-            await window.fbSet(window.fbRef(window.db, `users/${emailKey}`), {
-              name: name || `user${Math.floor(1000000000 + Math.random() * 9000000000)}`,
-              email: email,
-              photoURL: '',
-              status: role,
-              level: 1,
-              followersCount: 0,
-              followingCount: 0,
-              createdAt: Date.now()
-            });
-          }
-
-          showAlert('Pendaftaran sukses! Mengalihkan ke profil...', true);
-          setTimeout(() => { window.location.href = '/profil/'; }, 800);
+          window.location.href = '/profil/';
         }
       } catch (err) {
-        let msg = err.message;
-        if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-          msg = 'Email atau password yang Anda masukkan salah.';
-        } else if (err.code === 'auth/email-already-in-use') {
-          msg = 'Email ini sudah terdaftar. Silakan langsung login.';
-        } else if (err.code === 'auth/weak-password') {
-          msg = 'Password terlalu lemah (minimal 6 karakter).';
+        console.error(err);
+        let errorMsg = 'Gagal masuk. Periksa kembali email/username dan password.';
+        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+          errorMsg = 'Password atau email yang Anda masukkan salah.';
+        } else if (err.code === 'auth/user-not-found') {
+          errorMsg = 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.';
+        } else if (err.code === 'auth/too-many-requests') {
+          errorMsg = 'Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat lagi.';
         }
-        showAlert(msg, false);
-        btn.disabled = false;
-        btn.innerText = currentMode === 'login' ? 'Masuk Sekarang' : 'Daftarkan Akun';
+        showError(errorMsg);
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Masuk Sekarang';
       }
-    }
+    };
   </script>
 </body>
 </html>
