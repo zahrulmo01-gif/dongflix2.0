@@ -102,25 +102,21 @@
       --glass-blur: blur(16px);
     }
 
-    /* === ATURAN PLATFORM: IOS FULL GLASS VS ANDROID OPTIMIZED === */
     @supports (-webkit-touch-callout: none) {
-      /* PENGATURAN KHUSUS iOS (iPhone / iPad): SEMUANYA FULL GLASS */
       :root {
         --glass-bg: rgba(20, 20, 24, 0.58);
       }
-      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .floating-circle-btn, .popover-menu {
+      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .floating-circle-btn, .popover-menu, .home-chat-widget {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
       }
     }
 
     @supports not (-webkit-touch-callout: none) {
-      /* PENGATURAN KHUSUS ANDROID / NON-IOS: BLUR HANYA PADA HEADER ATAS & ONTOP (FLOATING) */
       .nav-capsule, .action-btn, .floating-circle-btn {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
       }
-      /* Komponen lain menggunakan warna solid transparan murni tanpa blur */
       .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .popover-menu {
         background: #141418;
       }
@@ -314,12 +310,11 @@
     }
     .popover-menu a svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-        /* SEARCH MODAL DIOPTIMALKAN SUPAYA TIDAK TEMBUS PANDANG */
     .modal-overlay { 
       display: none; 
       position: fixed; 
       inset: 0; 
-      background: #000000 !important; /* Hitam pekat agar tidak transparan */
+      background: #000000 !important;
       z-index: 999; 
       padding: 16px; 
       overflow-y: auto; 
@@ -356,7 +351,7 @@
       display: flex; 
       gap: 14px; 
       align-items: center;
-      background: #101014; /* Warna solid gelap pekat */
+      background: #101014;
       border: 1px solid rgba(255, 255, 255, 0.1); 
       border-radius: 18px; 
       padding: 10px; 
@@ -562,6 +557,179 @@
     .section-block { margin-top: 40px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+
+    /* WIDGET LIVE CHAT BERANDA (SELARAS DENGAN WEB DONGFLIX) */
+    .home-chat-widget {
+      background: #0d0f14;
+      border: 1px solid var(--border-color);
+      border-top: 1px solid var(--glass-border-top);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .home-chat-widget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .home-chat-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #22c55e;
+    }
+    .home-chat-pulse {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #22c55e;
+      animation: pulseLiveGreen 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseLiveGreen {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .home-chat-open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-accent);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .home-chat-open-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+    .home-chat-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .home-chat-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .home-chat-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .home-chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .home-chat-content { flex: 1; min-width: 0; }
+    .home-chat-author-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .home-chat-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .home-chat-name.admin { color: #f59e0b !important; }
+    .home-chat-text {
+      font-size: 12.5px;
+      color: #94a3b8;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    /* Shimmer Badge */
+    @keyframes badgeShimmer {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      35%, 100% { transform: translateX(180%) skewX(-20deg); }
+    }
+    .badge-admin, .badge-level {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      overflow: hidden;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .badge-admin::after, .badge-level::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 45%; height: 200%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+      animation: badgeShimmer 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+    .badge-level {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .badge-level.admin-lvl {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+      color: #451a03;
+      border: 1px solid rgba(254, 243, 199, 0.5);
+      font-weight: 900;
+    }
+    .badge-admin {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #ffffff;
+      border: 1px solid rgba(251, 191, 36, 0.6);
+      font-weight: 900;
+    }
+
+    .home-chat-fake-input {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #07090d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 6px 10px 6px 16px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .home-chat-fake-input:hover { border-color: rgba(56, 189, 248, 0.4); }
+    .home-chat-placeholder { font-size: 12.5px; color: #64748b; }
+    .home-chat-send-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .home-chat-send-circle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
     .continue-section-wrapper { margin-top: 36px; margin-bottom: 24px; }
     .continue-section-wrapper .section-title { margin-bottom: 16px; }
@@ -831,6 +999,10 @@
         <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
       </a>
     </div>
+    <a href="/chat/">
+      <span>Live Chat Komunitas</span>
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </a>
     <a href="/profil/">
       <span>Favorit Saya</span>
       <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -882,6 +1054,41 @@
         Lanjutkan Menonton
       </h2>
       <div class="continue-scroll-row" id="continueRow"></div>
+    </section>
+
+    <!-- LIVE CHAT WIDGET BERANDA -->
+    <section class="section-block" id="homeLiveChatSection">
+      <div class="section-header-flex">
+        <h2 class="section-title">
+          <svg class="icon-svg" style="color: var(--color-accent);" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Live Chat
+        </h2>
+        <a href="/chat/" class="see-all-btn">Lihat Semua ›</a>
+      </div>
+
+      <div class="home-chat-widget">
+        <div class="home-chat-widget-header">
+          <div class="home-chat-status">
+            <span class="home-chat-pulse"></span>
+            <span>Komunitas Online</span>
+          </div>
+          <a href="/chat/" class="home-chat-open-link">
+            Buka chat
+            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+
+        <div class="home-chat-items-list" id="homeChatList">
+          <div style="color: var(--text-muted); font-size: 12.5px; text-align: center; padding: 12px;">Memuat live chat...</div>
+        </div>
+
+        <a href="/chat/" class="home-chat-fake-input">
+          <span class="home-chat-placeholder">Tulis pesan ke live chat...</span>
+          <div class="home-chat-send-circle">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+        </a>
+      </div>
     </section>
 
     <!-- POPULER HARI INI -->
@@ -1022,8 +1229,8 @@
     try {
       const fb = await import('/assets/firebase-config.js');
       window.db = fb.db;
-      window.fbRef = fb.ref;
-      window.fbGet = fb.get;
+      window.fbRef = fb.ref || fb.fbRef;
+      window.fbGet = fb.get || fb.fbGet;
       window.auth = fb.auth;
 
       if (fb.auth && fb.onAuthStateChanged) {
@@ -1092,10 +1299,14 @@
       if (typeof window.syncFirebaseViews === 'function') {
         window.syncFirebaseViews();
       }
+      if (typeof window.loadHomeLiveChatPreview === 'function') {
+        window.loadHomeLiveChatPreview();
+      }
     } catch (_) {}
   </script>
 
   <script>
+    const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let searchTimer = null;
     let currentSlide = 0;
     let slideInterval = null;
@@ -1347,6 +1558,81 @@
       });
     }
 
+    /* FITUR 3 LIVE CHAT TERAKHIR DI BERANDA */
+    window.loadHomeLiveChatPreview = async function() {
+      const listEl = document.getElementById('homeChatList');
+      if (!listEl || !window.db || !window.fbRef || !window.fbGet) return;
+
+      try {
+        const [chatSnap, usersSnap] = await Promise.all([
+          window.fbGet(window.fbRef(window.db, 'live_chat')),
+          window.fbGet(window.fbRef(window.db, 'users'))
+        ]);
+
+        if (!chatSnap.exists()) {
+          listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12.5px; text-align: center; padding: 12px;">Belum ada pesan live chat. Jadilah yang pertama!</div>';
+          return;
+        }
+
+        const chatData = chatSnap.val() || {};
+        const allUsers = usersSnap.exists() ? (usersSnap.val() || {}) : {};
+
+        const messages = [];
+        Object.keys(chatData).forEach(key => {
+          const item = chatData[key];
+          if (item && typeof item === 'object') {
+            messages.push({ ...item, id: key });
+          }
+        });
+
+        // Ambil 3 pesan terbaru
+        messages.sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
+        const latest3 = messages.slice(0, 3).reverse();
+
+        listEl.innerHTML = '';
+        latest3.forEach(item => {
+          let updatedProfile = null;
+          if (item.email) {
+            const emailKey = String(item.email).toLowerCase().replace(/\./g, ',');
+            if (allUsers[emailKey]) updatedProfile = allUsers[emailKey];
+          }
+          if (!updatedProfile && item.uid && allUsers[item.uid]) {
+            updatedProfile = allUsers[item.uid];
+          }
+
+          const authorName = (updatedProfile && updatedProfile.name) ? updatedProfile.name : (item.author || (item.email ? String(item.email).split('@')[0] : 'User'));
+          const photoURL = (updatedProfile && updatedProfile.photoURL) ? updatedProfile.photoURL : (item.photoURL || '');
+          const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
+          const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
+
+          const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+          const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
+
+          const displayContent = item.text || (item.stickerUrl ? '[Stiker/GIF]' : '...');
+
+          const itemRow = document.createElement('a');
+          itemRow.className = 'home-chat-item';
+          itemRow.href = '/chat/';
+          itemRow.innerHTML = `
+            <div class="home-chat-avatar">
+              ${photoURL ? `<img src="${photoURL}" alt="${authorName}" onerror="this.outerHTML='${initial}'" />` : initial}
+            </div>
+            <div class="home-chat-content">
+              <div class="home-chat-author-row">
+                <span class="home-chat-name ${isAdmin ? 'admin' : ''}">${authorName}</span>
+                ${levelBadge} ${adminBadge}
+              </div>
+              <div class="home-chat-text">${displayContent}</div>
+            </div>
+          `;
+          listEl.appendChild(itemRow);
+        });
+
+      } catch (e) {
+        listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12.5px; text-align: center; padding: 12px;">Gagal memuat obrolan.</div>';
+      }
+    };
+
     function createPopularFeaturedCard(item) {
       const card = document.createElement('a');
       card.className = 'popular-featured-card';
@@ -1403,7 +1689,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
@@ -1532,7 +1818,10 @@
       } catch (_) {}
     }
 
-    window.addEventListener('pageshow', renderContinueWatching);
+    window.addEventListener('pageshow', () => {
+      renderContinueWatching();
+      if (window.loadHomeLiveChatPreview) window.loadHomeLiveChatPreview();
+    });
     window.addEventListener('DOMContentLoaded', () => {
       renderContinueWatching();
       loadMainData();
