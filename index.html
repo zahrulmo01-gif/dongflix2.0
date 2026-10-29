@@ -136,7 +136,6 @@
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
-    .icon-svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; }
 
     .header-bar {
       position: fixed;
@@ -409,20 +408,21 @@
     @keyframes skeletonPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.75; } }
     .skeleton { background-color: var(--bg-skeleton); animation: skeletonPulse 1.5s infinite ease-in-out; border-radius: 8px; border: none !important; }
 
-    .skeleton-hero { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 20px 20px 45px; }
+    .skeleton-hero { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 20px 20px 38px; }
     .skeleton-text { height: 14px; margin-bottom: 8px; border-radius: 4px; }
-    .skeleton-text.title { height: 26px; width: 65%; margin-bottom: 12px; }
-    .skeleton-text.sub { height: 14px; width: 40%; margin-bottom: 16px; }
-    .skeleton-btn { height: 38px; width: 110px; border-radius: 10px; }
+    .skeleton-text.title { height: 24px; width: 60%; margin-bottom: 10px; }
+    .skeleton-text.sub { height: 13px; width: 35%; margin-bottom: 14px; }
+    .skeleton-btn { height: 36px; width: 105px; border-radius: 10px; }
 
     .card-skeleton { width: 100%; }
     .card-skeleton-img { width: 100%; height: 180px; border-radius: 14px; margin-bottom: 8px; border: none !important; }
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
 
+    /* HERO SLIDER (UKURAN DIPENDEKKAN KE BAWAH) */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
-      height: 520px; 
+      height: 380px; 
       overflow: hidden; 
       background: #000; 
       transform: translateZ(0); 
@@ -452,7 +452,7 @@
     .hero-overlay { 
       position: absolute; 
       inset: 0; 
-      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.92) 28%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.15) 80%, transparent 100%),
+      background: linear-gradient(to top, #000000 0%, rgba(0, 0, 0, 0.92) 25%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.15) 75%, transparent 100%),
                   radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.45) 90%); 
       z-index: 2; 
       pointer-events: none; 
@@ -461,7 +461,7 @@
     .hero-content { 
       position: relative; 
       z-index: 3; 
-      padding: 24px 20px 48px; 
+      padding: 16px 20px 38px; 
       max-width: 1100px; 
       margin: 0 auto; 
       width: 100%; 
@@ -471,23 +471,23 @@
       background: rgba(2, 132, 199, 0.85); 
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: var(--text-main); 
-      font-size: 10px; 
+      font-size: 9.5px; 
       font-weight: 800; 
-      padding: 4px 12px; 
+      padding: 3px 10px; 
       border-radius: 9999px; 
       letter-spacing: 0.5px;
       text-transform: uppercase; 
-      margin-bottom: 10px; 
+      margin-bottom: 8px; 
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
     .hero-title { 
-      font-size: 27px; 
+      font-size: 23px; 
       font-weight: 900; 
       line-height: 1.15; 
       color: var(--text-main); 
-      margin-bottom: 10px; 
+      margin-bottom: 8px; 
       text-transform: uppercase;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.4px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
       max-width: 800px;
     }
@@ -495,43 +495,43 @@
       display: flex; 
       align-items: center; 
       gap: 10px; 
-      font-size: 12.5px; 
+      font-size: 12px; 
       color: var(--text-sub); 
       font-weight: 600; 
-      margin-bottom: 16px; 
+      margin-bottom: 14px; 
     }
     .rating-star { color: var(--color-star); font-weight: 800; }
     .badge-status-green { 
       background: rgba(56, 189, 248, 0.15); 
       color: var(--color-accent); 
       border: 1px solid var(--border-color); 
-      font-size: 10px; 
+      font-size: 9.5px; 
       font-weight: 800; 
-      padding: 2px 8px; 
+      padding: 2px 7px; 
       border-radius: 4px; 
       text-transform: uppercase; 
     }
     .btn-watch { 
       display: inline-flex; 
       align-items: center; 
-      gap: 8px; 
+      gap: 7px; 
       background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%); 
       color: var(--text-main); 
-      padding: 11px 26px; 
-      border-radius: 14px; 
+      padding: 9px 22px; 
+      border-radius: 12px; 
       font-weight: 800; 
-      font-size: 14px; 
+      font-size: 13px; 
       cursor: pointer; 
       text-decoration: none;
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .btn-watch:active { transform: scale(0.97); }
-    .btn-watch svg { width: 16px; height: 16px; fill: currentColor; }
+    .btn-watch svg { width: 15px; height: 15px; fill: currentColor; }
     
     .slider-dots { 
       position: absolute; 
-      bottom: 18px; 
+      bottom: 12px; 
       left: 0; 
       right: 0; 
       z-index: 10; 
@@ -540,23 +540,89 @@
       gap: 6px; 
     }
     .dot { 
-      width: 7px; 
-      height: 7px; 
+      width: 6px; 
+      height: 6px; 
       background: rgba(255, 255, 255, 0.35); 
       border-radius: 50%; 
       cursor: pointer; 
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     }
     .dot.active { 
-      width: 26px; 
+      width: 22px; 
       background: var(--color-accent); 
       border-radius: 9999px; 
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.6); 
     }
 
-    .section-block { margin-top: 40px; }
+    .section-block { margin-top: 36px; }
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    
+    /* JUDUL SECTION DENGAN GARIS TEGAK WARNA BIRU */
+    .section-title { 
+      font-size: 18px; 
+      font-weight: 800; 
+      color: var(--text-main); 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      line-height: 1;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--color-primary);
+      border-radius: 9999px;
+      box-shadow: 0 0 10px rgba(2, 132, 199, 0.6);
+      flex-shrink: 0;
+    }
+
+    /* TOMBOL LIHAT SEMUA DENGAN PANAH SAMPING */
+    .see-all-btn { 
+      color: var(--color-accent); 
+      font-size: 13px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      text-decoration: none; 
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      transition: color 0.15s ease;
+    }
+    .see-all-btn:hover { color: #ffffff; }
+
+    /* DOT & ONLINE HIJAU KECIL DI SAMPING LIVE CHAT */
+    .chat-header-left-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chat-online-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.28);
+      padding: 2px 7.5px;
+      border-radius: 9999px;
+      line-height: 1.2;
+    }
+    .chat-online-dot {
+      width: 5.5px;
+      height: 5.5px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulseDotLive 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseDotLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
 
     /* WIDGET LIVE CHAT BERANDA (SELARAS DENGAN WEB DONGFLIX) */
     .home-chat-widget {
@@ -564,47 +630,9 @@
       border: 1px solid var(--border-color);
       border-top: 1px solid var(--glass-border-top);
       border-radius: 20px;
-      padding: 16px 16px 14px;
+      padding: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
-    .home-chat-widget-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .home-chat-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #22c55e;
-    }
-    .home-chat-pulse {
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #22c55e;
-      animation: pulseLiveGreen 1.6s infinite ease-in-out;
-    }
-    @keyframes pulseLiveGreen {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-    .home-chat-open-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--color-accent);
-      font-size: 12.5px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .home-chat-open-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
     .home-chat-items-list {
       display: flex;
       flex-direction: column;
@@ -732,7 +760,6 @@
     .home-chat-send-circle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
     .continue-section-wrapper { margin-top: 36px; margin-bottom: 24px; }
-    .continue-section-wrapper .section-title { margin-bottom: 16px; }
     .continue-scroll-row {
       display: flex;
       gap: 16px;
@@ -906,7 +933,6 @@
       margin-top: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; line-height: 1.35;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
     }
-    .see-all-btn { color: var(--color-accent); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
 
     .popular-featured-row { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
     .popular-featured-row::-webkit-scrollbar { display: none; }
@@ -956,9 +982,9 @@
     .floating-circle-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
 
     @media (min-width: 768px) {
-      .hero-slider-wrapper { height: 560px; }
-      .hero-content { padding: 32px 40px 60px; }
-      .hero-title { font-size: 36px; }
+      .hero-slider-wrapper { height: 430px; }
+      .hero-content { padding: 28px 40px 48px; }
+      .hero-title { font-size: 32px; }
       .grid-3 { grid-template-columns: repeat(6, 1fr); column-gap: 16px; row-gap: 28px; }
       .continue-card-item { flex: 0 0 240px; min-width: 240px; max-width: 240px; gap: 10px; }
       .continue-thumb-box { height: 136px; }
@@ -1049,35 +1075,24 @@
 
   <div class="container">
     <section class="section-block continue-section-wrapper" id="continueSection" style="display: none !important;">
-      <h2 class="section-title">
-        <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Lanjutkan Menonton
-      </h2>
+      <h2 class="section-title">Lanjutkan Menonton</h2>
       <div class="continue-scroll-row" id="continueRow"></div>
     </section>
 
     <!-- LIVE CHAT WIDGET BERANDA -->
     <section class="section-block" id="homeLiveChatSection">
       <div class="section-header-flex">
-        <h2 class="section-title">
-          <svg class="icon-svg" style="color: var(--color-accent);" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Live Chat
-        </h2>
-        <a href="/chat/" class="see-all-btn">Lihat Semua ›</a>
+        <div class="chat-header-left-title">
+          <h2 class="section-title">Live Chat</h2>
+          <span class="chat-online-pill">
+            <span class="chat-online-dot"></span>
+            Online
+          </span>
+        </div>
+        <a href="/chat/" class="see-all-btn">Buka chat ›</a>
       </div>
 
       <div class="home-chat-widget">
-        <div class="home-chat-widget-header">
-          <div class="home-chat-status">
-            <span class="home-chat-pulse"></span>
-            <span>Komunitas Online</span>
-          </div>
-          <a href="/chat/" class="home-chat-open-link">
-            Buka chat
-            <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-          </a>
-        </div>
-
         <div class="home-chat-items-list" id="homeChatList">
           <div style="color: var(--text-muted); font-size: 12.5px; text-align: center; padding: 12px;">Memuat live chat...</div>
         </div>
@@ -1094,10 +1109,7 @@
     <!-- POPULER HARI INI -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title">
-          <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Populer Hari Ini
-        </h2>
+        <h2 class="section-title">Populer Hari Ini</h2>
       </div>
       <div class="popular-featured-row" id="todayPopularRow">
         <div class="popular-featured-card">
@@ -1128,11 +1140,8 @@
     <!-- DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
-        <h2 class="section-title">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
-          Donghua Terbaru
-        </h2>
-        <a href="/donghua/" class="see-all-btn">Lihat Semua</a>
+        <h2 class="section-title">Donghua Terbaru</h2>
+        <a href="/donghua/" class="see-all-btn">Lihat Semua ›</a>
       </div>
       <div class="grid-3" id="latestGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
@@ -1165,11 +1174,8 @@
     <!-- MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
-        <h2 class="section-title">
-          <svg class="icon-svg" style="color: var(--color-accent);" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/></svg>
-          Movie Terbaru
-        </h2>
-        <a href="/donghua/?type=movie" class="see-all-btn">Lihat Semua</a>
+        <h2 class="section-title">Movie Terbaru</h2>
+        <a href="/donghua/?type=movie" class="see-all-btn">Lihat Semua ›</a>
       </div>
       <div class="grid-3" id="movieGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div></div>
@@ -1181,10 +1187,7 @@
     <!-- DONGHUA POPULER -->
     <section class="section-block">
       <div class="section-header-flex">
-        <h2 class="section-title">
-          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          Donghua Populer
-        </h2>
+        <h2 class="section-title">Donghua Populer</h2>
       </div>
       <div class="popular-vertical-list" id="popularAllGrid">
         <div class="popular-featured-card">
@@ -1585,7 +1588,6 @@
           }
         });
 
-        // Ambil 3 pesan terbaru
         messages.sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
         const latest3 = messages.slice(0, 3).reverse();
 
@@ -1689,7 +1691,7 @@
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             ${!isMovie ? `
               <div class="badge-view-count">
-                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 <span class="view-num" data-slug="${item.slug}">${viewsDisplay}</span>
               </div>
             ` : ''}
