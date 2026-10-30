@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Dongflix - Nonton Streaming Donghua Sub Indo Gratis Kualitas HD</title>
+  <title>Dongflix - Nonton Streaming Donghua & Anime Sub Indo Gratis Kualitas HD</title>
   
   <!-- Meta Tag Standar & SEO Google -->
-  <meta name="description" content="Dongflix adalah platform streaming donghua subtitle Indonesia terlengkap dan terupdate setiap hari. Nonton anime China sub indo kualitas HD gratis dan lancar tanpa buffering.">
-  <meta name="keywords" content="dongflix, nonton donghua, streaming donghua, donghua sub indo, nonton anime china, donghua batch, download donghua, renegade immortal, soul land, perfect world, btth, anichin, animexin, donghub, donghive, donghua">
+  <meta name="description" content="Dongflix adalah platform streaming donghua dan anime subtitle Indonesia terlengkap dan terupdate setiap hari. Nonton anime sub indo kualitas HD gratis dan lancar tanpa buffering.">
+  <meta name="keywords" content="dongflix, nonton donghua, streaming donghua, streaming anime, anime sub indo, nonton anime jepang, donghua sub indo, nonton anime china, donghua batch, download donghua, samehadaku, anichin, donghua">
   <meta name="author" content="Dongflix">
   <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
   <link rel="canonical" href="https://dongflix.my.id/">
@@ -23,8 +23,8 @@
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dongflix">
-  <meta property="og:title" content="Dongflix - Nonton Streaming Donghua Sub Indo Kualitas HD">
-  <meta property="og:description" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate gratis. Nikmati serial animasi China favoritmu dengan resolusi jernih.">
+  <meta property="og:title" content="Dongflix - Nonton Streaming Donghua & Anime Sub Indo Kualitas HD">
+  <meta property="og:description" content="Nonton streaming donghua dan anime subtitle Indonesia terlengkap dan terupdate gratis di Dongflix.">
   <meta property="og:url" content="https://dongflix.my.id/">
   <meta property="og:image" content="https://dongflix.my.id/image/IMG_6395.png">
   <meta property="og:image:width" content="512">
@@ -34,46 +34,14 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Dongflix - Nonton Streaming Donghua Sub Indo Kualitas HD">
-  <meta name="twitter:description" content="Nonton streaming donghua subtitle Indonesia terlengkap dan terupdate gratis di Dongflix.">
+  <meta name="twitter:title" content="Dongflix - Nonton Streaming Donghua & Anime Sub Indo Kualitas HD">
+  <meta name="twitter:description" content="Nonton streaming donghua dan anime subtitle Indonesia terlengkap dan terupdate gratis di Dongflix.">
   <meta name="twitter:image" content="https://dongflix.my.id/image/IMG_6395.png">
 
   <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="image/IMG_6395.png">
   <link rel="apple-touch-icon" href="image/IMG_6395.png">
   <meta name="theme-color" content="#000000">
-
-  <!-- Structured Data JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": "https://dongflix.my.id/#website",
-        "url": "https://dongflix.my.id/",
-        "name": "Dongflix",
-        "description": "Platform streaming donghua subtitle Indonesia terlengkap dan terupdate kualitas HD",
-        "inLanguage": "id-ID",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://dongflix.my.id/donghua/?search={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      },
-      {
-        "@type": "Organization",
-        "@id": "https://dongflix.my.id/#organization",
-        "name": "Dongflix",
-        "url": "https://dongflix.my.id/",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://dongflix.my.id/image/IMG_6395.png"
-        }
-      }
-    ]
-  }
-  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -784,7 +752,7 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* WIDGET LIVE CHAT BERANDA (BACKGROUND LUAR TRANSPARAN) */
+    /* WIDGET LIVE CHAT BERANDA */
     .home-chat-widget {
       background: transparent;
       border: none;
@@ -798,7 +766,6 @@
       margin-bottom: 14px;
     }
 
-    /* BACKGROUND HALUS PER CHAT (TIDAK MENCOLOK) */
     .home-chat-item {
       display: flex;
       align-items: center;
@@ -858,7 +825,6 @@
       word-break: break-word;
     }
 
-    /* Badge Shimmer */
     @keyframes badgeShimmer {
       0% { transform: translateX(-150%) skewX(-20deg); }
       35%, 100% { transform: translateX(180%) skewX(-20deg); }
@@ -1185,7 +1151,7 @@
     </div>
 
     <div class="header-actions-group">
-      <button class="action-btn" onclick="openSearchModal()" aria-label="Cari Donghua">
+      <button class="action-btn" onclick="openSearchModal()" aria-label="Cari Donghua atau Anime">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       </button>
       <button class="action-btn" id="socialMenuBtn" onclick="togglePopoverMenu()" aria-label="Menu Navigasi">
@@ -1194,7 +1160,7 @@
     </div>
   </header>
 
-  <!-- MENU POPOVER MODERN 2 KOLOM (DONGFLIX) -->
+  <!-- MENU POPOVER MODERN -->
   <div class="popover-menu" id="popoverMenu">
     <div class="popover-top-bar">
       <div class="popover-brand">
@@ -1214,7 +1180,12 @@
 
       <a href="/donghua/" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
-        <span>Series</span>
+        <span>Donghua</span>
+      </a>
+
+      <a href="#animeSection" class="menu-nav-tile" onclick="togglePopoverMenu()">
+        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span>Anime</span>
       </a>
 
       <a href="/donghua/?type=movie" class="menu-nav-tile">
@@ -1225,11 +1196,6 @@
       <a href="/profil/" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         <span>Koleksi</span>
-      </a>
-
-      <a href="#genreBar" class="menu-nav-tile" onclick="togglePopoverMenu()">
-        <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-        <span>Genre</span>
       </a>
 
       <a href="/chat/" class="menu-nav-tile">
@@ -1255,12 +1221,13 @@
     </div>
   </div>
 
+  <!-- SEARCH MODAL -->
   <div class="modal-overlay" id="searchModalOverlay">
     <div class="search-modal-container">
       <div class="search-modal-header">
         <div class="search-input-box">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua atau movie..." onkeyup="handleSearchInput(event)">
+          <input type="text" class="search-input-field" id="searchInputModal" placeholder="Cari donghua atau anime..." onkeyup="handleSearchInput(event)">
         </div>
         <button class="modal-close-btn" onclick="closeSearchModal()" aria-label="Tutup Pencarian">
           <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -1317,7 +1284,6 @@
       </div>
 
       <div class="home-chat-widget">
-        <!-- SKELETON LIVE CHAT LIST -->
         <div class="home-chat-items-list" id="homeChatList">
           <div class="home-chat-item">
             <div class="home-chat-avatar skeleton" style="border-radius: 50%;"></div>
@@ -1385,6 +1351,27 @@
         </a>
       </div>
       <div class="grid-3" id="latestGrid">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ANIME TERBARU (DIBAWAH DONGHUA TERBARU)   -->
+    <!-- ========================================== -->
+    <section class="section-block" id="animeSection">
+      <div class="section-header-flex">
+        <h2 class="section-title">Anime Terbaru</h2>
+        <a href="/anime/" class="see-all-btn">
+          Lihat Semua
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+      <div class="grid-3" id="animeGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -1583,6 +1570,7 @@
     let currentSearchType = 'all';
 
     let donghuaList = [];
+    let animeList = [];
     let movieList = [];
     let masterList = [];
     let viewsDataMap = {};
@@ -1607,7 +1595,7 @@
     }
 
     function sanitizeTitle(rawTitle) {
-      if (!rawTitle) return 'Donghua';
+      if (!rawTitle) return 'Anime';
       const str = rawTitle.trim();
       const half = Math.floor(str.length / 2);
       if (str.length > 4 && str.slice(0, half) === str.slice(half)) return str.slice(0, half).trim();
@@ -1694,7 +1682,9 @@
           searchItems.forEach(item => {
             const card = document.createElement('a');
             card.className = 'search-item-card';
-            card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+            // Link anime dialihkan ke /anime/ jika berasal dari daftar anime
+            const itemPath = item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
+            card.href = itemPath;
             card.innerHTML = `
               <div class="search-item-thumb">
                 <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
@@ -1705,7 +1695,7 @@
                 <div class="search-item-meta">
                   <span class="search-badge-status">${parseStatusText(item)}</span>
                   <span>•</span>
-                  <span>${isMovieItem(item) ? 'Movie' : 'Donghua Series'}</span>
+                  <span>${item.isAnime ? 'Anime' : (isMovieItem(item) ? 'Movie' : 'Donghua')}</span>
                 </div>
               </div>
             `;
@@ -1730,7 +1720,7 @@
           <img class="hero-bg-img" src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
           <div class="hero-overlay"></div>
           <div class="hero-content">
-            <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : 'DONGHUA'}</span>
+            <span class="badge-tag">${isMovieItem(item) ? 'MOVIE' : (item.isAnime ? 'ANIME' : 'DONGHUA')}</span>
             <h1 class="hero-title">${sanitizeTitle(item.title)}</h1>
             <div class="hero-meta">
               <span class="rating-star">★ 9.0</span>
@@ -1739,7 +1729,7 @@
               <span>•</span>
               <span>${parseEpisodeText(item)}</span>
             </div>
-            <a href="/donghua/${encodeURIComponent(item.slug)}" class="btn-watch">
+            <a href="${item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`}" class="btn-watch">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               Tonton
             </a>
@@ -1801,7 +1791,7 @@
       historyList.slice(0, 10).forEach((item) => {
         const card = document.createElement('a');
         card.className = 'continue-card-item';
-        card.href = `/donghua/${encodeURIComponent(item.slug || item.mainPath)}`;
+        card.href = item.mainPath ? item.mainPath : `/donghua/${encodeURIComponent(item.slug || '')}`;
         
         const rawCover = item.poster || item.cover;
         const posterUrl = (rawCover && typeof rawCover === 'string' && rawCover.trim() !== '') ? rawCover : DEFAULT_NO_COVER;
@@ -1904,12 +1894,13 @@
     function createPopularFeaturedCard(item) {
       const card = document.createElement('a');
       card.className = 'popular-featured-card';
-      card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+      const targetUrl = item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
+      card.href = targetUrl;
       const titleText = sanitizeTitle(item.title);
       const isMovie = isMovieItem(item);
       const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
       const badgeText = isMovie ? 'Movie' : `Ep ${epNum} / ${parseStatusText(item) === 'COMPLETED' ? 'Completed' : 'Ongoing'}`;
-      const synopsisText = item.synopsis || item.description || item.desc || `${titleText} menceritakan petualangan kultivasi tanpa sihir yang penuh pertempuran hebat di benua spiritual melawan takdir.`;
+      const synopsisText = item.synopsis || item.description || item.desc || `${titleText} menyajikan alur cerita menarik dan visual berkualitas tinggi untuk diikuti.`;
       const genresFormatted = Array.isArray(item.genres) && item.genres.length > 0 ? item.genres.join(' • ') : 'Action • Adventure • Fantasy';
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
 
@@ -1935,10 +1926,10 @@
       return card;
     }
 
-    function createGridCard(item) {
+    function createGridCard(item, basePath = '/donghua/') {
       const card = document.createElement('a');
       card.className = 'card-grid';
-      card.href = `/donghua/${encodeURIComponent(item.slug)}`;
+      card.href = `${basePath}${encodeURIComponent(item.slug)}`;
       const isMovie = isMovieItem(item);
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
       const coverSrc = getImageUrl(item);
@@ -2057,33 +2048,66 @@
       } catch (_) {}
     };
 
+    // Load Data Anime dari api/anime.js
+    async function loadAnimeData() {
+      const animeGrid = document.getElementById('animeGrid');
+      try {
+        const res = await fetch('/api/anime', { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to fetch anime');
+        const rawAnime = await res.json();
+        
+        animeList = Array.isArray(rawAnime) ? rawAnime : (rawAnime.data || []);
+        
+        // Tandai sebagai anime untuk routing dan search
+        animeList = animeList.map(item => ({ ...item, isAnime: true }));
+        masterList.push(...animeList);
+
+        if (animeGrid) {
+          animeGrid.innerHTML = '';
+          animeList.slice(0, 12).forEach(item => {
+            animeGrid.appendChild(createGridCard(item, '/anime/'));
+          });
+        }
+      } catch (err) {
+        console.error('Error load anime:', err);
+        if (animeGrid) {
+          animeGrid.innerHTML = '<p style="color:var(--text-muted); font-size:13px; grid-column: 1 / -1; text-align:center;">Gagal memuat anime terbaru.</p>';
+        }
+      }
+    }
+
+    // Load Data Donghua Utama
     async function loadMainData() {
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
         if (!res.ok) throw new Error();
-        masterList = await res.json();
+        const donghuaData = await res.json();
 
-        donghuaList = masterList.filter(item => !isMovieItem(item));
-        movieList = masterList.filter(item => isMovieItem(item));
+        donghuaList = donghuaData.filter(item => !isMovieItem(item));
+        movieList = donghuaData.filter(item => isMovieItem(item));
+        masterList = [...donghuaData];
 
         renderHeroSlider(masterList);
         renderPopularSections();
 
         const latestGrid = document.getElementById('latestGrid');
         latestGrid.innerHTML = '';
-        donghuaList.slice(0, 12).forEach(item => latestGrid.appendChild(createGridCard(item)));
+        donghuaList.slice(0, 12).forEach(item => latestGrid.appendChild(createGridCard(item, '/donghua/')));
 
         renderGenreBar(masterList);
 
         const movieGrid = document.getElementById('movieGrid');
         movieGrid.innerHTML = '';
-        movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item)));
+        movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item, '/donghua/')));
 
         if (window.syncFirebaseViews) {
           window.syncFirebaseViews();
         }
 
       } catch (_) {}
+
+      // Muat data anime secara terpisah agar tidak memblokir render utama donghua
+      await loadAnimeData();
     }
 
     window.addEventListener('pageshow', () => {
