@@ -1103,7 +1103,7 @@
     }
 
     /* ========================================================
-       FLOATING DOCK ALA IPHONE (iOS TAB BAR MELAYANG GLASS)
+       FLOATING DOCK ALA IPHONE (SESUAI GAMBAR, NO BLACK SHADOW)
        ======================================================== */
     .bottom-dock-wrapper {
       position: fixed;
@@ -1127,10 +1127,11 @@
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Kapsul Dock Kaca Melayang (Tanpa Bayangan Hitam di Belakang) */
     .floating-dock-nav {
       flex: 1;
       height: 62px;
-      background: rgba(22, 22, 26, 0.78);
+      background: rgba(26, 26, 32, 0.76);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
       border: 0.75px solid rgba(255, 255, 255, 0.18);
@@ -1139,11 +1140,12 @@
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 4px 8px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
+      padding: 4px 6px;
+      box-shadow: none !important;
       position: relative;
     }
 
+    /* Item Tab Vertikal (Ikon di Atas, Teks di Bawah) */
     .dock-pill-btn {
       flex: 1;
       height: 100%;
@@ -1154,9 +1156,9 @@
       gap: 3px;
       background: transparent;
       border: none;
-      color: rgba(235, 235, 245, 0.6);
+      color: rgba(220, 225, 235, 0.65);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Plus Jakarta Sans", sans-serif;
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: -0.1px;
       border-radius: 9999px;
@@ -1177,14 +1179,14 @@
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s;
     }
 
-    /* Glow Pendaran Belakang Tab Aktif ala iPhone */
+    /* Pendaran Glow Biru Melingkar di Belakang Tab Aktif Sesuai Gambar */
     .dock-pill-btn::before {
       content: '';
       position: absolute;
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.38) 0%, rgba(2, 132, 199, 0.12) 55%, transparent 75%);
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.42) 0%, rgba(2, 132, 199, 0.18) 50%, transparent 75%);
       opacity: 0;
       transform: scale(0.6);
       transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1198,8 +1200,10 @@
       z-index: 1;
     }
 
+    /* Style Tab Aktif (Biru Cerah + Ambient Glow Persis di Gambar) */
     .dock-pill-btn.active {
       color: #38bdf8;
+      background: transparent !important;
     }
 
     .dock-pill-btn.active::before {
@@ -1210,7 +1214,7 @@
     .dock-pill-btn.active svg {
       stroke: #38bdf8;
       transform: translateY(-1px) scale(1.06);
-      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.5));
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
     }
 
     .dock-pill-btn.active span {
@@ -1222,12 +1226,12 @@
       transform: scale(0.92);
     }
 
-    /* Tombol OnTop Sejajar di Samping Navbar */
+    /* Tombol OnTop Sejajar di Samping (Tanpa Bayangan Hitam) */
     .floating-circle-btn {
       width: 54px;
       height: 54px;
       border-radius: 50%;
-      background: rgba(22, 22, 26, 0.78);
+      background: rgba(26, 26, 32, 0.76);
       backdrop-filter: blur(28px) saturate(190%);
       -webkit-backdrop-filter: blur(28px) saturate(190%);
       border: 0.75px solid rgba(255, 255, 255, 0.18);
@@ -1237,7 +1241,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+      box-shadow: none !important;
       flex-shrink: 0;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       transform: scale(0.5);
@@ -1317,17 +1321,17 @@
 
     <div class="menu-grid-nav">
       <a href="javascript:void(0)" onclick="setCategoryTab('all'); togglePopoverMenu();" class="menu-nav-tile active-pill">
-        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20z"/></svg>
         <span>Beranda</span>
       </a>
 
       <a href="javascript:void(0)" onclick="setCategoryTab('donghua'); togglePopoverMenu();" class="menu-nav-tile">
-        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><polyline points="8 3 12 7 16 3"/></svg>
         <span>Donghua</span>
       </a>
 
       <a href="javascript:void(0)" onclick="setCategoryTab('anime'); togglePopoverMenu();" class="menu-nav-tile">
-        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
         <span>Anime</span>
       </a>
 
@@ -1588,31 +1592,31 @@
     </section>
   </div>
 
-  <!-- FLOATING DOCK BOTTOM (NAVBAR GLASS MELAYANG ALA IPHONE & ONTOP SEJAJAR) -->
+  <!-- FLOATING DOCK BOTTOM (SESUAI GAMBAR, NO BOX SHADOW) -->
   <div class="bottom-dock-wrapper">
     <div class="bottom-dock-inner">
       <nav class="floating-dock-nav" aria-label="Navigasi Menu">
         <!-- Tab Beranda -->
         <button class="dock-pill-btn active" id="tabBtnAll" onclick="setCategoryTab('all')">
-          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20z"/></svg>
           <span>Beranda</span>
         </button>
 
         <!-- Tab Donghua -->
         <button class="dock-pill-btn" id="tabBtnDonghua" onclick="setCategoryTab('donghua')">
-          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><polyline points="8 3 12 7 16 3"/></svg>
           <span>Donghua</span>
         </button>
 
         <!-- Tab Anime -->
         <button class="dock-pill-btn" id="tabBtnAnime" onclick="setCategoryTab('anime')">
-          <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
           <span>Anime</span>
         </button>
 
         <!-- Tab Cari Cepat Langsung Buka Modal -->
         <button class="dock-pill-btn" onclick="openSearchModal()">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.35-4.35"/></svg>
           <span>Cari</span>
         </button>
       </nav>
