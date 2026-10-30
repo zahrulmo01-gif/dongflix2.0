@@ -6,21 +6,18 @@
   <meta name="referrer" content="no-referrer">
   <title>Dongflix - Nonton Streaming Donghua & Anime Sub Indo Gratis Kualitas HD</title>
   
-  <!-- Meta Tag Standar & SEO Google -->
   <meta name="description" content="Dongflix adalah platform streaming donghua dan anime subtitle Indonesia terlengkap dan terupdate setiap hari. Nonton anime sub indo kualitas HD gratis dan lancar tanpa buffering.">
   <meta name="keywords" content="dongflix, nonton donghua, streaming donghua, streaming anime, anime sub indo, nonton anime jepang, donghua sub indo, nonton anime china, donghua batch, download donghua, samehadaku, anichin, donghua">
   <meta name="author" content="Dongflix">
   <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
   <link rel="canonical" href="https://dongflix.my.id/">
 
-  <!-- Web Manifest & PWA Support -->
   <link rel="manifest" href="/site.webmanifest">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dongflix">
 
-  <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Dongflix">
   <meta property="og:title" content="Dongflix - Nonton Streaming Donghua & Anime Sub Indo Kualitas HD">
@@ -32,13 +29,11 @@
   <meta property="og:image:alt" content="Logo Dongflix">
   <meta property="og:locale" content="id_ID">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Dongflix - Nonton Streaming Donghua & Anime Sub Indo Kualitas HD">
   <meta name="twitter:description" content="Nonton streaming donghua dan anime subtitle Indonesia terlengkap dan terupdate gratis di Dongflix.">
   <meta name="twitter:image" content="https://dongflix.my.id/image/IMG_6395.png">
 
-  <!-- Favicon / Ikon Web -->
   <link rel="icon" type="image/png" href="image/IMG_6395.png">
   <link rel="apple-touch-icon" href="image/IMG_6395.png">
   <meta name="theme-color" content="#000000">
@@ -73,14 +68,14 @@
       :root {
         --glass-bg: rgba(20, 20, 24, 0.58);
       }
-      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .floating-circle-btn, .popover-menu {
+      .nav-capsule, .action-btn, .search-input-field, .genre-badge-item, .badge-bottom, .featured-pill-btn, .popover-menu {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
       }
     }
 
     @supports not (-webkit-touch-callout: none) {
-      .nav-capsule, .action-btn, .floating-circle-btn {
+      .nav-capsule, .action-btn {
         backdrop-filter: var(--glass-blur);
         -webkit-backdrop-filter: var(--glass-blur);
       }
@@ -96,7 +91,7 @@
       color: var(--text-main); 
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
       padding-top: 0;
-      padding-bottom: 50px; 
+      padding-bottom: 100px; 
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -webkit-overflow-scrolling: touch;
@@ -104,7 +99,6 @@
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-    /* SKELETON SHIMMER UNIVERSAL */
     @keyframes skeletonShimmer {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
@@ -284,7 +278,6 @@
       display: block;
     }
 
-    /* POPOVER DRAWER MENU */
     .popover-menu {
       display: none;
       position: fixed;
@@ -540,7 +533,6 @@
       text-transform: uppercase;
     }
 
-    /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
@@ -752,7 +744,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* WIDGET LIVE CHAT BERANDA */
     .home-chat-widget {
       background: transparent;
       border: none;
@@ -1111,17 +1102,168 @@
       color: #d1d5db; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 9999px;
     }
 
-    .bottom-floating-controls { position: fixed; bottom: 24px; right: 18px; z-index: 95; }
-    .floating-circle-btn {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border); 
-      color: var(--text-main); display: flex; align-items: center; justify-content: center;
-      cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.2s, transform 0.2s;
-      transform: translateZ(0);
+    /* ========================================================
+       FLOATING DOCK ALA IPHONE (iOS TAB BAR MELAYANG GLASS)
+       ======================================================== */
+    .bottom-dock-wrapper {
+      position: fixed;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      left: 0;
+      right: 0;
+      z-index: 95;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      padding: 0 16px;
     }
-    .floating-circle-btn.show { opacity: 1; visibility: visible; }
-    .floating-circle-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    .bottom-dock-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 480px;
+      width: 100%;
+      pointer-events: auto;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .floating-dock-nav {
+      flex: 1;
+      height: 62px;
+      background: rgba(22, 22, 26, 0.78);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 0.75px solid rgba(255, 255, 255, 0.18);
+      border-top: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 4px 8px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .dock-pill-btn {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      color: rgba(235, 235, 245, 0.6);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Plus Jakarta Sans", sans-serif;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+      border-radius: 9999px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      outline: none;
+      padding: 2px 0;
+    }
+
+    .dock-pill-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.1;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s;
+    }
+
+    /* Glow Pendaran Belakang Tab Aktif ala iPhone */
+    .dock-pill-btn::before {
+      content: '';
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.38) 0%, rgba(2, 132, 199, 0.12) 55%, transparent 75%);
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .dock-pill-btn svg,
+    .dock-pill-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .dock-pill-btn.active {
+      color: #38bdf8;
+    }
+
+    .dock-pill-btn.active::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .dock-pill-btn.active svg {
+      stroke: #38bdf8;
+      transform: translateY(-1px) scale(1.06);
+      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.5));
+    }
+
+    .dock-pill-btn.active span {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .dock-pill-btn:active svg {
+      transform: scale(0.92);
+    }
+
+    /* Tombol OnTop Sejajar di Samping Navbar */
+    .floating-circle-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(22, 22, 26, 0.78);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 0.75px solid rgba(255, 255, 255, 0.18);
+      border-top: 1px solid rgba(255, 255, 255, 0.32);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+      flex-shrink: 0;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.5);
+      opacity: 0;
+      pointer-events: none;
+      margin-left: -66px;
+    }
+
+    .floating-circle-btn.show {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+      margin-left: 0;
+    }
+
+    .floating-circle-btn:active {
+      transform: scale(0.92);
+    }
+
+    .floating-circle-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.3;
+    }
 
     @media (min-width: 768px) {
       .hero-slider-wrapper { height: 430px; }
@@ -1131,6 +1273,7 @@
       .continue-card-item { flex: 0 0 240px; min-width: 240px; max-width: 240px; gap: 10px; }
       .continue-thumb-box { height: 136px; }
       .popular-vertical-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 28px; }
+      .bottom-dock-inner { max-width: 480px; }
     }
 
     footer { margin-top: 60px; padding: 26px 16px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
@@ -1173,17 +1316,17 @@
     </div>
 
     <div class="menu-grid-nav">
-      <a href="/" class="menu-nav-tile active-pill">
+      <a href="javascript:void(0)" onclick="setCategoryTab('all'); togglePopoverMenu();" class="menu-nav-tile active-pill">
         <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         <span>Beranda</span>
       </a>
 
-      <a href="/donghua/" class="menu-nav-tile">
+      <a href="javascript:void(0)" onclick="setCategoryTab('donghua'); togglePopoverMenu();" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
         <span>Donghua</span>
       </a>
 
-      <a href="#animeSection" class="menu-nav-tile" onclick="togglePopoverMenu()">
+      <a href="javascript:void(0)" onclick="setCategoryTab('anime'); togglePopoverMenu();" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         <span>Anime</span>
       </a>
@@ -1246,7 +1389,7 @@
     </div>
   </div>
 
-  <!-- HERO SLIDER DENGAN SKELETON SHIMMER -->
+  <!-- HERO SLIDER -->
   <div class="hero-slider-wrapper" id="heroSlider">
     <div class="skeleton-hero">
       <div style="width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;">
@@ -1310,8 +1453,8 @@
       </div>
     </section>
 
-    <!-- POPULER HARI INI DENGAN SKELETON -->
-    <section class="section-block">
+    <!-- POPULER HARI INI -->
+    <section class="section-block" id="popularTodaySection">
       <div class="section-header-flex">
         <h2 class="section-title">Populer Hari Ini</h2>
       </div>
@@ -1341,7 +1484,7 @@
       </div>
     </section>
 
-    <!-- DONGHUA TERBARU DENGAN SKELETON -->
+    <!-- DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Terbaru</h2>
@@ -1360,9 +1503,7 @@
       </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- ANIME TERBARU (DIBAWAH DONGHUA TERBARU)   -->
-    <!-- ========================================== -->
+    <!-- ANIME TERBARU -->
     <section class="section-block" id="animeSection">
       <div class="section-header-flex">
         <h2 class="section-title">Anime Terbaru</h2>
@@ -1382,7 +1523,7 @@
     </section>
 
     <!-- BADGE GENRE -->
-    <div class="genre-scroll-wrapper">
+    <div class="genre-scroll-wrapper" id="genreWrapperSection">
       <div class="genre-scroll-row" id="genreBar">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
         <a href="/donghua/?category=Adventure" class="genre-badge-item">Adventure</a>
@@ -1399,7 +1540,7 @@
       </div>
     </div>
 
-    <!-- MOVIE TERBARU DENGAN SKELETON -->
+    <!-- MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">Movie Terbaru</h2>
@@ -1415,10 +1556,10 @@
       </div>
     </section>
 
-    <!-- DONGHUA POPULER DENGAN SKELETON -->
-    <section class="section-block">
+    <!-- POPULER SEMUA -->
+    <section class="section-block" id="popularAllSection">
       <div class="section-header-flex">
-        <h2 class="section-title">Donghua Populer</h2>
+        <h2 class="section-title" id="popularSectionTitle">Donghua Populer</h2>
       </div>
       <div class="popular-vertical-list" id="popularAllGrid">
         <div class="popular-featured-card">
@@ -1447,11 +1588,41 @@
     </section>
   </div>
 
-  <aside class="bottom-floating-controls">
-    <button class="floating-circle-btn" id="backToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Kembali ke atas">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-    </button>
-  </aside>
+  <!-- FLOATING DOCK BOTTOM (NAVBAR GLASS MELAYANG ALA IPHONE & ONTOP SEJAJAR) -->
+  <div class="bottom-dock-wrapper">
+    <div class="bottom-dock-inner">
+      <nav class="floating-dock-nav" aria-label="Navigasi Menu">
+        <!-- Tab Beranda -->
+        <button class="dock-pill-btn active" id="tabBtnAll" onclick="setCategoryTab('all')">
+          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span>Beranda</span>
+        </button>
+
+        <!-- Tab Donghua -->
+        <button class="dock-pill-btn" id="tabBtnDonghua" onclick="setCategoryTab('donghua')">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+          <span>Donghua</span>
+        </button>
+
+        <!-- Tab Anime -->
+        <button class="dock-pill-btn" id="tabBtnAnime" onclick="setCategoryTab('anime')">
+          <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          <span>Anime</span>
+        </button>
+
+        <!-- Tab Cari Cepat Langsung Buka Modal -->
+        <button class="dock-pill-btn" onclick="openSearchModal()">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>Cari</span>
+        </button>
+      </nav>
+
+      <!-- Tombol Kembali Ke Atas (OnTop) Sejajar di Samping -->
+      <button class="floating-circle-btn" id="backToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Kembali ke atas">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+      </button>
+    </div>
+  </div>
 
   <footer>
     <div class="container">
@@ -1568,6 +1739,7 @@
     let currentSlide = 0;
     let slideInterval = null;
     let currentSearchType = 'all';
+    let currentCategoryTab = 'all';
 
     let donghuaList = [];
     let animeList = [];
@@ -1641,11 +1813,85 @@
     function openSearchModal() { document.getElementById('searchModalOverlay').classList.add('active'); document.getElementById('searchInputModal').focus(); }
     function closeSearchModal() { document.getElementById('searchModalOverlay').classList.remove('active'); }
 
+    // Scroll back to top detection
     window.addEventListener('scroll', () => {
       const onTopBtn = document.getElementById('backToTopBtn');
-      if (window.scrollY > 300) onTopBtn.classList.add('show');
-      else onTopBtn.classList.remove('show');
+      if (!onTopBtn) return;
+      if (window.scrollY > 300) {
+        onTopBtn.classList.add('show');
+      } else {
+        onTopBtn.classList.remove('show');
+      }
     }, { passive: true });
+
+    // FILTER TAB BOTTOM FLOATING NAVBAR
+    function setCategoryTab(tab) {
+      currentCategoryTab = tab;
+      document.getElementById('tabBtnAll').classList.toggle('active', tab === 'all');
+      document.getElementById('tabBtnDonghua').classList.toggle('active', tab === 'donghua');
+      document.getElementById('tabBtnAnime').classList.toggle('active', tab === 'anime');
+
+      const donghuaSec = document.getElementById('donghuaSection');
+      const animeSec = document.getElementById('animeSection');
+      const movieSec = document.getElementById('movieSection');
+      const popTitle = document.getElementById('popularSectionTitle');
+
+      if (tab === 'all') {
+        donghuaSec.style.display = 'block';
+        animeSec.style.display = 'block';
+        movieSec.style.display = 'block';
+        renderFilteredMovie('all');
+        if (popTitle) popTitle.innerText = 'Donghua Populer';
+      } else if (tab === 'donghua') {
+        donghuaSec.style.display = 'block';
+        animeSec.style.display = 'none';
+        movieSec.style.display = 'block';
+        renderFilteredMovie('donghua');
+        if (popTitle) popTitle.innerText = 'Donghua Populer';
+      } else if (tab === 'anime') {
+        donghuaSec.style.display = 'none';
+        animeSec.style.display = 'block';
+        movieSec.style.display = 'block';
+        renderFilteredMovie('anime');
+        if (popTitle) popTitle.innerText = 'Anime Populer';
+      }
+
+      let filteredMaster = masterList;
+      if (tab === 'donghua') {
+        filteredMaster = masterList.filter(item => !item.isAnime);
+      } else if (tab === 'anime') {
+        filteredMaster = masterList.filter(item => item.isAnime);
+      }
+
+      if (filteredMaster.length > 0) {
+        renderHeroSlider(filteredMaster);
+      }
+      renderPopularSections(filteredMaster);
+    }
+
+    function renderFilteredMovie(filterMode) {
+      const movieGrid = document.getElementById('movieGrid');
+      if (!movieGrid) return;
+      movieGrid.innerHTML = '';
+      
+      let targetMovies = movieList;
+      if (filterMode === 'anime') {
+        targetMovies = masterList.filter(item => isMovieItem(item) && item.isAnime);
+      } else if (filterMode === 'donghua') {
+        targetMovies = masterList.filter(item => isMovieItem(item) && !item.isAnime);
+      } else {
+        targetMovies = masterList.filter(item => isMovieItem(item));
+      }
+
+      if (targetMovies.length === 0) {
+        targetMovies = movieList;
+      }
+
+      targetMovies.slice(0, 12).forEach(item => {
+        const basePath = item.isAnime ? '/anime/' : '/donghua/';
+        movieGrid.appendChild(createGridCard(item, basePath));
+      });
+    }
 
     function setSearchFilter(type) {
       currentSearchType = type;
@@ -1682,7 +1928,6 @@
           searchItems.forEach(item => {
             const card = document.createElement('a');
             card.className = 'search-item-card';
-            // Link anime dialihkan ke /anime/ jika berasal dari daftar anime
             const itemPath = item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
             card.href = itemPath;
             card.innerHTML = `
@@ -1748,6 +1993,7 @@
       });
       slider.appendChild(dotsContainer);
 
+      currentSlide = 0;
       clearInterval(slideInterval);
       slideInterval = setInterval(() => {
         let next = (currentSlide + 1) % sliderItems.length;
@@ -1982,8 +2228,8 @@
       }
     }
 
-    function getSortedDailyList() {
-      return [...masterList].sort((a, b) => {
+    function getSortedDailyList(list = masterList) {
+      return [...list].sort((a, b) => {
         const viewsA = parseInt(dailyViewsMap[a.slug] || 0, 10);
         const viewsB = parseInt(dailyViewsMap[b.slug] || 0, 10);
         if (viewsB === viewsA) {
@@ -1993,23 +2239,23 @@
       });
     }
 
-    function getSortedTotalList() {
-      return [...masterList].sort((a, b) => {
+    function getSortedTotalList(list = masterList) {
+      return [...list].sort((a, b) => {
         const viewsA = parseInt(viewsDataMap[a.slug] || 0, 10);
         const viewsB = parseInt(viewsDataMap[b.slug] || 0, 10);
         return viewsB - viewsA;
       });
     }
 
-    function renderPopularSections() {
-      const dailySorted = getSortedDailyList();
+    function renderPopularSections(sourceList = masterList) {
+      const dailySorted = getSortedDailyList(sourceList);
       const popRow = document.getElementById('todayPopularRow');
       if (popRow) {
         popRow.innerHTML = '';
         dailySorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
       }
 
-      const totalSorted = getSortedTotalList();
+      const totalSorted = getSortedTotalList(sourceList);
       const popAllGrid = document.getElementById('popularAllGrid');
       if (popAllGrid) {
         popAllGrid.innerHTML = '';
@@ -2048,7 +2294,6 @@
       } catch (_) {}
     };
 
-    // Load Data Anime dari api/anime.js
     async function loadAnimeData() {
       const animeGrid = document.getElementById('animeGrid');
       try {
@@ -2057,8 +2302,6 @@
         const rawAnime = await res.json();
         
         animeList = Array.isArray(rawAnime) ? rawAnime : (rawAnime.data || []);
-        
-        // Tandai sebagai anime untuk routing dan search
         animeList = animeList.map(item => ({ ...item, isAnime: true }));
         masterList.push(...animeList);
 
@@ -2076,7 +2319,6 @@
       }
     }
 
-    // Load Data Donghua Utama
     async function loadMainData() {
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
@@ -2106,7 +2348,6 @@
 
       } catch (_) {}
 
-      // Muat data anime secara terpisah agar tidak memblokir render utama donghua
       await loadAnimeData();
     }
 
