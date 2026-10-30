@@ -1,5 +1,33 @@
 [
   {
+    "episode": "101",
+    "title": "Azure Legacy Episode 101 Subtitle Indonesia",
+    "link": "https://anichin.my/azure-legacy-episode-101-subtitle-indonesia/",
+    "date": "October 30, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16332984814258"
+      },
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16332984879794"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k4v9RnKfnugopOMdhhg"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7fey7a/?pub=2li51c"
+      },
+      {
+        "name": "Drive 2 [Ads]",
+        "link": "https://odysee.com/%24/embed/%40anichincare%3A0%2F-ANICHIN.CARE--Azure-Legacy--2026--101-.-720p-%3A5?r=9WwvKaBCBPma62j53afb7YFnr7EZYzQv&signature=84171a0a33e20e4c85da35ee816e2149325b29df15d7675bacff1eb250a1c51a146134dd21b686610accbff0a36b68e408dbec0c64e62e6faae49295f95b5027&signature_ts=1793329475"
+      }
+    ]
+  },
+  {
     "episode": "100",
     "title": "Azure Legacy Episode 100 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-100-subtitle-indonesia/",
@@ -100,6 +128,54 @@
     ]
   },
   {
+    "episode": "98",
+    "title": "Azure Legacy Episode 98 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-98-subtitle-indonesia/",
+    "date": "October 9, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16088983997106"
+      },
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16088990485170"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7ETM2I1lIAzB6LiEIW"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7efcwc/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://player.abyssplayer.com/U3BQ4s_WZ"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#oegg5s"
+      },
+      {
+        "name": "Odysee",
+        "link": "https://odysee.com/%24/embed/%40anichincare%3A0%2F-ANICHIN.CARE--Azure-Legacy--2026--98-.-720p-%3A9?r=9WwvKaBCBPma62j53afb7YFnr7EZYzQv&signature=b861d430f4ea9f3a4f2b708e265b04ee7ed830b3aa901e142cc6364fc4f4a34a4c900d6c776e5d19f91dd109f39da07f8b6d8ad232fe702f0d8e1794dafde5bc&signature_ts=1791514237"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/qhkmc7g8b38i"
+      },
+      {
+        "name": "VidHide [ADS]",
+        "link": "https://morencius.com/embed/agf05pe83jvn"
+      },
+      {
+        "name": "Mega",
+        "link": "https://mega.nz/embed/rRxABKRb#rNXRHmxYYxFDFADDXnM_zINrRg7Wuc_0fLWVC_gny8s"
+      }
+    ]
+  },
+  {
     "episode": "97",
     "title": "Azure Legacy Episode 97 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-97-subtitle-indonesia/",
@@ -148,54 +224,6 @@
       {
         "name": "Mega",
         "link": "https://mega.nz/embed/3JJzgYKB#FdVyV0jvl2PHyGgfo8oYV_yRVYgy6tMAcmumm4O44R0"
-      }
-    ]
-  },
-  {
-    "episode": "98",
-    "title": "Azure Legacy Episode 98 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-98-subtitle-indonesia/",
-    "date": "October 9, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/16088983997106"
-      },
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/16088990485170"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7ETM2I1lIAzB6LiEIW"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7efcwc/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/U3BQ4s_WZ"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#oegg5s"
-      },
-      {
-        "name": "Odysee",
-        "link": "https://odysee.com/%24/embed/%40anichincare%3A0%2F-ANICHIN.CARE--Azure-Legacy--2026--98-.-720p-%3A9?r=9WwvKaBCBPma62j53afb7YFnr7EZYzQv&signature=b861d430f4ea9f3a4f2b708e265b04ee7ed830b3aa901e142cc6364fc4f4a34a4c900d6c776e5d19f91dd109f39da07f8b6d8ad232fe702f0d8e1794dafde5bc&signature_ts=1791514237"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/qhkmc7g8b38i"
-      },
-      {
-        "name": "VidHide [ADS]",
-        "link": "https://morencius.com/embed/agf05pe83jvn"
-      },
-      {
-        "name": "Mega",
-        "link": "https://mega.nz/embed/rRxABKRb#rNXRHmxYYxFDFADDXnM_zINrRg7Wuc_0fLWVC_gny8s"
       }
     ]
   },
@@ -356,54 +384,6 @@
     ]
   },
   {
-    "episode": "92",
-    "title": "Season 3 Episode 23",
-    "link": "https://anichin.moe/azure-legacy-episode-92-subtitle-indonesia/",
-    "date": "August 28, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15627808279218"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=40a5c372-700f-4189-b756-ab62fe26b67c"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k6CuQJLV0uCyrkJbgmS"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7ckrm0/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://player.abyssplayer.com/nT94YB9Da"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#kyvmjs"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-x66rnmjf0f4u.html"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/gbbn1wuc1e59"
-      },
-      {
-        "name": "Vidhide",
-        "link": "https://morencius.com/embed/znjck1k83675"
-      },
-      {
-        "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a90fe4356e8e"
-      }
-    ]
-  },
-  {
     "episode": "93",
     "title": "Season 3 Episode 24",
     "link": "https://anichin.moe/azure-legacy-episode-93-subtitle-indonesia/",
@@ -448,6 +428,54 @@
       {
         "name": "TurboVIP",
         "link": "https://turbovidhls.com/t/6a9a3378bfea0"
+      }
+    ]
+  },
+  {
+    "episode": "92",
+    "title": "Season 3 Episode 23",
+    "link": "https://anichin.moe/azure-legacy-episode-92-subtitle-indonesia/",
+    "date": "August 28, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/15627808279218"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=40a5c372-700f-4189-b756-ab62fe26b67c"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k6CuQJLV0uCyrkJbgmS"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7ckrm0/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://player.abyssplayer.com/nT94YB9Da"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#kyvmjs"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-x66rnmjf0f4u.html"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/gbbn1wuc1e59"
+      },
+      {
+        "name": "Vidhide",
+        "link": "https://morencius.com/embed/znjck1k83675"
+      },
+      {
+        "name": "TurboVIP",
+        "link": "https://turbovidhls.com/t/6a90fe4356e8e"
       }
     ]
   },
@@ -544,6 +572,54 @@
     ]
   },
   {
+    "episode": "89",
+    "title": "Season 3 Episode 20",
+    "link": "https://anichin.moe/azure-legacy-episode-89-subtitle-indonesia/",
+    "date": "August 7, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/15406344047282"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=bc8c2a23-a09f-4dc5-9187-71ad76961e53"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7LG9B3Pp8uyESIw3XE"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7bnh0w/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://play.abyssplayer.com/xMPHRAwcZ"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#tp6okh"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-apc3zfzaiqic.html"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/7qe6zg6kcwhe"
+      },
+      {
+        "name": "Vidhide",
+        "link": "https://morencius.com/embed/x32mny107scq"
+      },
+      {
+        "name": "TurboVIP",
+        "link": "https://turbovidhls.com/t/6a754cec4531f"
+      }
+    ]
+  },
+  {
     "episode": "88",
     "title": "Season 3 Episode 19",
     "link": "https://anichin.moe/azure-legacy-episode-88-subtitle-indonesia/",
@@ -636,54 +712,6 @@
     ]
   },
   {
-    "episode": "89",
-    "title": "Season 3 Episode 20",
-    "link": "https://anichin.moe/azure-legacy-episode-89-subtitle-indonesia/",
-    "date": "August 7, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/15406344047282"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=bc8c2a23-a09f-4dc5-9187-71ad76961e53"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7LG9B3Pp8uyESIw3XE"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7bnh0w/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://play.abyssplayer.com/xMPHRAwcZ"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#tp6okh"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-apc3zfzaiqic.html"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/7qe6zg6kcwhe"
-      },
-      {
-        "name": "Vidhide",
-        "link": "https://morencius.com/embed/x32mny107scq"
-      },
-      {
-        "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a754cec4531f"
-      }
-    ]
-  },
-  {
     "episode": "86",
     "title": "Season 3 Episode 17",
     "link": "https://anichin.moe/azure-legacy-episode-86-subtitle-indonesia/",
@@ -732,54 +760,6 @@
     ]
   },
   {
-    "episode": "82",
-    "title": "Season 3 Episode 13",
-    "link": "https://anichin.moe/azure-legacy-episode-82-subtitle-indonesia/",
-    "date": "June 19, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14808987470514"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=0a64b636-b9c9-444f-8a5b-47f2534d0769"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1E5sHcZjSgmZjGQOfQ"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v79bi9k/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/OvOCrOqC77"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#kylghk"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-cwnebjjj0x1r.html"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/gj7qfds493r0"
-      },
-      {
-        "name": "Mega",
-        "link": "https://mega.nz/embed/aX43TDxK#XTiBkD6RV0qn6y6tXKoCacZPlF_eJDqkPhmS1qRCrFo"
-      },
-      {
-        "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a34b1b9dcd87"
-      }
-    ]
-  },
-  {
     "episode": "85",
     "title": "Season 3 Episode 16",
     "link": "https://anichin.moe/azure-legacy-episode-85-subtitle-indonesia/",
@@ -820,54 +800,6 @@
       {
         "name": "Vidhide",
         "link": "https://morencius.com/embed/dsoto5s4qt5j"
-      }
-    ]
-  },
-  {
-    "episode": "83",
-    "title": "Season 3 Episode 14",
-    "link": "https://anichin.moe/azure-legacy-episode-83-subtitle-indonesia/",
-    "date": "June 26, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14909500099250"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=e3a7d7d8-3560-4146-9da4-a29bc6229056"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k4QYyiEBYoTHWXH3Zgi"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v79nkg4/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/N8OXADx5h"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#fchtqd"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-jhceg91b6r0o.html"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/8lcnm52m4dm1"
-      },
-      {
-        "name": "Vidhide",
-        "link": "https://morencius.com/embed/pi0vqnnogn6t"
-      },
-      {
-        "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/6a3decbd93aa1"
       }
     ]
   },
@@ -924,6 +856,102 @@
     ]
   },
   {
+    "episode": "83",
+    "title": "Season 3 Episode 14",
+    "link": "https://anichin.moe/azure-legacy-episode-83-subtitle-indonesia/",
+    "date": "June 26, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/14909500099250"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=e3a7d7d8-3560-4146-9da4-a29bc6229056"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k4QYyiEBYoTHWXH3Zgi"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v79nkg4/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://abyssplayer.com/N8OXADx5h"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#fchtqd"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-jhceg91b6r0o.html"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/8lcnm52m4dm1"
+      },
+      {
+        "name": "Vidhide",
+        "link": "https://morencius.com/embed/pi0vqnnogn6t"
+      },
+      {
+        "name": "TurboVIP",
+        "link": "https://turbovidhls.com/t/6a3decbd93aa1"
+      }
+    ]
+  },
+  {
+    "episode": "82",
+    "title": "Season 3 Episode 13",
+    "link": "https://anichin.moe/azure-legacy-episode-82-subtitle-indonesia/",
+    "date": "June 19, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/14808987470514"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=0a64b636-b9c9-444f-8a5b-47f2534d0769"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1E5sHcZjSgmZjGQOfQ"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v79bi9k/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://abyssplayer.com/OvOCrOqC77"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#kylghk"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-cwnebjjj0x1r.html"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/gj7qfds493r0"
+      },
+      {
+        "name": "Mega",
+        "link": "https://mega.nz/embed/aX43TDxK#XTiBkD6RV0qn6y6tXKoCacZPlF_eJDqkPhmS1qRCrFo"
+      },
+      {
+        "name": "TurboVIP",
+        "link": "https://turbovidhls.com/t/6a34b1b9dcd87"
+      }
+    ]
+  },
+  {
     "episode": "81",
     "title": "Season 3 Episode 12",
     "link": "https://anichin.moe/azure-legacy-episode-81-subtitle-indonesia/",
@@ -964,6 +992,94 @@
       {
         "name": "Mega",
         "link": "https://mega.nz/embed/OeJmFb5Q#59FbqXCkJ8dShhJI3H64eyNETOlJ9vTH3M1k-A6heew"
+      }
+    ]
+  },
+  {
+    "episode": "80",
+    "title": "Season 3 Episode 11",
+    "link": "https://anichin.moe/azure-legacy-episode-80-subtitle-indonesia/",
+    "date": "June 5, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/14596248242866"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=76cd7077-6f64-47b3-b06c-a293424e91c6"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2NbjKm1W2j5gpGqO4y"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v78nox2/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://abyssplayer.com/U4JcWSGTR"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#b1nwow"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://pixeldrain.com/u/NQooFy5E?embed"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/07kupwy0atsc"
+      },
+      {
+        "name": "Mega",
+        "link": "https://mega.nz/embed/ibQE1aaI#2HzyzoXkZ4AuQfzyFss0rnbEiZA2Qf6NkawbHQycK1w"
+      }
+    ]
+  },
+  {
+    "episode": "79",
+    "title": "Season 3 Episode 10",
+    "link": "https://anichin.moe/azure-legacy-episode-79-subtitle-indonesia/",
+    "date": "May 29, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/14484666780338"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=c063f1a4-de75-4914-b124-e753a9d4b4e3"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5T3srg3vRMb8yGf4LE"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v78cesk/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://abyssplayer.com/4uZyK9kv6"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#gdn6jc"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-cab64uuvlq8l.html"
+      },
+      {
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/x9obltekl6rp"
+      },
+      {
+        "name": "Mega",
+        "link": "https://mega.nz/embed/SHQ0UDJS#QnlICiMpc64JQ1bAcuhsoj_CSE7SEQZPzdkLw46A4SM"
       }
     ]
   },
@@ -1056,134 +1172,46 @@
     ]
   },
   {
-    "episode": "79",
-    "title": "Season 3 Episode 10",
-    "link": "https://anichin.moe/azure-legacy-episode-79-subtitle-indonesia/",
-    "date": "May 29, 2026",
+    "episode": "76",
+    "title": "Season 3 Episode 7",
+    "link": "https://anichin.moe/azure-legacy-episode-76-subtitle-indonesia/",
+    "date": "May 8, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14484666780338"
+        "link": "https://ok.ru/videoembed/14140375829170"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=c063f1a4-de75-4914-b124-e753a9d4b4e3"
+        "link": "https://play.d.tube/?v=eac9ccfe-7e06-47ed-a3ab-b9955fc44c3a"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5T3srg3vRMb8yGf4LE"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3YB8lQufn2WELFTpOq"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v78cesk/?pub=2li51c"
+        "link": "https://rumble.com/embed/v77d75g/?pub=2li51c"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/4uZyK9kv6"
+        "link": "https://short.icu/kG2-8E9zN"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#gdn6jc"
+        "link": "https://anichin.rpmvid.com/#9g6q8m"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-cab64uuvlq8l.html"
+        "link": "https://rubyvidhub.com/embed-ordnbk63mhf8.html"
       },
       {
         "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/x9obltekl6rp"
+        "link": "https://playmogo.com/e/qlq62dcxuxmc"
       },
       {
         "name": "Mega",
-        "link": "https://mega.nz/embed/SHQ0UDJS#QnlICiMpc64JQ1bAcuhsoj_CSE7SEQZPzdkLw46A4SM"
-      }
-    ]
-  },
-  {
-    "episode": "80",
-    "title": "Season 3 Episode 11",
-    "link": "https://anichin.moe/azure-legacy-episode-80-subtitle-indonesia/",
-    "date": "June 5, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14596248242866"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=76cd7077-6f64-47b3-b06c-a293424e91c6"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2NbjKm1W2j5gpGqO4y"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v78nox2/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://abyssplayer.com/U4JcWSGTR"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#b1nwow"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://pixeldrain.com/u/NQooFy5E?embed"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/07kupwy0atsc"
-      },
-      {
-        "name": "Mega",
-        "link": "https://mega.nz/embed/ibQE1aaI#2HzyzoXkZ4AuQfzyFss0rnbEiZA2Qf6NkawbHQycK1w"
-      }
-    ]
-  },
-  {
-    "episode": "73",
-    "title": "Season 3 Episode 4",
-    "link": "https://anichin.moe/azure-legacy-episode-73-subtitle-indonesia/",
-    "date": "April 17, 2026",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/13579673930418"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=b89dccd3-39eb-4186-9510-336ea474d7d3"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k31XRimNWbHhw7Fzkvq"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v76fj0k/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/3RlegHyyl"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#eaydns"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-w0pm91bhikc9.html"
-      },
-      {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/2hfhi9sl126f"
-      },
-      {
-        "name": "Mega",
-        "link": "https://mega.nz/embed/WYgE1RJR#KRFP_IAeV75kCi0SYUTqeckTf2YvdBpTPjpu0JXBxhA"
+        "link": "https://mega.nz/embed/rDABRTCS#usWXyX43OkkCDmi8VPEiTJ77bvE4QfzUsPS6hfQQZbE"
       }
     ]
   },
@@ -1276,90 +1304,90 @@
     ]
   },
   {
-    "episode": "76",
-    "title": "Season 3 Episode 7",
-    "link": "https://anichin.moe/azure-legacy-episode-76-subtitle-indonesia/",
-    "date": "May 8, 2026",
+    "episode": "73",
+    "title": "Season 3 Episode 4",
+    "link": "https://anichin.moe/azure-legacy-episode-73-subtitle-indonesia/",
+    "date": "April 17, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/14140375829170"
+        "link": "https://ok.ru/videoembed/13579673930418"
       },
       {
         "name": "D-Tube",
-        "link": "https://play.d.tube/?v=eac9ccfe-7e06-47ed-a3ab-b9955fc44c3a"
+        "link": "https://play.d.tube/?v=b89dccd3-39eb-4186-9510-336ea474d7d3"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3YB8lQufn2WELFTpOq"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k31XRimNWbHhw7Fzkvq"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v77d75g/?pub=2li51c"
+        "link": "https://rumble.com/embed/v76fj0k/?pub=2li51c"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/kG2-8E9zN"
+        "link": "https://short.icu/3RlegHyyl"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#9g6q8m"
+        "link": "https://anichin.rpmvid.com/#eaydns"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-ordnbk63mhf8.html"
+        "link": "https://rubyvidhub.com/embed-w0pm91bhikc9.html"
       },
       {
         "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/qlq62dcxuxmc"
+        "link": "https://playmogo.com/e/2hfhi9sl126f"
       },
       {
         "name": "Mega",
-        "link": "https://mega.nz/embed/rDABRTCS#usWXyX43OkkCDmi8VPEiTJ77bvE4QfzUsPS6hfQQZbE"
+        "link": "https://mega.nz/embed/WYgE1RJR#KRFP_IAeV75kCi0SYUTqeckTf2YvdBpTPjpu0JXBxhA"
       }
     ]
   },
   {
-    "episode": "69",
-    "title": "Episode Prequel: Summer In Dongning 3/3 END",
-    "link": "https://anichin.moe/azure-legacy-episode-69-subtitle-indonesia/",
-    "date": "March 27, 2026",
+    "episode": "72",
+    "title": "Season 3 Episode 3",
+    "link": "https://anichin.moe/azure-legacy-episode-72-subtitle-indonesia/",
+    "date": "April 10, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/12909078842034"
+        "link": "https://ok.ru/videoembed/13341651634866"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=5c21df43-04c4-4a15-971a-8e1e3c3d4d16"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5lpg1AbsxYAnPFj8gq"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1TP0GQS309ySiFuIMi"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v75hsyc/?pub=2li51c"
+        "link": "https://rumble.com/embed/v7647os/?pub=2li51c"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/ZM1xErinP"
+        "link": "https://short.icu/3U1spsdERN"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#ytks1q"
+        "link": "https://anichin.rpmvid.com/#fdbzuo"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-4cq5v1rmuqbk.html"
+        "link": "https://rubyvidhub.com/embed-vgqxekes60i3.html"
       },
       {
-        "name": "Dood [Ads]",
-        "link": "https://myvidplay.com/e/no455xvkdyn9"
+        "name": "Doods [ADS]",
+        "link": "https://playmogo.com/e/rg7rd9jz3z5o"
       },
       {
         "name": "Mega",
-        "link": "https://mega.nz/embed/qvxxTSqR#1lbL2a_CB7q7flMz3len1UJkdaos8siikYYdLkQk-T4"
-      },
-      {
-        "name": "TurboVIP",
-        "link": "https://turbovidhls.com/t/69c5f08a7380a"
+        "link": "https://mega.nz/embed/SZgXACAa#OwcLnz1yrcyMra5A2VXMV4gsCTe_sQzQwuGt3bQWOsY"
       }
     ]
   },
@@ -1460,86 +1488,46 @@
     ]
   },
   {
-    "episode": "72",
-    "title": "Season 3 Episode 3",
-    "link": "https://anichin.moe/azure-legacy-episode-72-subtitle-indonesia/",
-    "date": "April 10, 2026",
+    "episode": "69",
+    "title": "Episode Prequel: Summer In Dongning 3/3 END",
+    "link": "https://anichin.moe/azure-legacy-episode-69-subtitle-indonesia/",
+    "date": "March 27, 2026",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/13341651634866"
-      },
-      {
-        "name": "D-Tube",
-        "link": "https://play.d.tube/?v=5c21df43-04c4-4a15-971a-8e1e3c3d4d16"
+        "link": "https://ok.ru/videoembed/12909078842034"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1TP0GQS309ySiFuIMi"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5lpg1AbsxYAnPFj8gq"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v7647os/?pub=2li51c"
+        "link": "https://rumble.com/embed/v75hsyc/?pub=2li51c"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/3U1spsdERN"
+        "link": "https://short.icu/ZM1xErinP"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#fdbzuo"
+        "link": "https://anichin.rpmvid.com/#ytks1q"
       },
       {
         "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-vgqxekes60i3.html"
+        "link": "https://rubyvidhub.com/embed-4cq5v1rmuqbk.html"
       },
       {
-        "name": "Doods [ADS]",
-        "link": "https://playmogo.com/e/rg7rd9jz3z5o"
+        "name": "Dood [Ads]",
+        "link": "https://myvidplay.com/e/no455xvkdyn9"
       },
       {
         "name": "Mega",
-        "link": "https://mega.nz/embed/SZgXACAa#OwcLnz1yrcyMra5A2VXMV4gsCTe_sQzQwuGt3bQWOsY"
-      }
-    ]
-  },
-  {
-    "episode": "65",
-    "title": "Episode Special Gunung Yuan Chu 6",
-    "link": "https://anichin.moe/azure-legacy-episode-65-subtitle-indonesia/",
-    "date": "July 25, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/10218765683378"
+        "link": "https://mega.nz/embed/qvxxTSqR#1lbL2a_CB7q7flMz3len1UJkdaos8siikYYdLkQk-T4"
       },
       {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k23P6XSRyKTlGBDvgCc"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6ugqz0/?pub=2li51c"
-      },
-      {
-        "name": "Odysee [720p]",
-        "link": "https://odysee.com/%24/embed/%40Ray19%3Ad%2F-ANICHIN.CARE--Azure-Legacy--2024--65-.-720p-%3Ab?r=GzxN5nV3rxE5ffwvEwtKNv6kWrkC41dp&signature=d1e4a366b75a0df6ea1d6f8f64727281a5572eb10ac4ac7fdf5d2010229cc04361cd26248aad12153cdd59b899ee285cad121abe1bbf8d1dddfb984ebb44d75c&signature_ts=1753428679"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/CZx1c_SwK"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#l8k55"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-zhsaqsty9j6b.html"
-      },
-      {
-        "name": "Vidguard [ADS]",
-        "link": "https://listeamed.net/e/ZMVoErzpbq7E9Pa"
+        "name": "TurboVIP",
+        "link": "https://turbovidhls.com/t/69c5f08a7380a"
       }
     ]
   },
@@ -1672,6 +1660,46 @@
     ]
   },
   {
+    "episode": "65",
+    "title": "Episode Special Gunung Yuan Chu 6",
+    "link": "https://anichin.moe/azure-legacy-episode-65-subtitle-indonesia/",
+    "date": "July 25, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/10218765683378"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k23P6XSRyKTlGBDvgCc"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6ugqz0/?pub=2li51c"
+      },
+      {
+        "name": "Odysee [720p]",
+        "link": "https://odysee.com/%24/embed/%40Ray19%3Ad%2F-ANICHIN.CARE--Azure-Legacy--2024--65-.-720p-%3Ab?r=GzxN5nV3rxE5ffwvEwtKNv6kWrkC41dp&signature=d1e4a366b75a0df6ea1d6f8f64727281a5572eb10ac4ac7fdf5d2010229cc04361cd26248aad12153cdd59b899ee285cad121abe1bbf8d1dddfb984ebb44d75c&signature_ts=1753428679"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.icu/CZx1c_SwK"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#l8k55"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-zhsaqsty9j6b.html"
+      },
+      {
+        "name": "Vidguard [ADS]",
+        "link": "https://listeamed.net/e/ZMVoErzpbq7E9Pa"
+      }
+    ]
+  },
+  {
     "episode": "64",
     "title": "Episode Special Gunung Yuan Chu 5",
     "link": "https://anichin.moe/azure-legacy-episode-64-subtitle-indonesia/",
@@ -1700,42 +1728,6 @@
       {
         "name": "Streamruby [ADS]",
         "link": "https://rubyvidhub.com/embed-nv3vq1jmhwor.html"
-      }
-    ]
-  },
-  {
-    "episode": "62",
-    "title": "Episode Special Gunung Yuan Chu 3",
-    "link": "https://anichin.moe/azure-legacy-episode-62-subtitle-indonesia/",
-    "date": "July 4, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/10161002973874"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=kKJwtvQysit7cXDmBoS"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6ticc1/?pub=2li51c"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/4TvlYW02p"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#gt6qg"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-netg2aysv0pt.html"
-      },
-      {
-        "name": "Vidguard [ADS]",
-        "link": "https://listeamed.net/e/mMq75LDVWk75XPB"
       }
     ]
   },
@@ -1772,6 +1764,42 @@
       {
         "name": "Vidguard [ADS]",
         "link": "https://listeamed.net/e/njJYOdq0ebY5e9o"
+      }
+    ]
+  },
+  {
+    "episode": "62",
+    "title": "Episode Special Gunung Yuan Chu 3",
+    "link": "https://anichin.moe/azure-legacy-episode-62-subtitle-indonesia/",
+    "date": "July 4, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/10161002973874"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=kKJwtvQysit7cXDmBoS"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6ticc1/?pub=2li51c"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.icu/4TvlYW02p"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#gt6qg"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-netg2aysv0pt.html"
+      },
+      {
+        "name": "Vidguard [ADS]",
+        "link": "https://listeamed.net/e/mMq75LDVWk75XPB"
       }
     ]
   },
@@ -1884,6 +1912,30 @@
     ]
   },
   {
+    "episode": "58",
+    "title": "Azure Legacy Episode 58 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-58-subtitle-indonesia/",
+    "date": "June 7, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/10083879488178"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6s6uln/?pub=2li51c"
+      },
+      {
+        "name": "Newplayer [ADS]",
+        "link": "https://short.icu/s2bFKxzfM"
+      },
+      {
+        "name": "Rpm Share [ADS]",
+        "link": "https://anichin.rpmvid.com/#6hbkp"
+      }
+    ]
+  },
+  {
     "episode": "57",
     "title": "Azure Legacy Episode 57 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-57-subtitle-indonesia/",
@@ -1916,30 +1968,6 @@
       {
         "name": "Vidguard [ADS]",
         "link": "https://listeamed.net/e/YWA8E946vbQxGmM"
-      }
-    ]
-  },
-  {
-    "episode": "58",
-    "title": "Azure Legacy Episode 58 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-58-subtitle-indonesia/",
-    "date": "June 7, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/10083879488178"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6s6uln/?pub=2li51c"
-      },
-      {
-        "name": "Newplayer [ADS]",
-        "link": "https://short.icu/s2bFKxzfM"
-      },
-      {
-        "name": "Rpm Share [ADS]",
-        "link": "https://anichin.rpmvid.com/#6hbkp"
       }
     ]
   },
@@ -2020,42 +2048,6 @@
     ]
   },
   {
-    "episode": "51",
-    "title": "Azure Legacy Episode 51 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-51-subtitle-indonesia/",
-    "date": "April 18, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9933212158642"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1gjsMpBRorILfCSTGI"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6q1v0t/?pub=2li51c"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#kunwv"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/KKFTnYwJw"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-5am3z5xiv1rx.html"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/a-udxTzXsom7rvn"
-      }
-    ]
-  },
-  {
     "episode": "54",
     "title": "Azure Legacy Episode 54 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-54-subtitle-indonesia/",
@@ -2092,42 +2084,6 @@
       {
         "name": "MirrorPlayer [ADS]",
         "link": "https://videoplayer.vip/embed/LnNmFEUt2pok8uC"
-      }
-    ]
-  },
-  {
-    "episode": "52",
-    "title": "Azure Legacy Episode 52 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-52-subtitle-indonesia/",
-    "date": "April 25, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9956394338994"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5gp3cnWkKh4OcCVxm4"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6qcni1/?pub=2li51c"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#xr8ar"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/R-ZJx-L4T"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-9jeelf2c1o5y.html"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/TpUSZw1hGlcEMqN"
       }
     ]
   },
@@ -2172,38 +2128,74 @@
     ]
   },
   {
-    "episode": "49",
-    "title": "Azure Legacy Episode 49 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-49-subtitle-indonesia/",
-    "date": "April 4, 2025",
+    "episode": "52",
+    "title": "Azure Legacy Episode 52 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-52-subtitle-indonesia/",
+    "date": "April 25, 2025",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9887091722930"
+        "link": "https://ok.ru/videoembed/9956394338994"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k43WK1faN6OgGiCNibI"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5gp3cnWkKh4OcCVxm4"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6pfqcf/?pub=2li51c"
+        "link": "https://rumble.com/embed/v6qcni1/?pub=2li51c"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#hlnan"
+        "link": "https://anichin.rpmvid.com/#xr8ar"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/w0oYzXPno"
+        "link": "https://short.icu/R-ZJx-L4T"
       },
       {
-        "name": "Vidhide [ADS]",
-        "link": "https://Smoothpre.com/embed/u9b8lwnlrg3q"
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-9jeelf2c1o5y.html"
       },
       {
         "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/yeX-zHP4b9YCm5J"
+        "link": "https://videoplayer.vip/embed/TpUSZw1hGlcEMqN"
+      }
+    ]
+  },
+  {
+    "episode": "51",
+    "title": "Azure Legacy Episode 51 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-51-subtitle-indonesia/",
+    "date": "April 18, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/9933212158642"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1gjsMpBRorILfCSTGI"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6q1v0t/?pub=2li51c"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#kunwv"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.icu/KKFTnYwJw"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-5am3z5xiv1rx.html"
+      },
+      {
+        "name": "MirrorPlayer [ADS]",
+        "link": "https://videoplayer.vip/embed/a-udxTzXsom7rvn"
       }
     ]
   },
@@ -2240,38 +2232,38 @@
     ]
   },
   {
-    "episode": "47Special",
-    "title": "Azure Legacy Episode 47 Special Subtitle Indonesia [BERDIALOG]",
-    "link": "https://anichin.moe/azure-legacy-episode-47-special-subtitle-indonesia-berdialog/",
-    "date": "March 28, 2025",
+    "episode": "49",
+    "title": "Azure Legacy Episode 49 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-49-subtitle-indonesia/",
+    "date": "April 4, 2025",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9862108744370"
+        "link": "https://ok.ru/videoembed/9887091722930"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3u8Vf3iaig6zUCKFcM"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k43WK1faN6OgGiCNibI"
       },
       {
         "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6p4358/?pub=2li51c"
+        "link": "https://rumble.com/embed/v6pfqcf/?pub=2li51c"
       },
       {
         "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#ktrl5"
+        "link": "https://anichin.rpmvid.com/#hlnan"
       },
       {
         "name": "New Player [ADS]",
-        "link": "https://short.icu/DQeUYykX-"
+        "link": "https://short.icu/w0oYzXPno"
       },
       {
         "name": "Vidhide [ADS]",
-        "link": "https://Smoothpre.com/embed/4umlnb6oz8mg"
+        "link": "https://Smoothpre.com/embed/u9b8lwnlrg3q"
       },
       {
         "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/4w9lgoG2UABz6C5"
+        "link": "https://videoplayer.vip/embed/yeX-zHP4b9YCm5J"
       }
     ]
   },
@@ -2312,42 +2304,6 @@
     ]
   },
   {
-    "episode": "46",
-    "title": "Azure Legacy Episode 46 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-46-subtitle-indonesia/",
-    "date": "March 14, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9813104790194"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k6JqV7lmk6aaRoCEGEa"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6oeea6/?pub=2li51c"
-      },
-      {
-        "name": "RPMShare [ADS]",
-        "link": "https://anichin.rpmvid.com/#xpziw"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/Ufpxt7tdY"
-      },
-      {
-        "name": "Vidhide [ADS]",
-        "link": "https://Smoothpre.com/embed/622m1yx3iu4v"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/JymtLBokex43Q0Z"
-      }
-    ]
-  },
-  {
     "episode": "47",
     "title": "Azure Legacy Episode 47 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-47-subtitle-indonesia/",
@@ -2380,6 +2336,42 @@
       {
         "name": "MirrorPlayer [ADS]",
         "link": "https://videoplayer.vip/embed/ljVxH4mvY9z7ACQ"
+      }
+    ]
+  },
+  {
+    "episode": "46",
+    "title": "Azure Legacy Episode 46 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-46-subtitle-indonesia/",
+    "date": "March 14, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/9813104790194"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k6JqV7lmk6aaRoCEGEa"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6oeea6/?pub=2li51c"
+      },
+      {
+        "name": "RPMShare [ADS]",
+        "link": "https://anichin.rpmvid.com/#xpziw"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.icu/Ufpxt7tdY"
+      },
+      {
+        "name": "Vidhide [ADS]",
+        "link": "https://Smoothpre.com/embed/622m1yx3iu4v"
+      },
+      {
+        "name": "MirrorPlayer [ADS]",
+        "link": "https://videoplayer.vip/embed/JymtLBokex43Q0Z"
       }
     ]
   },
@@ -2528,6 +2520,42 @@
     ]
   },
   {
+    "episode": "41",
+    "title": "Azure Legacy Episode 41 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-41-subtitle-indonesia/",
+    "date": "February 7, 2025",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/9691047856818"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=kHXd9g5LVP3yjWCnJHo"
+      },
+      {
+        "name": "RPMShare",
+        "link": "https://anichin.rpmvid.com/#heglo"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v6fp064/?pub=2li51c"
+      },
+      {
+        "name": "Vidhide [ADS]",
+        "link": "https://ryderjet.com/embed/f6npxf0a6uue"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.icu/CX0TG-nog"
+      },
+      {
+        "name": "MirrorPlayer [ADS]",
+        "link": "https://videoplayer.vip/embed/WqlkL-eIas1HEj3"
+      }
+    ]
+  },
+  {
     "episode": "40",
     "title": "Azure Legacy Episode 40 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-40-subtitle-indonesia/",
@@ -2596,42 +2624,6 @@
       {
         "name": "MirrorPlayer [ADS]",
         "link": "https://videoplayer.vip/embed/zdjQp1Rw9V4W3eP"
-      }
-    ]
-  },
-  {
-    "episode": "41",
-    "title": "Azure Legacy Episode 41 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-41-subtitle-indonesia/",
-    "date": "February 7, 2025",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9691047856818"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=kHXd9g5LVP3yjWCnJHo"
-      },
-      {
-        "name": "RPMShare",
-        "link": "https://anichin.rpmvid.com/#heglo"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v6fp064/?pub=2li51c"
-      },
-      {
-        "name": "Vidhide [ADS]",
-        "link": "https://ryderjet.com/embed/f6npxf0a6uue"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.icu/CX0TG-nog"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/WqlkL-eIas1HEj3"
       }
     ]
   },
@@ -2712,46 +2704,6 @@
     ]
   },
   {
-    "episode": "35",
-    "title": "Azure Legacy Episode 35 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-35-subtitle-indonesia/",
-    "date": "December 27, 2024",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9513663662770"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1KIhKixgrQWwAC7LuW"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v610rnn/?pub=2li51c"
-      },
-      {
-        "name": "Vidhide [ADS]",
-        "link": "https://dhtpre.com/embed/n30dyq5lp3b6"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.ink/NlQLuLyY-"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-u7kuh85renta.html"
-      },
-      {
-        "name": "Vidguard [ADS]",
-        "link": "https://listeamed.net/e/qA3WOmMmXLgOKkz"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/BXAbJSjHovx48nV"
-      }
-    ]
-  },
-  {
     "episode": "36",
     "title": "Azure Legacy Episode 36 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-36-subtitle-indonesia/",
@@ -2792,6 +2744,46 @@
     ]
   },
   {
+    "episode": "35",
+    "title": "Azure Legacy Episode 35 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-35-subtitle-indonesia/",
+    "date": "December 27, 2024",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/9513663662770"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1KIhKixgrQWwAC7LuW"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v610rnn/?pub=2li51c"
+      },
+      {
+        "name": "Vidhide [ADS]",
+        "link": "https://dhtpre.com/embed/n30dyq5lp3b6"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.ink/NlQLuLyY-"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-u7kuh85renta.html"
+      },
+      {
+        "name": "Vidguard [ADS]",
+        "link": "https://listeamed.net/e/qA3WOmMmXLgOKkz"
+      },
+      {
+        "name": "MirrorPlayer [ADS]",
+        "link": "https://videoplayer.vip/embed/BXAbJSjHovx48nV"
+      }
+    ]
+  },
+  {
     "episode": "34",
     "title": "Azure Legacy Episode 34 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-34-subtitle-indonesia/",
@@ -2824,6 +2816,46 @@
       {
         "name": "MirrorPlayer [ADS]",
         "link": "https://videoplayer.vip/embed/JbKdL4OxzAynSNa"
+      }
+    ]
+  },
+  {
+    "episode": "33",
+    "title": "Azure Legacy Episode 33 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-33-subtitle-indonesia/",
+    "date": "December 13, 2024",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/9453318769330"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5138qtoPILe01C2Yg6"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v5wl98z/?pub=2li51c"
+      },
+      {
+        "name": "Vidhide [ADS]",
+        "link": "https://dhtpre.com/embed/ebie9lbd60kj"
+      },
+      {
+        "name": "New Player [ADS]",
+        "link": "https://short.ink/7iXkQ714L"
+      },
+      {
+        "name": "Streamruby [ADS]",
+        "link": "https://rubyvidhub.com/embed-ghlyaebw0o8j.html"
+      },
+      {
+        "name": "Vidguard [ADS]",
+        "link": "https://listeamed.net/e/qM1VOPePrRn5o4k"
+      },
+      {
+        "name": "MirrorPlayer [ADS]",
+        "link": "https://videoplayer.vip/embed/pNGXbBckfWUo1sL"
       }
     ]
   },
@@ -2908,46 +2940,6 @@
     ]
   },
   {
-    "episode": "33",
-    "title": "Azure Legacy Episode 33 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-33-subtitle-indonesia/",
-    "date": "December 13, 2024",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/9453318769330"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5138qtoPILe01C2Yg6"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v5wl98z/?pub=2li51c"
-      },
-      {
-        "name": "Vidhide [ADS]",
-        "link": "https://dhtpre.com/embed/ebie9lbd60kj"
-      },
-      {
-        "name": "New Player [ADS]",
-        "link": "https://short.ink/7iXkQ714L"
-      },
-      {
-        "name": "Streamruby [ADS]",
-        "link": "https://rubyvidhub.com/embed-ghlyaebw0o8j.html"
-      },
-      {
-        "name": "Vidguard [ADS]",
-        "link": "https://listeamed.net/e/qM1VOPePrRn5o4k"
-      },
-      {
-        "name": "MirrorPlayer [ADS]",
-        "link": "https://videoplayer.vip/embed/pNGXbBckfWUo1sL"
-      }
-    ]
-  },
-  {
     "episode": "30 END",
     "title": "Side Story Prefektur Dongning END",
     "link": "https://anichin.moe/azure-legacy-episode-30-tamat-subtitle-indonesia/",
@@ -2984,46 +2976,6 @@
       {
         "name": "StreamWish [Ads]",
         "link": "https://wishonly.site/e/ijot6slu4fs3"
-      }
-    ]
-  },
-  {
-    "episode": "28",
-    "title": "Side Story Prefektur Dongning",
-    "link": "https://anichin.moe/azure-legacy-episode-28-subtitle-indonesia/",
-    "date": "July 20, 2024",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/7936777128626"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5bmRkISyZ7fvfB7cp4"
-      },
-      {
-        "name": "Rumble [Setting DNS]",
-        "link": "https://rumble.com/embed/v55bsx9/?pub=2li51c"
-      },
-      {
-        "name": "Vidhide [ADS]",
-        "link": "https://vidhidepre.com/embed/xxkrs4nz7tlk"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/tPNuNOkdu"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/7936777128626"
-      },
-      {
-        "name": "StreamRuby [Ads]",
-        "link": "https://rubystm.com/embed-f6dzix7ymccg.html"
-      },
-      {
-        "name": "StreamWish [Ads]",
-        "link": "https://strwish.com/e/tp1zx08vndlz"
       }
     ]
   },
@@ -3068,6 +3020,46 @@
     ]
   },
   {
+    "episode": "28",
+    "title": "Side Story Prefektur Dongning",
+    "link": "https://anichin.moe/azure-legacy-episode-28-subtitle-indonesia/",
+    "date": "July 20, 2024",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/7936777128626"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5bmRkISyZ7fvfB7cp4"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v55bsx9/?pub=2li51c"
+      },
+      {
+        "name": "Vidhide [ADS]",
+        "link": "https://vidhidepre.com/embed/xxkrs4nz7tlk"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/tPNuNOkdu"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/7936777128626"
+      },
+      {
+        "name": "StreamRuby [Ads]",
+        "link": "https://rubystm.com/embed-f6dzix7ymccg.html"
+      },
+      {
+        "name": "StreamWish [Ads]",
+        "link": "https://strwish.com/e/tp1zx08vndlz"
+      }
+    ]
+  },
+  {
     "episode": "27",
     "title": "Side Story Prefektur Dongning",
     "link": "https://anichin.moe/azure-legacy-episode-27-subtitle-indonesia/",
@@ -3104,46 +3096,6 @@
       {
         "name": "StreamWish [Ads]",
         "link": "https://strwish.com/e/ce4iru2qcztn"
-      }
-    ]
-  },
-  {
-    "episode": "25",
-    "title": "Azure Legacy Episode 25 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-25-subtitle-indonesia/",
-    "date": "November 30, 2023",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/7198930569906"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3DRRFKLSl3ATGzHxSX"
-      },
-      {
-        "name": "Rumble",
-        "link": "https://rumble.com/embed/v3w50vj/?pub=2li51c"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/zL1Wuzr8J"
-      },
-      {
-        "name": "StreamWish [Ads]",
-        "link": "https://flaswish.com/e/81bmwi36jwwc"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/7198930569906"
-      },
-      {
-        "name": "StreamRuby [Ads]",
-        "link": "https://rubystream.xyz/embed-c3jzx2pwwjq9.html"
-      },
-      {
-        "name": "Filelions [Ads]",
-        "link": "https://filelions.site/v/q3rsuu8kpghm"
       }
     ]
   },
@@ -3188,6 +3140,46 @@
     ]
   },
   {
+    "episode": "25",
+    "title": "Azure Legacy Episode 25 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-25-subtitle-indonesia/",
+    "date": "November 30, 2023",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/7198930569906"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k3DRRFKLSl3ATGzHxSX"
+      },
+      {
+        "name": "Rumble",
+        "link": "https://rumble.com/embed/v3w50vj/?pub=2li51c"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/zL1Wuzr8J"
+      },
+      {
+        "name": "StreamWish [Ads]",
+        "link": "https://flaswish.com/e/81bmwi36jwwc"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/7198930569906"
+      },
+      {
+        "name": "StreamRuby [Ads]",
+        "link": "https://rubystream.xyz/embed-c3jzx2pwwjq9.html"
+      },
+      {
+        "name": "Filelions [Ads]",
+        "link": "https://filelions.site/v/q3rsuu8kpghm"
+      }
+    ]
+  },
+  {
     "episode": "24",
     "title": "Azure Legacy Episode 24 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-24-subtitle-indonesia/",
@@ -3224,6 +3216,38 @@
       {
         "name": "StreamRuby [Ads]",
         "link": "https://rubystream.xyz/embed-yh824v4sqzzg.html"
+      }
+    ]
+  },
+  {
+    "episode": "23",
+    "title": "Azure Legacy Episode 23 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-23-subtitle-indonesia/",
+    "date": "November 16, 2023",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/7153052486322"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7ev4souhLaATEzECed"
+      },
+      {
+        "name": "Rumble",
+        "link": "https://rumble.com/embed/v3tgtpd/?pub=2li51c"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/vckEuonGo"
+      },
+      {
+        "name": "StreamWish [Ads]",
+        "link": "https://wishfast.top/e/0xe1da0yg3vm"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/7153052486322"
       }
     ]
   },
@@ -3268,34 +3292,42 @@
     ]
   },
   {
-    "episode": "23",
-    "title": "Azure Legacy Episode 23 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-23-subtitle-indonesia/",
-    "date": "November 16, 2023",
+    "episode": "21",
+    "title": "Azure Legacy Episode 21 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-21-subtitle-indonesia/",
+    "date": "November 2, 2023",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/7153052486322"
+        "link": "https://ok.ru/videoembed/7108873620146"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k7ev4souhLaATEzECed"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5LUyoyqMOkVsgzBPgf"
+      },
+      {
+        "name": "Terabox",
+        "link": "https://terabox.com/sharing/embed?surl=Hr8-OfvPWjlqOOa9KNEy6g&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=1058055437261891"
       },
       {
         "name": "Rumble",
-        "link": "https://rumble.com/embed/v3tgtpd/?pub=2li51c"
+        "link": "https://rumble.com/embed/v3qkvza/?pub=2li51c"
+      },
+      {
+        "name": "Filelions [Ads]",
+        "link": "https://fviplions.com/v/x45r8tzy3kic"
       },
       {
         "name": "New Player [Ads]",
-        "link": "https://short.ink/vckEuonGo"
+        "link": "https://short.ink/mTVQ9o7Y7"
       },
       {
         "name": "StreamWish [Ads]",
-        "link": "https://wishfast.top/e/0xe1da0yg3vm"
+        "link": "https://sfastwish.com/e/67avhx2knjfr"
       },
       {
         "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/7153052486322"
+        "link": "https://racaty.my.id/empire/7108873620146"
       }
     ]
   },
@@ -3336,46 +3368,6 @@
       {
         "name": "Google Drive [Ads]",
         "link": "https://racaty.my.id/empire/7084661344946"
-      }
-    ]
-  },
-  {
-    "episode": "21",
-    "title": "Azure Legacy Episode 21 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-21-subtitle-indonesia/",
-    "date": "November 2, 2023",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/7108873620146"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5LUyoyqMOkVsgzBPgf"
-      },
-      {
-        "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=Hr8-OfvPWjlqOOa9KNEy6g&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=1058055437261891"
-      },
-      {
-        "name": "Rumble",
-        "link": "https://rumble.com/embed/v3qkvza/?pub=2li51c"
-      },
-      {
-        "name": "Filelions [Ads]",
-        "link": "https://fviplions.com/v/x45r8tzy3kic"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/mTVQ9o7Y7"
-      },
-      {
-        "name": "StreamWish [Ads]",
-        "link": "https://sfastwish.com/e/67avhx2knjfr"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/7108873620146"
       }
     ]
   },
@@ -3456,46 +3448,6 @@
     ]
   },
   {
-    "episode": "16",
-    "title": "Azure Legacy Episode 16 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-16-subtitle-indonesia/",
-    "date": "September 28, 2023",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/6994838948530"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1UQY4H7pYPhMzzvvhu"
-      },
-      {
-        "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=E1Tzcel90DmkTL_ono8KRQ&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=120469992817158"
-      },
-      {
-        "name": "Rumble",
-        "link": "https://rumble.com/embed/v3iw7we/?pub=2li51c"
-      },
-      {
-        "name": "Filelions [Ads]",
-        "link": "https://filelions.online/v/0egh71x5dqw5"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/DQ7--ncOh"
-      },
-      {
-        "name": "StreamWish [Ads]",
-        "link": "https://wishfast.top/e/la7elzwiq9b2"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/6994838948530"
-      }
-    ]
-  },
-  {
     "episode": "17",
     "title": "Azure Legacy Episode 17 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-17-subtitle-indonesia/",
@@ -3532,6 +3484,46 @@
       {
         "name": "Google Drive [Ads]",
         "link": "https://racaty.my.id/empire/7018025585330"
+      }
+    ]
+  },
+  {
+    "episode": "16",
+    "title": "Azure Legacy Episode 16 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-16-subtitle-indonesia/",
+    "date": "September 28, 2023",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/6994838948530"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k1UQY4H7pYPhMzzvvhu"
+      },
+      {
+        "name": "Terabox",
+        "link": "https://terabox.com/sharing/embed?surl=E1Tzcel90DmkTL_ono8KRQ&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=120469992817158"
+      },
+      {
+        "name": "Rumble",
+        "link": "https://rumble.com/embed/v3iw7we/?pub=2li51c"
+      },
+      {
+        "name": "Filelions [Ads]",
+        "link": "https://filelions.online/v/0egh71x5dqw5"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/DQ7--ncOh"
+      },
+      {
+        "name": "StreamWish [Ads]",
+        "link": "https://wishfast.top/e/la7elzwiq9b2"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/6994838948530"
       }
     ]
   },
@@ -3576,46 +3568,6 @@
     ]
   },
   {
-    "episode": "13",
-    "title": "Azure Legacy Episode 13 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-13-subtitle-indonesia/",
-    "date": "September 7, 2023",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/6913841040050"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5GMjUPZsrC4BdzrPqX"
-      },
-      {
-        "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=Pe1BWz21tbr_MvdaelFc6Q&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=191972954996938"
-      },
-      {
-        "name": "Rumble [Aktifkan Sub]",
-        "link": "https://rumble.com/embed/v3cwkls/?pub=2li51c"
-      },
-      {
-        "name": "Filelions [Ads]",
-        "link": "https://filelions.live/v/u2uilneh4vr9"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/zxZ-gLNnh"
-      },
-      {
-        "name": "StreamWish [Ads]",
-        "link": "https://embedwish.com/e/wk4de0m6bj21"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/6913841040050"
-      }
-    ]
-  },
-  {
     "episode": "14",
     "title": "Azure Legacy Episode 14 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-14-subtitle-indonesia/",
@@ -3656,42 +3608,42 @@
     ]
   },
   {
-    "episode": "11",
-    "title": "Azure Legacy Episode 11 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-11-subtitle-indonesia/",
-    "date": "August 24, 2023",
+    "episode": "13",
+    "title": "Azure Legacy Episode 13 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-13-subtitle-indonesia/",
+    "date": "September 7, 2023",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/6866045962930"
+        "link": "https://ok.ru/videoembed/6913841040050"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k8Y06ynDHOM0UbzoVEZ"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5GMjUPZsrC4BdzrPqX"
       },
       {
         "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=-aOK3fQhPGQUhRNP9LI4xQ&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=220993586078392"
+        "link": "https://terabox.com/sharing/embed?surl=Pe1BWz21tbr_MvdaelFc6Q&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=191972954996938"
       },
       {
         "name": "Rumble [Aktifkan Sub]",
-        "link": "https://rumble.com/embed/v38fs5e/?pub=2li51c"
+        "link": "https://rumble.com/embed/v3cwkls/?pub=2li51c"
       },
       {
         "name": "Filelions [Ads]",
-        "link": "https://filelions.live/v/9jpo5wgb8dd0"
+        "link": "https://filelions.live/v/u2uilneh4vr9"
       },
       {
         "name": "New Player [Ads]",
-        "link": "https://short.ink/nHP-yJLmV"
+        "link": "https://short.ink/zxZ-gLNnh"
       },
       {
         "name": "StreamWish [Ads]",
-        "link": "https://embedwish.com/e/6dj643uj0qcd"
+        "link": "https://embedwish.com/e/wk4de0m6bj21"
       },
       {
         "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/6866045962930"
+        "link": "https://racaty.my.id/empire/6913841040050"
       }
     ]
   },
@@ -3736,42 +3688,42 @@
     ]
   },
   {
-    "episode": "09",
-    "title": "Azure Legacy Episode 09 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-09-subtitle-indonesia/",
-    "date": "August 10, 2023",
+    "episode": "11",
+    "title": "Azure Legacy Episode 11 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-11-subtitle-indonesia/",
+    "date": "August 24, 2023",
     "servers": [
       {
         "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/6814846028466"
+        "link": "https://ok.ru/videoembed/6866045962930"
       },
       {
         "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5Lt9mzaqF8HoXzmEPk"
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k8Y06ynDHOM0UbzoVEZ"
       },
       {
         "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=I8WhwrLNWSfvaM30NE660g&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=67171592216819"
+        "link": "https://terabox.com/sharing/embed?surl=-aOK3fQhPGQUhRNP9LI4xQ&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=220993586078392"
       },
       {
         "name": "Rumble [Aktifkan Sub]",
-        "link": "https://rumble.com/embed/v33iiig/?pub=2li51c"
+        "link": "https://rumble.com/embed/v38fs5e/?pub=2li51c"
       },
       {
         "name": "Filelions [Ads]",
-        "link": "https://filelions.live/v/j0lz25waoynp"
+        "link": "https://filelions.live/v/9jpo5wgb8dd0"
       },
       {
         "name": "New Player [Ads]",
-        "link": "https://short.ink/kh2jS7pfk"
+        "link": "https://short.ink/nHP-yJLmV"
       },
       {
         "name": "StreamWish [Ads]",
-        "link": "https://embedwish.com/e/v6mwqplrr3mz"
+        "link": "https://embedwish.com/e/6dj643uj0qcd"
       },
       {
         "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/6814846028466"
+        "link": "https://racaty.my.id/empire/6866045962930"
       }
     ]
   },
@@ -3812,6 +3764,46 @@
       {
         "name": "Google Drive [Ads]",
         "link": "https://racaty.my.id/empire/6842704071346"
+      }
+    ]
+  },
+  {
+    "episode": "09",
+    "title": "Azure Legacy Episode 09 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-09-subtitle-indonesia/",
+    "date": "August 10, 2023",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/6814846028466"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5Lt9mzaqF8HoXzmEPk"
+      },
+      {
+        "name": "Terabox",
+        "link": "https://terabox.com/sharing/embed?surl=I8WhwrLNWSfvaM30NE660g&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=67171592216819"
+      },
+      {
+        "name": "Rumble [Aktifkan Sub]",
+        "link": "https://rumble.com/embed/v33iiig/?pub=2li51c"
+      },
+      {
+        "name": "Filelions [Ads]",
+        "link": "https://filelions.live/v/j0lz25waoynp"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/kh2jS7pfk"
+      },
+      {
+        "name": "StreamWish [Ads]",
+        "link": "https://embedwish.com/e/v6mwqplrr3mz"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/6814846028466"
       }
     ]
   },
@@ -3884,42 +3876,6 @@
     ]
   },
   {
-    "episode": "04",
-    "title": "Azure Legacy Episode 04 Subtitle Indonesia",
-    "link": "https://anichin.moe/azure-legacy-episode-04-subtitle-indonesia/",
-    "date": "July 6, 2023",
-    "servers": [
-      {
-        "name": "OK.ru",
-        "link": "https://ok.ru/videoembed/6475292084914"
-      },
-      {
-        "name": "Dailymotion",
-        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2bdlU9tDHfsvxzgSoo"
-      },
-      {
-        "name": "Terabox",
-        "link": "https://terabox.com/sharing/embed?surl=qFsFrqsbfloQogipMZtwdg&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=350401952074638"
-      },
-      {
-        "name": "StreamHide [Ads]",
-        "link": "https://ahvsh.com/e/a4ljpxrrrwfu"
-      },
-      {
-        "name": "New Player [Ads]",
-        "link": "https://short.ink/5yxUiQ_w9"
-      },
-      {
-        "name": "StreamSB [Ads]",
-        "link": "https://sblona.com/e/rsa53ld4rff0.html"
-      },
-      {
-        "name": "Google Drive [Ads]",
-        "link": "https://racaty.my.id/empire/6475292084914"
-      }
-    ]
-  },
-  {
     "episode": "06",
     "title": "Azure Legacy Episode 06 Subtitle Indonesia",
     "link": "https://anichin.moe/azure-legacy-episode-06-subtitle-indonesia/",
@@ -3988,6 +3944,42 @@
       {
         "name": "Google Drive [Ads]",
         "link": "https://racaty.my.id/empire/6584363453106"
+      }
+    ]
+  },
+  {
+    "episode": "04",
+    "title": "Azure Legacy Episode 04 Subtitle Indonesia",
+    "link": "https://anichin.moe/azure-legacy-episode-04-subtitle-indonesia/",
+    "date": "July 6, 2023",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/6475292084914"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k2bdlU9tDHfsvxzgSoo"
+      },
+      {
+        "name": "Terabox",
+        "link": "https://terabox.com/sharing/embed?surl=qFsFrqsbfloQogipMZtwdg&resolution=720&autoplay=true&mute=false&uk=4402201898818&fid=350401952074638"
+      },
+      {
+        "name": "StreamHide [Ads]",
+        "link": "https://ahvsh.com/e/a4ljpxrrrwfu"
+      },
+      {
+        "name": "New Player [Ads]",
+        "link": "https://short.ink/5yxUiQ_w9"
+      },
+      {
+        "name": "StreamSB [Ads]",
+        "link": "https://sblona.com/e/rsa53ld4rff0.html"
+      },
+      {
+        "name": "Google Drive [Ads]",
+        "link": "https://racaty.my.id/empire/6475292084914"
       }
     ]
   },
