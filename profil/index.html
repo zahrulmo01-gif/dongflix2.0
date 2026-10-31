@@ -539,9 +539,9 @@
       line-height: 1.3; 
       display: none; 
     }
-    .input-hint.error { color: #ef4444; display: block; }
-    .input-hint.success { color: #22c55e; display: block; }
-    .input-hint.checking { color: #38bdf8; display: block; }
+    .input-hint.error { color: #ef4444 !important; display: block !important; }
+    .input-hint.success { color: #22c55e !important; display: block !important; }
+    .input-hint.checking { color: #38bdf8 !important; display: block !important; }
 
     .btn-modal-save {
       width: 100%; height: 46px; background: #fff; color: #000; border: none;
@@ -711,10 +711,8 @@
     let isCheckingUsername = false;
     let editCheckTimeout = null;
 
-    // Cache database users agar verifikasi username secepat kilat
     let cachedUsersMap = null;
 
-    // RUMUS LEVEL: 0-1000 = Lv1, 1001-2000 = Lv2, dst
     function calculateLevel(expVal) {
       const exp = Number(expVal) || 0;
       if (exp <= 0) return 1;
@@ -745,19 +743,18 @@
       }
     };
 
-    // FUNGSI CEK USERNAME CEPAT & STABIL (SEPERTI REGISTER.HTML)
+    // CEK USERNAME MENGGUNAKAN POLA REGISTER.HTML
     async function checkUsernameAvailability(username, excludeKey) {
       const cleanUsername = username.trim().toLowerCase();
       try {
-        if (!cachedUsersMap) {
-          const snap = await get(ref(db, 'users'));
-          cachedUsersMap = snap.exists() ? snap.val() : {};
-        }
+        const allSnap = await get(ref(db, 'users'));
+        if (!allSnap.exists()) return true;
 
+        cachedUsersMap = allSnap.val();
         for (const key in cachedUsersMap) {
           if (key !== excludeKey && cachedUsersMap[key]?.username) {
             if (String(cachedUsersMap[key].username).toLowerCase() === cleanUsername) {
-              return false; // Sudah digunakan
+              return false; // Sudah dipakai
             }
           }
         }
@@ -973,18 +970,6 @@
       }
     };
 
-    // FUNGSI KONTROL STATUS USERNAME EKSPLISIT
-    const editUsernameStatus = document.getElementById('editUsernameStatus');
-    function showUsernameHint(type, message) {
-      editUsernameStatus.style.display = 'block';
-      editUsernameStatus.className = `input-hint ${type}`;
-      editUsernameStatus.innerText = message;
-    }
-    function hideUsernameHint() {
-      editUsernameStatus.style.display = 'none';
-      editUsernameStatus.innerText = '';
-    }
-
     // CEK APAKAH ADA PERUBAHAN PADA FORM EDIT PROFIL
     function checkFormChanges() {
       const currentName = document.getElementById('inputEditName').value.trim();
@@ -1003,7 +988,6 @@
       );
 
       const saveBtn = document.getElementById('btnSaveModal');
-      // Hanya aktif bila ada perubahan dan username valid serta tidak sedang dicek
       if (isChanged && isNewUsernameValid && !isCheckingUsername) {
         saveBtn.disabled = false;
       } else {
@@ -1035,15 +1019,13 @@
 
         isNewUsernameValid = true;
         isCheckingUsername = false;
-        hideUsernameHint();
+        
+        const hintEl = document.getElementById('editUsernameStatus');
+        hintEl.style.display = 'none';
+        hintEl.className = 'input-hint';
+        hintEl.innerText = '';
 
-        // Pastikan terkunci saat baru dibuka
         document.getElementById('btnSaveModal').disabled = true;
-
-        // Ambil data users di background agar pencarian langsung siap
-        get(ref(db, 'users')).then(snap => {
-          if (snap.exists()) cachedUsersMap = snap.val();
-        }).catch(() => {});
 
         openModal('modalEditProfile');
         return;
@@ -1121,9 +1103,9 @@
       }
     };
 
-    // PEMERIKSAAN USERNAME REALTIME
+    // CEK KETERSEDIAAN USERNAME DENGAN FEEDBACK VISUAL PASTI
     const editUsernameInput = document.getElementById('inputEditUsername');
-    const btnSaveModal = document.getElementById('btnSaveModal');
+    const editUsernameStatus = document.getElementById('editUsernameStatus');
 
     editUsernameInput.addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
@@ -1132,7 +1114,9 @@
 
       // Jika sama persis dengan username akun saat ini
       if (!val || val === (initialFormValues.username || '').toLowerCase()) {
-        hideUsernameHint();
+        editUsernameStatus.style.display = 'none';
+        editUsernameStatus.className = 'input-hint';
+        editUsernameStatus.innerText = '';
         isNewUsernameValid = true;
         isCheckingUsername = false;
         checkFormChanges();
@@ -1140,32 +1124,38 @@
       }
 
       if (val.length < 3) {
-        showUsernameHint('error', 'Minimal 3 karakter (huruf, angka, _).');
+        editUsernameStatus.style.display = 'block';
+        editUsernameStatus.className = 'input-hint error';
+        editUsernameStatus.innerText = 'Minimal 3 karakter (huruf, angka, _).';
         isNewUsernameValid = false;
         isCheckingUsername = false;
-        btnSaveModal.disabled = true;
+        checkFormChanges();
         return;
       }
 
-      // Tampilkan status loading
-      showUsernameHint('checking', 'Memeriksa ketersediaan...');
-      btnSaveModal.disabled = true;
+      // Tampilkan status memeriksa
+      editUsernameStatus.style.display = 'block';
+      editUsernameStatus.className = 'input-hint checking';
+      editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
       isCheckingUsername = true;
+      checkFormChanges();
 
       editCheckTimeout = setTimeout(async () => {
         const isAvailable = await checkUsernameAvailability(val, targetUserKey);
 
+        editUsernameStatus.style.display = 'block';
         if (!isAvailable) {
-          showUsernameHint('error', 'Username sudah digunakan.');
+          editUsernameStatus.className = 'input-hint error';
+          editUsernameStatus.innerText = 'Username sudah digunakan.';
           isNewUsernameValid = false;
-          btnSaveModal.disabled = true;
         } else {
-          showUsernameHint('success', 'Username tersedia.');
+          editUsernameStatus.className = 'input-hint success';
+          editUsernameStatus.innerText = 'Username tersedia.';
           isNewUsernameValid = true;
-          checkFormChanges();
         }
 
         isCheckingUsername = false;
+        checkFormChanges();
       }, 250);
     });
 
@@ -1216,9 +1206,11 @@
         if (newUsername !== (initialFormValues.username || '').toLowerCase()) {
           const finalCheck = await checkUsernameAvailability(newUsername, targetUserKey);
           if (!finalCheck) {
-            alert('Username sudah digunakan.');
-            showUsernameHint('error', 'Username sudah digunakan.');
-            saveBtn.disabled = false;
+            editUsernameStatus.style.display = 'block';
+            editUsernameStatus.className = 'input-hint error';
+            editUsernameStatus.innerText = 'Username sudah digunakan.';
+            alert('Username sudah digunakan oleh pengguna lain.');
+            saveBtn.disabled = true;
             saveBtn.innerText = 'Simpan Perubahan';
             return;
           }
@@ -1241,13 +1233,6 @@
         targetUserData.username = newUsername;
         targetUserData.bio = newBio;
         targetUserData.photoURL = finalPhoto;
-
-        if (cachedUsersMap && cachedUsersMap[targetUserKey]) {
-          cachedUsersMap[targetUserKey].name = newName;
-          cachedUsersMap[targetUserKey].username = newUsername;
-          cachedUsersMap[targetUserKey].bio = newBio;
-          cachedUsersMap[targetUserKey].photoURL = finalPhoto;
-        }
 
         await renderProfile(targetUserData, targetUserKey, currentAuthUser);
         closeModal('modalEditProfile');
