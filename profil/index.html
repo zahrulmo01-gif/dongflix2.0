@@ -531,7 +531,7 @@
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
     
-    .input-hint { font-size: 11px; margin-top: 4px; display: none; font-weight: 600; }
+    .input-hint { font-size: 11px; margin-top: 5px; display: none; font-weight: 600; line-height: 1.3; }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
     .input-hint.checking { color: #38bdf8; display: block; }
@@ -539,8 +539,13 @@
     .btn-modal-save {
       width: 100%; height: 46px; background: #fff; color: #000; border: none;
       border-radius: var(--radius-btn); font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px;
+      transition: opacity 0.2s, background 0.2s;
     }
-    .btn-modal-save:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-modal-save:disabled { 
+      opacity: 0.35 !important; 
+      cursor: not-allowed !important;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -641,11 +646,12 @@
     </div>
   </div>
 
+  <!-- MODAL EDIT PROFIL -->
   <div id="modalEditProfile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal('modalEditProfile')">&times;</button>
       <div class="modal-title">Edit Profil</div>
-      <form onsubmit="handleSaveProfile(event)">
+      <form onsubmit="handleSaveProfile(event)" id="formEditProfile">
         
         <div class="form-group">
           <label class="form-label">Nama Tampilan</label>
@@ -674,7 +680,7 @@
           <input type="password" id="inputEditPassword" class="form-input" minlength="6" placeholder="Minimal 6 karakter...">
         </div>
 
-        <button type="submit" class="btn-modal-save" id="btnSaveModal">Simpan Perubahan</button>
+        <button type="submit" class="btn-modal-save" id="btnSaveModal" disabled>Simpan Perubahan</button>
       </form>
     </div>
   </div>
@@ -691,6 +697,9 @@
     let isOwnProfile = false;
     let isFollowing = false;
     let uploadedPhotoBase64 = '';
+    
+    // Status Form & Validasi Username
+    let initialFormValues = {};
     let isNewUsernameValid = true;
     let isCheckingUsername = false;
     let editCheckTimeout = null;
@@ -726,13 +735,11 @@
       }
     };
 
-    // PENCARIAN USER CEPAT BERDASARKAN INDEX USERNAME / KEY
     async function fetchUserData(identifier) {
       const idClean = identifier.trim();
       const usersRef = ref(db, 'users');
 
       try {
-        // Cek langsung via query index username
         const q = query(usersRef, orderByChild('username'), equalTo(idClean.toLowerCase()));
         const snap = await get(q);
         if (snap.exists()) {
@@ -743,14 +750,12 @@
       } catch (_) {}
 
       try {
-        // Cek via direct key (misal username/key sama persis)
         const directSnap = await get(ref(db, `users/${idClean}`));
         if (directSnap.exists()) {
           return { key: idClean, data: directSnap.val() };
         }
       } catch (_) {}
 
-      // Fallback jika belum terindeks
       try {
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
@@ -792,7 +797,6 @@
       document.getElementById('userName').innerHTML = name;
       document.getElementById('userBio').innerText = bioText;
 
-      // HITUNG DAN TAMPILKAN STATUS LEVEL
       const userLevel = calculateLevel(targetData.exp || 0);
       const badgeBox = document.getElementById('badgeContainer');
       const levelBadgeHtml = isAdmin 
@@ -946,21 +950,63 @@
       }
     };
 
+    // CEK APAKAH ADA PERUBAHAN PADA FORM EDIT PROFIL
+    function checkFormChanges() {
+      const currentName = document.getElementById('inputEditName').value.trim();
+      const currentUsername = document.getElementById('inputEditUsername').value.trim().toLowerCase();
+      const currentBio = document.getElementById('inputEditBio').value.trim();
+      const currentPhotoUrl = document.getElementById('inputEditPhotoUrl').value.trim();
+      const currentPassword = document.getElementById('inputEditPassword').value;
+
+      const isChanged = (
+        currentName !== initialFormValues.name ||
+        currentUsername !== initialFormValues.username ||
+        currentBio !== initialFormValues.bio ||
+        currentPhotoUrl !== initialFormValues.photoUrl ||
+        uploadedPhotoBase64 !== '' ||
+        (currentPassword && currentPassword.length >= 6)
+      );
+
+      const saveBtn = document.getElementById('btnSaveModal');
+      // Hanya aktif jika ada perubahan, username valid, dan tidak sedang memeriksa username
+      if (isChanged && isNewUsernameValid && !isCheckingUsername) {
+        saveBtn.disabled = false;
+      } else {
+        saveBtn.disabled = true;
+      }
+    }
+
     window.handleMainAction = async function() {
       const btn = document.getElementById('btnMainAction');
 
       if (isOwnProfile) {
-        document.getElementById('inputEditName').value = targetUserData?.name || '';
-        document.getElementById('inputEditUsername').value = targetUserData?.username || '';
-        document.getElementById('inputEditBio').value = targetUserData?.bio || '';
-        document.getElementById('inputEditPhotoUrl').value = targetUserData?.photoURL || '';
+        const currentName = targetUserData?.name || '';
+        const currentUsername = (targetUserData?.username || '').toLowerCase();
+        const currentBio = targetUserData?.bio || '';
+        const currentPhotoUrl = targetUserData?.photoURL || '';
+
+        document.getElementById('inputEditName').value = currentName;
+        document.getElementById('inputEditUsername').value = currentUsername;
+        document.getElementById('inputEditBio').value = currentBio;
+        document.getElementById('inputEditPhotoUrl').value = currentPhotoUrl;
         document.getElementById('inputEditPhotoFile').value = '';
         document.getElementById('inputEditPassword').value = '';
         uploadedPhotoBase64 = '';
+
+        // Simpan state awal form
+        initialFormValues = {
+          name: currentName,
+          username: currentUsername,
+          bio: currentBio,
+          photoUrl: currentPhotoUrl
+        };
+
         isNewUsernameValid = true;
         isCheckingUsername = false;
         document.getElementById('editUsernameStatus').style.display = 'none';
-        document.getElementById('btnSaveModal').disabled = false;
+
+        // Nonaktifkan tombol saat modal baru dibuka
+        document.getElementById('btnSaveModal').disabled = true;
 
         openModal('modalEditProfile');
         return;
@@ -1038,43 +1084,40 @@
       }
     };
 
-    // CEK USERNAME CEPAT SAAT DIEDIT
+    // CEK KETERSEDIAAN USERNAME
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
-    const btnSaveModal = document.getElementById('btnSaveModal');
 
     editUsernameInput.addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
-      // Jika sama dengan username lama pengguna
-      if (!val || val === (targetUserData?.username || '').toLowerCase()) {
+      // Jika sama dengan username pengguna saat ini
+      if (!val || val === (initialFormValues.username || '').toLowerCase()) {
         editUsernameStatus.style.display = 'none';
         isNewUsernameValid = true;
         isCheckingUsername = false;
-        btnSaveModal.disabled = false;
+        checkFormChanges();
         return;
       }
 
       if (val.length < 3) {
         editUsernameStatus.className = 'input-hint error';
-        editUsernameStatus.innerText = 'Username minimal 3 karakter.';
+        editUsernameStatus.innerText = 'Minimal 3 karakter (huruf, angka, _).';
         isNewUsernameValid = false;
         isCheckingUsername = false;
-        btnSaveModal.disabled = true;
+        checkFormChanges();
         return;
       }
 
-      // Tampilkan status memeriksa
       editUsernameStatus.className = 'input-hint checking';
       editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
-      btnSaveModal.disabled = true;
       isCheckingUsername = true;
+      checkFormChanges();
 
       editCheckTimeout = setTimeout(async () => {
         try {
-          // Query terarah dan cepat (hanya mengambil data yang cocok)
           const q = query(ref(db, 'users'), orderByChild('username'), equalTo(val));
           const snap = await get(q);
 
@@ -1082,23 +1125,19 @@
           if (snap.exists()) {
             const res = snap.val();
             const keys = Object.keys(res);
-            // Terpakai jika key milik pengguna lain
             isTaken = keys.some(k => k !== targetUserKey);
           }
 
           if (isTaken) {
             editUsernameStatus.className = 'input-hint error';
-            editUsernameStatus.innerText = `Username "${val}" sudah dipakai!`;
+            editUsernameStatus.innerText = 'Username sudah digunakan.';
             isNewUsernameValid = false;
-            btnSaveModal.disabled = true;
           } else {
             editUsernameStatus.className = 'input-hint success';
-            editUsernameStatus.innerText = `Username "${val}" tersedia!`;
+            editUsernameStatus.innerText = 'Username tersedia.';
             isNewUsernameValid = true;
-            btnSaveModal.disabled = false;
           }
         } catch (_) {
-          // Fallback jika query index belum siap di database
           try {
             const allSnap = await get(ref(db, 'users'));
             let isTakenFallback = false;
@@ -1113,23 +1152,26 @@
             }
             if (isTakenFallback) {
               editUsernameStatus.className = 'input-hint error';
-              editUsernameStatus.innerText = `Username "${val}" sudah dipakai!`;
+              editUsernameStatus.innerText = 'Username sudah digunakan.';
               isNewUsernameValid = false;
-              btnSaveModal.disabled = true;
             } else {
               editUsernameStatus.className = 'input-hint success';
-              editUsernameStatus.innerText = `Username "${val}" tersedia!`;
+              editUsernameStatus.innerText = 'Username tersedia.';
               isNewUsernameValid = true;
-              btnSaveModal.disabled = false;
             }
           } catch (err) {
             isNewUsernameValid = true;
-            btnSaveModal.disabled = false;
           }
         } finally {
           isCheckingUsername = false;
+          checkFormChanges();
         }
       }, 300);
+    });
+
+    // Pantau perubahan pada input lain untuk toggle tombol simpan
+    ['inputEditName', 'inputEditBio', 'inputEditPhotoUrl', 'inputEditPassword'].forEach(id => {
+      document.getElementById(id).addEventListener('input', checkFormChanges);
     });
 
     document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
@@ -1137,8 +1179,12 @@
         const reader = new FileReader();
         reader.onload = function(evt) {
           uploadedPhotoBase64 = evt.target.result;
+          checkFormChanges();
         };
         reader.readAsDataURL(this.files[0]);
+      } else {
+        uploadedPhotoBase64 = '';
+        checkFormChanges();
       }
     });
 
@@ -1168,14 +1214,13 @@
       saveBtn.innerText = 'Menyimpan...';
 
       try {
-        // Cek ganda ketersediaan sebelum commit
-        if (newUsername !== (targetUserData?.username || '').toLowerCase()) {
+        if (newUsername !== (initialFormValues.username || '').toLowerCase()) {
           const checkQ = query(ref(db, 'users'), orderByChild('username'), equalTo(newUsername));
           const checkSnap = await get(checkQ);
           if (checkSnap.exists()) {
             const keys = Object.keys(checkSnap.val());
             if (keys.some(k => k !== targetUserKey)) {
-              alert(`Username "${newUsername}" baru saja dipakai orang lain.`);
+              alert('Username sudah digunakan.');
               saveBtn.disabled = false;
               saveBtn.innerText = 'Simpan Perubahan';
               return;
