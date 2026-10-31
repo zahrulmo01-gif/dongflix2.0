@@ -15,10 +15,6 @@
     {
       "source": "/profil/:username",
       "destination": "/profil/index.html"
-    },
-    {
-      "source": "/cdn/:path*",
-      "destination": "https://res.cloudinary.com/pqyvpk17/image/upload/:path*"
     }
   ]
 }
