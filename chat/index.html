@@ -10,7 +10,7 @@
   <!-- Favicon & PWA -->
   <link rel="icon" type="image/png" href="/image/IMG_6395.png">
   <link rel="apple-touch-icon" href="/image/IMG_6395.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <script type="module" src="/assets/firebase-config.js"></script>
@@ -33,7 +33,19 @@
       --glass-blur: blur(20px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      touch-action: manipulation; 
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    button, a, input, select, textarea, div, span, [onclick] {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-focus-ring-color: transparent !important;
+    }
 
     html, body {
       width: 100%;
@@ -890,7 +902,7 @@
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
     let selectedStickerUrl = '';
     let cachedStickers = [];
-    let allFirebaseUsersList = []; // Daftar semua user dari node users
+    let allFirebaseUsersList = [];
     let lastRenderedChatJson = '';
     let replyingMessage = null;
     const userProfileCache = {};
@@ -905,6 +917,13 @@
       'https://cdn-icons-png.flaticon.com/128/9408/9408224.png',
       'https://media.tenor.com/gK2J_J7KkE8AAAAj/cute-love.gif'
     ];
+
+    // RUMUS LEVEL: 0-1000 = Lv1, 1001-2000 = Lv2, dst
+    function calculateLevel(expVal) {
+      const exp = Number(expVal) || 0;
+      if (exp <= 0) return 1;
+      return Math.floor((exp - 1) / 1000) + 1;
+    }
 
     function escapeHtml(str) {
       return String(str || '')
@@ -1124,7 +1143,6 @@
       if (box) box.classList.remove('active');
     }
 
-    // Ambil semua pengguna Firebase untuk support tag mention global
     async function loadAllFirebaseUsers() {
       if (allFirebaseUsersList.length > 0) return allFirebaseUsersList;
       try {
@@ -1141,7 +1159,8 @@
                   username: u.username || '',
                   name: u.name || u.username || 'User',
                   photo: u.photoURL || '',
-                  email: u.email || ''
+                  email: u.email || '',
+                  exp: u.exp || 0
                 });
               }
             });
@@ -1216,14 +1235,6 @@
       input.focus();
     }
 
-    function appendMentionToInput(name) {
-      const input = document.getElementById('chatInput');
-      if (!input) return;
-      input.value += `@${name} `;
-      input.focus();
-    }
-
-    // Mengubah tag @username menjadi link yang bisa diklik menuju profil
     function parseMentions(text) {
       const safe = escapeHtml(text);
       return safe.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+)/g, (m, u) => {
@@ -1276,7 +1287,6 @@
       const uniqueUsers = [...new Set(messageList.map(m => m.email ? m.email.toLowerCase().replace(/\./g, ',') : m.uid).filter(Boolean))];
       await Promise.all(uniqueUsers.map(uKey => getUserCachedProfile(uKey, uKey)));
 
-      // Muat daftar users jika belum ada
       loadAllFirebaseUsers();
 
       messageList.forEach((item) => {
@@ -1306,14 +1316,17 @@
         const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
         const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
 
-        // URL Menuju Profil
         const profileUrl = username ? `/profil/${encodeURIComponent(username)}` : (item.email ? `/profil/${encodeURIComponent(item.email.split('@')[0])}` : '/profil/');
 
         const avatarContent = photoURL 
           ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
           : initial;
 
-        const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+        // Level dinamis berdasarkan EXP
+        const userLevel = calculateLevel(updatedProfile?.exp || item.exp || 0);
+        const levelBadge = isAdmin 
+          ? `<span class="badge-level admin-lvl">Lv999+</span>` 
+          : `<span class="badge-level">Lv${userLevel}</span>`;
         const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
 
         const row = document.createElement('div');
@@ -1439,7 +1452,6 @@
       const user = window.currentUser;
       const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-      // Dapatkan data profil user aktif
       const uKey = user.email ? user.email.toLowerCase().replace(/\./g, ',') : user.uid;
       const myProfile = await getUserCachedProfile(user.email, user.uid);
 
@@ -1449,6 +1461,7 @@
         author: (myProfile && myProfile.name) ? myProfile.name : (user.displayName || (user.email ? user.email.split('@')[0] : 'User')),
         username: (myProfile && myProfile.username) ? myProfile.username : (user.email ? user.email.split('@')[0] : ''),
         photoURL: (myProfile && myProfile.photoURL) ? myProfile.photoURL : (user.photoURL || ''),
+        exp: myProfile?.exp || 0,
         text: text,
         stickerUrl: stickerUrl || '',
         timestamp: Date.now(),
