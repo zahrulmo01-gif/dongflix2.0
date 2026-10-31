@@ -531,7 +531,7 @@
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
     
-    .input-hint { font-size: 11px; margin-top: 5px; display: none; font-weight: 600; line-height: 1.3; }
+    .input-hint { font-size: 11.5px; margin-top: 6px; display: none; font-weight: 600; line-height: 1.3; }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
     .input-hint.checking { color: #38bdf8; display: block; }
@@ -698,7 +698,7 @@
     let isFollowing = false;
     let uploadedPhotoBase64 = '';
     
-    // Status Form & Validasi Username
+    // Status State Form & Validasi
     let initialFormValues = {};
     let isNewUsernameValid = true;
     let isCheckingUsername = false;
@@ -735,19 +735,30 @@
       }
     };
 
+    async function checkUsernameAvailability(username, excludeKey) {
+      const val = username.trim().toLowerCase();
+      try {
+        const allSnap = await get(ref(db, 'users'));
+        if (!allSnap.exists()) return true;
+
+        const allUsers = allSnap.val();
+        for (const k in allUsers) {
+          if (k !== excludeKey && allUsers[k]?.username) {
+            if (String(allUsers[k].username).toLowerCase() === val) {
+              return false; // Sudah dipakai
+            }
+          }
+        }
+        return true; // Tersedia
+      } catch (err) {
+        console.warn("Gagal cek username:", err);
+        return false;
+      }
+    }
+
     async function fetchUserData(identifier) {
       const idClean = identifier.trim();
       const usersRef = ref(db, 'users');
-
-      try {
-        const q = query(usersRef, orderByChild('username'), equalTo(idClean.toLowerCase()));
-        const snap = await get(q);
-        if (snap.exists()) {
-          const val = snap.val();
-          const key = Object.keys(val)[0];
-          return { key, data: val[key] };
-        }
-      } catch (_) {}
 
       try {
         const directSnap = await get(ref(db, `users/${idClean}`));
@@ -968,7 +979,7 @@
       );
 
       const saveBtn = document.getElementById('btnSaveModal');
-      // Hanya aktif jika ada perubahan, username valid, dan tidak sedang memeriksa username
+      // Hanya aktif jika ada perubahan nyata, username valid, dan tidak sedang dicek
       if (isChanged && isNewUsernameValid && !isCheckingUsername) {
         saveBtn.disabled = false;
       } else {
@@ -993,7 +1004,6 @@
         document.getElementById('inputEditPassword').value = '';
         uploadedPhotoBase64 = '';
 
-        // Simpan state awal form
         initialFormValues = {
           name: currentName,
           username: currentUsername,
@@ -1005,7 +1015,7 @@
         isCheckingUsername = false;
         document.getElementById('editUsernameStatus').style.display = 'none';
 
-        // Nonaktifkan tombol saat modal baru dibuka
+        // Pastikan terkunci saat baru dibuka
         document.getElementById('btnSaveModal').disabled = true;
 
         openModal('modalEditProfile');
@@ -1087,13 +1097,14 @@
     // CEK KETERSEDIAAN USERNAME
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
+    const btnSaveModal = document.getElementById('btnSaveModal');
 
     editUsernameInput.addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
+      e.target.value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
-      // Jika sama dengan username pengguna saat ini
+      // Jika sama persis dengan username akun saat ini
       if (!val || val === (initialFormValues.username || '').toLowerCase()) {
         editUsernameStatus.style.display = 'none';
         isNewUsernameValid = true;
@@ -1107,69 +1118,35 @@
         editUsernameStatus.innerText = 'Minimal 3 karakter (huruf, angka, _).';
         isNewUsernameValid = false;
         isCheckingUsername = false;
-        checkFormChanges();
+        btnSaveModal.disabled = true;
         return;
       }
 
+      // Tampilkan status loading
       editUsernameStatus.className = 'input-hint checking';
       editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
+      btnSaveModal.disabled = true;
       isCheckingUsername = true;
-      checkFormChanges();
 
       editCheckTimeout = setTimeout(async () => {
-        try {
-          const q = query(ref(db, 'users'), orderByChild('username'), equalTo(val));
-          const snap = await get(q);
+        const isAvailable = await checkUsernameAvailability(val, targetUserKey);
 
-          let isTaken = false;
-          if (snap.exists()) {
-            const res = snap.val();
-            const keys = Object.keys(res);
-            isTaken = keys.some(k => k !== targetUserKey);
-          }
-
-          if (isTaken) {
-            editUsernameStatus.className = 'input-hint error';
-            editUsernameStatus.innerText = 'Username sudah digunakan.';
-            isNewUsernameValid = false;
-          } else {
-            editUsernameStatus.className = 'input-hint success';
-            editUsernameStatus.innerText = 'Username tersedia.';
-            isNewUsernameValid = true;
-          }
-        } catch (_) {
-          try {
-            const allSnap = await get(ref(db, 'users'));
-            let isTakenFallback = false;
-            if (allSnap.exists()) {
-              const data = allSnap.val();
-              for (const k in data) {
-                if (k !== targetUserKey && data[k]?.username && String(data[k].username).toLowerCase() === val) {
-                  isTakenFallback = true;
-                  break;
-                }
-              }
-            }
-            if (isTakenFallback) {
-              editUsernameStatus.className = 'input-hint error';
-              editUsernameStatus.innerText = 'Username sudah digunakan.';
-              isNewUsernameValid = false;
-            } else {
-              editUsernameStatus.className = 'input-hint success';
-              editUsernameStatus.innerText = 'Username tersedia.';
-              isNewUsernameValid = true;
-            }
-          } catch (err) {
-            isNewUsernameValid = true;
-          }
-        } finally {
-          isCheckingUsername = false;
+        if (!isAvailable) {
+          editUsernameStatus.className = 'input-hint error';
+          editUsernameStatus.innerText = 'Username sudah digunakan.';
+          isNewUsernameValid = false;
+          btnSaveModal.disabled = true;
+        } else {
+          editUsernameStatus.className = 'input-hint success';
+          editUsernameStatus.innerText = 'Username tersedia.';
+          isNewUsernameValid = true;
           checkFormChanges();
         }
+
+        isCheckingUsername = false;
       }, 300);
     });
 
-    // Pantau perubahan pada input lain untuk toggle tombol simpan
     ['inputEditName', 'inputEditBio', 'inputEditPhotoUrl', 'inputEditPassword'].forEach(id => {
       document.getElementById(id).addEventListener('input', checkFormChanges);
     });
@@ -1193,12 +1170,12 @@
       if (!isOwnProfile || !targetUserKey) return;
 
       if (isCheckingUsername) {
-        alert('Mohon tunggu, sedang memeriksa ketersediaan username...');
+        alert('Mohon tunggu sebentar, sedang memeriksa ketersediaan username...');
         return;
       }
 
       if (!isNewUsernameValid) {
-        alert('Username yang dimasukkan tidak valid atau sudah digunakan.');
+        alert('Username sudah digunakan atau belum memenuhi syarat.');
         return;
       }
 
@@ -1215,16 +1192,12 @@
 
       try {
         if (newUsername !== (initialFormValues.username || '').toLowerCase()) {
-          const checkQ = query(ref(db, 'users'), orderByChild('username'), equalTo(newUsername));
-          const checkSnap = await get(checkQ);
-          if (checkSnap.exists()) {
-            const keys = Object.keys(checkSnap.val());
-            if (keys.some(k => k !== targetUserKey)) {
-              alert('Username sudah digunakan.');
-              saveBtn.disabled = false;
-              saveBtn.innerText = 'Simpan Perubahan';
-              return;
-            }
+          const finalCheck = await checkUsernameAvailability(newUsername, targetUserKey);
+          if (!finalCheck) {
+            alert('Username sudah digunakan oleh pengguna lain.');
+            saveBtn.disabled = false;
+            saveBtn.innerText = 'Simpan Perubahan';
+            return;
           }
         }
 
