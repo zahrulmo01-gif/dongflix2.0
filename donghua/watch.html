@@ -61,7 +61,18 @@
       --glass-blur: blur(20px);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    /* MENGHILANGKAN KOTAK TAP/HIGHLIGHT DI ANDROID TANPA MERUSAK EVENT KLIK */
+    button, a, input, select, textarea, [onclick] {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-focus-ring-color: transparent !important;
+    }
 
     body {
       background-color: var(--bg-main);
@@ -786,7 +797,7 @@
         </div>
       </div>
 
-      <!-- Kotak Input Komentar dengan Preview Stiker & Tag Mention -->
+      <!-- Kotak Input Komentar -->
       <div class="comment-input-box-wrapper" id="commentFormBox" style="display:none;">
         <div class="sticker-preview-box" id="mainStickerPreview">
           <img id="mainStickerPreviewImg" src="" />
@@ -828,32 +839,19 @@
             <div class="skeleton skeleton-text" style="width: 40px; height: 10px;"></div>
           </div>
         </div>
-        <div class="comment-card" style="border: none; background: transparent;">
-          <div class="tiktok-avatar skeleton" style="border-radius: 50%;"></div>
-          <div class="comment-content" style="display: flex; flex-direction: column; gap: 6px;">
-            <div class="skeleton skeleton-text" style="width: 90px; height: 13px;"></div>
-            <div class="skeleton skeleton-text" style="width: 65%; height: 13px;"></div>
-            <div class="skeleton skeleton-text" style="width: 40px; height: 10px;"></div>
-          </div>
-        </div>
       </div>
     </section>
   </div>
 </div>
 
-<!-- Modal Picker Stiker Gabungan -->
+<!-- Modal Picker Stiker -->
 <div class="sheet-overlay" id="stickerOverlay" onclick="closeStickerPicker()"></div>
 <div class="sticker-picker-panel" id="stickerPanel">
   <div class="sticker-header">
     <span class="sticker-header-title">Pilih Stiker & GIF</span>
     <button class="sticker-close-btn" onclick="closeStickerPicker()">✕</button>
   </div>
-  <div class="sticker-grid" id="stickerGridContainer">
-    <div class="skeleton" style="aspect-ratio: 1/1; border-radius: 12px;"></div>
-    <div class="skeleton" style="aspect-ratio: 1/1; border-radius: 12px;"></div>
-    <div class="skeleton" style="aspect-ratio: 1/1; border-radius: 12px;"></div>
-    <div class="skeleton" style="aspect-ratio: 1/1; border-radius: 12px;"></div>
-  </div>
+  <div class="sticker-grid" id="stickerGridContainer"></div>
 </div>
 
 <div class="sheet-overlay" id="sheetOverlay" onclick="closeEpisodeSheet()">
@@ -923,8 +921,6 @@
   let currentStickerTarget = null;
   let selectedMainStickerUrl = '';
   const selectedReplyStickers = {};
-  
-  // Cache seluruh data users dari Firebase untuk auto-complete tag & routing profil
   let allRegisteredUsers = [];
 
   const DEFAULT_STICKERS = [
@@ -1085,7 +1081,6 @@
     }
   }
 
-  // Auto-complete @mention mendukung seluruh pengguna dari Firebase users
   async function handleMentionInput(inputEl, menuId) {
     const menu = document.getElementById(menuId);
     if (!menu) return;
@@ -1098,7 +1093,6 @@
     if (atIndex !== -1 && (atIndex === 0 || /\s/.test(textBeforeCursor[atIndex - 1]))) {
       const query = textBeforeCursor.slice(atIndex + 1).toLowerCase();
 
-      // Pastikan data users sudah termuat
       if (allRegisteredUsers.length === 0) {
         await loadAllFirebaseUsers();
       }
@@ -1149,7 +1143,6 @@
     inputEl.focus();
   }
 
-  // Ubah @username menjadi link profil yang dapat diklik
   function parseMentionsToHtml(str) {
     const escaped = escapeHtml(str);
     return escaped.replace(/@([a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+)/g, (match, username) => {
@@ -1223,7 +1216,7 @@
     const n = parseInt(val, 10);
     if (isNaN(n) || n <= 0) return '0';
     if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    if (n >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     return String(n);
   }
 
@@ -1711,7 +1704,6 @@
     if (!targetSlug) return;
 
     try {
-      // Ambil juga data users untuk tag mention global
       loadAllFirebaseUsers();
 
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
@@ -1799,7 +1791,6 @@
     const username = profile.username || item.username || (item.email ? String(item.email).split('@')[0] : '');
     const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
 
-    // Link URL Profil Pengguna
     const profileUrl = username ? `/profil/${encodeURIComponent(username)}` : (item.email ? `/profil/${encodeURIComponent(item.email.split('@')[0])}` : '/profil/');
 
     const commentText = String(item.text || '');
@@ -2001,7 +1992,6 @@
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     
-    // Ambil profil pengirim agar username & nama tersimpan rapi
     let myProfile = { name: '', photoURL: '', username: '' };
     try {
       myProfile = await fetchUserProfile(window.currentUser.email, window.currentUser.uid);
