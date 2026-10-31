@@ -519,11 +519,12 @@
       display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px;
     }
 
-    .form-group { margin-bottom: 14px; }
+    .form-group { margin-bottom: 14px; position: relative; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin-bottom: 6px; }
     .form-input {
       width: 100%; height: 42px; background: #080a0f; border: 1px solid var(--border-color);
       border-radius: 10px; padding: 0 12px; color: #fff; font-size: 13.5px; outline: none;
+      transition: border-color 0.2s;
     }
     .form-textarea {
       width: 100%; height: 70px; background: #080a0f; border: 1px solid var(--border-color);
@@ -531,7 +532,13 @@
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
     
-    .input-hint { font-size: 11.5px; margin-top: 5px; display: none; font-weight: 600; line-height: 1.3; }
+    .input-hint { 
+      font-size: 12px; 
+      margin-top: 6px; 
+      font-weight: 700; 
+      line-height: 1.3; 
+      display: none; 
+    }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
     .input-hint.checking { color: #38bdf8; display: block; }
@@ -704,6 +711,9 @@
     let isCheckingUsername = false;
     let editCheckTimeout = null;
 
+    // Cache database users agar verifikasi username secepat kilat
+    let cachedUsersMap = null;
+
     // RUMUS LEVEL: 0-1000 = Lv1, 1001-2000 = Lv2, dst
     function calculateLevel(expVal) {
       const exp = Number(expVal) || 0;
@@ -735,19 +745,19 @@
       }
     };
 
-    // FUNGSI CEK USERNAME SEPERTI PADA REGISTER.HTML
+    // FUNGSI CEK USERNAME CEPAT & STABIL (SEPERTI REGISTER.HTML)
     async function checkUsernameAvailability(username, excludeKey) {
       const cleanUsername = username.trim().toLowerCase();
       try {
-        const usersRef = ref(db, 'users');
-        const allSnap = await get(usersRef);
-        if (!allSnap.exists()) return true;
+        if (!cachedUsersMap) {
+          const snap = await get(ref(db, 'users'));
+          cachedUsersMap = snap.exists() ? snap.val() : {};
+        }
 
-        const data = allSnap.val();
-        for (const key in data) {
-          if (key !== excludeKey && data[key]?.username) {
-            if (String(data[key].username).toLowerCase() === cleanUsername) {
-              return false; // Sudah dipakai
+        for (const key in cachedUsersMap) {
+          if (key !== excludeKey && cachedUsersMap[key]?.username) {
+            if (String(cachedUsersMap[key].username).toLowerCase() === cleanUsername) {
+              return false; // Sudah digunakan
             }
           }
         }
@@ -772,8 +782,8 @@
       try {
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
-          const allUsers = allSnap.val();
-          for (const [key, val] of Object.entries(allUsers)) {
+          cachedUsersMap = allSnap.val();
+          for (const [key, val] of Object.entries(cachedUsersMap)) {
             const matchUsername = val.username && String(val.username).toLowerCase() === idClean.toLowerCase();
             const matchEmailPrefix = key.toLowerCase().startsWith(idClean.toLowerCase() + '@');
             const matchExactKey = key.toLowerCase() === idClean.toLowerCase();
@@ -963,7 +973,19 @@
       }
     };
 
-    // CEK APAKAH ADA PERUBAHAN NYATA DI FORM EDIT PROFIL
+    // FUNGSI KONTROL STATUS USERNAME EKSPLISIT
+    const editUsernameStatus = document.getElementById('editUsernameStatus');
+    function showUsernameHint(type, message) {
+      editUsernameStatus.style.display = 'block';
+      editUsernameStatus.className = `input-hint ${type}`;
+      editUsernameStatus.innerText = message;
+    }
+    function hideUsernameHint() {
+      editUsernameStatus.style.display = 'none';
+      editUsernameStatus.innerText = '';
+    }
+
+    // CEK APAKAH ADA PERUBAHAN PADA FORM EDIT PROFIL
     function checkFormChanges() {
       const currentName = document.getElementById('inputEditName').value.trim();
       const currentUsername = document.getElementById('inputEditUsername').value.trim().toLowerCase();
@@ -1013,10 +1035,15 @@
 
         isNewUsernameValid = true;
         isCheckingUsername = false;
-        document.getElementById('editUsernameStatus').style.display = 'none';
+        hideUsernameHint();
 
         // Pastikan terkunci saat baru dibuka
         document.getElementById('btnSaveModal').disabled = true;
+
+        // Ambil data users di background agar pencarian langsung siap
+        get(ref(db, 'users')).then(snap => {
+          if (snap.exists()) cachedUsersMap = snap.val();
+        }).catch(() => {});
 
         openModal('modalEditProfile');
         return;
@@ -1094,18 +1121,18 @@
       }
     };
 
-    // CEK KETERSEDIAAN USERNAME
+    // PEMERIKSAAN USERNAME REALTIME
     const editUsernameInput = document.getElementById('inputEditUsername');
-    const editUsernameStatus = document.getElementById('editUsernameStatus');
+    const btnSaveModal = document.getElementById('btnSaveModal');
 
     editUsernameInput.addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
+      e.target.value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
       // Jika sama persis dengan username akun saat ini
       if (!val || val === (initialFormValues.username || '').toLowerCase()) {
-        editUsernameStatus.style.display = 'none';
+        hideUsernameHint();
         isNewUsernameValid = true;
         isCheckingUsername = false;
         checkFormChanges();
@@ -1113,36 +1140,33 @@
       }
 
       if (val.length < 3) {
-        editUsernameStatus.className = 'input-hint error';
-        editUsernameStatus.innerText = 'Minimal 3 karakter (huruf, angka, _).';
+        showUsernameHint('error', 'Minimal 3 karakter (huruf, angka, _).');
         isNewUsernameValid = false;
         isCheckingUsername = false;
-        checkFormChanges();
+        btnSaveModal.disabled = true;
         return;
       }
 
-      // Tampilkan status memeriksa
-      editUsernameStatus.className = 'input-hint checking';
-      editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
+      // Tampilkan status loading
+      showUsernameHint('checking', 'Memeriksa ketersediaan...');
+      btnSaveModal.disabled = true;
       isCheckingUsername = true;
-      checkFormChanges();
 
       editCheckTimeout = setTimeout(async () => {
         const isAvailable = await checkUsernameAvailability(val, targetUserKey);
 
         if (!isAvailable) {
-          editUsernameStatus.className = 'input-hint error';
-          editUsernameStatus.innerText = 'Username sudah digunakan.';
+          showUsernameHint('error', 'Username sudah digunakan.');
           isNewUsernameValid = false;
+          btnSaveModal.disabled = true;
         } else {
-          editUsernameStatus.className = 'input-hint success';
-          editUsernameStatus.innerText = 'Username tersedia.';
+          showUsernameHint('success', 'Username tersedia.');
           isNewUsernameValid = true;
+          checkFormChanges();
         }
 
         isCheckingUsername = false;
-        checkFormChanges();
-      }, 300);
+      }, 250);
     });
 
     ['inputEditName', 'inputEditBio', 'inputEditPhotoUrl', 'inputEditPassword'].forEach(id => {
@@ -1192,7 +1216,8 @@
         if (newUsername !== (initialFormValues.username || '').toLowerCase()) {
           const finalCheck = await checkUsernameAvailability(newUsername, targetUserKey);
           if (!finalCheck) {
-            alert('Username sudah digunakan oleh pengguna lain.');
+            alert('Username sudah digunakan.');
+            showUsernameHint('error', 'Username sudah digunakan.');
             saveBtn.disabled = false;
             saveBtn.innerText = 'Simpan Perubahan';
             return;
@@ -1216,6 +1241,13 @@
         targetUserData.username = newUsername;
         targetUserData.bio = newBio;
         targetUserData.photoURL = finalPhoto;
+
+        if (cachedUsersMap && cachedUsersMap[targetUserKey]) {
+          cachedUsersMap[targetUserKey].name = newName;
+          cachedUsersMap[targetUserKey].username = newUsername;
+          cachedUsersMap[targetUserKey].bio = newBio;
+          cachedUsersMap[targetUserKey].photoURL = finalPhoto;
+        }
 
         await renderProfile(targetUserData, targetUserKey, currentAuthUser);
         closeModal('modalEditProfile');
