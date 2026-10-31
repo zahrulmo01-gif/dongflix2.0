@@ -9,9 +9,9 @@ puppeteer.use(StealthPlugin());
 
 // Daftar domain mirror yang akan dicoba berurutan
 const MIRROR_DOMAINS = [
-  'https://anichin.my',
+  'https://anichin.moe',
   'https://anichin.co',
-  'https://anichin.moe'
+  'https://anichin.my'
 ];
 
 const CONCURRENCY = 4;
