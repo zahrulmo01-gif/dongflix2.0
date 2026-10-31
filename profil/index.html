@@ -534,6 +534,7 @@
     .input-hint { font-size: 11px; margin-top: 4px; display: none; font-weight: 600; }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
+    .input-hint.checking { color: #38bdf8; display: block; }
 
     .btn-modal-save {
       width: 100%; height: 46px; background: #fff; color: #000; border: none;
@@ -547,7 +548,6 @@
   <!-- HEADER -->
   <header>
     <div class="header-content">
-      <!-- Tombol Kembali yang Aman dari Stack Login/Register -->
       <button class="back-btn" onclick="handleBackNavigation()">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
@@ -692,7 +692,15 @@
     let isFollowing = false;
     let uploadedPhotoBase64 = '';
     let isNewUsernameValid = true;
+    let isCheckingUsername = false;
     let editCheckTimeout = null;
+
+    // RUMUS LEVEL: 0-1000 = Lv1, 1001-2000 = Lv2, dst
+    function calculateLevel(expVal) {
+      const exp = Number(expVal) || 0;
+      if (exp <= 0) return 1;
+      return Math.floor((exp - 1) / 1000) + 1;
+    }
 
     function getDbKey(email) {
       return email.toLowerCase().trim().replace(/\./g, ',');
@@ -709,7 +717,6 @@
       return null;
     }
 
-    // Navigasi Back yang aman dari loop login/register
     window.handleBackNavigation = function() {
       const refUrl = document.referrer;
       if (refUrl.includes('/login') || refUrl.includes('/register') || !refUrl || window.history.length <= 1) {
@@ -719,26 +726,39 @@
       }
     };
 
+    // PENCARIAN USER CEPAT BERDASARKAN INDEX USERNAME / KEY
     async function fetchUserData(identifier) {
-      try {
-        const usersRef = ref(db, 'users');
-        try {
-          const q = query(usersRef, orderByChild('username'), equalTo(identifier));
-          const snap = await get(q);
-          if (snap.exists()) {
-            const val = snap.val();
-            const key = Object.keys(val)[0];
-            return { key, data: val[key] };
-          }
-        } catch (_) {}
+      const idClean = identifier.trim();
+      const usersRef = ref(db, 'users');
 
+      try {
+        // Cek langsung via query index username
+        const q = query(usersRef, orderByChild('username'), equalTo(idClean.toLowerCase()));
+        const snap = await get(q);
+        if (snap.exists()) {
+          const val = snap.val();
+          const key = Object.keys(val)[0];
+          return { key, data: val[key] };
+        }
+      } catch (_) {}
+
+      try {
+        // Cek via direct key (misal username/key sama persis)
+        const directSnap = await get(ref(db, `users/${idClean}`));
+        if (directSnap.exists()) {
+          return { key: idClean, data: directSnap.val() };
+        }
+      } catch (_) {}
+
+      // Fallback jika belum terindeks
+      try {
         const allSnap = await get(usersRef);
         if (allSnap.exists()) {
           const allUsers = allSnap.val();
           for (const [key, val] of Object.entries(allUsers)) {
-            const matchUsername = val.username && String(val.username).toLowerCase() === identifier.toLowerCase();
-            const matchEmailPrefix = key.toLowerCase().startsWith(identifier.toLowerCase() + '@');
-            const matchExactKey = key.toLowerCase() === identifier.toLowerCase();
+            const matchUsername = val.username && String(val.username).toLowerCase() === idClean.toLowerCase();
+            const matchEmailPrefix = key.toLowerCase().startsWith(idClean.toLowerCase() + '@');
+            const matchExactKey = key.toLowerCase() === idClean.toLowerCase();
 
             if (matchUsername || matchEmailPrefix || matchExactKey) {
               return { key, data: val };
@@ -772,10 +792,12 @@
       document.getElementById('userName').innerHTML = name;
       document.getElementById('userBio').innerText = bioText;
 
+      // HITUNG DAN TAMPILKAN STATUS LEVEL
+      const userLevel = calculateLevel(targetData.exp || 0);
       const badgeBox = document.getElementById('badgeContainer');
       const levelBadgeHtml = isAdmin 
         ? `<span class="badge-level admin-lvl">Lv999+</span>` 
-        : `<span class="badge-level">Lv${targetData.level || 1}</span>`;
+        : `<span class="badge-level">Lv${userLevel}</span>`;
       const adminBadgeHtml = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
       badgeBox.innerHTML = `${levelBadgeHtml} ${adminBadgeHtml}`;
 
@@ -936,7 +958,9 @@
         document.getElementById('inputEditPassword').value = '';
         uploadedPhotoBase64 = '';
         isNewUsernameValid = true;
+        isCheckingUsername = false;
         document.getElementById('editUsernameStatus').style.display = 'none';
+        document.getElementById('btnSaveModal').disabled = false;
 
         openModal('modalEditProfile');
         return;
@@ -1014,17 +1038,22 @@
       }
     };
 
+    // CEK USERNAME CEPAT SAAT DIEDIT
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
+    const btnSaveModal = document.getElementById('btnSaveModal');
 
     editUsernameInput.addEventListener('input', (e) => {
       e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
+      // Jika sama dengan username lama pengguna
       if (!val || val === (targetUserData?.username || '').toLowerCase()) {
         editUsernameStatus.style.display = 'none';
         isNewUsernameValid = true;
+        isCheckingUsername = false;
+        btnSaveModal.disabled = false;
         return;
       }
 
@@ -1032,37 +1061,75 @@
         editUsernameStatus.className = 'input-hint error';
         editUsernameStatus.innerText = 'Username minimal 3 karakter.';
         isNewUsernameValid = false;
+        isCheckingUsername = false;
+        btnSaveModal.disabled = true;
         return;
       }
 
+      // Tampilkan status memeriksa
+      editUsernameStatus.className = 'input-hint checking';
+      editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
+      btnSaveModal.disabled = true;
+      isCheckingUsername = true;
+
       editCheckTimeout = setTimeout(async () => {
         try {
-          const usersRef = ref(db, 'users');
-          const allSnap = await get(usersRef);
+          // Query terarah dan cepat (hanya mengambil data yang cocok)
+          const q = query(ref(db, 'users'), orderByChild('username'), equalTo(val));
+          const snap = await get(q);
+
           let isTaken = false;
-          if (allSnap.exists()) {
-            const data = allSnap.val();
-            for (const key in data) {
-              if (key !== targetUserKey && data[key]?.username && String(data[key].username).toLowerCase() === val) {
-                isTaken = true;
-                break;
-              }
-            }
+          if (snap.exists()) {
+            const res = snap.val();
+            const keys = Object.keys(res);
+            // Terpakai jika key milik pengguna lain
+            isTaken = keys.some(k => k !== targetUserKey);
           }
 
           if (isTaken) {
             editUsernameStatus.className = 'input-hint error';
             editUsernameStatus.innerText = `Username "${val}" sudah dipakai!`;
             isNewUsernameValid = false;
+            btnSaveModal.disabled = true;
           } else {
             editUsernameStatus.className = 'input-hint success';
-            editUsernameStatus.innerText = `Username "${val}" dapat digunakan!`;
+            editUsernameStatus.innerText = `Username "${val}" tersedia!`;
             isNewUsernameValid = true;
+            btnSaveModal.disabled = false;
           }
         } catch (_) {
-          isNewUsernameValid = true;
+          // Fallback jika query index belum siap di database
+          try {
+            const allSnap = await get(ref(db, 'users'));
+            let isTakenFallback = false;
+            if (allSnap.exists()) {
+              const data = allSnap.val();
+              for (const k in data) {
+                if (k !== targetUserKey && data[k]?.username && String(data[k].username).toLowerCase() === val) {
+                  isTakenFallback = true;
+                  break;
+                }
+              }
+            }
+            if (isTakenFallback) {
+              editUsernameStatus.className = 'input-hint error';
+              editUsernameStatus.innerText = `Username "${val}" sudah dipakai!`;
+              isNewUsernameValid = false;
+              btnSaveModal.disabled = true;
+            } else {
+              editUsernameStatus.className = 'input-hint success';
+              editUsernameStatus.innerText = `Username "${val}" tersedia!`;
+              isNewUsernameValid = true;
+              btnSaveModal.disabled = false;
+            }
+          } catch (err) {
+            isNewUsernameValid = true;
+            btnSaveModal.disabled = false;
+          }
+        } finally {
+          isCheckingUsername = false;
         }
-      }, 400);
+      }, 300);
     });
 
     document.getElementById('inputEditPhotoFile').addEventListener('change', function() {
@@ -1078,6 +1145,11 @@
     window.handleSaveProfile = async function(e) {
       e.preventDefault();
       if (!isOwnProfile || !targetUserKey) return;
+
+      if (isCheckingUsername) {
+        alert('Mohon tunggu, sedang memeriksa ketersediaan username...');
+        return;
+      }
 
       if (!isNewUsernameValid) {
         alert('Username yang dimasukkan tidak valid atau sudah digunakan.');
@@ -1096,6 +1168,21 @@
       saveBtn.innerText = 'Menyimpan...';
 
       try {
+        // Cek ganda ketersediaan sebelum commit
+        if (newUsername !== (targetUserData?.username || '').toLowerCase()) {
+          const checkQ = query(ref(db, 'users'), orderByChild('username'), equalTo(newUsername));
+          const checkSnap = await get(checkQ);
+          if (checkSnap.exists()) {
+            const keys = Object.keys(checkSnap.val());
+            if (keys.some(k => k !== targetUserKey)) {
+              alert(`Username "${newUsername}" baru saja dipakai orang lain.`);
+              saveBtn.disabled = false;
+              saveBtn.innerText = 'Simpan Perubahan';
+              return;
+            }
+          }
+        }
+
         if (newPassword && newPassword.length >= 6) {
           await updatePassword(currentAuthUser, newPassword);
         }
