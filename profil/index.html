@@ -531,7 +531,7 @@
     }
     .form-input:focus, .form-textarea:focus { border-color: #38bdf8; }
     
-    .input-hint { font-size: 11.5px; margin-top: 6px; display: none; font-weight: 600; line-height: 1.3; }
+    .input-hint { font-size: 11.5px; margin-top: 5px; display: none; font-weight: 600; line-height: 1.3; }
     .input-hint.error { color: #ef4444; display: block; }
     .input-hint.success { color: #22c55e; display: block; }
     .input-hint.checking { color: #38bdf8; display: block; }
@@ -672,7 +672,7 @@
         <div class="form-group">
           <label class="form-label">Foto Profil</label>
           <input type="file" id="inputEditPhotoFile" accept="image/*" class="form-input" style="padding-top:7px; margin-bottom: 6px;">
-          <input type="url" id="inputEditPhotoUrl" class="form-input" placeholder="Atau masukkan URL gambar...">
+          <input type="url" id="inputEditPhotoUrl" class="form-input" placeholder="Atau masukkan URL gambar baru...">
         </div>
 
         <div class="form-group">
@@ -687,7 +687,7 @@
 
   <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
-    import { ref, get, set, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
@@ -735,16 +735,18 @@
       }
     };
 
+    // FUNGSI CEK USERNAME SEPERTI PADA REGISTER.HTML
     async function checkUsernameAvailability(username, excludeKey) {
-      const val = username.trim().toLowerCase();
+      const cleanUsername = username.trim().toLowerCase();
       try {
-        const allSnap = await get(ref(db, 'users'));
+        const usersRef = ref(db, 'users');
+        const allSnap = await get(usersRef);
         if (!allSnap.exists()) return true;
 
-        const allUsers = allSnap.val();
-        for (const k in allUsers) {
-          if (k !== excludeKey && allUsers[k]?.username) {
-            if (String(allUsers[k].username).toLowerCase() === val) {
+        const data = allSnap.val();
+        for (const key in data) {
+          if (key !== excludeKey && data[key]?.username) {
+            if (String(data[key].username).toLowerCase() === cleanUsername) {
               return false; // Sudah dipakai
             }
           }
@@ -961,7 +963,7 @@
       }
     };
 
-    // CEK APAKAH ADA PERUBAHAN PADA FORM EDIT PROFIL
+    // CEK APAKAH ADA PERUBAHAN NYATA DI FORM EDIT PROFIL
     function checkFormChanges() {
       const currentName = document.getElementById('inputEditName').value.trim();
       const currentUsername = document.getElementById('inputEditUsername').value.trim().toLowerCase();
@@ -973,13 +975,13 @@
         currentName !== initialFormValues.name ||
         currentUsername !== initialFormValues.username ||
         currentBio !== initialFormValues.bio ||
-        currentPhotoUrl !== initialFormValues.photoUrl ||
+        currentPhotoUrl !== '' ||
         uploadedPhotoBase64 !== '' ||
         (currentPassword && currentPassword.length >= 6)
       );
 
       const saveBtn = document.getElementById('btnSaveModal');
-      // Hanya aktif jika ada perubahan nyata, username valid, dan tidak sedang dicek
+      // Hanya aktif bila ada perubahan dan username valid serta tidak sedang dicek
       if (isChanged && isNewUsernameValid && !isCheckingUsername) {
         saveBtn.disabled = false;
       } else {
@@ -994,12 +996,11 @@
         const currentName = targetUserData?.name || '';
         const currentUsername = (targetUserData?.username || '').toLowerCase();
         const currentBio = targetUserData?.bio || '';
-        const currentPhotoUrl = targetUserData?.photoURL || '';
 
         document.getElementById('inputEditName').value = currentName;
         document.getElementById('inputEditUsername').value = currentUsername;
         document.getElementById('inputEditBio').value = currentBio;
-        document.getElementById('inputEditPhotoUrl').value = currentPhotoUrl;
+        document.getElementById('inputEditPhotoUrl').value = '';
         document.getElementById('inputEditPhotoFile').value = '';
         document.getElementById('inputEditPassword').value = '';
         uploadedPhotoBase64 = '';
@@ -1007,8 +1008,7 @@
         initialFormValues = {
           name: currentName,
           username: currentUsername,
-          bio: currentBio,
-          photoUrl: currentPhotoUrl
+          bio: currentBio
         };
 
         isNewUsernameValid = true;
@@ -1097,10 +1097,9 @@
     // CEK KETERSEDIAAN USERNAME
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
-    const btnSaveModal = document.getElementById('btnSaveModal');
 
     editUsernameInput.addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+      e.target.value = e.target.value.replace(/\s+/g, '').toLowerCase();
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
@@ -1118,15 +1117,15 @@
         editUsernameStatus.innerText = 'Minimal 3 karakter (huruf, angka, _).';
         isNewUsernameValid = false;
         isCheckingUsername = false;
-        btnSaveModal.disabled = true;
+        checkFormChanges();
         return;
       }
 
-      // Tampilkan status loading
+      // Tampilkan status memeriksa
       editUsernameStatus.className = 'input-hint checking';
       editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
-      btnSaveModal.disabled = true;
       isCheckingUsername = true;
+      checkFormChanges();
 
       editCheckTimeout = setTimeout(async () => {
         const isAvailable = await checkUsernameAvailability(val, targetUserKey);
@@ -1135,15 +1134,14 @@
           editUsernameStatus.className = 'input-hint error';
           editUsernameStatus.innerText = 'Username sudah digunakan.';
           isNewUsernameValid = false;
-          btnSaveModal.disabled = true;
         } else {
           editUsernameStatus.className = 'input-hint success';
           editUsernameStatus.innerText = 'Username tersedia.';
           isNewUsernameValid = true;
-          checkFormChanges();
         }
 
         isCheckingUsername = false;
+        checkFormChanges();
       }, 300);
     });
 
