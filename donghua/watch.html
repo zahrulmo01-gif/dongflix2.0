@@ -65,10 +65,10 @@
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
+      -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* MENGHILANGKAN KOTAK TAP/HIGHLIGHT DI ANDROID TANPA MERUSAK EVENT KLIK */
-    button, a, input, select, textarea, [onclick] {
+    button, a, input, select, textarea, div, span, [onclick] {
       outline: none !important;
       -webkit-tap-highlight-color: transparent !important;
       -webkit-focus-ring-color: transparent !important;
@@ -225,14 +225,15 @@
     .action-item {
       display: flex; flex-direction: column; align-items: center; gap: 5px;
       color: var(--text-muted); font-size: 11px; cursor: pointer; background: none; border: none; font-weight: 600;
+      user-select: none;
     }
     .action-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; }
     .action-item.active { color: var(--color-accent); }
     .action-item.active svg { fill: var(--color-accent); stroke: var(--color-accent); }
 
-    .server-custom-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; position: relative; }
+    .server-custom-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; position: relative; user-select: none; }
     .server-custom-btn svg { width: 20px; height: 20px; stroke: var(--text-muted); fill: none; stroke-width: 2.2; }
-    .server-select-hidden { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .server-select-hidden { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: none; }
     
     .server-tooltip-hint {
       position: absolute; top: -52px; left: -10px;
@@ -311,7 +312,7 @@
     .ep-box {
       flex: 0 0 54px; height: 54px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
-      cursor: pointer; color: var(--text-sub); transition: all 0.2s ease;
+      cursor: pointer; color: var(--text-sub); transition: all 0.2s ease; user-select: none;
     }
     .ep-box.active { background: var(--color-primary); border-color: var(--color-accent); color: #fff; box-shadow: 0 0 16px rgba(2, 132, 199, 0.4); }
 
@@ -884,6 +885,10 @@
     if (user) {
       if (formBox) formBox.style.display = 'flex';
       if (noticeBox) noticeBox.style.display = 'none';
+      if (typeof window.addExpToUser === 'function' && window.hasWatchedThisSession && !window.hasRewardedWatchExp) {
+        window.addExpToUser(100);
+        window.hasRewardedWatchExp = true;
+      }
     } else {
       if (formBox) formBox.style.display = 'none';
       if (noticeBox) noticeBox.style.display = 'block';
@@ -912,7 +917,7 @@
   let episodeSortMode = 'oldest';
   let hasIncrementedView = false;
   let currentSortMode = 'latest';
-  let currentViewCount = '0';
+  let currentViewCount = '...';
   const userProfilesCache = {};
 
   const ADMIN_EMAIL = 'zahrulms01@gmail.com';
@@ -922,6 +927,9 @@
   let selectedMainStickerUrl = '';
   const selectedReplyStickers = {};
   let allRegisteredUsers = [];
+
+  window.hasWatchedThisSession = false;
+  window.hasRewardedWatchExp = false;
 
   const DEFAULT_STICKERS = [
     'https://cdn-icons-png.flaticon.com/128/9408/9408175.png',
@@ -933,6 +941,41 @@
     'https://cdn-icons-png.flaticon.com/128/9408/9408224.png',
     'https://media.tenor.com/gK2J_J7KkE8AAAAj/cute-love.gif'
   ];
+
+  // HITUNG LEVEL DINAMIS (0-1000 = Lv1, 1001-2000 = Lv2, dst)
+  function calculateLevel(expVal) {
+    const exp = Number(expVal) || 0;
+    if (exp <= 0) return 1;
+    return Math.floor((exp - 1) / 1000) + 1;
+  }
+
+  // FUNGSI PENAMBAH EXP PENGGUNA
+  window.addExpToUser = async function(amount = 100) {
+    if (!window.currentUser || !window.db || !window.fbRef) return;
+    try {
+      const email = window.currentUser.email;
+      const uid = window.currentUser.uid;
+      let pathKey = uid;
+      if (email) {
+        pathKey = email.toLowerCase().replace(/\./g, ',');
+      }
+      const expRef = window.fbRef(window.db, `users/${pathKey}/exp`);
+
+      if (window.fbTransaction) {
+        await window.fbTransaction(expRef, (currentExp) => {
+          return (Number(currentExp) || 0) + Number(amount);
+        });
+      } else if (window.fbIncrement && window.fbSet) {
+        await window.fbSet(expRef, window.fbIncrement(amount));
+      } else {
+        const snap = await window.fbGet(expRef);
+        const cur = snap.exists() ? (Number(snap.val()) || 0) : 0;
+        await window.fbSet(expRef, cur + amount);
+      }
+    } catch (e) {
+      console.warn("Gagal menambahkan EXP:", e);
+    }
+  };
 
   async function loadAllFirebaseUsers() {
     if (allRegisteredUsers.length > 0) return allRegisteredUsers;
@@ -950,7 +993,8 @@
                 username: u.username || '',
                 name: u.name || u.username || 'User',
                 photo: u.photoURL || '',
-                email: u.email || ''
+                email: u.email || '',
+                exp: u.exp || 0
               });
             }
           });
@@ -1214,9 +1258,9 @@
 
   function formatViewDisplay(val) {
     const n = parseInt(val, 10);
-    if (isNaN(n) || n <= 0) return '0';
+    if (isNaN(n) || n < 0) return '0';
     if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (n >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     return String(n);
   }
 
@@ -1425,13 +1469,29 @@
     targetSlug = getCleanMainSlug();
     if (!targetSlug || !window.db || !window.fbRef) return;
 
-    if (hasIncrementedView) return;
-    hasIncrementedView = true;
-
     const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
     const todayStr = getLocalDateString();
     const totalRef = window.fbRef(window.db, `views_total/${cleanKey}`);
     const dailyRef = window.fbRef(window.db, `views_daily/${todayStr}/${cleanKey}`);
+
+    try {
+      const initSnap = await window.fbGet(totalRef);
+      if (initSnap.exists()) {
+        currentViewCount = formatViewDisplay(initSnap.val());
+        const countEl = document.getElementById('viewCountText');
+        if (countEl) countEl.innerText = currentViewCount;
+      }
+    } catch (_) {}
+
+    if (hasIncrementedView) return;
+    hasIncrementedView = true;
+
+    // Trigger EXP +100 saat nonton (views bertambah) jika sudah login
+    window.hasWatchedThisSession = true;
+    if (window.currentUser && !window.hasRewardedWatchExp) {
+      window.addExpToUser(100);
+      window.hasRewardedWatchExp = true;
+    }
 
     try {
       if (window.fbTransaction) {
@@ -1628,7 +1688,7 @@
 
   async function fetchUserProfile(email, uid) {
     const cacheKey = email || uid || '';
-    if (!cacheKey) return { name: '', photoURL: '', username: '' };
+    if (!cacheKey) return { name: '', photoURL: '', username: '', exp: 0 };
     if (userProfilesCache[cacheKey]) return userProfilesCache[cacheKey];
 
     let foundProfile = null;
@@ -1655,7 +1715,8 @@
     const finalData = {
       name: (foundProfile && foundProfile.name) ? foundProfile.name : '',
       photoURL: (foundProfile && foundProfile.photoURL) ? foundProfile.photoURL : '',
-      username: (foundProfile && foundProfile.username) ? foundProfile.username : ''
+      username: (foundProfile && foundProfile.username) ? foundProfile.username : '',
+      exp: (foundProfile && foundProfile.exp) ? Number(foundProfile.exp) : 0
     };
 
     userProfilesCache[cacheKey] = finalData;
@@ -1778,7 +1839,7 @@
     card.className = `comment-card ${item.isPinned ? 'pinned' : ''}`;
     card.id = `comment-${item.id}`;
 
-    let profile = { name: '', photoURL: '', username: '' };
+    let profile = { name: '', photoURL: '', username: '', exp: 0 };
     try {
       profile = await fetchUserProfile(item.email, item.uid);
     } catch (_) {}
@@ -1801,8 +1862,11 @@
       ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
       : initial;
 
+    const userLevel = calculateLevel(profile.exp || item.exp || 0);
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
-    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+    const levelBadge = isAdmin 
+      ? `<span class="badge-level admin-lvl">Lv999+</span>` 
+      : `<span class="badge-level">Lv${userLevel}</span>`;
 
     const isMyComment = window.currentUser && (
       (window.currentUser.email && item.email && window.currentUser.email.toLowerCase() === String(item.email).toLowerCase()) || 
@@ -1862,7 +1926,7 @@
   }
 
   async function createReplyCardHtmlAsync(reply) {
-    let profile = { name: '', photoURL: '', username: '' };
+    let profile = { name: '', photoURL: '', username: '', exp: 0 };
     try {
       profile = await fetchUserProfile(reply.email, reply.uid);
     } catch (_) {}
@@ -1884,8 +1948,11 @@
       ? `<img src="${photoURL}" alt="${escapeHtml(authorName)}" referrerpolicy="no-referrer" onerror="this.outerHTML='${initial}'" />`
       : initial;
 
+    const userLevel = calculateLevel(profile.exp || reply.exp || 0);
     const adminBadge = isAdmin ? `<span class="badge-admin">★ ADMIN</span>` : '';
-    const levelBadge = isAdmin ? `<span class="badge-level admin-lvl">Lv999+</span>` : `<span class="badge-level">Lv1</span>`;
+    const levelBadge = isAdmin 
+      ? `<span class="badge-level admin-lvl">Lv999+</span>` 
+      : `<span class="badge-level">Lv${userLevel}</span>`;
 
     const isMyComment = window.currentUser && (
       (window.currentUser.email && reply.email && window.currentUser.email.toLowerCase() === String(reply.email).toLowerCase()) || 
@@ -1992,7 +2059,7 @@
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     
-    let myProfile = { name: '', photoURL: '', username: '' };
+    let myProfile = { name: '', photoURL: '', username: '', exp: 0 };
     try {
       myProfile = await fetchUserProfile(window.currentUser.email, window.currentUser.uid);
     } catch (_) {}
@@ -2014,6 +2081,9 @@
       const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, commentItem);
       
+      // TAMBAH EXP +500 SETIAP BERHASIL KOMENTAR
+      window.addExpToUser(500);
+
       input.value = '';
       removeSelectedSticker(null);
 
@@ -2034,7 +2104,7 @@
 
     const isAdmin = window.currentUser.email && window.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-    let myProfile = { name: '', photoURL: '', username: '' };
+    let myProfile = { name: '', photoURL: '', username: '', exp: 0 };
     try {
       myProfile = await fetchUserProfile(window.currentUser.email, window.currentUser.uid);
     } catch (_) {}
@@ -2056,6 +2126,9 @@
       const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
       const newCommentRef = window.fbRef(window.db, `comments/${cleanKey}/${Date.now()}`);
       await window.fbSet(newCommentRef, replyItem);
+
+      // TAMBAH EXP +500 SETIAP BERHASIL BALAS KOMENTAR
+      window.addExpToUser(500);
 
       removeSelectedSticker(parentId);
       const container = document.getElementById(`reply-input-wrapper-${parentId}`);
@@ -2180,6 +2253,17 @@
         document.getElementById('notFoundBox').style.display = 'flex';
         return;
       }
+
+      // Ambil view data dulu sebelum render action bar
+      try {
+        if (window.db && window.fbRef && window.fbGet) {
+          const cleanKey = String(targetSlug).replace(/[.#$\[\]\/]/g, '_');
+          const snapTotal = await window.fbGet(window.fbRef(window.db, `views_total/${cleanKey}`));
+          if (snapTotal.exists()) {
+            currentViewCount = formatViewDisplay(snapTotal.val());
+          }
+        }
+      } catch (_) {}
 
       renderActionBarContent();
 
