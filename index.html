@@ -153,6 +153,13 @@
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
     .card-skeleton-sub { height: 11px; width: 50%; }
 
+    /* SKELETON GENRE PILL */
+    .genre-skeleton-item {
+      height: 32px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
     .header-bar {
       position: fixed;
       top: 16px;
@@ -1522,7 +1529,7 @@
       </div>
     </section>
 
-    <!-- ANIME TERBARU -->
+    <!-- ANIME TERBARU DENGAN SKELETON (DIBATASI JADI 6) -->
     <section class="section-block" id="animeSection">
       <div class="section-header-flex">
         <h2 class="section-title">Anime Terbaru</h2>
@@ -1541,21 +1548,75 @@
       </div>
     </section>
 
-    <!-- BADGE GENRE -->
+    <!-- BADGE GENRE DENGAN SKELETON SHIMMER -->
     <div class="genre-scroll-wrapper" id="genreWrapperSection">
-      <div class="genre-scroll-row" id="genreBar">
+      <div class="section-header-flex">
+        <h2 class="section-title">Genre</h2>
+      </div>
+
+      <!-- Skeleton shimmer saat proses memuat -->
+      <div class="genre-scroll-row" id="genreSkeletonBar">
+        <div class="skeleton genre-skeleton-item" style="width: 74px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 95px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 100px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 60px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 82px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 110px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 92px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 84px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 70px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 98px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 104px;"></div>
+        <div class="skeleton genre-skeleton-item" style="width: 76px;"></div>
+      </div>
+
+      <!-- Kontainer daftar genre yang sebenarnya -->
+      <div class="genre-scroll-row" id="genreBar" style="display: none;">
         <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
+        <a href="/donghua/?category=Adult%20Cast" class="genre-badge-item">Adult Cast</a>
         <a href="/donghua/?category=Adventure" class="genre-badge-item">Adventure</a>
-        <a href="/donghua/?category=Fantasy" class="genre-badge-item">Fantasy</a>
-        <a href="/donghua/?category=Cultivation" class="genre-badge-item">Cultivation</a>
-        <a href="/donghua/?category=Martial%20Arts" class="genre-badge-item">Martial Arts</a>
-        <a href="/donghua/?category=Romance" class="genre-badge-item">Romance</a>
-        <a href="/donghua/?category=Sci-Fi" class="genre-badge-item">Sci-Fi</a>
+        <a href="/donghua/?category=Arts" class="genre-badge-item">Arts</a>
         <a href="/donghua/?category=Comedy" class="genre-badge-item">Comedy</a>
-        <a href="/donghua/?category=Supernatural" class="genre-badge-item">Supernatural</a>
+        <a href="/donghua/?category=Crossdressing" class="genre-badge-item">Crossdressing</a>
+        <a href="/donghua/?category=Cultivation" class="genre-badge-item">Cultivation</a>
+        <a href="/donghua/?category=Demons" class="genre-badge-item">Demons</a>
+        <a href="/donghua/?category=Drama" class="genre-badge-item">Drama</a>
+        <a href="/donghua/?category=Ecchi" class="genre-badge-item">Ecchi</a>
+        <a href="/donghua/?category=Fantasy" class="genre-badge-item">Fantasy</a>
+        <a href="/donghua/?category=Game" class="genre-badge-item">Game</a>
+        <a href="/donghua/?category=Gore" class="genre-badge-item">Gore</a>
+        <a href="/donghua/?category=Gourmet" class="genre-badge-item">Gourmet</a>
+        <a href="/donghua/?category=Guoman" class="genre-badge-item">Guoman</a>
+        <a href="/donghua/?category=Harem" class="genre-badge-item">Harem</a>
         <a href="/donghua/?category=Historical" class="genre-badge-item">Historical</a>
+        <a href="/donghua/?category=Horror" class="genre-badge-item">Horror</a>
         <a href="/donghua/?category=Isekai" class="genre-badge-item">Isekai</a>
+        <a href="/donghua/?category=Magic" class="genre-badge-item">Magic</a>
+        <a href="/donghua/?category=Martial" class="genre-badge-item">Martial</a>
+        <a href="/donghua/?category=Martial%20Arts" class="genre-badge-item">Martial Arts</a>
+        <a href="/donghua/?category=Mecha" class="genre-badge-item">Mecha</a>
+        <a href="/donghua/?category=Medical" class="genre-badge-item">Medical</a>
+        <a href="/donghua/?category=Military" class="genre-badge-item">Military</a>
+        <a href="/donghua/?category=Music" class="genre-badge-item">Music</a>
         <a href="/donghua/?category=Mystery" class="genre-badge-item">Mystery</a>
+        <a href="/donghua/?category=Mythology" class="genre-badge-item">Mythology</a>
+        <a href="/donghua/?category=Psychological" class="genre-badge-item">Psychological</a>
+        <a href="/donghua/?category=Reincarnation" class="genre-badge-item">Reincarnation</a>
+        <a href="/donghua/?category=Romance" class="genre-badge-item">Romance</a>
+        <a href="/donghua/?category=School" class="genre-badge-item">School</a>
+        <a href="/donghua/?category=Sci-Fi" class="genre-badge-item">Sci-Fi</a>
+        <a href="/donghua/?category=Slice%20of%20Life" class="genre-badge-item">Slice of Life</a>
+        <a href="/donghua/?category=Space" class="genre-badge-item">Space</a>
+        <a href="/donghua/?category=Sports" class="genre-badge-item">Sports</a>
+        <a href="/donghua/?category=Super%20Power" class="genre-badge-item">Super Power</a>
+        <a href="/donghua/?category=Supernatural" class="genre-badge-item">Supernatural</a>
+        <a href="/donghua/?category=Suspense" class="genre-badge-item">Suspense</a>
+        <a href="/donghua/?category=Team%20Sports" class="genre-badge-item">Team Sports</a>
+        <a href="/donghua/?category=Thriller" class="genre-badge-item">Thriller</a>
+        <a href="/donghua/?category=Time%20Travel" class="genre-badge-item">Time Travel</a>
+        <a href="/donghua/?category=Urban%20Fantasy" class="genre-badge-item">Urban Fantasy</a>
+        <a href="/donghua/?category=Video%20Game" class="genre-badge-item">Video Game</a>
+        <a href="/donghua/?category=Youth" class="genre-badge-item">Youth</a>
       </div>
     </div>
 
@@ -2100,7 +2161,6 @@
       if (!listEl || !window.db || !window.fbRef || !window.fbGet) return;
 
       try {
-        // Ambil pesan live chat (tanpa mendownload seluruh database users yang berat)
         const chatSnap = await window.fbGet(window.fbRef(window.db, 'live_chat'));
 
         if (!chatSnap.exists()) {
@@ -2120,7 +2180,6 @@
         messages.sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
         const latest3 = messages.slice(0, 3).reverse();
 
-        // Ambil profil hanya untuk 3 user ini secara paralel (sangat cepat)
         await Promise.all(latest3.map(m => getFastProfile(m.email, m.uid)));
 
         listEl.innerHTML = '';
@@ -2133,7 +2192,6 @@
           const initial = (authorName.trim().charAt(0) || 'U').toUpperCase();
           const isAdmin = (item.email && item.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) || item.isAdmin === true;
 
-          // Hitung level berdasarkan EXP yang tersimpan
           const userExp = (updatedProfile && updatedProfile.exp) ? Number(updatedProfile.exp) : (Number(item.exp) || 0);
           const userLevel = calculateLevel(userExp);
 
@@ -2236,26 +2294,10 @@
     }
 
     function renderGenreBar(items) {
-      const genreBar = document.getElementById('genreBar');
-      if (!genreBar || !Array.isArray(items)) return;
-
-      const genreSet = new Set();
-      items.forEach(it => {
-        if (Array.isArray(it.genres)) {
-          it.genres.forEach(g => { if (g && g.trim()) genreSet.add(g.trim()); });
-        }
-      });
-
-      if (genreSet.size > 0) {
-        genreBar.innerHTML = '';
-        Array.from(genreSet).slice(0, 16).forEach(genre => {
-          const pill = document.createElement('a');
-          pill.className = 'genre-badge-item';
-          pill.href = `/donghua/?category=${encodeURIComponent(genre)}`;
-          pill.innerText = genre;
-          genreBar.appendChild(pill);
-        });
-      }
+      const skel = document.getElementById('genreSkeletonBar');
+      const real = document.getElementById('genreBar');
+      if (skel) skel.style.display = 'none';
+      if (real) real.style.display = 'flex';
     }
 
     function getSortedDailyList(list = masterList) {
@@ -2324,7 +2366,7 @@
       } catch (_) {}
     };
 
-    // Load Data Anime dari api/anime.js
+    // Load Data Anime dari api/anime.js (Dibatasi 6 Item)
     async function loadAnimeData() {
       const animeGrid = document.getElementById('animeGrid');
       try {
@@ -2338,7 +2380,8 @@
 
         if (animeGrid) {
           animeGrid.innerHTML = '';
-          animeList.slice(0, 12).forEach(item => {
+          // Batasi tampilan anime di beranda menjadi 6 item
+          animeList.slice(0, 6).forEach(item => {
             animeGrid.appendChild(createGridCard(item, '/anime/'));
           });
         }
