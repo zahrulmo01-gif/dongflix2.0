@@ -153,6 +153,21 @@
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
     .card-skeleton-sub { height: 11px; width: 50%; }
 
+    /* SKELETON LANJUTKAN MENONTON */
+    .continue-skeleton-card {
+      flex: 0 0 205px;
+      min-width: 205px;
+      max-width: 205px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .continue-skeleton-thumb {
+      width: 100%;
+      height: 116px;
+      border-radius: 14px;
+    }
+
     /* SKELETON GENRE PILL */
     .genre-skeleton-item {
       height: 32px;
@@ -1297,7 +1312,9 @@
       .hero-title { font-size: 32px; }
       .grid-3 { grid-template-columns: repeat(6, 1fr); column-gap: 16px; row-gap: 28px; }
       .continue-card-item { flex: 0 0 240px; min-width: 240px; max-width: 240px; gap: 10px; }
+      .continue-skeleton-card { flex: 0 0 240px; min-width: 240px; max-width: 240px; gap: 10px; }
       .continue-thumb-box { height: 136px; }
+      .continue-skeleton-thumb { height: 136px; }
       .popular-vertical-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 28px; }
       .bottom-dock-inner { max-width: 480px; }
     }
@@ -1428,12 +1445,28 @@
   </div>
 
   <div class="container">
-    <!-- SECTION LANJUTKAN MENONTON -->
-    <section class="section-block continue-section-wrapper" id="continueSection" style="display: none !important;">
+    <!-- SECTION LANJUTKAN MENONTON DENGAN SKELETON -->
+    <section class="section-block continue-section-wrapper" id="continueSection">
       <div class="section-header-flex">
         <h2 class="section-title">Lanjutkan Menonton</h2>
       </div>
-      <div class="continue-scroll-row" id="continueRow"></div>
+      <div class="continue-scroll-row" id="continueRow">
+        <div class="continue-skeleton-card">
+          <div class="skeleton continue-skeleton-thumb"></div>
+          <span class="skeleton skeleton-text" style="height: 14px; width: 85%;"></span>
+          <span class="skeleton skeleton-text" style="height: 11px; width: 50%;"></span>
+        </div>
+        <div class="continue-skeleton-card">
+          <div class="skeleton continue-skeleton-thumb"></div>
+          <span class="skeleton skeleton-text" style="height: 14px; width: 80%;"></span>
+          <span class="skeleton skeleton-text" style="height: 11px; width: 45%;"></span>
+        </div>
+        <div class="continue-skeleton-card">
+          <div class="skeleton continue-skeleton-thumb"></div>
+          <span class="skeleton skeleton-text" style="height: 14px; width: 90%;"></span>
+          <span class="skeleton skeleton-text" style="height: 11px; width: 55%;"></span>
+        </div>
+      </div>
     </section>
 
     <!-- LIVE CHAT WIDGET BERANDA -->
@@ -1479,14 +1512,14 @@
       </div>
     </section>
 
-    <!-- POPULER HARI INI DENGAN SKELETON -->
+    <!-- POPULER HARI INI DENGAN SKELETON THUMBNAIL & TEKS (TETAP UTUH TANPA DIBATASI 6) -->
     <section class="section-block" id="popularTodaySection">
       <div class="section-header-flex">
         <h2 class="section-title">Populer Hari Ini</h2>
       </div>
       <div class="popular-featured-row" id="todayPopularRow">
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-thumb-box skeleton"></div>
           <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
               <span class="skeleton skeleton-text" style="height: 18px; width: 85%;"></span>
@@ -1497,7 +1530,7 @@
           </div>
         </div>
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-thumb-box skeleton"></div>
           <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
               <span class="skeleton skeleton-text" style="height: 18px; width: 85%;"></span>
@@ -1510,7 +1543,7 @@
       </div>
     </section>
 
-    <!-- DONGHUA TERBARU DENGAN SKELETON -->
+    <!-- DONGHUA TERBARU DENGAN SKELETON (DIBATASI JADI 6) -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Terbaru</h2>
@@ -1520,6 +1553,21 @@
         </a>
       </div>
       <div class="grid-3" id="latestGrid">
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+      </div>
+    </section>
+
+    <!-- REKOMENDASI UNTUKMU DENGAN SKELETON (DI BAWAH DONGHUA TERBARU) -->
+    <section class="section-block" id="recommendedSection">
+      <div class="section-header-flex">
+        <h2 class="section-title">Rekomendasi Untukmu</h2>
+      </div>
+      <div class="grid-3" id="recommendedGrid">
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
@@ -1620,7 +1668,7 @@
       </div>
     </div>
 
-    <!-- MOVIE TERBARU DENGAN SKELETON -->
+    <!-- MOVIE TERBARU DENGAN SKELETON (DIBATASI JADI 6) -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">Movie Terbaru</h2>
@@ -1633,17 +1681,20 @@
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
         <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
+        <div class="card-skeleton"><div class="skeleton card-skeleton-img"></div><div class="skeleton card-skeleton-title"></div><div class="skeleton card-skeleton-sub"></div></div>
       </div>
     </section>
 
-    <!-- DONGHUA POPULER DENGAN SKELETON -->
+    <!-- DONGHUA POPULER DENGAN SKELETON (TETAP UTUH TANPA DIBATASI 6 GRID) -->
     <section class="section-block" id="popularAllSection">
       <div class="section-header-flex">
         <h2 class="section-title" id="popularSectionTitle">Donghua Populer</h2>
       </div>
       <div class="popular-vertical-list" id="popularAllGrid">
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-thumb-box skeleton"></div>
           <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
               <span class="skeleton skeleton-text" style="height: 18px; width: 80%;"></span>
@@ -1654,7 +1705,7 @@
           </div>
         </div>
         <div class="popular-featured-card">
-          <div class="featured-thumb-box skeleton" style="border-radius: 20px;"></div>
+          <div class="featured-thumb-box skeleton"></div>
           <div class="featured-info-col" style="gap: 10px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
               <span class="skeleton skeleton-text" style="height: 18px; width: 80%;"></span>
@@ -1922,9 +1973,11 @@
       const donghuaSec = document.getElementById('donghuaSection');
       const animeSec = document.getElementById('animeSection');
       const movieSec = document.getElementById('movieSection');
+      const recommendedSec = document.getElementById('recommendedSection');
       const popTitle = document.getElementById('popularSectionTitle');
 
       if (donghuaSec) donghuaSec.style.display = (tab === 'anime') ? 'none' : 'block';
+      if (recommendedSec) recommendedSec.style.display = (tab === 'anime') ? 'none' : 'block';
       if (animeSec) animeSec.style.display = (tab === 'donghua') ? 'none' : 'block';
       if (movieSec) movieSec.style.display = 'block';
 
@@ -1960,7 +2013,8 @@
 
       if (targetMovies.length === 0) targetMovies = movieList;
 
-      targetMovies.slice(0, 12).forEach(item => {
+      // Batasi 6 item movie di beranda
+      targetMovies.slice(0, 6).forEach(item => {
         const basePath = item.isAnime ? '/anime/' : '/donghua/';
         movieGrid.appendChild(createGridCard(item, basePath));
       });
@@ -2134,6 +2188,84 @@
           </div>
         `;
         row.appendChild(card);
+      });
+    }
+
+    // ALGORITMA REKOMENDASI PINTAR UNTUKMU
+    function renderRecommendedSection() {
+      const recGrid = document.getElementById('recommendedGrid');
+      if (!recGrid || !donghuaList || donghuaList.length === 0) return;
+
+      let historyList = [];
+      try {
+        historyList = JSON.parse(localStorage.getItem('rz_continue_history') || '[]');
+      } catch (_) {
+        historyList = [];
+      }
+
+      let recommended = [];
+
+      if (Array.isArray(historyList) && historyList.length > 0) {
+        // Ambil genre dan kata kunci unik dari riwayat tontonan
+        const watchedSlugs = new Set(historyList.map(item => (item.slug || '').toLowerCase()));
+        const preferredGenres = new Map();
+        const watchedKeywords = new Set();
+
+        historyList.forEach(hist => {
+          const matchedItem = masterList.find(d => d.slug === hist.slug);
+          if (matchedItem && Array.isArray(matchedItem.genres)) {
+            matchedItem.genres.forEach(g => {
+              if (g) preferredGenres.set(g.toLowerCase(), (preferredGenres.get(g.toLowerCase()) || 0) + 1);
+            });
+          }
+          if (hist.title) {
+            hist.title.toLowerCase().split(/\s+/).forEach(word => {
+              if (word.length > 3) watchedKeywords.add(word);
+            });
+          }
+        });
+
+        // Skor kandidat donghua berdasarkan kesamaan genre, kata kunci, dan view count
+        const candidates = donghuaList.filter(item => !watchedSlugs.has((item.slug || '').toLowerCase()));
+
+        candidates.forEach(item => {
+          let score = 0;
+          if (Array.isArray(item.genres)) {
+            item.genres.forEach(g => {
+              if (g && preferredGenres.has(g.toLowerCase())) {
+                score += preferredGenres.get(g.toLowerCase()) * 3;
+              }
+            });
+          }
+          const itemTitleLower = (item.title || '').toLowerCase();
+          watchedKeywords.forEach(kw => {
+            if (itemTitleLower.includes(kw)) score += 2;
+          });
+          const views = parseInt(viewsDataMap[item.slug] || 0, 10);
+          score += Math.min(views / 1000, 5); // Normalisasi views
+          item._recScore = score;
+        });
+
+        candidates.sort((a, b) => (b._recScore || 0) - (a._recScore || 0));
+        recommended = candidates.slice(0, 6);
+      }
+
+      // Fallback jika belum pernah menonton atau rekomendasi kurang dari 6
+      if (recommended.length < 6) {
+        const fallbackPopular = getSortedTotalList(donghuaList);
+        const existingSlugs = new Set(recommended.map(item => item.slug));
+        for (const item of fallbackPopular) {
+          if (!existingSlugs.has(item.slug)) {
+            recommended.push(item);
+            existingSlugs.add(item.slug);
+            if (recommended.length >= 6) break;
+          }
+        }
+      }
+
+      recGrid.innerHTML = '';
+      recommended.slice(0, 6).forEach(item => {
+        recGrid.appendChild(createGridCard(item, '/donghua/'));
       });
     }
 
@@ -2324,14 +2456,16 @@
       const popRow = document.getElementById('todayPopularRow');
       if (popRow) {
         popRow.innerHTML = '';
-        dailySorted.slice(0, 6).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
+        // Populer Hari ini tetap menampilkan seluruh item trending tanpa dipotong 6
+        dailySorted.slice(0, 8).forEach(item => popRow.appendChild(createPopularFeaturedCard(item)));
       }
 
       const totalSorted = getSortedTotalList(sourceList);
       const popAllGrid = document.getElementById('popularAllGrid');
       if (popAllGrid) {
         popAllGrid.innerHTML = '';
-        totalSorted.slice(0, 6).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
+        // Donghua Populer tetap menampilkan seluruh daftar populer
+        totalSorted.slice(0, 10).forEach(item => popAllGrid.appendChild(createPopularFeaturedCard(item)));
       }
     }
 
@@ -2362,11 +2496,12 @@
 
         if (masterList.length > 0) {
           renderPopularSections();
+          renderRecommendedSection();
         }
       } catch (_) {}
     };
 
-    // Load Data Anime dari api/anime.js (Dibatasi 6 Item)
+    // Load Data Anime dari api/anime.js (Dibatasi 6 Item di Beranda)
     async function loadAnimeData() {
       const animeGrid = document.getElementById('animeGrid');
       try {
@@ -2380,7 +2515,6 @@
 
         if (animeGrid) {
           animeGrid.innerHTML = '';
-          // Batasi tampilan anime di beranda menjadi 6 item
           animeList.slice(0, 6).forEach(item => {
             animeGrid.appendChild(createGridCard(item, '/anime/'));
           });
@@ -2407,15 +2541,20 @@
         renderHeroSlider(masterList);
         renderPopularSections();
 
+        // Batasi 6 item untuk Donghua Terbaru di Beranda
         const latestGrid = document.getElementById('latestGrid');
         latestGrid.innerHTML = '';
-        donghuaList.slice(0, 12).forEach(item => latestGrid.appendChild(createGridCard(item, '/donghua/')));
+        donghuaList.slice(0, 6).forEach(item => latestGrid.appendChild(createGridCard(item, '/donghua/')));
+
+        // Render Rekomendasi Pintar Untukmu (6 Item)
+        renderRecommendedSection();
 
         renderGenreBar(masterList);
 
+        // Batasi 6 item untuk Movie Terbaru di Beranda
         const movieGrid = document.getElementById('movieGrid');
         movieGrid.innerHTML = '';
-        movieList.slice(0, 12).forEach(item => movieGrid.appendChild(createGridCard(item, '/donghua/')));
+        movieList.slice(0, 6).forEach(item => movieGrid.appendChild(createGridCard(item, '/donghua/')));
 
         if (window.syncFirebaseViews) {
           window.syncFirebaseViews();
@@ -2429,6 +2568,7 @@
     window.addEventListener('pageshow', () => {
       renderContinueWatching();
       if (window.loadHomeLiveChatPreview) window.loadHomeLiveChatPreview();
+      renderRecommendedSection();
     });
     window.addEventListener('DOMContentLoaded', () => {
       renderContinueWatching();
