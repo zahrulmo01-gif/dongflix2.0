@@ -720,7 +720,7 @@
       return email.toLowerCase().trim().replace(/\./g, ',');
     }
 
-    // HELPER RUTE DINAMIS: Anime -> /anime/:slug, Donghua -> /donghua/:slug
+    // Helper Penentuan Link Rute Item (Anime -> /anime/:slug, Donghua -> /donghua/:slug)
     function getItemRoute(item) {
       const slug = item.slug || item.mainPath || '';
       if (!slug) return '/';
@@ -748,7 +748,7 @@
       }
     };
 
-    // CEK USERNAME SUPER CEPAT MENGGUNAKAN QUERY (HANYA MENGAMBIL 1 RECORD)
+    // Cek Username Efisien Menggunakan Query Indeks (Hanya 1 entri yang diperiksa)
     async function checkUsernameAvailability(username, excludeKey) {
       const cleanUsername = username.trim().toLowerCase();
       try {
@@ -765,11 +765,11 @@
       }
     }
 
-    // AMBIL DATA USER INSTAN DENGAN TARGET QUERY
+    // Ambil Data Profil Berdasarkan Indeks (Cepat & Ringan)
     async function fetchUserData(identifier) {
-      const idClean = identifier.trim();
+      const idClean = identifier.trim().toLowerCase();
 
-      // 1. Cek langsung lewat key (EmailKey atau UID)
+      // 1. Cek langsung jika ID merupakan key (emailKey atau UID)
       try {
         const directSnap = await get(ref(db, `users/${idClean}`));
         if (directSnap.exists()) {
@@ -777,9 +777,9 @@
         }
       } catch (_) {}
 
-      // 2. Cek lewat index username (Hanya mengambil 1 user, tidak mendownload se-database)
+      // 2. Query instan username terindeks
       try {
-        const q = query(ref(db, 'users'), orderByChild('username'), equalTo(idClean.toLowerCase()), limitToFirst(1));
+        const q = query(ref(db, 'users'), orderByChild('username'), equalTo(idClean), limitToFirst(1));
         const snap = await get(q);
         if (snap.exists()) {
           const res = snap.val();
@@ -1253,7 +1253,7 @@
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
-    // AUTH & DATA INITIALIZER
+    // Inisialisasi Auth & Pemuatan Profil
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
@@ -1287,7 +1287,6 @@
           data = snap.exists() ? snap.val() : {};
         }
 
-        // Render langsung tanpa reload halaman berulang kali
         await renderProfile(data, emailKey, authUser);
         if (data.username) {
           window.history.replaceState(null, '', `/profil/${data.username}`);
