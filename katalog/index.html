@@ -348,25 +348,47 @@
     }
     .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
-    .badge-ep { 
-      position: absolute; top: 8px; left: 8px; 
-      background: rgba(2, 132, 199, 0.9);
-      color: var(--text-main); font-size: 9px; font-weight: 800; 
-      padding: 3.5px 9px; border-radius: 9999px; text-transform: uppercase; 
+    /* BADGE VERTIKAL DI POJOK KIRI ATAS */
+    .card-badges-vertical {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .badge-status { 
+      background: rgba(2, 132, 199, 0.92);
+      color: var(--text-main);
+      font-size: 8.5px;
+      font-weight: 800; 
+      padding: 2.5px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1.2;
     }
 
     .badge-media-type {
-      position: absolute; top: 8px; right: 8px;
-      font-size: 8.5px; font-weight: 800; padding: 3px 8px; border-radius: 9999px;
-      text-transform: uppercase; z-index: 2;
+      font-size: 8px;
+      font-weight: 800;
+      padding: 2.5px 7px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      line-height: 1.2;
     }
     .badge-media-type.anime {
-      background: rgba(168, 85, 247, 0.9);
+      background: rgba(168, 85, 247, 0.92);
       color: #ffffff;
       box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
     }
     .badge-media-type.donghua {
-      background: rgba(2, 132, 199, 0.9);
+      background: rgba(14, 165, 233, 0.92);
       color: #ffffff;
     }
 
@@ -469,7 +491,7 @@
   </header>
 
   <div class="container">
-    <!-- KONTROL: SEARCH, KATEGORI SUMBER, TIPE STATUS, DAN GENRE -->
+    <!-- KONTROL: SEARCH, MEDIA SOURCE, TIPE STATUS, DAN GENRE -->
     <div class="controls-panel">
       <!-- 1. INPUT PENCARIAN -->
       <div class="search-input-box">
@@ -709,7 +731,6 @@
     function createCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
-      // Mengarahkan ke rute bersih /watch/:slug
       card.href = `/watch/${encodeURIComponent(item.slug)}`;
       const isMovie = isMovieItem(item);
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
@@ -718,8 +739,13 @@
       card.innerHTML = `
         <div class="card-grid-img-wrapper">
           <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
-          <span class="badge-ep">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
-          <span class="badge-media-type ${isAnime ? 'anime' : 'donghua'}">${isAnime ? 'ANIME' : 'DONGHUA'}</span>
+          
+          <!-- BADGES TERSUSUN VERTIKAL -->
+          <div class="card-badges-vertical">
+            <span class="badge-status">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
+            <span class="badge-media-type ${isAnime ? 'anime' : 'donghua'}">${isAnime ? 'ANIME' : 'DONGHUA'}</span>
+          </div>
+
           <div class="card-bottom-info">
             <span class="badge-bottom">${isMovie ? parseStatusText(item) : parseEpisodeText(item)}</span>
             <div class="badge-view-count">
@@ -754,25 +780,21 @@
 
     function applyFilters() {
       filteredList = rawCatalog.filter(item => {
-        // Filter Sumber Media (Donghua / Anime)
         if (selectedMediaSource !== 'all' && item._source !== selectedMediaSource) {
           return false;
         }
 
-        // Search Query
         if (searchQuery) {
           const t = (item.title || '').toLowerCase();
           const s = (item.slug || '').toLowerCase();
           if (!t.includes(searchQuery) && !s.includes(searchQuery)) return false;
         }
 
-        // Filter Tipe
         if (selectedType === 'series' && isMovieItem(item)) return false;
         if (selectedType === 'movie' && !isMovieItem(item)) return false;
         if (selectedType === 'ongoing' && (parseStatusText(item) !== 'ONGOING' || isMovieItem(item))) return false;
         if (selectedType === 'completed' && (parseStatusText(item) !== 'COMPLETED' || isMovieItem(item))) return false;
 
-        // Filter Genre
         if (selectedCategory !== 'all') {
           const genres = Array.isArray(item.genres) 
             ? item.genres 
@@ -817,7 +839,6 @@
 
     async function initCatalog() {
       try {
-        // Ambil Donghua dan Anime secara bersamaan
         const [donghuaRes, animeRes] = await Promise.all([
           fetch('/api/donghua?path=donghua.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
           fetch('/api/anime', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => [])
@@ -826,7 +847,6 @@
         const taggedDonghua = (Array.isArray(donghuaRes) ? donghuaRes : []).map(item => ({ ...item, _source: 'donghua' }));
         const taggedAnime = (Array.isArray(animeRes) ? animeRes : []).map(item => ({ ...item, _source: 'anime' }));
 
-        // Gabungkan katalog
         rawCatalog = [...taggedDonghua, ...taggedAnime];
 
         const params = new URLSearchParams(window.location.search);
