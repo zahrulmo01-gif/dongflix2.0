@@ -348,7 +348,7 @@
     }
     .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
-    /* BADGE VERTIKAL DI POJOK KIRI ATAS */
+    /* BADGES VERTIKAL DI POJOK KIRI ATAS */
     .card-badges-vertical {
       position: absolute;
       top: 8px;
@@ -643,6 +643,30 @@
       return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
     }
 
+    // Helper untuk mengubah tanggal rilis/update menjadi nilai waktu milidetik
+    function getTimeValue(item) {
+      if (!item) return 0;
+
+      if (item.updated_at) {
+        const t = new Date(item.updated_at).getTime();
+        if (!isNaN(t)) return t;
+      }
+
+      const rawDate = item.released || item.rilis || item.aired || '';
+      if (rawDate) {
+        const cleaned = rawDate.replace(/^tanggal\s*/i, '').trim();
+        const parsed = new Date(cleaned).getTime();
+        if (!isNaN(parsed)) return parsed;
+
+        const yearMatch = cleaned.match(/\b(19\d{2}|20\d{2})\b/);
+        if (yearMatch) {
+          return new Date(`${yearMatch[1]}-01-01`).getTime();
+        }
+      }
+
+      return 0;
+    }
+
     window.addEventListener('scroll', () => {
       const onTopBtn = document.getElementById('backToTopBtn');
       if (window.scrollY > 300) onTopBtn.classList.add('show');
@@ -740,7 +764,7 @@
         <div class="card-grid-img-wrapper">
           <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" />
           
-          <!-- BADGES TERSUSUN VERTIKAL -->
+          <!-- BADGES VERTIKAL DI POJOK KIRI ATAS -->
           <div class="card-badges-vertical">
             <span class="badge-status">${isMovie ? 'MOVIE' : parseStatusText(item)}</span>
             <span class="badge-media-type ${isAnime ? 'anime' : 'donghua'}">${isAnime ? 'ANIME' : 'DONGHUA'}</span>
@@ -863,15 +887,11 @@
         const taggedDonghua = (Array.isArray(donghuaRes) ? donghuaRes : []).map(item => ({ ...item, _source: 'donghua' }));
         const taggedAnime = (Array.isArray(animeRes) ? animeRes : []).map(item => ({ ...item, _source: 'anime' }));
 
-        // 3. Campur Berselingan (Interleaved)
-        const mixed = [];
-        const maxLen = Math.max(taggedDonghua.length, taggedAnime.length);
-        for (let i = 0; i < maxLen; i++) {
-          if (i < taggedDonghua.length) mixed.push(taggedDonghua[i]);
-          if (i < taggedAnime.length) mixed.push(taggedAnime[i]);
-        }
+        // 3. Gabungkan dan Urutkan Berdasarkan Tanggal Rilis/Pembaruan Terbaru (Descending)
+        const combined = [...taggedDonghua, ...taggedAnime];
+        combined.sort((a, b) => getTimeValue(b) - getTimeValue(a));
 
-        rawCatalog = mixed;
+        rawCatalog = combined;
 
         // 4. Baca Parameter Filter Tambahan
         const catParam = params.get('category');
