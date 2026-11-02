@@ -499,7 +499,7 @@
         <input type="text" class="search-input-field" id="catalogSearchInput" placeholder="Cari judul anime atau donghua..." oninput="onSearchInput()">
       </div>
 
-      <!-- 2. PIL FILTER SUMBER MEDIA (DONGHUA / ANIME) -->
+      <!-- 2. PIL FILTER SUMBER MEDIA (SEMUA / DONGHUA / ANIME) -->
       <div class="filter-scroll-row" id="mediaSourceRow">
         <button class="filter-pill active" onclick="setMediaSourceFilter('all')">Semua Media</button>
         <button class="filter-pill" onclick="setMediaSourceFilter('donghua')">Donghua</button>
@@ -839,6 +839,22 @@
 
     async function initCatalog() {
       try {
+        // 1. Deteksi Sumber Berdasarkan Pathname URL atau Query String
+        const currentPath = window.location.pathname.toLowerCase();
+        const params = new URLSearchParams(window.location.search);
+        const sourceParam = params.get('source');
+
+        if (currentPath.includes('/anime')) {
+          selectedMediaSource = 'anime';
+        } else if (currentPath.includes('/donghua')) {
+          selectedMediaSource = 'donghua';
+        } else if (sourceParam === 'anime' || sourceParam === 'donghua') {
+          selectedMediaSource = sourceParam;
+        } else {
+          selectedMediaSource = 'all';
+        }
+
+        // 2. Fetch Data Katalog Donghua & Anime
         const [donghuaRes, animeRes] = await Promise.all([
           fetch('/api/donghua?path=donghua.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
           fetch('/api/anime', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => [])
@@ -847,24 +863,35 @@
         const taggedDonghua = (Array.isArray(donghuaRes) ? donghuaRes : []).map(item => ({ ...item, _source: 'donghua' }));
         const taggedAnime = (Array.isArray(animeRes) ? animeRes : []).map(item => ({ ...item, _source: 'anime' }));
 
-        rawCatalog = [...taggedDonghua, ...taggedAnime];
+        // 3. Campur Berselingan (Interleaved)
+        const mixed = [];
+        const maxLen = Math.max(taggedDonghua.length, taggedAnime.length);
+        for (let i = 0; i < maxLen; i++) {
+          if (i < taggedDonghua.length) mixed.push(taggedDonghua[i]);
+          if (i < taggedAnime.length) mixed.push(taggedAnime[i]);
+        }
 
-        const params = new URLSearchParams(window.location.search);
+        rawCatalog = mixed;
+
+        // 4. Baca Parameter Filter Tambahan
         const catParam = params.get('category');
         const typeParam = params.get('type');
         const statusParam = params.get('status');
-        const sourceParam = params.get('source');
 
-        if (sourceParam) selectedMediaSource = sourceParam;
         if (catParam) selectedCategory = catParam;
         if (typeParam === 'movie') selectedType = 'movie';
         if (statusParam === 'ongoing') selectedType = 'ongoing';
         if (statusParam === 'completed') selectedType = 'completed';
 
+        // 5. Terapkan Filter
         setMediaSourceFilter(selectedMediaSource);
         setTypeFilter(selectedType);
-        if (selectedCategory !== 'all') setCategoryFilter(selectedCategory);
-        else applyFilters();
+
+        if (selectedCategory !== 'all') {
+          setCategoryFilter(selectedCategory);
+        } else {
+          applyFilters();
+        }
 
         if (window.syncFirebaseViews) {
           window.syncFirebaseViews();
