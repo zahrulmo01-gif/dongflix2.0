@@ -694,7 +694,7 @@
 
   <script type="module">
     import { auth, db } from '/assets/firebase-config.js';
-    import { ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { ref, get, set, update, query, orderByChild, equalTo, limitToFirst } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { onAuthStateChanged, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const ADMIN_EMAIL = 'zahrulms01@gmail.com';
@@ -705,13 +705,10 @@
     let isFollowing = false;
     let uploadedPhotoBase64 = '';
     
-    // Status State Form & Validasi
     let initialFormValues = {};
     let isNewUsernameValid = true;
     let isCheckingUsername = false;
     let editCheckTimeout = null;
-
-    let cachedUsersMap = null;
 
     function calculateLevel(expVal) {
       const exp = Number(expVal) || 0;
@@ -721,6 +718,14 @@
 
     function getDbKey(email) {
       return email.toLowerCase().trim().replace(/\./g, ',');
+    }
+
+    // HELPER RUTE DINAMIS: Anime -> /anime/:slug, Donghua -> /donghua/:slug
+    function getItemRoute(item) {
+      const slug = item.slug || item.mainPath || '';
+      if (!slug) return '/';
+      const isAnime = item.isAnime === true || item.mediaType === 'anime' || item.type === 'anime';
+      return isAnime ? `/anime/${encodeURIComponent(slug)}` : `/donghua/${encodeURIComponent(slug)}`;
     }
 
     function getUsernameFromUrl() {
@@ -743,32 +748,28 @@
       }
     };
 
-    // CEK USERNAME MENGGUNAKAN POLA REGISTER.HTML
+    // CEK USERNAME SUPER CEPAT MENGGUNAKAN QUERY (HANYA MENGAMBIL 1 RECORD)
     async function checkUsernameAvailability(username, excludeKey) {
       const cleanUsername = username.trim().toLowerCase();
       try {
-        const allSnap = await get(ref(db, 'users'));
-        if (!allSnap.exists()) return true;
+        const q = query(ref(db, 'users'), orderByChild('username'), equalTo(cleanUsername), limitToFirst(1));
+        const snap = await get(q);
+        if (!snap.exists()) return true;
 
-        cachedUsersMap = allSnap.val();
-        for (const key in cachedUsersMap) {
-          if (key !== excludeKey && cachedUsersMap[key]?.username) {
-            if (String(cachedUsersMap[key].username).toLowerCase() === cleanUsername) {
-              return false; // Sudah dipakai
-            }
-          }
-        }
-        return true; // Tersedia
+        const data = snap.val();
+        const foundKey = Object.keys(data)[0];
+        return foundKey === excludeKey;
       } catch (err) {
         console.warn("Gagal cek username:", err);
         return false;
       }
     }
 
+    // AMBIL DATA USER INSTAN DENGAN TARGET QUERY
     async function fetchUserData(identifier) {
       const idClean = identifier.trim();
-      const usersRef = ref(db, 'users');
 
+      // 1. Cek langsung lewat key (EmailKey atau UID)
       try {
         const directSnap = await get(ref(db, `users/${idClean}`));
         if (directSnap.exists()) {
@@ -776,23 +777,19 @@
         }
       } catch (_) {}
 
+      // 2. Cek lewat index username (Hanya mengambil 1 user, tidak mendownload se-database)
       try {
-        const allSnap = await get(usersRef);
-        if (allSnap.exists()) {
-          cachedUsersMap = allSnap.val();
-          for (const [key, val] of Object.entries(cachedUsersMap)) {
-            const matchUsername = val.username && String(val.username).toLowerCase() === idClean.toLowerCase();
-            const matchEmailPrefix = key.toLowerCase().startsWith(idClean.toLowerCase() + '@');
-            const matchExactKey = key.toLowerCase() === idClean.toLowerCase();
-
-            if (matchUsername || matchEmailPrefix || matchExactKey) {
-              return { key, data: val };
-            }
-          }
+        const q = query(ref(db, 'users'), orderByChild('username'), equalTo(idClean.toLowerCase()), limitToFirst(1));
+        const snap = await get(q);
+        if (snap.exists()) {
+          const res = snap.val();
+          const key = Object.keys(res)[0];
+          return { key, data: res[key] };
         }
       } catch (err) {
-        console.error('Fetch user error:', err);
+        console.error('Fetch user indexed error:', err);
       }
+
       return null;
     }
 
@@ -877,11 +874,14 @@
         return;
       }
 
-      container.innerHTML = favList.map(item => `
-        <a href="/donghua/${encodeURIComponent(item.slug)}" class="work-card" title="${item.title || 'Koleksi'}">
-          <img src="${item.poster || 'https://via.placeholder.com/300x300?text=No+Cover'}" alt="${item.title || 'Item'}" referrerpolicy="no-referrer">
-        </a>
-      `).join('');
+      container.innerHTML = favList.map(item => {
+        const itemUrl = getItemRoute(item);
+        return `
+          <a href="${itemUrl}" class="work-card" title="${item.title || 'Koleksi'}">
+            <img src="${item.poster || 'https://via.placeholder.com/300x300?text=No+Cover'}" alt="${item.title || 'Item'}" referrerpolicy="no-referrer">
+          </a>
+        `;
+      }).join('');
     }
 
     function renderRiwayat(rtdbHistory) {
@@ -917,19 +917,19 @@
         <div class="history-grid">
           ${historyList.map(item => {
             const epLabel = item.episode || 'Ep 1';
-            const targetSlug = item.mainPath || item.slug || '';
             const epPath = item.epPath ? `?ep=${encodeURIComponent(item.epPath)}` : '';
             const poster = item.poster || item.cover || 'https://via.placeholder.com/300x170?text=No+Cover';
             const timeAgo = item.timestamp ? getTimeAgo(item.timestamp) : (item.updatedAt ? getTimeAgo(item.updatedAt) : 'Baru saja');
+            const targetUrl = `${getItemRoute(item)}${epPath}`;
 
             return `
-              <a href="/donghua/${encodeURIComponent(targetSlug)}${epPath}" class="history-card-item">
+              <a href="${targetUrl}" class="history-card-item">
                 <div class="history-thumb-wrap">
                   <img src="${poster}" alt="${item.title}" referrerpolicy="no-referrer">
                   <span class="history-ep-tag">${epLabel}</span>
                 </div>
                 <div class="history-details">
-                  <div class="history-item-title">${item.title || 'Donghua'}</div>
+                  <div class="history-item-title">${item.title || 'Tontonan'}</div>
                   <div class="history-item-time">Terakhir ditonton • ${timeAgo}</div>
                 </div>
               </a>
@@ -970,7 +970,6 @@
       }
     };
 
-    // CEK APAKAH ADA PERUBAHAN PADA FORM EDIT PROFIL
     function checkFormChanges() {
       const currentName = document.getElementById('inputEditName').value.trim();
       const currentUsername = document.getElementById('inputEditUsername').value.trim().toLowerCase();
@@ -1103,7 +1102,6 @@
       }
     };
 
-    // CEK KETERSEDIAAN USERNAME DENGAN FEEDBACK VISUAL PASTI
     const editUsernameInput = document.getElementById('inputEditUsername');
     const editUsernameStatus = document.getElementById('editUsernameStatus');
 
@@ -1112,7 +1110,6 @@
       clearTimeout(editCheckTimeout);
       const val = e.target.value.trim();
 
-      // Jika sama persis dengan username akun saat ini
       if (!val || val === (initialFormValues.username || '').toLowerCase()) {
         editUsernameStatus.style.display = 'none';
         editUsernameStatus.className = 'input-hint';
@@ -1133,7 +1130,6 @@
         return;
       }
 
-      // Tampilkan status memeriksa
       editUsernameStatus.style.display = 'block';
       editUsernameStatus.className = 'input-hint checking';
       editUsernameStatus.innerText = 'Memeriksa ketersediaan...';
@@ -1257,6 +1253,7 @@
     window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
     window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
+    // AUTH & DATA INITIALIZER
     onAuthStateChanged(auth, async (authUser) => {
       currentAuthUser = authUser;
       const urlUsername = getUsernameFromUrl();
@@ -1290,10 +1287,10 @@
           data = snap.exists() ? snap.val() : {};
         }
 
+        // Render langsung tanpa reload halaman berulang kali
+        await renderProfile(data, emailKey, authUser);
         if (data.username) {
-          window.location.replace(`/profil/${data.username}`);
-        } else {
-          await renderProfile(data, emailKey, authUser);
+          window.history.replaceState(null, '', `/profil/${data.username}`);
         }
       }
     });
