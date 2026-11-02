@@ -23,6 +23,10 @@
     {
       "source": "/anime",
       "destination": "/katalog/index.html"
+    },
+    {
+      "source": "/anime/",
+      "destination": "/katalog/index.html"
     }
   ]
 }
