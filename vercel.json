@@ -13,6 +13,10 @@
       "destination": "/donghua/watch.html"
     },
     {
+      "source": "/anime/:slug",
+      "destination": "/watch/index.html"
+    },
+    {
       "source": "/profil/:username",
       "destination": "/profil/index.html"
     }
