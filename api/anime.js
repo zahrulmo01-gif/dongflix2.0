@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Dukungan CORS untuk frontend
+  // 1. Dukungan CORS untuk frontend web
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -8,15 +8,21 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // 2. KUNCI REALTIME: Matikan seluruh lapisan cache di browser, Vercel Edge Network, dan CDN
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   try {
-    // Ambil token dari Environment Variables Vercel di project dongflix2.0
+    // Ambil token dari Environment Variables Vercel
     const githubToken = process.env['GITHUB-TOKEN'] || process.env.GITHUB_TOKEN;
 
     const owner = 'zahrulmo01-gif';
     const repo = 'dongflix-data';
     const branch = 'main';
 
-    // Mendukung parameter slug untuk mengambil data episode spesifik
+    // Mendukung parameter slug (untuk detail episode) atau parameter custom path
     const { slug, path: customPath } = req.query;
 
     let targetPath = 'data/anime/anime.json';
@@ -28,18 +34,26 @@ export default async function handler(req, res) {
         : `data/anime/${customPath.replace(/^\//, '')}`;
     }
 
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${targetPath}?ref=${branch}`;
+    // Tambahkan timestamp query parameter (_t) agar API GitHub tidak mengembalikan cache internalnya
+    const timestamp = Date.now();
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${targetPath}?ref=${branch}&_t=${timestamp}`;
 
     const headers = {
       'User-Agent': 'Dongflix-Serverless-App',
-      'Accept': 'application/vnd.github.raw+json', // Langsung ambil konten mentah JSON
+      'Accept': 'application/vnd.github.raw+json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache'
     };
 
     if (githubToken) {
       headers['Authorization'] = `Bearer ${githubToken.trim()}`;
     }
 
-    const response = await fetch(url, { headers });
+    // fetch dengan opsi no-store agar Node.js runtime selalu membuat request jaringan baru
+    const response = await fetch(url, { 
+      headers,
+      cache: 'no-store'
+    });
 
     if (!response.ok) {
       const errText = await response.text();
@@ -52,8 +66,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Cache di edge Vercel selama 15 menit agar respons cepat dan hemat kuota request GitHub API
-    res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=1800');
     return res.status(200).json(data);
 
   } catch (error) {
