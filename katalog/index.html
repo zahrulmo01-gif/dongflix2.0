@@ -348,7 +348,7 @@
     }
     .card-grid-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
     
-    /* BADGES VERTIKAL DI POJOK KIRI ATAS */
+    /* BADGE VERTIKAL DI POJOK KIRI ATAS */
     .card-badges-vertical {
       position: absolute;
       top: 8px;
@@ -643,21 +643,42 @@
       return item.cover || item.thumbnail || item.image || item.poster || 'https://via.placeholder.com/300x400?text=No+Cover';
     }
 
-    // Helper untuk mengubah tanggal rilis/update menjadi nilai waktu milidetik
+    // Helper parser tanggal cerdas dan fleksibel (termasuk bahasa Indonesia)
     function getTimeValue(item) {
       if (!item) return 0;
 
-      if (item.updated_at) {
-        const t = new Date(item.updated_at).getTime();
-        if (!isNaN(t)) return t;
+      // 1. Cek properti timestamp atau ISO date
+      const timestampKeys = ['updated_at', 'updatedAt', 'last_updated', 'release_time', 'time'];
+      for (const key of timestampKeys) {
+        if (item[key]) {
+          const t = new Date(item[key]).getTime();
+          if (!isNaN(t) && t > 0) return t;
+        }
       }
 
-      const rawDate = item.released || item.rilis || item.aired || '';
-      if (rawDate) {
-        const cleaned = rawDate.replace(/^tanggal\s*/i, '').trim();
-        const parsed = new Date(cleaned).getTime();
-        if (!isNaN(parsed)) return parsed;
+      // 2. Cek properti teks tanggal (released, rilis, aired, date)
+      const rawDate = item.released || item.rilis || item.aired || item.date || item.release || '';
+      if (rawDate && typeof rawDate === 'string') {
+        let cleaned = rawDate.replace(/^tanggal\s*|^rilis\s*:\s*/i, '').trim();
 
+        // Konversi nama bulan Indonesia ke bahasa Inggris agar dikenali new Date()
+        const bulanIndo = {
+          januari: 'January', februari: 'February', maret: 'March', april: 'April',
+          mei: 'May', juni: 'June', juli: 'July', agustus: 'August',
+          september: 'September', oktober: 'October', november: 'November', desember: 'December',
+          jan: 'Jan', feb: 'Feb', mar: 'Mar', apr: 'Apr', jun: 'Jun', jul: 'Jul',
+          agu: 'Aug', ags: 'Aug', sep: 'Sep', okt: 'Oct', nov: 'Nov', des: 'Dec'
+        };
+
+        Object.keys(bulanIndo).forEach(b => {
+          const reg = new RegExp(`\\b${b}\\b`, 'gi');
+          cleaned = cleaned.replace(reg, bulanIndo[b]);
+        });
+
+        const parsed = new Date(cleaned).getTime();
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+
+        // Ambil format tahun 4 digit (misal: "2026")
         const yearMatch = cleaned.match(/\b(19\d{2}|20\d{2})\b/);
         if (yearMatch) {
           return new Date(`${yearMatch[1]}-01-01`).getTime();
@@ -755,7 +776,12 @@
     function createCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
-      card.href = `/watch/${encodeURIComponent(item.slug)}`;
+      // Rute sesuai jenis media: Anime -> /anime/:slug, Donghua -> /donghua/:slug
+      const targetUrl = item._source === 'anime'
+        ? `/anime/${encodeURIComponent(item.slug)}`
+        : `/donghua/${encodeURIComponent(item.slug)}`;
+      card.href = targetUrl;
+
       const isMovie = isMovieItem(item);
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
       const isAnime = item._source === 'anime';
@@ -884,12 +910,40 @@
           fetch('/api/anime', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => [])
         ]);
 
-        const taggedDonghua = (Array.isArray(donghuaRes) ? donghuaRes : []).map(item => ({ ...item, _source: 'donghua' }));
-        const taggedAnime = (Array.isArray(animeRes) ? animeRes : []).map(item => ({ ...item, _source: 'anime' }));
+        const rawDonghuaList = Array.isArray(donghuaRes) ? donghuaRes : [];
+        const rawAnimeList = Array.isArray(animeRes) ? animeRes : [];
 
-        // 3. Gabungkan dan Urutkan Berdasarkan Tanggal Rilis/Pembaruan Terbaru (Descending)
+        // Simpan urutan asli file scraper untuk fallback
+        const taggedDonghua = rawDonghuaList.map((item, idx) => ({ 
+          ...item, 
+          _source: 'donghua',
+          _orderIndex: idx 
+        }));
+
+        const taggedAnime = rawAnimeList.map((item, idx) => ({ 
+          ...item, 
+          _source: 'anime',
+          _orderIndex: idx 
+        }));
+
+        // 3. Gabungkan dan Urutkan Berdasarkan Tanggal Terbaru (Descending)
         const combined = [...taggedDonghua, ...taggedAnime];
-        combined.sort((a, b) => getTimeValue(b) - getTimeValue(a));
+        combined.sort((a, b) => {
+          const timeA = getTimeValue(a);
+          const timeB = getTimeValue(b);
+
+          // Jika kedua tanggal valid dan berbeda, urutkan dari yang terbaru ke terlama
+          if (timeA !== timeB && timeA > 0 && timeB > 0) {
+            return timeB - timeA;
+          }
+
+          // Jika salah satu memiliki tanggal valid
+          if (timeA > 0 && timeB === 0) return -1;
+          if (timeB > 0 && timeA === 0) return 1;
+
+          // Fallback: Jika tanggal tidak ada atau sama, pertahankan urutan file scraper awal
+          return (a._orderIndex || 0) - (b._orderIndex || 0);
+        });
 
         rawCatalog = combined;
 
