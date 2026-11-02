@@ -76,7 +76,6 @@
       -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* MENGHILANGKAN KOTAK TAP ANDROID TANPA MERUSAK EVENT KLIK */
     button, a, input, select, textarea, div, span, [onclick] {
       outline: none !important;
       -webkit-tap-highlight-color: transparent !important;
@@ -116,7 +115,6 @@
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-    /* SKELETON SHIMMER UNIVERSAL */
     @keyframes skeletonShimmer {
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
@@ -153,7 +151,6 @@
     .card-skeleton-title { height: 14px; width: 85%; margin-bottom: 4px; }
     .card-skeleton-sub { height: 11px; width: 50%; }
 
-    /* SKELETON LANJUTKAN MENONTON */
     .continue-skeleton-card {
       flex: 0 0 205px;
       min-width: 205px;
@@ -168,7 +165,6 @@
       border-radius: 14px;
     }
 
-    /* SKELETON GENRE PILL */
     .genre-skeleton-item {
       height: 32px;
       border-radius: 9999px;
@@ -318,7 +314,6 @@
       display: block;
     }
 
-    /* POPOVER DRAWER MENU */
     .popover-menu {
       display: none;
       position: fixed;
@@ -574,7 +569,6 @@
       text-transform: uppercase;
     }
 
-    /* HERO SLIDER */
     .hero-slider-wrapper { 
       position: relative; 
       width: 100%; 
@@ -786,7 +780,6 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* WIDGET LIVE CHAT BERANDA */
     .home-chat-widget {
       background: transparent;
       border: none;
@@ -1145,9 +1138,6 @@
       color: #d1d5db; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 9999px;
     }
 
-    /* ========================================================
-       FLOATING DOCK ALA IPHONE (iOS TAB BAR MELAYANG GLASS)
-       ======================================================== */
     .bottom-dock-wrapper {
       position: fixed;
       bottom: calc(14px + env(safe-area-inset-bottom, 0px));
@@ -1228,7 +1218,6 @@
       z-index: 2;
     }
 
-    /* Pendaran Glow Biru Melingkar di Belakang Tab Aktif Sesuai Gambar */
     .dock-pill-btn::before {
       content: '';
       position: absolute;
@@ -1243,7 +1232,6 @@
       z-index: 1;
     }
 
-    /* Style Tab Aktif (Biru Cerah + Ambient Glow) */
     .dock-pill-btn.active {
       color: #38bdf8;
       background: transparent !important;
@@ -1265,7 +1253,6 @@
       font-weight: 700;
     }
 
-    /* Tombol OnTop Sejajar di Samping */
     .floating-circle-btn {
       width: 54px;
       height: 54px;
@@ -1374,7 +1361,7 @@
         <span>Anime</span>
       </a>
 
-      <a href="/donghua/?type=movie" class="menu-nav-tile">
+      <a href="/donghua?type=movie" class="menu-nav-tile">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
         <span>Movie</span>
       </a>
@@ -1432,7 +1419,7 @@
     </div>
   </div>
 
-  <!-- HERO SLIDER DENGAN SKELETON SHIMMER -->
+  <!-- HERO SLIDER -->
   <div class="hero-slider-wrapper" id="heroSlider">
     <div class="skeleton-hero">
       <div style="width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;">
@@ -1445,7 +1432,7 @@
   </div>
 
   <div class="container">
-    <!-- SECTION LANJUTKAN MENONTON DENGAN SKELETON -->
+    <!-- SECTION LANJUTKAN MENONTON -->
     <section class="section-block continue-section-wrapper" id="continueSection">
       <div class="section-header-flex">
         <h2 class="section-title">Lanjutkan Menonton</h2>
@@ -1512,7 +1499,7 @@
       </div>
     </section>
 
-    <!-- POPULER HARI INI DENGAN SKELETON THUMBNAIL & TEKS (TETAP UTUH TANPA DIBATASI) -->
+    <!-- POPULER HARI INI -->
     <section class="section-block" id="popularTodaySection">
       <div class="section-header-flex">
         <h2 class="section-title">Populer Hari Ini</h2>
@@ -1543,11 +1530,11 @@
       </div>
     </section>
 
-    <!-- DONGHUA TERBARU DENGAN SKELETON (9 ITEM DI BERANDA) -->
+    <!-- DONGHUA TERBARU -->
     <section class="section-block" id="donghuaSection">
       <div class="section-header-flex">
         <h2 class="section-title">Donghua Terbaru</h2>
-        <a href="/donghua/" class="see-all-btn">
+        <a href="/donghua" class="see-all-btn">
           Lihat Semua
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
@@ -1565,7 +1552,7 @@
       </div>
     </section>
 
-    <!-- REKOMENDASI UNTUKMU DENGAN SKELETON (DI BAWAH DONGHUA TERBARU) -->
+    <!-- REKOMENDASI UNTUKMU -->
     <section class="section-block" id="recommendedSection">
       <div class="section-header-flex">
         <h2 class="section-title">Rekomendasi Untukmu</h2>
@@ -1580,11 +1567,11 @@
       </div>
     </section>
 
-    <!-- ANIME TERBARU DENGAN SKELETON (9 ITEM DI BERANDA) -->
+    <!-- ANIME TERBARU -->
     <section class="section-block" id="animeSection">
       <div class="section-header-flex">
         <h2 class="section-title">Anime Terbaru</h2>
-        <a href="/anime/" class="see-all-btn">
+        <a href="/anime" class="see-all-btn">
           Lihat Semua
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
@@ -1602,13 +1589,12 @@
       </div>
     </section>
 
-    <!-- BADGE GENRE DENGAN SKELETON SHIMMER -->
+    <!-- GENRE -->
     <div class="genre-scroll-wrapper" id="genreWrapperSection">
       <div class="section-header-flex">
         <h2 class="section-title">Genre</h2>
       </div>
 
-      <!-- Skeleton shimmer saat proses memuat -->
       <div class="genre-scroll-row" id="genreSkeletonBar">
         <div class="skeleton genre-skeleton-item" style="width: 74px;"></div>
         <div class="skeleton genre-skeleton-item" style="width: 95px;"></div>
@@ -1624,61 +1610,60 @@
         <div class="skeleton genre-skeleton-item" style="width: 76px;"></div>
       </div>
 
-      <!-- Kontainer daftar genre yang sebenarnya -->
       <div class="genre-scroll-row" id="genreBar" style="display: none;">
-        <a href="/donghua/?category=Action" class="genre-badge-item">Action</a>
-        <a href="/donghua/?category=Adult%20Cast" class="genre-badge-item">Adult Cast</a>
-        <a href="/donghua/?category=Adventure" class="genre-badge-item">Adventure</a>
-        <a href="/donghua/?category=Arts" class="genre-badge-item">Arts</a>
-        <a href="/donghua/?category=Comedy" class="genre-badge-item">Comedy</a>
-        <a href="/donghua/?category=Crossdressing" class="genre-badge-item">Crossdressing</a>
-        <a href="/donghua/?category=Cultivation" class="genre-badge-item">Cultivation</a>
-        <a href="/donghua/?category=Demons" class="genre-badge-item">Demons</a>
-        <a href="/donghua/?category=Drama" class="genre-badge-item">Drama</a>
-        <a href="/donghua/?category=Ecchi" class="genre-badge-item">Ecchi</a>
-        <a href="/donghua/?category=Fantasy" class="genre-badge-item">Fantasy</a>
-        <a href="/donghua/?category=Game" class="genre-badge-item">Game</a>
-        <a href="/donghua/?category=Gore" class="genre-badge-item">Gore</a>
-        <a href="/donghua/?category=Gourmet" class="genre-badge-item">Gourmet</a>
-        <a href="/donghua/?category=Guoman" class="genre-badge-item">Guoman</a>
-        <a href="/donghua/?category=Harem" class="genre-badge-item">Harem</a>
-        <a href="/donghua/?category=Historical" class="genre-badge-item">Historical</a>
-        <a href="/donghua/?category=Horror" class="genre-badge-item">Horror</a>
-        <a href="/donghua/?category=Isekai" class="genre-badge-item">Isekai</a>
-        <a href="/donghua/?category=Magic" class="genre-badge-item">Magic</a>
-        <a href="/donghua/?category=Martial" class="genre-badge-item">Martial</a>
-        <a href="/donghua/?category=Martial%20Arts" class="genre-badge-item">Martial Arts</a>
-        <a href="/donghua/?category=Mecha" class="genre-badge-item">Mecha</a>
-        <a href="/donghua/?category=Medical" class="genre-badge-item">Medical</a>
-        <a href="/donghua/?category=Military" class="genre-badge-item">Military</a>
-        <a href="/donghua/?category=Music" class="genre-badge-item">Music</a>
-        <a href="/donghua/?category=Mystery" class="genre-badge-item">Mystery</a>
-        <a href="/donghua/?category=Mythology" class="genre-badge-item">Mythology</a>
-        <a href="/donghua/?category=Psychological" class="genre-badge-item">Psychological</a>
-        <a href="/donghua/?category=Reincarnation" class="genre-badge-item">Reincarnation</a>
-        <a href="/donghua/?category=Romance" class="genre-badge-item">Romance</a>
-        <a href="/donghua/?category=School" class="genre-badge-item">School</a>
-        <a href="/donghua/?category=Sci-Fi" class="genre-badge-item">Sci-Fi</a>
-        <a href="/donghua/?category=Slice%20of%20Life" class="genre-badge-item">Slice of Life</a>
-        <a href="/donghua/?category=Space" class="genre-badge-item">Space</a>
-        <a href="/donghua/?category=Sports" class="genre-badge-item">Sports</a>
-        <a href="/donghua/?category=Super%20Power" class="genre-badge-item">Super Power</a>
-        <a href="/donghua/?category=Supernatural" class="genre-badge-item">Supernatural</a>
-        <a href="/donghua/?category=Suspense" class="genre-badge-item">Suspense</a>
-        <a href="/donghua/?category=Team%20Sports" class="genre-badge-item">Team Sports</a>
-        <a href="/donghua/?category=Thriller" class="genre-badge-item">Thriller</a>
-        <a href="/donghua/?category=Time%20Travel" class="genre-badge-item">Time Travel</a>
-        <a href="/donghua/?category=Urban%20Fantasy" class="genre-badge-item">Urban Fantasy</a>
-        <a href="/donghua/?category=Video%20Game" class="genre-badge-item">Video Game</a>
-        <a href="/donghua/?category=Youth" class="genre-badge-item">Youth</a>
+        <a href="/donghua?category=Action" class="genre-badge-item">Action</a>
+        <a href="/donghua?category=Adult%20Cast" class="genre-badge-item">Adult Cast</a>
+        <a href="/donghua?category=Adventure" class="genre-badge-item">Adventure</a>
+        <a href="/donghua?category=Arts" class="genre-badge-item">Arts</a>
+        <a href="/donghua?category=Comedy" class="genre-badge-item">Comedy</a>
+        <a href="/donghua?category=Crossdressing" class="genre-badge-item">Crossdressing</a>
+        <a href="/donghua?category=Cultivation" class="genre-badge-item">Cultivation</a>
+        <a href="/donghua?category=Demons" class="genre-badge-item">Demons</a>
+        <a href="/donghua?category=Drama" class="genre-badge-item">Drama</a>
+        <a href="/donghua?category=Ecchi" class="genre-badge-item">Ecchi</a>
+        <a href="/donghua?category=Fantasy" class="genre-badge-item">Fantasy</a>
+        <a href="/donghua?category=Game" class="genre-badge-item">Game</a>
+        <a href="/donghua?category=Gore" class="genre-badge-item">Gore</a>
+        <a href="/donghua?category=Gourmet" class="genre-badge-item">Gourmet</a>
+        <a href="/donghua?category=Guoman" class="genre-badge-item">Guoman</a>
+        <a href="/donghua?category=Harem" class="genre-badge-item">Harem</a>
+        <a href="/donghua?category=Historical" class="genre-badge-item">Historical</a>
+        <a href="/donghua?category=Horror" class="genre-badge-item">Horror</a>
+        <a href="/donghua?category=Isekai" class="genre-badge-item">Isekai</a>
+        <a href="/donghua?category=Magic" class="genre-badge-item">Magic</a>
+        <a href="/donghua?category=Martial" class="genre-badge-item">Martial</a>
+        <a href="/donghua?category=Martial%20Arts" class="genre-badge-item">Martial Arts</a>
+        <a href="/donghua?category=Mecha" class="genre-badge-item">Mecha</a>
+        <a href="/donghua?category=Medical" class="genre-badge-item">Medical</a>
+        <a href="/donghua?category=Military" class="genre-badge-item">Military</a>
+        <a href="/donghua?category=Music" class="genre-badge-item">Music</a>
+        <a href="/donghua?category=Mystery" class="genre-badge-item">Mystery</a>
+        <a href="/donghua?category=Mythology" class="genre-badge-item">Mythology</a>
+        <a href="/donghua?category=Psychological" class="genre-badge-item">Psychological</a>
+        <a href="/donghua?category=Reincarnation" class="genre-badge-item">Reincarnation</a>
+        <a href="/donghua?category=Romance" class="genre-badge-item">Romance</a>
+        <a href="/donghua?category=School" class="genre-badge-item">School</a>
+        <a href="/donghua?category=Sci-Fi" class="genre-badge-item">Sci-Fi</a>
+        <a href="/donghua?category=Slice%20of%20Life" class="genre-badge-item">Slice of Life</a>
+        <a href="/donghua?category=Space" class="genre-badge-item">Space</a>
+        <a href="/donghua?category=Sports" class="genre-badge-item">Sports</a>
+        <a href="/donghua?category=Super%20Power" class="genre-badge-item">Super Power</a>
+        <a href="/donghua?category=Supernatural" class="genre-badge-item">Supernatural</a>
+        <a href="/donghua?category=Suspense" class="genre-badge-item">Suspense</a>
+        <a href="/donghua?category=Team%20Sports" class="genre-badge-item">Team Sports</a>
+        <a href="/donghua?category=Thriller" class="genre-badge-item">Thriller</a>
+        <a href="/donghua?category=Time%20Travel" class="genre-badge-item">Time Travel</a>
+        <a href="/donghua?category=Urban%20Fantasy" class="genre-badge-item">Urban Fantasy</a>
+        <a href="/donghua?category=Video%20Game" class="genre-badge-item">Video Game</a>
+        <a href="/donghua?category=Youth" class="genre-badge-item">Youth</a>
       </div>
     </div>
 
-    <!-- MOVIE TERBARU DENGAN SKELETON (9 ITEM DI BERANDA) -->
+    <!-- MOVIE TERBARU -->
     <section class="section-block" id="movieSection">
       <div class="section-header-flex">
         <h2 class="section-title">Movie Terbaru</h2>
-        <a href="/donghua/?type=movie" class="see-all-btn">
+        <a href="/donghua?type=movie" class="see-all-btn">
           Lihat Semua
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
@@ -1696,7 +1681,7 @@
       </div>
     </section>
 
-    <!-- DONGHUA POPULER DENGAN SKELETON (TETAP UTUH TANPA DIBATASI 6/9 GRID) -->
+    <!-- DONGHUA POPULER -->
     <section class="section-block" id="popularAllSection">
       <div class="section-header-flex">
         <h2 class="section-title" id="popularSectionTitle">Donghua Populer</h2>
@@ -1728,36 +1713,31 @@
     </section>
   </div>
 
-  <!-- FLOATING DOCK BOTTOM ALA IPHONE -->
+  <!-- FLOATING DOCK BOTTOM -->
   <div class="bottom-dock-wrapper">
     <div class="bottom-dock-inner">
       <nav class="floating-dock-nav" aria-label="Navigasi Menu">
-        <!-- Tab Beranda -->
         <button type="button" class="dock-pill-btn active" id="tabBtnAll" onclick="setCategoryTab('all')">
           <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 20z"/></svg>
           <span>Beranda</span>
         </button>
 
-        <!-- Tab Donghua -->
         <button type="button" class="dock-pill-btn" id="tabBtnDonghua" onclick="setCategoryTab('donghua')">
           <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><polyline points="8 3 12 7 16 3"/></svg>
           <span>Donghua</span>
         </button>
 
-        <!-- Tab Anime -->
         <button type="button" class="dock-pill-btn" id="tabBtnAnime" onclick="setCategoryTab('anime')">
           <svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg>
           <span>Anime</span>
         </button>
 
-        <!-- Tab Cari Cepat Langsung Buka Modal -->
         <button type="button" class="dock-pill-btn" id="tabBtnSearch" onclick="openSearchModal()">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.35-4.35"/></svg>
           <span>Cari</span>
         </button>
       </nav>
 
-      <!-- Tombol Kembali Ke Atas (OnTop) Sejajar di Samping -->
       <button type="button" class="floating-circle-btn" id="backToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Kembali ke atas">
         <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
       </button>
@@ -1887,11 +1867,10 @@
     let masterList = [];
     let viewsDataMap = {};
     let dailyViewsMap = {};
-    const chatProfileCache = {}; // Cache profil live chat
+    const chatProfileCache = {};
 
     const DEFAULT_NO_COVER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400' viewBox='0 0 300 400'><rect width='100%25' height='100%25' fill='%230f141f'/><g fill='%2325334d'><path d='M110 160l40 50 30-35 50 65H70z'/><circle cx='115' cy='130' r='16'/></g><text x='50%25' y='75%25' fill='%2364748b' font-family='sans-serif' font-size='16' font-weight='700' text-anchor='middle' letter-spacing='1'>NO COVER</text></svg>";
 
-    // RUMUS LEVEL: 0-1000 = Lv1, 1001-2000 = Lv2, dst
     function calculateLevel(expVal) {
       const exp = Number(expVal) || 0;
       if (exp <= 0) return 1;
@@ -1948,6 +1927,12 @@
       return cover;
     }
 
+    // Helper rute per item: Anime -> /anime/:slug, Donghua/Movie -> /donghua/:slug
+    function getItemRoute(item) {
+      if (!item || !item.slug) return '/donghua';
+      return item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
+    }
+
     function togglePopoverMenu() {
       document.getElementById('popoverMenu').classList.toggle('active');
     }
@@ -1968,31 +1953,27 @@
       else onTopBtn.classList.remove('show');
     }, { passive: true });
 
-    // FUNGSI RENDER GRID DENGAN BATAS DINAMIS SESUAI TAB
     function renderGridsByTab(tab) {
       const donghuaLimit = (tab === 'all') ? 9 : 12;
       const animeLimit = (tab === 'all') ? 9 : 12;
 
-      // Render Donghua Terbaru
       const latestGrid = document.getElementById('latestGrid');
       if (latestGrid) {
         latestGrid.innerHTML = '';
         donghuaList.slice(0, donghuaLimit).forEach(item => {
-          latestGrid.appendChild(createGridCard(item, '/donghua/'));
+          latestGrid.appendChild(createGridCard(item));
         });
       }
 
-      // Render Anime Terbaru
       const animeGrid = document.getElementById('animeGrid');
       if (animeGrid) {
         animeGrid.innerHTML = '';
         animeList.slice(0, animeLimit).forEach(item => {
-          animeGrid.appendChild(createGridCard(item, '/anime/'));
+          animeGrid.appendChild(createGridCard(item));
         });
       }
     }
 
-    // FUNGSI GANTI TAB KATEGORI
     window.setCategoryTab = function(tab) {
       currentCategoryTab = tab;
       const tabAll = document.getElementById('tabBtnAll');
@@ -2048,12 +2029,10 @@
 
       if (targetMovies.length === 0) targetMovies = movieList;
 
-      // Jika tab beranda (all) = 9 item, jika tab donghua atau anime = 12 item
       const movieLimit = (filterMode === 'all') ? 9 : 12;
 
       targetMovies.slice(0, movieLimit).forEach(item => {
-        const basePath = item.isAnime ? '/anime/' : '/donghua/';
-        movieGrid.appendChild(createGridCard(item, basePath));
+        movieGrid.appendChild(createGridCard(item));
       });
     }
 
@@ -2092,8 +2071,7 @@
           searchItems.forEach(item => {
             const card = document.createElement('a');
             card.className = 'search-item-card';
-            const itemPath = item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
-            card.href = itemPath;
+            card.href = getItemRoute(item);
             card.innerHTML = `
               <div class="search-item-thumb">
                 <img src="${getImageUrl(item)}" alt="${sanitizeTitle(item.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.removeAttribute('onerror'); this.src='${DEFAULT_NO_COVER}';" />
@@ -2138,7 +2116,7 @@
               <span>•</span>
               <span>${parseEpisodeText(item)}</span>
             </div>
-            <a href="${item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`}" class="btn-watch">
+            <a href="${getItemRoute(item)}" class="btn-watch">
               <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               Tonton
             </a>
@@ -2201,7 +2179,10 @@
       historyList.slice(0, 10).forEach((item) => {
         const card = document.createElement('a');
         card.className = 'continue-card-item';
-        card.href = item.mainPath ? item.mainPath : `/donghua/${encodeURIComponent(item.slug || '')}`;
+        const targetUrl = item.mediaType === 'anime' || item.isAnime 
+          ? `/anime/${encodeURIComponent(item.slug || '')}` 
+          : `/donghua/${encodeURIComponent(item.slug || '')}`;
+        card.href = targetUrl;
         
         const rawCover = item.poster || item.cover;
         const posterUrl = (rawCover && typeof rawCover === 'string' && rawCover.trim() !== '') ? rawCover : DEFAULT_NO_COVER;
@@ -2228,7 +2209,6 @@
       });
     }
 
-    // ALGORITMA REKOMENDASI PINTAR UNTUKMU
     function renderRecommendedSection() {
       const recGrid = document.getElementById('recommendedGrid');
       if (!recGrid || !donghuaList || donghuaList.length === 0) return;
@@ -2299,11 +2279,10 @@
 
       recGrid.innerHTML = '';
       recommended.slice(0, 6).forEach(item => {
-        recGrid.appendChild(createGridCard(item, '/donghua/'));
+        recGrid.appendChild(createGridCard(item));
       });
     }
 
-    // PENGAMBILAN PROFIL CEPAT DENGAN CACHE & DIRECT LOOKUP
     async function getFastProfile(email, uid) {
       const key = email ? email.toLowerCase().replace(/\./g, ',') : uid;
       if (!key) return null;
@@ -2321,7 +2300,6 @@
       return null;
     }
 
-    // LIVE CHAT BERANDA CEPAT & STATUS LEVEL OTOMATIS
     window.loadHomeLiveChatPreview = async function() {
       const listEl = document.getElementById('homeChatList');
       if (!listEl || !window.db || !window.fbRef || !window.fbGet) return;
@@ -2394,8 +2372,7 @@
     function createPopularFeaturedCard(item) {
       const card = document.createElement('a');
       card.className = 'popular-featured-card';
-      const targetUrl = item.isAnime ? `/anime/${encodeURIComponent(item.slug)}` : `/donghua/${encodeURIComponent(item.slug)}`;
-      card.href = targetUrl;
+      card.href = getItemRoute(item);
       const titleText = sanitizeTitle(item.title);
       const isMovie = isMovieItem(item);
       const epNum = item['latest-episode'] || (item.episode ? item.episode.replace(/[^0-9]/g, '') : '1');
@@ -2426,10 +2403,10 @@
       return card;
     }
 
-    function createGridCard(item, basePath = '/donghua/') {
+    function createGridCard(item) {
       const card = document.createElement('a');
       card.className = 'card-grid';
-      card.href = `${basePath}${encodeURIComponent(item.slug)}`;
+      card.href = getItemRoute(item);
       const isMovie = isMovieItem(item);
       const viewsDisplay = formatViewCount(viewsDataMap[item.slug] || 0);
       const coverSrc = getImageUrl(item);
@@ -2533,7 +2510,6 @@
       } catch (_) {}
     };
 
-    // Load Data Anime dari api/anime.js
     async function loadAnimeData() {
       const animeGrid = document.getElementById('animeGrid');
       try {
@@ -2547,10 +2523,9 @@
 
         if (animeGrid) {
           animeGrid.innerHTML = '';
-          // Beranda awal: batasi 9 item
           const limit = (currentCategoryTab === 'all') ? 9 : 12;
           animeList.slice(0, limit).forEach(item => {
-            animeGrid.appendChild(createGridCard(item, '/anime/'));
+            animeGrid.appendChild(createGridCard(item));
           });
         }
       } catch (err) {
@@ -2561,7 +2536,6 @@
       }
     }
 
-    // Load Data Donghua Utama
     async function loadMainData() {
       try {
         const res = await fetch('/api/donghua?path=donghua.json', { cache: 'no-store' });
@@ -2575,16 +2549,13 @@
         renderHeroSlider(masterList);
         renderPopularSections();
 
-        // Di Beranda (tab all) tampilkan 9 item, jika tab donghua 12 item
         const latestLimit = (currentCategoryTab === 'all') ? 9 : 12;
         const latestGrid = document.getElementById('latestGrid');
         latestGrid.innerHTML = '';
-        donghuaList.slice(0, latestLimit).forEach(item => latestGrid.appendChild(createGridCard(item, '/donghua/')));
+        donghuaList.slice(0, latestLimit).forEach(item => latestGrid.appendChild(createGridCard(item)));
 
         renderRecommendedSection();
         renderGenreBar(masterList);
-
-        // Movie di tab beranda (all) tampilkan 9 item
         renderFilteredMovie(currentCategoryTab);
 
         if (window.syncFirebaseViews) {
