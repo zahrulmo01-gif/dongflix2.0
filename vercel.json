@@ -19,6 +19,10 @@
     {
       "source": "/profil/:username",
       "destination": "/profil/index.html"
+    },
+    {
+      "source": "/anime",
+      "destination": "/katalog/index.html"
     }
   ]
 }
