@@ -1,5 +1,23 @@
 [
   {
+    "title": "Spirit Realm Walker",
+    "slug": "spirit-realm-walker",
+    "link": "https://anichin.moe/spirit-realm-walker/",
+    "cover": "https://i.ibb.co/4ZNbX2hb/spirit-realm-walker.webp",
+    "type": "Donghua",
+    "status": "Ongoing",
+    "episode": "Ep 11",
+    "released": "Tanggal  2026",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Supernatural"
+    ],
+    "synopsis": "Spirit Realm Walker – [灵境行者]Spirit Realm Walker mengisahkan Zhang Yuanqing yang menjadi seorang Night Wanderer setelah menerima kartu hitam misterius. Sejak saat itu, ia terlibat dalam berbagai ujian aneh dan berbahaya di alam roh. Tanpa disadari, Zhang Yuanqing kemudian terseret ke dalam konflik mematikan antara kekuatan baik dan jahat.",
+    "latest-episode": "11",
+    "updated_at": "2026-11-04T14:39:16.250Z"
+  },
+  {
     "title": "Shrouding the Heavens",
     "slug": "shrouding-the-heavens",
     "link": "https://anichin.moe/shrouding-the-heavens/",
@@ -612,24 +630,6 @@
     "synopsis": "Against the Gods – Memegang Mutiara Racun Surgawi, mewarisi darah dewa jahat, dan mengembangkan kekuatan untuk menentang surga. Akankah generasi dewa jahat mendominasi dunia?Season 2 (Nian Fan) tayang pada 16 april 2026",
     "latest-episode": "61",
     "updated_at": "2026-10-29T04:50:09.523Z"
-  },
-  {
-    "title": "Spirit Realm Walker",
-    "slug": "spirit-realm-walker",
-    "link": "https://anichin.moe/spirit-realm-walker/",
-    "cover": "https://i.ibb.co/4ZNbX2hb/spirit-realm-walker.webp",
-    "type": "Donghua",
-    "status": "Ongoing",
-    "episode": "Ep 10",
-    "released": "Tanggal  2026",
-    "genres": [
-      "Action",
-      "Adventure",
-      "Supernatural"
-    ],
-    "synopsis": "Spirit Realm Walker – [灵境行者]Spirit Realm Walker mengisahkan Zhang Yuanqing yang menjadi seorang Night Wanderer setelah menerima kartu hitam misterius. Sejak saat itu, ia terlibat dalam berbagai ujian aneh dan berbahaya di alam roh. Tanpa disadari, Zhang Yuanqing kemudian terseret ke dalam konflik mematikan antara kekuatan baik dan jahat.",
-    "latest-episode": "10",
-    "updated_at": "2026-10-28T16:14:43.585Z"
   },
   {
     "title": "Raised by Demons: Panda Li",
