@@ -1,5 +1,33 @@
 [
   {
+    "episode": "102",
+    "title": "Azure Legacy Episode 102 Subtitle Indonesia",
+    "link": "https://anichin.co/azure-legacy-episode-102-subtitle-indonesia/",
+    "date": "November 6, 2026",
+    "servers": [
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16419301624498"
+      },
+      {
+        "name": "OK.ru",
+        "link": "https://ok.ru/videoembed/16419301558962"
+      },
+      {
+        "name": "D-Tube",
+        "link": "https://play.d.tube/?v=3401e46b-34ab-4a8f-9ceb-4a00b8368928"
+      },
+      {
+        "name": "Dailymotion",
+        "link": "https://dongflix-dailymotion.zahrulmo01.workers.dev/?id=k5sOrmxyoEmMYBMqQ8a"
+      },
+      {
+        "name": "Rumble [Setting DNS]",
+        "link": "https://rumble.com/embed/v7fra4m/?pub=2li51c"
+      }
+    ]
+  },
+  {
     "episode": "101",
     "title": "Azure Legacy Episode 101 Subtitle Indonesia",
     "link": "https://anichin.my/azure-legacy-episode-101-subtitle-indonesia/",
