@@ -4,7 +4,10 @@ import sharp from 'sharp';
 import * as cheerio from 'cheerio';
 import { execSync } from 'child_process';
 
-const IMGBB_API_KEY = '885deff423c3a1c6f97f7b9c2982f1a2';
+// Konfigurasi Cloudinary langsung
+const CLOUDINARY_CLOUD_NAME = 'pqyvpk17';
+const CLOUDINARY_UPLOAD_PRESET = 'dongflix';
+
 const masterPath = path.resolve('donghua/donghua.json');
 
 // Daftar mirror utama & CDN anichin
@@ -19,11 +22,6 @@ const CANDIDATE_DOMAINS = [
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-if (!IMGBB_API_KEY) {
-  console.error('❌ IMGBB_API_KEY belum disetel!');
-  process.exit(1);
-}
-
 function gitPushCheckpoint(count, total) {
   try {
     console.log(`\n💾 [Git Checkpoint] Commit progres cover (${count}/${total})...`);
@@ -33,7 +31,7 @@ function gitPushCheckpoint(count, total) {
 
     const status = execSync('git status --porcelain').toString().trim();
     if (status) {
-      execSync(`git commit -m "Auto: Sync covers to ImgBB (${count}/${total}) [skip ci]"`, { stdio: 'ignore' });
+      execSync(`git commit -m "Auto: Sync covers to Cloudinary (${count}/${total}) [skip ci]"`, { stdio: 'ignore' });
       try {
         execSync('git pull --rebase origin main', { stdio: 'ignore' });
       } catch (_) {
@@ -55,7 +53,6 @@ function generateCandidateUrls(rawUrl) {
   if (url.startsWith('//')) url = `https:${url}`;
 
   const candidates = [];
-
   if (url.startsWith('http')) {
     candidates.push(url);
   }
@@ -112,7 +109,7 @@ async function downloadImageBuffer(url) {
   }
 }
 
-// Fallback: Jika link gambar di JSON rusak, scrape poster langsung dari halaman donghua
+// Fallback: Jika link gambar di JSON rusak, scrape poster langsung dari halaman detail
 async function scrapeCoverFromDetailPage(slug) {
   const pageCandidates = [
     `https://anichin.my/${slug}/`,
@@ -162,7 +159,6 @@ async function scrapeCoverFromDetailPage(slug) {
 async function fetchAndConvertToWebpWithFallback(originalUrl, slug) {
   const candidateUrls = generateCandidateUrls(originalUrl);
 
-  // 1. Coba download dari URL statis yang ada di candidate domain
   for (const url of candidateUrls) {
     const webpBuffer = await downloadImageBuffer(url);
     if (webpBuffer) {
@@ -170,38 +166,41 @@ async function fetchAndConvertToWebpWithFallback(originalUrl, slug) {
     }
   }
 
-  // 2. Jika seluruh file static 404, coba scrape halaman detailnya
   return await scrapeCoverFromDetailPage(slug);
 }
 
-// Upload buffer Base64 ke ImgBB API
-async function uploadToImgBB(base64Data, slug) {
+// Upload buffer Base64 Data URI langsung ke Cloudinary
+async function uploadToCloudinary(buffer, slug) {
   const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+  const base64Data = `data:image/webp;base64,${buffer.toString('base64')}`;
+
   const formData = new FormData();
-  formData.append('image', base64Data);
-  formData.append('name', cleanSlug);
+  formData.append('file', base64Data);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('public_id', cleanSlug);
+  formData.append('folder', 'donghua_covers');
 
   try {
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
       method: 'POST',
       body: formData
     });
 
     const json = await res.json();
-    if (json && json.success) {
-      return json.data.image ? json.data.image.url : json.data.url;
+    if (res.ok && json.secure_url) {
+      return json.secure_url;
     } else {
       console.warn(`  ⚠️ Gagal upload ${slug}:`, json?.error?.message || 'Unknown error');
       return null;
     }
   } catch (err) {
-    console.warn(`  ⚠️ Error request ImgBB untuk ${slug}:`, err.message);
+    console.warn(`  ⚠️ Error request Cloudinary untuk ${slug}:`, err.message);
     return null;
   }
 }
 
 async function run() {
-  console.log('=== Memulai Sinkronisasi Cover Multi-Mirror ke ImgBB ===');
+  console.log('=== Memulai Sinkronisasi Cover Multi-Mirror ke Cloudinary ===');
 
   if (!fs.existsSync(masterPath)) {
     console.error('File donghua/donghua.json tidak ditemukan!');
@@ -216,16 +215,17 @@ async function run() {
     process.exit(1);
   }
 
+  // Targetkan semua item yang cover-nya belum di Cloudinary
   const targets = list.filter(item => {
     const c = String(item.cover || '');
-    return c && !c.includes('i.ibb.co') && !c.includes('ibb.co');
+    return c && !c.includes('res.cloudinary.com');
   });
 
   console.log(`Total judul di katalog       : ${list.length}`);
   console.log(`Judul yang perlu di-sync     : ${targets.length}`);
 
   if (targets.length === 0) {
-    console.log('✅ Semua cover sudah ter-host rapi di ImgBB!');
+    console.log('✅ Semua cover sudah ter-host rapi di Cloudinary!');
     return;
   }
 
@@ -250,11 +250,10 @@ async function run() {
 
     console.log(`  📥 Gambar berhasil diambil dari: ${sourceSuccess}`);
 
-    const base64Str = webpBuffer.toString('base64');
-    const newCoverUrl = await uploadToImgBB(base64Str, slug);
+    const newCoverUrl = await uploadToCloudinary(webpBuffer, slug);
 
     if (newCoverUrl) {
-      console.log(`  ✨ Berhasil diunggah ke ImgBB: ${newCoverUrl}`);
+      console.log(`  ✨ Berhasil diunggah ke Cloudinary: ${newCoverUrl}`);
       item.cover = newCoverUrl;
       item.updated_at = new Date().toISOString();
       successCount++;
@@ -268,15 +267,15 @@ async function run() {
       failCount++;
     }
 
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 500));
   }
 
   fs.writeFileSync(masterPath, JSON.stringify(list, null, 2), 'utf-8');
   gitPushCheckpoint(successCount, targets.length);
 
   console.log(`\n🎉 Proses Selesai!`);
-  console.log(`- Berhasil dipindahkan ke ImgBB : ${successCount}`);
-  console.log(`- Gagal                         : ${failCount}`);
+  console.log(`- Berhasil dipindahkan ke Cloudinary : ${successCount}`);
+  console.log(`- Gagal                             : ${failCount}`);
 }
 
 run();
