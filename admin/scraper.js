@@ -7,24 +7,16 @@ import { execSync } from 'child_process';
 
 puppeteer.use(StealthPlugin());
 
-// Daftar mirror yang dicoba berurutan jika domain utama diblokir
 const MIRROR_DOMAINS = [
-  'https://anichin.co',
   'https://anichin.my',
-  'https://anichin.moe'
+  'https://anichin.co',
+  'https://anichin.moe',
+  'https://v1.anichin.space'
 ];
 
 let ACTIVE_BASE_URL = MIRROR_DOMAINS[0];
 
-const USER_AGENTS = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
-];
-
-function getRandomUserAgent() {
-  return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-}
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
 function resolveUrl(url) {
   if (!url) return '';
@@ -66,7 +58,7 @@ function gitPushCheckpoint(commitMsg) {
     execSync('git config --local user.name "GitHub Action Bot"', { stdio: 'ignore' });
     execSync('git add donghua/donghua.json', { stdio: 'ignore' });
 
-    const status = execSync('git status --porcelain').toString().trim();
+    const status = execSync('git status --porcelain donghua/donghua.json').toString().trim();
     if (status) {
       execSync(`git commit -m "${commitMsg} [skip ci]"`, { stdio: 'inherit' });
       try {
@@ -86,19 +78,26 @@ function gitPushCheckpoint(commitMsg) {
 async function createStealthPage(browser) {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
-  await page.setUserAgent(getRandomUserAgent());
+  await page.setUserAgent(USER_AGENT);
 
-  await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+  await page.setExtraHTTPHeaders({
+    'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Sec-Ch-Ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"Windows"',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1'
   });
 
   return page;
 }
 
-// Ambil detail lengkap donghua jika belum ada di database
 async function fetchDonghuaDetail(page, detailUrl, fallbackTitle = '', fallbackSlug = '') {
   try {
-    await page.goto(detailUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
+    await page.goto(detailUrl, { waitUntil: 'networkidle2', timeout: 35000 });
     const html = await page.content();
     const $ = cheerio.load(html);
 
@@ -197,88 +196,51 @@ async function main() {
     process.exit(1);
   }
 
-  // Headless diset 'new' agar kompatibel di runner Linux (GitHub Actions) tanpa X11/Display
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
     protocolTimeout: 240000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--headless',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
       '--no-zygote',
-      '--single-process',
-      '--disable-blink-features=AutomationControlled',
-      '--window-size=1920,1080'
+      '--disable-gpu'
     ]
   });
 
   const page = await createStealthPage(browser);
 
   try {
-    // ==========================================
-    // 1. MODE UPDATE SEMUA DETAIL SPESIFIKASI
-    // ==========================================
-    if (isUpdateAllDetails) {
-      console.log(`Memulai proses update detail untuk ${masterList.length} judul...`);
-
-      for (let i = 0; i < masterList.length; i++) {
-        const item = masterList[i];
-        item.title = sanitizeTitle(item.title);
-        const detailUrl = `${ACTIVE_BASE_URL}/${item.slug}/`;
-
-        console.log(`[${i + 1}/${masterList.length}] Scraping detail: ${item.title}...`);
-        const detail = await fetchDonghuaDetail(page, detailUrl, item.title, item.slug);
-
-        item.type = detail.type;
-        item.status = detail.status;
-        item.released = detail.released;
-        item.genres = detail.genres;
-        if (detail.synopsis) item.synopsis = detail.synopsis;
-        if (detail.cover && !item.cover) item.cover = detail.cover;
-
-        if (detail.totalEp > 0) {
-          const currentNum = parseEpisodeNumber(item['latest-episode']);
-          if (detail.totalEp >= currentNum) {
-            item['latest-episode'] = String(detail.totalEp);
-            item.episode = `Ep ${detail.totalEp}`;
-          }
-        }
-        item.updated_at = new Date().toISOString();
-
-        fs.writeFileSync(masterPath, JSON.stringify(masterList, null, 2), 'utf-8');
-
-        if ((i + 1) % 10 === 0) {
-          gitPushCheckpoint(`Auto: Batch updated details (${i + 1}/${masterList.length})`);
-        }
-        await new Promise(r => setTimeout(r, 1200));
-      }
-
-      gitPushCheckpoint(`Auto: Finished updating all donghua details`);
-      console.log('✅ Selesai memperbarui semua detail!');
-      return;
-    }
-
-    // ==========================================
-    // 2. MODE SYNC-ORDER / NEW-ONLY (ARSIP ANIME)
-    // ==========================================
-    const pagesToScrape = isSyncOrder ? [1, 2] : [1];
-    const scrapedCards = [];
-
-    // Tentukan domain yang merespons normal tanpa captcha
+    // 1. Uji domain yang benar-benar menampilkan kontainer kartu, bukan Cloudflare challenge
     for (const domain of MIRROR_DOMAINS) {
       try {
         console.log(`Menguji domain katalog: ${domain}...`);
-        await page.goto(`${domain}/anime/?status=&type=&order=update`, { waitUntil: 'domcontentloaded', timeout: 25000 });
-        const testHtml = await page.content();
-        if (testHtml.includes('listupd') || testHtml.includes('animepost')) {
-          ACTIVE_BASE_URL = domain;
-          console.log(`✅ Menggunakan domain aktif: ${ACTIVE_BASE_URL}`);
-          break;
+        const resp = await page.goto(`${domain}/anime/?status=&type=&order=update`, { 
+          waitUntil: 'networkidle2', 
+          timeout: 25000 
+        });
+
+        if (resp && resp.status() === 200) {
+          const content = await page.content();
+          // Pastikan bukan Cloudflare block page
+          if (!content.includes('Just a moment...') && !content.includes('Checking your browser')) {
+            const hasList = await page.$('.listupd, .animepost, .bsx, article');
+            if (hasList) {
+              ACTIVE_BASE_URL = domain;
+              console.log(`✅ Menggunakan domain aktif: ${ACTIVE_BASE_URL}`);
+              break;
+            }
+          }
         }
-      } catch (_) {}
+      } catch (err) {
+        console.warn(`Domain ${domain} bermasalah: ${err.message}`);
+      }
     }
+
+    const pagesToScrape = isSyncOrder ? [1, 2] : [1];
+    const scrapedCards = [];
 
     for (const pageNum of pagesToScrape) {
       const targetUrl = pageNum === 1
@@ -288,10 +250,18 @@ async function main() {
       console.log(`Membaca katalog dari halaman ${pageNum}: ${targetUrl}`);
 
       try {
-        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 35000 });
-        await new Promise(r => setTimeout(r, 1500));
+        await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 35000 });
+
+        // Tunggu elemen kartu muncul
+        await page.waitForSelector('.listupd article, .animepost, .bsx', { timeout: 10000 }).catch(() => null);
+
         const html = await page.content();
         const $ = cheerio.load(html);
+
+        // Debug info bila masih kosong
+        if (html.includes('Just a moment...')) {
+          console.warn('⚠️ Halaman tertahan Cloudflare bot challenge!');
+        }
 
         const items = $('.listupd article, .animepost, .bsx, .animpost');
 
@@ -333,6 +303,11 @@ async function main() {
     }
 
     console.log(`Total judul yang didapat dari halaman arsip: ${scrapedCards.length}`);
+
+    if (scrapedCards.length === 0) {
+      console.warn('⚠️ Tidak ada kartu yang ditemukan. Mirror mungkin sedang memblokir request bot.');
+      return;
+    }
 
     let updatedCount = 0;
 
