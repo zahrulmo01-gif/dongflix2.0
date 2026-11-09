@@ -738,6 +738,12 @@
                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664Z"/></svg>
                 Scrape
               </button>
+              <button 
+                onclick="deleteDonghua('${item.slug}', '${titleClean.replace(/'/g, "\\'")}')" 
+                class="px-2.5 py-1.5 bg-rose-950/60 hover:bg-rose-900 border border-rose-800/50 text-rose-300 rounded-lg text-xs font-medium transition flex items-center gap-1">
+                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                Hapus
+              </button>
             </div>
           </div>
         `;
@@ -832,6 +838,113 @@
       }
       logTerminal(`Mempersiapkan scrape episode untuk: ${displayName}`);
       triggerWorkflow('scrape-episode', { target_slug: slug });
+    }
+
+    async function deleteDonghua(slug, title) {
+      if (!slug) return;
+      const displayName = title || slug;
+      if (!confirm(`PERINGATAN: Apakah Anda yakin ingin MENGHAPUS donghua "${displayName}"?\n\nSemua data dari donghua.json dan berkas episode di GitHub akan dihapus secara permanen!`)) {
+        return;
+      }
+
+      const { token, repo } = getGitHubCredentials();
+      if (!token || !repo) {
+        alert('Mohon isi dan simpan GitHub Token serta Repository di panel atas terlebih dahulu!');
+        return;
+      }
+
+      logTerminal(`[GitHub API] Menghapus donghua "${displayName}" (${slug})...`, 'warn');
+
+      try {
+        const filePath = 'donghua/donghua.json';
+        const fileRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+
+        if (!fileRes.ok) {
+          throw new Error(`Gagal membaca donghua.json di GitHub (Status ${fileRes.status})`);
+        }
+
+        const fileData = await fileRes.json();
+        const fileSha = fileData.sha;
+        const rawContent = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+        let list = JSON.parse(rawContent);
+
+        const beforeCount = list.length;
+        list = list.filter(item => item.slug !== slug);
+
+        if (list.length === beforeCount) {
+          throw new Error('Donghua tidak ditemukan di daftar donghua.json');
+        }
+
+        const newJsonStr = JSON.stringify(list, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(newJsonStr)));
+
+        const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Delete Donghua: Hapus "${displayName}" (${slug}) [skip ci]`,
+            content: encodedContent,
+            sha: fileSha,
+            branch: 'main'
+          })
+        });
+
+        if (!putRes.ok) {
+          const errBody = await putRes.json();
+          throw new Error(errBody.message || 'Gagal menghapus donghua dari katalog');
+        }
+
+        logTerminal(`[Sukses] Donghua "${displayName}" berhasil dihapus dari donghua.json!`, 'success');
+
+        const epPath = `donghua/episodes/${slug}.json`;
+        try {
+          const checkEpRes = await fetch(`https://api.github.com/repos/${repo}/contents/${epPath}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          if (checkEpRes.ok) {
+            const epData = await checkEpRes.json();
+            await fetch(`https://api.github.com/repos/${repo}/contents/${epPath}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: `Delete Episode File: ${epPath} [skip ci]`,
+                sha: epData.sha,
+                branch: 'main'
+              })
+            });
+            logTerminal(`[Sukses] Berkas episode ${epPath} berhasil dibersihkan dari repository!`, 'success');
+          }
+        } catch (epDelErr) {
+          logTerminal(`[Info] Berkas episode tidak ditemukan atau sudah terhapus: ${epDelErr.message}`, 'info');
+        }
+
+        allDonghuaData = list;
+        selectedDonghuaSlugs.delete(slug);
+        updateBatchUI();
+        renderDonghuaItems(allDonghuaData);
+        document.getElementById('donghuaCount').textContent = `${allDonghuaData.length} Donghua terdaftar`;
+        alert(`Donghua "${displayName}" berhasil dihapus!`);
+
+      } catch (err) {
+        logTerminal(`[Gagal Hapus Donghua] ${err.message}`, 'error');
+        alert(`Gagal menghapus donghua: ${err.message}`);
+      }
     }
 
     function openEditModal(slug) {
