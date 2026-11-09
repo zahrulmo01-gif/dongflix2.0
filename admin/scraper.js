@@ -9,8 +9,8 @@ puppeteer.use(StealthPlugin());
 
 // Daftar mirror yang dicoba berurutan jika domain utama diblokir
 const MIRROR_DOMAINS = [
-  'https://anichin.my',
   'https://anichin.co',
+  'https://anichin.my',
   'https://anichin.moe'
 ];
 
@@ -197,14 +197,18 @@ async function main() {
     process.exit(1);
   }
 
+  // Headless diset 'new' agar kompatibel di runner Linux (GitHub Actions) tanpa X11/Display
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: 'new',
     protocolTimeout: 240000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
+      '--headless',
+      '--no-zygote',
+      '--single-process',
       '--disable-blink-features=AutomationControlled',
       '--window-size=1920,1080'
     ]
