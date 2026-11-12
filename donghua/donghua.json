@@ -1,5 +1,22 @@
 [
   {
+    "title": "Against the Gods",
+    "slug": "against-the-gods",
+    "link": "https://anichin.moe/against-the-gods/",
+    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203666/donghua_covers/against-the-gods.webp",
+    "type": "Donghua",
+    "status": "Ongoing",
+    "episode": "Ep 63",
+    "released": "Tanggal  Sep 23, 2023",
+    "genres": [
+      "Action",
+      "Fantasy"
+    ],
+    "synopsis": "Against the Gods – Memegang Mutiara Racun Surgawi, mewarisi darah dewa jahat, dan mengembangkan kekuatan untuk menentang surga. Akankah generasi dewa jahat mendominasi dunia?Season 2 (Nian Fan) tayang pada 16 april 2026",
+    "latest-episode": "63",
+    "updated_at": "2026-11-12T14:23:20.721Z"
+  },
+  {
     "title": "Jade Dynasty",
     "slug": "jade-dynasty",
     "link": "https://anichin.moe/jade-dynasty/",
@@ -554,23 +571,6 @@
     "synopsis": "Kisah sampingan The Great Ruler dan serial donghua pendek spin-off yang diadaptasi dari tiga karya Tian Can Tu Dou, yaitu The Great Ruler 《大主宰》, Dragon Prince Yuan 《元尊》,  dan Absolute Resonance 《万相之王》.",
     "latest-episode": "31",
     "updated_at": "2026-11-09T05:54:25.235Z"
-  },
-  {
-    "title": "Against the Gods",
-    "slug": "against-the-gods",
-    "link": "https://anichin.moe/against-the-gods/",
-    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203666/donghua_covers/against-the-gods.webp",
-    "type": "Donghua",
-    "status": "Ongoing",
-    "episode": "Ep 62",
-    "released": "Tanggal  Sep 23, 2023",
-    "genres": [
-      "Action",
-      "Fantasy"
-    ],
-    "synopsis": "Against the Gods – Memegang Mutiara Racun Surgawi, mewarisi darah dewa jahat, dan mengembangkan kekuatan untuk menentang surga. Akankah generasi dewa jahat mendominasi dunia?Season 2 (Nian Fan) tayang pada 16 april 2026",
-    "latest-episode": "62",
-    "updated_at": "2026-11-09T05:54:27.309Z"
   },
   {
     "title": "Oriental Martial Academy",
