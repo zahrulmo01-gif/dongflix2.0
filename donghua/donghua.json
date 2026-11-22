@@ -1,5 +1,24 @@
 [
   {
+    "title": "Martial Master",
+    "slug": "martial-master",
+    "link": "https://anichin.moe/martial-master/",
+    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203646/donghua_covers/martial-master.webp",
+    "type": "Donghua",
+    "status": "Ongoing",
+    "episode": "Ep 711",
+    "released": "Tanggal  Mar 08, 2020",
+    "genres": [
+      "Action",
+      "Fantasy",
+      "Martial Arts",
+      "Reincaranation"
+    ],
+    "synopsis": "Martial Master – Protagonis Qin Chen pada awalnya adalah jenius top di Wushu, tetapi ia berkonspirasi oleh Monster dan jatuh ke lembah kematian Tanah Terlarang di daratan. Qin Chen, yang pasti mati, tiba-tiba memicu kekuatan pedang kuno yang misterius … Tiga ratus tahun kemudian, di bagian terpencil daratan Tianwu, seorang bocah lelaki dengan nama yang sama secara tak sengaja mewarisi kehendak Qin Chen. Sebagai cucu terkasih Raja Dingwu dari Tentara Nasional Daqi, karena kelahiran ayah kandung, ibu dan anak itu diperlakukan dengan dingin di istana Dingwu dan tinggal bersama. Untuk menulis ulang mitos harapan bagi yang kuat, dan untuk melindungi semua yang ia cintai, Qin Chen dengan tegas mengambil tanggung jawab untuk mempertahankan lima kerajaan dunia dan menginjakkan kaki di jalan seni bela diri lagi.",
+    "latest-episode": "711",
+    "updated_at": "2026-11-22T12:30:52.923Z"
+  },
+  {
     "title": "Renegade Immortal",
     "slug": "renegade-immortal",
     "link": "https://anichin.moe/renegade-immortal/",
@@ -535,25 +554,6 @@
     "synopsis": "Musim Terakhir dari donghua “Yi Nian Yong Heng”, melanjutkan kisah Bao Xiaochun!Update setiap hari rabu hanya di ANICHIN.CARE",
     "latest-episode": "20",
     "updated_at": "2026-11-17T13:00:58.830Z"
-  },
-  {
-    "title": "Martial Master",
-    "slug": "martial-master",
-    "link": "https://anichin.moe/martial-master/",
-    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203646/donghua_covers/martial-master.webp",
-    "type": "Donghua",
-    "status": "Ongoing",
-    "episode": "Ep 710",
-    "released": "Tanggal  Mar 08, 2020",
-    "genres": [
-      "Action",
-      "Fantasy",
-      "Martial Arts",
-      "Reincaranation"
-    ],
-    "synopsis": "Martial Master – Protagonis Qin Chen pada awalnya adalah jenius top di Wushu, tetapi ia berkonspirasi oleh Monster dan jatuh ke lembah kematian Tanah Terlarang di daratan. Qin Chen, yang pasti mati, tiba-tiba memicu kekuatan pedang kuno yang misterius … Tiga ratus tahun kemudian, di bagian terpencil daratan Tianwu, seorang bocah lelaki dengan nama yang sama secara tak sengaja mewarisi kehendak Qin Chen. Sebagai cucu terkasih Raja Dingwu dari Tentara Nasional Daqi, karena kelahiran ayah kandung, ibu dan anak itu diperlakukan dengan dingin di istana Dingwu dan tinggal bersama. Untuk menulis ulang mitos harapan bagi yang kuat, dan untuk melindungi semua yang ia cintai, Qin Chen dengan tegas mengambil tanggung jawab untuk mempertahankan lima kerajaan dunia dan menginjakkan kaki di jalan seni bela diri lagi.",
-    "latest-episode": "710",
-    "updated_at": "2026-11-17T05:30:47.838Z"
   },
   {
     "title": "One Slash to the Heavens",
