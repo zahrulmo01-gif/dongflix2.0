@@ -1,0 +1,120 @@
+name: Dongflix Automation Scraper
+
+on:
+  workflow_dispatch:
+    inputs:
+      action_type:
+        description: 'Pilih jenis aksi scraper'
+        required: true
+        default: 'sync-order'
+        type: choice
+        options:
+          - 'sync-order'
+          - 'scrape-list'
+          - 'clean-json'
+          - 'update-all-details'
+          - 'scrape-all-episodes'
+          - 'sync-covers'
+  repository_dispatch:
+    types:
+      - scrape-list
+      - sync-order
+      - clean-json
+      - update-all-details
+      - scrape-all-episodes
+      - scrape-episode
+      - scrape-selected-donghua
+      - sync-covers
+
+permissions:
+  contents: write
+
+jobs:
+  automation-runner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 1. Caching folder node_modules & binary Puppeteer
+      - name: Cache Node Modules & Puppeteer
+        id: cache-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/puppeteer
+          key: ${{ runner.os }}-dongflix-modules-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-dongflix-modules-
+
+      # 2. Hanya install modul jika cache tidak ditemukan (pertama kali saja)
+      - name: Install Node Modules
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: |
+          npm install
+          npx puppeteer browsers install chrome || true
+
+      - name: Configure Git Bot
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action Bot"
+
+      # 1. Scrape List Baru Saja
+      - name: Scrape List Baru Saja
+        if: ${{ github.event.action == 'scrape-list' || github.event.inputs.action_type == 'scrape-list' }}
+        run: node admin/scraper.js --mode=new-only
+
+      # 2. Perbaiki Urutan List
+      - name: Sync Order Katalog
+        if: ${{ github.event.action == 'sync-order' || github.event.inputs.action_type == 'sync-order' }}
+        run: node admin/scraper.js --mode=sync-order
+
+      # 3. Update Semua Detail (Movie, Sinopsis, Genre)
+      - name: Update Semua Detail Donghua
+        if: ${{ github.event.action == 'update-all-details' || github.event.inputs.action_type == 'update-all-details' }}
+        run: node admin/scraper.js --mode=update-all-details
+
+      # 4. Clean JSON (Fix Null & Duplikat)
+      - name: Bersihkan JSON
+        if: ${{ github.event.action == 'clean-json' || github.event.inputs.action_type == 'clean-json' }}
+        run: node admin/clean-json.js
+
+      # 5. Smart Scrape Semua Episode
+      - name: Smart Scrape Semua Episode
+        if: ${{ github.event.action == 'scrape-all-episodes' || github.event.inputs.action_type == 'scrape-all-episodes' }}
+        run: node admin/scrape-all-smart.js
+
+      # 6. Scrape Single Episode Spesifik
+      - name: Scrape Single Episode
+        if: ${{ github.event.action == 'scrape-episode' }}
+        run: node admin/scrape-all-smart.js --slugs="${{ github.event.client_payload.target_slug }}"
+
+      # 7. Scrape Batch Judul Terpilih (Langsung memanggil Scrape-all-smart.js)
+      - name: Scrape Selected Donghua
+        if: ${{ github.event.action == 'scrape-selected-donghua' }}
+        run: node admin/scrape-all-smart.js --slugs="${{ github.event.client_payload.selected_slugs }}"
+
+      # 8. Sinkronisasi Cover ke ImgBB (.webp)
+      - name: Sync Covers to ImgBB
+        if: ${{ github.event.action == 'sync-covers' || github.event.inputs.action_type == 'sync-covers' }}
+        run: node admin/sync-covers-imgbb.js
+
+      # Final Safe Commit & Push
+      - name: Push Perubahan Tersisa
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git add donghua/
+            git commit -m "Auto: Update database catalog & episodes [skip ci]" || exit 0
+            git pull --rebase origin main || true
+            git push origin main
+          fi
