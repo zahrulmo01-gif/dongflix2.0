@@ -1,0 +1,18 @@
+{
+  "name": "dongflix-scraper",
+  "version": "1.0.0",
+  "description": "Automated Donghua & Anime Scraper for Dongflix",
+  "type": "module",
+  "scripts": {
+    "scrape:catalog": "node admin/scraper.js",
+    "scrape:sync": "node admin/scraper.js --mode=sync-order",
+    "scrape:new": "node admin/scraper.js --mode=new-only",
+    "scrape:smart": "node admin/scrape-all-smart.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "puppeteer": "^23.6.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}
