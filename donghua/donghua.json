@@ -1,5 +1,23 @@
 [
   {
+    "title": "Jade Dynasty",
+    "slug": "jade-dynasty",
+    "link": "https://anichin.moe/jade-dynasty/",
+    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203660/donghua_covers/jade-dynasty.webp",
+    "type": "Donghua",
+    "status": "Ongoing",
+    "episode": "Ep 95",
+    "released": "Tanggal  Aug 02, 2022",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "synopsis": "Zhang Xiaofan, yang menjadi yatim piatu dalam semalam, diterima sebagai murid Sekte Qingyun. Setelah lima tahun berkultivasi dengan keras, ia unggul dalam Turnamen Tujuh Meridian dari murid lainnya dan dikirim ke Gunung Kongsang untuk memata-matai pergerakan Sekte Setan. Selama perjalanan, dia dan sesama muridnya Lu Xueqi menghadapi bahaya dan menyelamatkan serta berteman dengan pembudidaya iblis Biyao.Namun, bahaya baru menunggunya di masa depan.Season 3: “Dewa Binatang bangkit, membanjiri dunia dengan darah. Dao Xuan maju menghadapi kekacauan, sementara kekuatan antara golongan benar dan sesat mengalami perubahan besar. Gui Li dan Xue Qi kembali berdiri di persimpangan takdir. Dalam bayang-bayang kehancuran, hati manusia dan artefak suci bersama-sama menghadapi jurang kehancuran…”",
+    "latest-episode": "95",
+    "updated_at": "2026-11-26T12:30:54.206Z"
+  },
+  {
     "title": "Ancient God Sovereign",
     "slug": "ancient-god-sovereign",
     "link": "https://anichin.moe/ancient-god-sovereign/",
@@ -578,24 +596,6 @@
     "synopsis": "Di dunia yang luas tak terbatas, di mana sepuluh ribu suku berada, dan para pahlawan besar serta para penguasa dari dunia bawah berkumpul, untuk mengejar jalan menuju Penguasa Agung.",
     "latest-episode": "100",
     "updated_at": "2026-11-20T03:01:01.254Z"
-  },
-  {
-    "title": "Jade Dynasty",
-    "slug": "jade-dynasty",
-    "link": "https://anichin.moe/jade-dynasty/",
-    "cover": "https://res.cloudinary.com/pqyvpk17/image/upload/v1794203660/donghua_covers/jade-dynasty.webp",
-    "type": "Donghua",
-    "status": "Ongoing",
-    "episode": "Ep 94",
-    "released": "Tanggal  Aug 02, 2022",
-    "genres": [
-      "Action",
-      "Adventure",
-      "Fantasy"
-    ],
-    "synopsis": "Zhang Xiaofan, yang menjadi yatim piatu dalam semalam, diterima sebagai murid Sekte Qingyun. Setelah lima tahun berkultivasi dengan keras, ia unggul dalam Turnamen Tujuh Meridian dari murid lainnya dan dikirim ke Gunung Kongsang untuk memata-matai pergerakan Sekte Setan. Selama perjalanan, dia dan sesama muridnya Lu Xueqi menghadapi bahaya dan menyelamatkan serta berteman dengan pembudidaya iblis Biyao.Namun, bahaya baru menunggunya di masa depan.Season 3: “Dewa Binatang bangkit, membanjiri dunia dengan darah. Dao Xuan maju menghadapi kekacauan, sementara kekuatan antara golongan benar dan sesat mengalami perubahan besar. Gui Li dan Xue Qi kembali berdiri di persimpangan takdir. Dalam bayang-bayang kehancuran, hati manusia dan artefak suci bersama-sama menghadapi jurang kehancuran…”",
-    "latest-episode": "94",
-    "updated_at": "2026-11-19T13:00:57.087Z"
   },
   {
     "title": "Under the Gate",
